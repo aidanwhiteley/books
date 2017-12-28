@@ -27,10 +27,15 @@ public class BookController {
         return bookRepository.findOne(id);
     }
 
-	@RequestMapping(value = "/books", method = GET)
+	@RequestMapping(value = "/books", method = GET, params = "author")
 	public List<Book> findByAuthor(@RequestParam("author") String author) {
-		return bookRepository.findByAuthor(author);
+		return bookRepository.findAllByAuthor(author);
 	}
+
+    @RequestMapping(value = "/books", method = GET, params = "genre")
+    public List<Book> findByGenre(@RequestParam("genre") String genre) {
+        return bookRepository.findAllByGenre(genre);
+    }
 
 	@RequestMapping(value = "/books", method = POST)
     public ResponseEntity<?> createBook(@RequestBody Book book) {
@@ -55,4 +60,6 @@ public class BookController {
 
         return ResponseEntity.noContent().build();
     }
+
+
 }

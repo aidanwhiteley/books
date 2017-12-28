@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.IfProfileValue;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.Assert.assertTrue;
@@ -25,8 +26,10 @@ public class BookRepositoryTest {
     public static final String A_GUIDE_TO_POKING_SOFTWARE = "A guide to poking software";
     public static final String COMPUTING = "Computing";
     public static final String DR_ZEUSS = "Dr Zuess";
+    public static final String DESIGN_PATTERNS = "Design Patterns";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BookRepositoryTest.class);
+
 
     @Autowired
     BookRepository bookRepository;
@@ -38,12 +41,12 @@ public class BookRepositoryTest {
 
     @After
     public void tearDown() {
-        bookRepository.deleteAll();
+        // bookRepository.deleteAll();
     }
 
     @Test
     public void findByAuthor() {
-        List<Book> books = bookRepository.findByAuthor(DR_ZEUSS);
+        List<Book> books = bookRepository.findAllByAuthor(DR_ZEUSS);
         assertTrue(books.size() >= 1);
         assertTrue(books.get(0).getAuthor().equals(DR_ZEUSS));
         assertTrue(books.get(0).getTitle().equals(J_UNIT_TESTING_FOR_BEGINNERS));
@@ -53,6 +56,6 @@ public class BookRepositoryTest {
 
     public static Book createTestBook() {
         return Book.builder().title(J_UNIT_TESTING_FOR_BEGINNERS).summary(A_GUIDE_TO_POKING_SOFTWARE).genre(COMPUTING)
-                .author(DR_ZEUSS).build();
+                .author(DR_ZEUSS).rating(Book.Rating.POOR).lastRead(LocalDate.of(2016, 11, 20)).similarTo(DESIGN_PATTERNS).build();
     }
 }

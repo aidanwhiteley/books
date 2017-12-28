@@ -1,5 +1,9 @@
 package com.aidanwhiteley.books.domain;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 
@@ -25,6 +29,8 @@ public class Book implements Serializable {
     private String genre;
     private String summary;
     private Rating rating;
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate lastRead;
     private String similarTo;
 

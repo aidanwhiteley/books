@@ -57,6 +57,7 @@ public class BookControllerTest {
 
         ResponseEntity<Book> putResponse = testRestTemplate
                 .exchange("/api/books", HttpMethod.PUT, putData, Book.class);
+        assertEquals(putResponse.getStatusCode(), HttpStatus.NO_CONTENT);
         headers = response.getHeaders();
         uri = headers.getLocation();
 

@@ -5,10 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.repository.BookRepository;
@@ -23,6 +20,11 @@ public class BookController {
 
 	@Autowired
 	private BookRepository bookRepository;
+
+    @RequestMapping(value = "/books/{id}", method = GET)
+    public Book findBookById(@PathVariable("id") String id) {
+        return bookRepository.findOne(id);
+    }
 
 	@RequestMapping(value = "/books", method = GET)
 	public List<Book> findByAuthor(@RequestParam("author") String author) {

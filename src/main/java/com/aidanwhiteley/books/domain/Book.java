@@ -38,7 +38,7 @@ public class Book implements Serializable {
         @SuppressWarnings("unused")
 		private final int ratingLevel;
 
-        private Rating(int ratingLevel) {
+        Rating(int ratingLevel) {
             this.ratingLevel = ratingLevel;
         }
     }

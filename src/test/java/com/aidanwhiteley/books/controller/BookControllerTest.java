@@ -3,10 +3,9 @@ package com.aidanwhiteley.books.controller;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.net.URI;
 import java.util.List;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -34,42 +33,43 @@ public class BookControllerTest {
 	@Autowired
 	private TestRestTemplate testRestTemplate;
 
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	@After
-	public void tearDown() throws Exception {
-	}
-
 	@Test
     public void createBook() {
-        Book testBook = BookRepositoryTest.createTestBook();
-        HttpEntity<Book> request = new HttpEntity<>(testBook);
-
-        ResponseEntity<Book> response = testRestTemplate
-                .exchange("/api/books", HttpMethod.POST, request, Book.class);
-
+        ResponseEntity<Book> response = postBookToServer();
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
     }
 
+    @Test
+    public void findBookById() {
+        ResponseEntity<Book> response = postBookToServer();
+        HttpHeaders headers = response.getHeaders();
+        URI uri = headers.getLocation();
+
+        Book book = testRestTemplate.getForObject(uri, Book.class);
+        assertEquals(book.getId(), uri.getPath().substring(uri.getPath().lastIndexOf("/") + 1));
+    }
 
 	@Test
 	public void findByAuthor() {
 
-	    createBook();
+        postBookToServer();
 
 		ResponseEntity<String> response = testRestTemplate.exchange("/api/books?author=" + BookRepositoryTest.DR_ZEUSS, HttpMethod.GET,
 				null, String.class);
-
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 
 		List<Book> books = JsonPath.read(response.getBody(), "$");
         LOGGER.debug("Retrieved JSON was: " + response.getBody());
 
 		assertTrue("No books found", books.size() > 0);
-
-
 	}
+
+    private ResponseEntity<Book> postBookToServer() {
+        Book testBook = BookRepositoryTest.createTestBook();
+        HttpEntity<Book> request = new HttpEntity<>(testBook);
+
+        return testRestTemplate
+                .exchange("/api/books", HttpMethod.POST, request, Book.class);
+    }
 
 }

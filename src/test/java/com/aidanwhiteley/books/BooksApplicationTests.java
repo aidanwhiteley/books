@@ -11,8 +11,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 @IfProfileValue(name = "spring.profiles.active", value = "integration")
 public class BooksApplicationTests {
 
+    @SuppressWarnings("EmptyMethod")
     @Test
     public void contextLoads() {
+        // Just checking that application context loads
     }
 
 }

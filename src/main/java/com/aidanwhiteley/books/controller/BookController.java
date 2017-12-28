@@ -13,6 +13,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 @RestController
 @RequestMapping("/api")
@@ -41,5 +42,17 @@ public class BookController {
                 .buildAndExpand(insertedBook.getId()).toUri();
 
         return ResponseEntity.created(location).build();
+    }
+
+    @RequestMapping(value = "/books", method = PUT)
+    public ResponseEntity<?> updateBook(@RequestBody Book book) {
+
+        Book updatedBook = bookRepository.save(book);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest().path("/{id}")
+                .buildAndExpand(updatedBook.getId()).toUri();
+
+        return ResponseEntity.noContent().build();
     }
 }

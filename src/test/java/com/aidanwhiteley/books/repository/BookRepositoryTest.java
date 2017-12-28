@@ -34,6 +34,11 @@ public class BookRepositoryTest {
     @Autowired
     BookRepository bookRepository;
 
+    public static Book createTestBook() {
+        return Book.builder().title(J_UNIT_TESTING_FOR_BEGINNERS).summary(A_GUIDE_TO_POKING_SOFTWARE).genre(COMPUTING)
+                .author(DR_ZEUSS).rating(Book.Rating.POOR).lastRead(LocalDate.of(2016, 11, 20)).similarTo(DESIGN_PATTERNS).build();
+    }
+
     @Before
     public void setUp() {
         bookRepository.insert(createTestBook());
@@ -52,10 +57,5 @@ public class BookRepositoryTest {
         assertTrue(books.get(0).getTitle().equals(J_UNIT_TESTING_FOR_BEGINNERS));
 
         LOGGER.info("The generated id was: " + books.get(0).getId());
-    }
-
-    public static Book createTestBook() {
-        return Book.builder().title(J_UNIT_TESTING_FOR_BEGINNERS).summary(A_GUIDE_TO_POKING_SOFTWARE).genre(COMPUTING)
-                .author(DR_ZEUSS).rating(Book.Rating.POOR).lastRead(LocalDate.of(2016, 11, 20)).similarTo(DESIGN_PATTERNS).build();
     }
 }

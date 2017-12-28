@@ -19,9 +19,9 @@ import java.time.LocalDate;
 @Builder
 public class Book implements Serializable {
 
-	private static final long serialVersionUID = 1L;
-	
-	@Id
+    private static final long serialVersionUID = 1L;
+
+    @Id
     @Setter(AccessLevel.PROTECTED)
     private String id;
     private String title;
@@ -42,7 +42,7 @@ public class Book implements Serializable {
         GREAT(5);
 
         @SuppressWarnings("unused")
-		private final int ratingLevel;
+        private final int ratingLevel;
 
         Rating(int ratingLevel) {
             this.ratingLevel = ratingLevel;

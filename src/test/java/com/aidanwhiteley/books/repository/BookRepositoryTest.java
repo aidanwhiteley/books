@@ -24,7 +24,7 @@ public class BookRepositoryTest {
     public static final String J_UNIT_TESTING_FOR_BEGINNERS = "JUnit testing for beginners";
     public static final String A_GUIDE_TO_POKING_SOFTWARE = "A guide to poking software";
     public static final String COMPUTING = "Computing";
-    public static final String BENT_KECK = "Bent Keck";
+    public static final String DR_ZEUSS = "Dr Zuess";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BookRepositoryTest.class);
 
@@ -38,21 +38,21 @@ public class BookRepositoryTest {
 
     @After
     public void tearDown() {
-        //bookRepository.deleteAll();
+        bookRepository.deleteAll();
     }
 
     @Test
     public void findByAuthor() {
-        List<Book> books = bookRepository.findByAuthor(BENT_KECK);
-        // assertTrue(books.size() == 1);
-        assertTrue(books.get(0).getAuthor().equals(BENT_KECK));
+        List<Book> books = bookRepository.findByAuthor(DR_ZEUSS);
+        assertTrue(books.size() >= 1);
+        assertTrue(books.get(0).getAuthor().equals(DR_ZEUSS));
         assertTrue(books.get(0).getTitle().equals(J_UNIT_TESTING_FOR_BEGINNERS));
 
         LOGGER.info("The generated id was: " + books.get(0).getId());
     }
 
-    static Book createTestBook() {
+    public static Book createTestBook() {
         return Book.builder().title(J_UNIT_TESTING_FOR_BEGINNERS).summary(A_GUIDE_TO_POKING_SOFTWARE).genre(COMPUTING)
-                .author(BENT_KECK).build();
+                .author(DR_ZEUSS).build();
     }
 }

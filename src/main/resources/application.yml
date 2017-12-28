@@ -3,4 +3,9 @@ spring:
     mongodb:
       uri: mongodb://localhost:27017/bookstest?safe=true&journal=true&w=majority&connectTimeoutMS=1001&wtimeoutMS=1000&serverSelectionTimeoutMS=10000
 
+logging:
+  level:
+    root:INFO
+    org.springframework.test:INFO
+
 

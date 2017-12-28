@@ -1,5 +1,6 @@
 package com.aidanwhiteley.books.controller;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
@@ -42,21 +43,33 @@ public class BookControllerTest {
 	}
 
 	@Test
+    public void createBook() {
+        Book testBook = BookRepositoryTest.createTestBook();
+        HttpEntity<Book> request = new HttpEntity<>(testBook);
+
+        ResponseEntity<Book> response = testRestTemplate
+                .exchange("/api/books", HttpMethod.POST, request, Book.class);
+
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+    }
+
+
+	@Test
 	public void findByAuthor() {
 
-		HttpHeaders headers = new HttpHeaders();
+	    createBook();
 
-		HttpEntity<String> entity = new HttpEntity<String>(null, headers);
+		ResponseEntity<String> response = testRestTemplate.exchange("/api/books?author=" + BookRepositoryTest.DR_ZEUSS, HttpMethod.GET,
+				null, String.class);
 
-		ResponseEntity<String> response = testRestTemplate.exchange("/api/books?author=Bent Keck", HttpMethod.GET,
-				entity, String.class);
-
-		assertTrue(HttpStatus.OK == response.getStatusCode());
+		assertEquals(HttpStatus.OK, response.getStatusCode());
 
 		List<Book> books = JsonPath.read(response.getBody(), "$");
-		assert (books.size() > 0);
+        LOGGER.debug("Retrieved JSON was: " + response.getBody());
 
-		LOGGER.info("Retrieved JSON was: " + response.getBody());
+		assertTrue("No books found", books.size() > 0);
+
+
 	}
 
 }

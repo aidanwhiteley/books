@@ -12,7 +12,7 @@ public interface BookRepository extends MongoRepository<Book, String> {
 
     List<Book> findAllByGenre(@Param("genre") String genre);
 
-    List<Book> findAllOrderByRating();
+    //List<Book> findAllOrderByRatingDesc();
 
-    List<Book> findAllOrderByLastRead();
+    List<Book> findAllByOrderByLastReadDesc();
 }

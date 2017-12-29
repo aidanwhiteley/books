@@ -29,6 +29,11 @@ public class BookController {
         return bookRepository.findAllByAuthor(author);
     }
 
+    @RequestMapping(value = "/books", method = GET)
+    public List<Book> findAllByLastRead() {
+        return bookRepository.findAllByOrderByLastReadDesc();
+    }
+
     @RequestMapping(value = "/books", method = GET, params = "genre")
     public List<Book> findByGenre(@RequestParam("genre") String genre) {
         return bookRepository.findAllByGenre(genre);

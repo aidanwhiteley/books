@@ -25,6 +25,9 @@ public class BookControllerTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BookControllerTest.class);
 
+    private static final String GENRE_TOO_LONG =
+            "abcdefghjijklmnopqrstuvwxyz01234567890";
+
     @Autowired
     private TestRestTemplate testRestTemplate;
 
@@ -32,6 +35,24 @@ public class BookControllerTest {
     public void createBook() {
         ResponseEntity<Book> response = postBookToServer();
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
+    }
+
+    @Test
+    public void tryToCreateInvalidBook() {
+        // An empty book should fail
+        Book emptyBook = new Book();
+        HttpEntity<Book> request = new HttpEntity<>(emptyBook);
+        ResponseEntity<Book> response = testRestTemplate
+                .exchange("/api/books", HttpMethod.POST, request, Book.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+
+        // Create a valid book and then exceed one of the max field sizes
+        Book testBook = BookRepositoryTest.createTestBook();
+        testBook.setGenre(GENRE_TOO_LONG);
+        request = new HttpEntity<>(testBook);
+        response = testRestTemplate
+                .exchange("/api/books", HttpMethod.POST, request, Book.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
     @Test

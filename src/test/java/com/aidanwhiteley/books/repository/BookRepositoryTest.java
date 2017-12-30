@@ -12,9 +12,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.IfProfileValue;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
@@ -22,11 +23,11 @@ import static org.junit.Assert.assertTrue;
 @IfProfileValue(name = "spring.profiles.active", value = "integration")
 public class BookRepositoryTest {
 
-    public static final String J_UNIT_TESTING_FOR_BEGINNERS = "JUnit testing for beginners";
-    public static final String A_GUIDE_TO_POKING_SOFTWARE = "A guide to poking software";
-    public static final String COMPUTING = "Computing";
+    private static final String J_UNIT_TESTING_FOR_BEGINNERS = "JUnit testing for beginners";
+    private static final String A_GUIDE_TO_POKING_SOFTWARE = "A guide to poking software";
+    private static final String COMPUTING = "Computing";
     public static final String DR_ZEUSS = "Dr Zuess";
-    public static final String DESIGN_PATTERNS = "Design Patterns";
+    private static final String DESIGN_PATTERNS = "Design Patterns";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BookRepositoryTest.class);
 
@@ -36,7 +37,7 @@ public class BookRepositoryTest {
 
     public static Book createTestBook() {
         return Book.builder().title(J_UNIT_TESTING_FOR_BEGINNERS).summary(A_GUIDE_TO_POKING_SOFTWARE).genre(COMPUTING)
-                .author(DR_ZEUSS).rating(Book.Rating.POOR).lastRead(LocalDate.of(2016, 11, 20)).similarTo(DESIGN_PATTERNS).build();
+                .author(DR_ZEUSS).rating(Book.Rating.POOR).lastRead(LocalDateTime.of(2016, 11, 20, 0, 0)).similarTo(DESIGN_PATTERNS).build();
     }
 
     @Before
@@ -56,6 +57,7 @@ public class BookRepositoryTest {
         assertTrue(books.get(0).getAuthor().equals(DR_ZEUSS));
         assertTrue(books.get(0).getTitle().equals(J_UNIT_TESTING_FOR_BEGINNERS));
 
-        LOGGER.info("The generated id was: " + books.get(0).getId());
+        // The book should have a system created id value.
+        assertNotNull(books.get(0).getId());
     }
 }

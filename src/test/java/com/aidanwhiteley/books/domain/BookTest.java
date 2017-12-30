@@ -2,7 +2,7 @@ package com.aidanwhiteley.books.domain;
 
 import org.junit.Test;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -19,7 +19,7 @@ public class BookTest {
     private static final String SOMEONE_DUNNIT = "Someone dunnit";
     private static final String WHO_DID_IT = "Who did it?";
     private static final Book.Rating GREAT = Book.Rating.GREAT;
-    private static final LocalDate NOW = LocalDate.now();
+    private static final LocalDateTime NOW = LocalDateTime.now();
 
     @Test
     public void testCreateBook() {

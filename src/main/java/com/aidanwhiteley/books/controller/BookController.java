@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -40,7 +41,7 @@ public class BookController {
     }
 
     @RequestMapping(value = "/books", method = POST)
-    public ResponseEntity<?> createBook(@RequestBody Book book) {
+    public ResponseEntity<?> createBook(@Valid @RequestBody Book book) {
 
         Book insertedBook = bookRepository.insert(book);
 
@@ -52,11 +53,15 @@ public class BookController {
     }
 
     @RequestMapping(value = "/books", method = PUT)
-    public ResponseEntity<?> updateBook(@RequestBody Book book) {
+    public ResponseEntity<?> updateBook(@Valid @RequestBody Book book) {
 
-        Book updatedBook = bookRepository.save(book);
-
+        bookRepository.save(book);
         return ResponseEntity.noContent().build();
+    }
+
+    @RequestMapping(value = "/books/{id}", method = DELETE)
+    public void deleteBookById(@PathVariable("id") String id) {
+        bookRepository.delete(id);
     }
 
 

@@ -2,13 +2,15 @@ package com.aidanwhiteley.books.domain;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.data.annotation.Id;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -24,28 +26,52 @@ public class Book implements Serializable {
     @Id
     @Setter(AccessLevel.PROTECTED)
     private String id;
+
+    @NotNull
+    @Length(min = 1, max = 100)
     private String title;
+
+    @NotNull
+    @Length(min = 1, max = 75)
     private String author;
+
+    @NotNull
+    @Length(min = 1, max = 35)
     private String genre;
+
+    @NotNull
+    @Length(min = 1, max = 5000)
     private String summary;
+
+    @NotNull
     private Rating rating;
-    @JsonDeserialize(using = LocalDateDeserializer.class)
-    @JsonSerialize(using = LocalDateSerializer.class)
-    private LocalDate lastRead;
+
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @NotNull
+    private LocalDateTime lastRead;
+
+    @Length(max = 200)
     private String similarTo;
 
     public enum Rating {
-        TERRIBLE(1),
-        POOR(2),
-        OK(3),
-        GOOD(4),
-        GREAT(5);
+        // Note Jackson default deserialisation is 0 based - changes values below
+        // would mean that that seialisation / deserialisation would need overrding.
+        TERRIBLE(0),
+        POOR(1),
+        OK(2),
+        GOOD(3),
+        GREAT(4);
 
         @SuppressWarnings("unused")
         private final int ratingLevel;
 
         Rating(int ratingLevel) {
             this.ratingLevel = ratingLevel;
+        }
+
+        public int getRatingLevel() {
+            return this.ratingLevel;
         }
     }
 }

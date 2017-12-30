@@ -10,17 +10,18 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @SpringBootApplication
 public class BooksApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(BooksApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(BooksApplication.class, args);
+    }
 
-	@Bean
-	public WebMvcConfigurer corsConfigurer() {
-		return new WebMvcConfigurerAdapter() {
-			@Override
-			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/api/**").allowedOrigins("http://localhost:9000");
-			}
-		};
-	}
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurerAdapter() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/api/**").allowedOrigins("http://localhost:9000")
+                        .allowedMethods("GET", "POST", "DELETE");
+            }
+        };
+    }
 }

@@ -5,8 +5,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.IfProfileValue;
@@ -23,14 +21,11 @@ import static org.junit.Assert.assertTrue;
 @IfProfileValue(name = "spring.profiles.active", value = "integration")
 public class BookRepositoryTest {
 
+    public static final String DR_ZEUSS = "Dr Zuess";
     private static final String J_UNIT_TESTING_FOR_BEGINNERS = "JUnit testing for beginners";
     private static final String A_GUIDE_TO_POKING_SOFTWARE = "A guide to poking software";
     private static final String COMPUTING = "Computing";
-    public static final String DR_ZEUSS = "Dr Zuess";
     private static final String DESIGN_PATTERNS = "Design Patterns";
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(BookRepositoryTest.class);
-
 
     @Autowired
     BookRepository bookRepository;

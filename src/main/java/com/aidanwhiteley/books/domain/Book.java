@@ -55,8 +55,8 @@ public class Book implements Serializable {
     private String similarTo;
 
     public enum Rating {
-        // Note Jackson default deserialisation is 0 based - changes values below
-        // would mean that that seialisation / deserialisation would need overrding.
+        // Note Jackson default deserialisation is 0 based - changing values below
+        // would mean that that default serialisation / deserialisation would need overriding.
         TERRIBLE(0),
         POOR(1),
         OK(2),
@@ -68,10 +68,6 @@ public class Book implements Serializable {
 
         Rating(int ratingLevel) {
             this.ratingLevel = ratingLevel;
-        }
-
-        public int getRatingLevel() {
-            return this.ratingLevel;
         }
     }
 }

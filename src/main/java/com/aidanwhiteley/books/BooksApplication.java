@@ -9,7 +9,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 @SpringBootApplication
-public class BooksApplication {
+public class BooksApplication extends WebMvcConfigurerAdapter {
 
     public static void main(String[] args) {
         SpringApplication.run(BooksApplication.class, args);
@@ -21,8 +21,11 @@ public class BooksApplication {
         return new WebMvcConfigurerAdapter() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/api/**").allowedOrigins("http://localhost:9000")
-                        .allowedMethods("GET", "POST", "PUT", "DELETE");
+                registry.
+                addMapping("/api/**").allowedOrigins("http://localhost:9000").allowedMethods("GET");
+                
+                registry.
+                addMapping("/secure/api/**").allowedOrigins("http://localhost:9000").allowedMethods("POST", "PUT", "DELETE");
             }
         };
     }

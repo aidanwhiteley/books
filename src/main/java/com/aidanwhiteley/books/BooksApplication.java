@@ -1,5 +1,6 @@
 package com.aidanwhiteley.books;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -11,6 +12,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @SpringBootApplication
 public class BooksApplication extends WebMvcConfigurerAdapter {
 
+    @Value("${books.client.allowedCorsOrigin}")
+    private String allowedCorsOrigin;
+
     public static void main(String[] args) {
         SpringApplication.run(BooksApplication.class, args);
     }
@@ -21,11 +25,13 @@ public class BooksApplication extends WebMvcConfigurerAdapter {
         return new WebMvcConfigurerAdapter() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
+
+                System.out.println("Allowed from " + allowedCorsOrigin);
                 registry.
-                addMapping("/api/**").allowedOrigins("http://localhost:9000").allowedMethods("GET");
-                
+                addMapping("/api/**").allowedOrigins(allowedCorsOrigin).allowedMethods("GET");
+
                 registry.
-                addMapping("/secure/api/**").allowedOrigins("http://localhost:9000").allowedMethods("POST", "PUT", "DELETE");
+                addMapping("/secure/api/**").allowedOrigins(allowedCorsOrigin).allowedMethods("POST", "PUT", "DELETE");
             }
         };
     }

@@ -7,6 +7,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.Principal;
 
 import javax.validation.Valid;
 
@@ -52,6 +53,11 @@ public class BookSecureController {
 	@RequestMapping(value = "/books/{id}", method = DELETE)
 	public void deleteBookById(@PathVariable("id") String id) {
 		bookRepository.delete(id);
+	}
+
+	@RequestMapping("/user")
+	public Principal user(Principal principal) {
+		return principal;
 	}
 
 }

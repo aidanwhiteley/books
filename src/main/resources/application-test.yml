@@ -1,3 +1,7 @@
 security:
   basic:
     enabled: false
+spring:
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/books-test?safe=true&journal=true&w=majority&connectTimeoutMS=1001&wtimeoutMS=1000&serverSelectionTimeoutMS=10000

@@ -1,36 +1,33 @@
-
-
 spring:
-
   profiles:
     active: dev
-
   data:
     mongodb:
-      uri: mongodb://localhost:27017/bookstest?safe=true&journal=true&w=majority&connectTimeoutMS=1001&wtimeoutMS=1000&serverSelectionTimeoutMS=10000
-
+      uri: mongodb://localhost:27017/books-test?safe=true&journal=true&w=majority&connectTimeoutMS=1001&wtimeoutMS=1000&serverSelectionTimeoutMS=10000
 
 logging:
   level:
     root:INFO
     org.springframework.test:INFO
-
+    com.aidanwhiteley.books.controller.LogonController:DEBUG
 
 security:
-  oauth2:
-    client:
-      clientId: 233668646673605
-      clientSecret: 33b17e044ee6a4fa383f46ec6e28ea1d
-      accessTokenUri: https://graph.facebook.com/oauth/access_token
-      userAuthorizationUri: https://www.facebook.com/dialog/oauth
-      tokenName: oauth_token
-      authenticationScheme: query
-      clientAuthenticationScheme: form
-    resource:
-      userInfoUri: https://graph.facebook.com/me
-
+    oauth2:
+        client:
+            clientId: NotInSCM
+            clientSecret: NotInSCM
+            accessTokenUri: https://www.googleapis.com/oauth2/v3/token
+            userAuthorizationUri: https://accounts.google.com/o/oauth2/auth
+            tokenName: oauth_token
+            authenticationScheme: query
+            clientAuthenticationScheme: form
+            scope: profile
+        resource:
+            userInfoUri: https://www.googleapis.com/userinfo/v2/me
+            preferTokenInfo: false
 
 books:
   client:
     allowedCorsOrigin: http://localhost:9000
+    postLogonUrl: http://localhost:9000
 

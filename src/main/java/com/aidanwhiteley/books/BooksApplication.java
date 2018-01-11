@@ -26,12 +26,14 @@ public class BooksApplication extends WebMvcConfigurerAdapter {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
 
-                System.out.println("Allowed from " + allowedCorsOrigin);
                 registry.
-                addMapping("/api/**").allowedOrigins(allowedCorsOrigin).allowedMethods("GET");
+                        addMapping("/api/**").allowedOrigins(allowedCorsOrigin).allowedMethods("GET");
 
                 registry.
-                addMapping("/secure/api/**").allowedOrigins(allowedCorsOrigin).allowedMethods("POST", "PUT", "DELETE");
+                        addMapping("/logonWith**").allowedOrigins(allowedCorsOrigin).allowedMethods("GET");
+
+                registry.
+                        addMapping("/secure/api/**").allowedOrigins(allowedCorsOrigin).allowedMethods("GET", "POST", "PUT", "DELETE");
             }
         };
     }

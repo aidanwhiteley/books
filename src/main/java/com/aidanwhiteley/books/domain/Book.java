@@ -53,6 +53,8 @@ public class Book implements Serializable {
 
     @Length(max = 200)
     private String similarTo;
+    
+    private String googleBookId;
 
     public enum Rating {
         // Note Jackson default deserialisation is 0 based - changing values below

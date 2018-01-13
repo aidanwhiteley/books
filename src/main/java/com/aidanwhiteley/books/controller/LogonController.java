@@ -46,6 +46,8 @@ public class LogonController {
     private void createOrUpdateUserFromGoogleAuth(Principal principal) {
 
         OAuth2Authentication auth = (OAuth2Authentication) principal;
+
+        @SuppressWarnings("unchecked")
         Map<String, String> userDetails = (LinkedHashMap) auth.getUserAuthentication().getDetails();
 
         String id = userDetails.get("id");

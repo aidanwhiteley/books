@@ -4,10 +4,12 @@ import static org.junit.Assert.assertEquals;
 
 import java.net.URI;
 
+import com.aidanwhiteley.books.controller.config.WebSecurityConfiguration;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -24,6 +26,9 @@ import com.aidanwhiteley.books.repository.BookRepositoryTest;
 public class BookSecureControllerTest {
 
 	private static final String GENRE_TOO_LONG = "abcdefghjijklmnopqrstuvwxyz01234567890";
+
+	@MockBean
+	private WebSecurityConfiguration noSecurityBean;
 
 	@Autowired
 	private TestRestTemplate testRestTemplate;

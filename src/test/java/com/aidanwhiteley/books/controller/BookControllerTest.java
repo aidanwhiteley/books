@@ -6,12 +6,14 @@ import static org.junit.Assert.assertTrue;
 import java.net.URI;
 import java.util.List;
 
+import com.aidanwhiteley.books.controller.config.WebSecurityConfiguration;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -29,6 +31,9 @@ import com.jayway.jsonpath.JsonPath;
 public class BookControllerTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BookControllerTest.class);
+
+    @MockBean
+    private WebSecurityConfiguration noSecurityBean;
 
     @Autowired
     private TestRestTemplate testRestTemplate;

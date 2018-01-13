@@ -8,8 +8,10 @@ spring:
 logging:
   level:
     root:INFO
-    org.springframework.test:INFO
+    org.springframework.test.:INFO
     com.aidanwhiteley.books.controller.LogonController:DEBUG
+    org.springframework.web.client.RestTemplate:DEBUG
+    com.aidanwhiteley.books.repository.debugging.:INFO
 
 security:
     oauth2:
@@ -30,4 +32,13 @@ books:
   client:
     allowedCorsOrigin: http://localhost:9000
     postLogonUrl: http://localhost:9000
+
+  google:
+    books:
+      api:
+        url: https://www.googleapis.com/books/v1/volumes?q=
+        connect:
+          timeout: 2000
+        read:
+          timeout: 5000
 

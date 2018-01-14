@@ -54,6 +54,8 @@ public class Book implements Serializable {
 
     @Length(max = 200)
     private String similarTo;
+    
+    private String googleBookId; 
 
     private String googleBookId;
 

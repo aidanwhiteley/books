@@ -2,5 +2,4 @@
 <configuration>
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
     <logger name="org.springframework.web" level="WARN"/>
-    <logger name="com.aidanwhiteley.books.repository.debugging" level="WARN"/>
 </configuration>

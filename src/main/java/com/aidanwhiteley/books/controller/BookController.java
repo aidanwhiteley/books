@@ -37,7 +37,7 @@ public class BookController {
 
 	@RequestMapping(value = "/books", method = GET)
 	public List<Book> findAllByLastRead() {
-		return bookRepository.findAllByOrderByLastReadDesc();
+		return bookRepository.findAllByOrderByEnteredDesc();
 	}
 
 	@RequestMapping(value = "/books", method = GET, params = "genre")

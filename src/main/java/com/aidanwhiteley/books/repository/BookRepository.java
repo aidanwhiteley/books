@@ -14,5 +14,5 @@ public interface BookRepository extends MongoRepository<Book, String> {
 
     //List<Book> findAllOrderByRatingDesc();
 
-    List<Book> findAllByOrderByLastReadDesc();
+    List<Book> findAllByOrderByEnteredDesc();
 }

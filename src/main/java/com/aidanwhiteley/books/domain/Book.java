@@ -1,5 +1,6 @@
 package com.aidanwhiteley.books.domain;
 
+import com.aidanwhiteley.books.domain.googlebooks.Item;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
@@ -49,10 +50,16 @@ public class Book implements Serializable {
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @NotNull
-    private LocalDateTime lastRead;
+    private LocalDateTime entered;
 
     @Length(max = 200)
     private String similarTo;
+
+    private String googleBookId;
+
+    private Item googleBookDetails;
+
+    private String createdBy;
 
     public enum Rating {
         // Note Jackson default deserialisation is 0 based - changing values below

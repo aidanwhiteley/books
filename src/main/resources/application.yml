@@ -36,7 +36,8 @@ books:
   google:
     books:
       api:
-        url: https://www.googleapis.com/books/v1/volumes?q=
+        searchUrl: https://www.googleapis.com/books/v1/volumes?q=
+        getByIdUrl: https://www.googleapis.com/books/v1/volumes/
         connect:
           timeout: 2000
         read:

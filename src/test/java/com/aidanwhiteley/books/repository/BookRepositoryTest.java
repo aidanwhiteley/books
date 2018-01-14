@@ -32,7 +32,7 @@ public class BookRepositoryTest {
 
     public static Book createTestBook() {
         return Book.builder().title(J_UNIT_TESTING_FOR_BEGINNERS).summary(A_GUIDE_TO_POKING_SOFTWARE).genre(COMPUTING)
-                .author(DR_ZEUSS).rating(Book.Rating.POOR).lastRead(LocalDateTime.of(2016, 11, 20, 0, 0)).similarTo(DESIGN_PATTERNS).build();
+                .author(DR_ZEUSS).rating(Book.Rating.POOR).entered(LocalDateTime.of(2016, 11, 20, 0, 0)).similarTo(DESIGN_PATTERNS).build();
     }
 
     @Before
@@ -50,7 +50,6 @@ public class BookRepositoryTest {
         List<Book> books = bookRepository.findAllByAuthor(DR_ZEUSS);
         assertTrue(books.size() >= 1);
         assertTrue(books.get(0).getAuthor().equals(DR_ZEUSS));
-        // assertTrue(books.get(0).getTitle().equals(J_UNIT_TESTING_FOR_BEGINNERS));
 
         // The book should have a system created id value.
         assertNotNull(books.get(0).getId());

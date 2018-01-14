@@ -30,13 +30,13 @@ public class BookTest {
 
     @Test
     public void testBuildBook() {
-        Book testBook = Book.builder().author(AIDAN).genre(WHODUNNIT).lastRead(NOW).rating(GREAT)
+        Book testBook = Book.builder().author(AIDAN).genre(WHODUNNIT).entered(NOW).rating(GREAT)
                 .similarTo(LE_CARRE).summary(SOMEONE_DUNNIT).title(WHO_DID_IT).build();
 
         assertTrue(testBook.toString().contains(AIDAN));
         assertEquals(testBook.getGenre(), WHODUNNIT);
 
-        Book testBookWithoutAllFields = Book.builder().author(AIDAN).genre(WHODUNNIT).lastRead(NOW).rating(GREAT).build();
+        Book testBookWithoutAllFields = Book.builder().author(AIDAN).genre(WHODUNNIT).entered(NOW).rating(GREAT).build();
         assertEquals(testBookWithoutAllFields.getGenre(), WHODUNNIT);
     }
 }

@@ -1,6 +1,7 @@
 package com.aidanwhiteley.books.repository;
 
 import com.aidanwhiteley.books.domain.googlebooks.BookSearchResult;
+import com.aidanwhiteley.books.domain.googlebooks.Item;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +19,11 @@ public class GoogleBooksDao {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GoogleBooksDao.class);
 
-    @Value("${books.google.books.api.url}")
-    private String booksGoogleBooksApiUrl;
+    @Value("${books.google.books.api.searchUrl}")
+    private String booksGoogleBooksApiSearchUrl;
+
+    @Value("${books.google.books.api.getByIdUrl}")
+    private String booksGoogleBooksApiGetByIdUrl;
 
     @Value("${books.google.books.api.connect.timeout}")
     private int booksGoogleBooksApiConnectTimeout;
@@ -46,6 +50,10 @@ public class GoogleBooksDao {
             LOGGER.error("Unable to encode query string - using as is", usee);
             encodedTitle = title;
         }
-            return googleBooksRestTemplate.getForObject(booksGoogleBooksApiUrl + encodedTitle, BookSearchResult.class);
+        return googleBooksRestTemplate.getForObject(booksGoogleBooksApiSearchUrl + encodedTitle, BookSearchResult.class);
+    }
+
+    public Item searchGoogleBooksByGoogleBookId(String id) {
+        return googleBooksRestTemplate.getForObject(booksGoogleBooksApiGetByIdUrl + id, Item.class);
     }
 }

@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,6 +34,7 @@ import com.aidanwhiteley.books.repository.BookRepository;
 
 @RestController
 @RequestMapping("/secure/api")
+@PreAuthorize("hasAnyRole('ROLE_EDITOR', 'ROLE_ADMIN')")
 public class BookSecureController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BookSecureController.class);
@@ -47,7 +49,6 @@ public class BookSecureController {
 
 	@Autowired
     private GoogleBooksDao googleBooksDao;
-
 
 	@RequestMapping(value = "/books", method = POST)
 	public ResponseEntity<?> createBook(@Valid @RequestBody Book book, Principal principal) throws MalformedURLException, URISyntaxException {

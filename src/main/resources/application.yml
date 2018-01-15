@@ -23,7 +23,7 @@ security:
             tokenName: oauth_token
             authenticationScheme: query
             clientAuthenticationScheme: form
-            scope: profile
+            scope: profile,email
         resource:
             userInfoUri: https://www.googleapis.com/userinfo/v2/me
             preferTokenInfo: false

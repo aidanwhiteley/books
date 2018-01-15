@@ -48,7 +48,7 @@ public class LogonController {
         OAuth2Authentication auth = (OAuth2Authentication) principal;
 
         @SuppressWarnings("unchecked")
-        Map<String, String> userDetails = (LinkedHashMap) auth.getUserAuthentication().getDetails();
+        Map<String, String> userDetails = (LinkedHashMap) auth.getDetails();
 
         String id = userDetails.get("id");
 
@@ -63,7 +63,8 @@ public class LogonController {
                     lastName(userDetails.get("family_name")).
                     fullName(userDetails.get("name")).
                     link(userDetails.get("link")).
-                    picture((userDetails.get("picture"))).
+                    picture(userDetails.get("picture")).
+                    email(userDetails.get("email")).
                     lastLogon(LocalDateTime.now()).
                     firstLogon(LocalDateTime.now()).
                     authProvider(User.AuthenticationProvider.GOOGLE).
@@ -75,6 +76,13 @@ public class LogonController {
 
         } else {
             googleUser = googleUsers.get(0);
+            // In case user has made changes on Google e.g. new picture
+            googleUser.setFirstName(userDetails.get("given_name"));
+            googleUser.setLastName(userDetails.get("family_name"));
+            googleUser.setFullName(userDetails.get("name"));
+            googleUser.setLink(userDetails.get("link"));
+            googleUser.setPicture(userDetails.get("picture"));
+            googleUser.setEmail(userDetails.get("email"));
             googleUser.setLastLogon(LocalDateTime.now());
             userRepository.save(googleUser);
             LOGGER.info("User updated in repository: " + googleUser);

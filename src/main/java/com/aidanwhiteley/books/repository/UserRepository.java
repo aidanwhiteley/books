@@ -9,5 +9,6 @@ import java.util.List;
 
 public interface UserRepository extends MongoRepository<User, String> {
 
-    List<User> findAllByAuthenticationServiceId(@Param("authenticationServiceId") String authenticationServiceId);
+    List<User> findAllByAuthenticationServiceIdAndAuthProvider(@Param("authenticationServiceId") String authenticationServiceId,
+                                                                @Param("authenticationProvider") String authenticationProvider);
 }

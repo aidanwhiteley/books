@@ -16,6 +16,7 @@ import javax.validation.Valid;
 import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.repository.GoogleBooksDao;
 import com.aidanwhiteley.books.repository.UserRepository;
+import com.aidanwhiteley.books.util.OauthAuthenticationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +51,9 @@ public class BookSecureController {
 	@Autowired
     private GoogleBooksDao googleBooksDao;
 
+	@Autowired
+    private OauthAuthenticationUtils authUtils;
+
 	@RequestMapping(value = "/books", method = POST)
 	public ResponseEntity<?> createBook(@Valid @RequestBody Book book, Principal principal) throws MalformedURLException, URISyntaxException {
 
@@ -57,7 +61,8 @@ public class BookSecureController {
 	    if (principal != null) {
             OAuth2Authentication auth = (OAuth2Authentication) principal;
             String authenticationProviderId = (String) auth.getUserAuthentication().getPrincipal();
-            List<User> users = userRepository.findAllByAuthenticationServiceId(authenticationProviderId);
+            List<User> users = userRepository.findAllByAuthenticationServiceIdAndAuthProvider(authenticationProviderId,
+                    authUtils.getAuthProviderFromAuthAsString(auth));
             if (users.size() != 1) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             }
@@ -99,7 +104,8 @@ public class BookSecureController {
 
 		OAuth2Authentication auth = (OAuth2Authentication) principal;
 		String authenticationProviderId = (String) auth.getUserAuthentication().getPrincipal();
-		List<User> users = userRepository.findAllByAuthenticationServiceId(authenticationProviderId);
+		List<User> users = userRepository.findAllByAuthenticationServiceIdAndAuthProvider(authenticationProviderId,
+                authUtils.getAuthProviderFromAuthAsString(auth));
 
 		if (users.size() > 0) {
 			return users.get(0);

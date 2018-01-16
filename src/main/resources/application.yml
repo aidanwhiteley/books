@@ -5,6 +5,10 @@ spring:
     mongodb:
       uri: mongodb://localhost:27017/books-test?safe=true&journal=true&w=majority&connectTimeoutMS=1001&wtimeoutMS=1000&serverSelectionTimeoutMS=10000
 
+  devtools:
+    livereload:
+      enabled: false  # off as we already have live reload in the web tier project
+
 logging:
   level:
     root:INFO

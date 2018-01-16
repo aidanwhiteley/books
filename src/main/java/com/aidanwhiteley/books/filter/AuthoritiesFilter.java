@@ -2,14 +2,12 @@ package com.aidanwhiteley.books.filter;
 
 import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import com.aidanwhiteley.books.util.OauthAuthenticationUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
 import javax.servlet.FilterChain;
@@ -28,6 +26,7 @@ import java.util.stream.Collectors;
 public class AuthoritiesFilter extends GenericFilterBean {
 
     private UserRepository userRepository;
+    private OauthAuthenticationUtils authUtils;
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
@@ -39,7 +38,6 @@ public class AuthoritiesFilter extends GenericFilterBean {
 
             if (oAuth2Authentication != null && oAuth2Authentication.getUserAuthentication().getDetails() != null) {
                 SecurityContextHolder.getContext().setAuthentication(processAuthentication(authentication));
-                System.out.println("doFilter is doing its processing");
             }
         }
 
@@ -59,7 +57,8 @@ public class AuthoritiesFilter extends GenericFilterBean {
         OAuth2Authentication oAuth2Authentication = (OAuth2Authentication) authentication;
         Map<String, String> details = (Map<String, String>) oAuth2Authentication.getUserAuthentication().getDetails();
 
-        List<User> users = userRepository.findAllByAuthenticationServiceId(details.get("id"));
+        List<User> users = userRepository.findAllByAuthenticationServiceIdAndAuthProvider(details.get("id"),
+                authUtils.getAuthProviderFromAuthAsString(oAuth2Authentication));
 
         if (users.size() == 1) {
             User user = users.get(0);
@@ -78,5 +77,9 @@ public class AuthoritiesFilter extends GenericFilterBean {
 
     public void setUserRepository(UserRepository userRepository) {
         this.userRepository = userRepository;
+    }
+
+    public void setOauthAuthenticationUtils(OauthAuthenticationUtils authUtils) {
+        this.authUtils = authUtils;
     }
 }

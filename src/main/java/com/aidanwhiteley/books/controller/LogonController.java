@@ -2,6 +2,7 @@ package com.aidanwhiteley.books.controller;
 
 import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.repository.UserRepository;
+import com.aidanwhiteley.books.util.OauthAuthenticationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.GOOGLE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 @RestController
@@ -29,6 +31,9 @@ public class LogonController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private OauthAuthenticationUtils authUtils;
 
     @Value("${books.client.postLogonUrl}")
     private String postLogonUrl;
@@ -52,7 +57,8 @@ public class LogonController {
 
         String id = userDetails.get("id");
 
-        List<User> googleUsers = userRepository.findAllByAuthenticationServiceId(id);
+        List<User> googleUsers = userRepository.findAllByAuthenticationServiceIdAndAuthProvider(id,
+                authUtils.getAuthProviderFromAuthAsString(auth));
 
         User googleUser;
 
@@ -67,7 +73,7 @@ public class LogonController {
                     email(userDetails.get("email")).
                     lastLogon(LocalDateTime.now()).
                     firstLogon(LocalDateTime.now()).
-                    authProvider(User.AuthenticationProvider.GOOGLE).
+                    authProvider(GOOGLE).
                     role(User.Role.ROLE_USER).
                     build();
 

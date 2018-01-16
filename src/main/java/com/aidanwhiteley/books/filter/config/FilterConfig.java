@@ -2,6 +2,7 @@ package com.aidanwhiteley.books.filter.config;
 
 import com.aidanwhiteley.books.filter.AuthoritiesFilter;
 import com.aidanwhiteley.books.repository.UserRepository;
+import com.aidanwhiteley.books.util.OauthAuthenticationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -14,6 +15,9 @@ public class FilterConfig {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private OauthAuthenticationUtils authUtils;
+
     @Bean
     public FilterRegistrationBean filterRegistrationBean() {
 
@@ -21,6 +25,7 @@ public class FilterConfig {
 
         AuthoritiesFilter filter = new AuthoritiesFilter();
         filter.setUserRepository(userRepository);
+        filter.setOauthAuthenticationUtils(authUtils);
 
         registration.setFilter(filter);
         registration.addUrlPatterns("/*");

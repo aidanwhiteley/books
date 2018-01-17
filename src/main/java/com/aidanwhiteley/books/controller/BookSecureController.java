@@ -99,21 +99,6 @@ public class BookSecureController {
 		bookRepository.delete(id);
 	}
 
-	@RequestMapping("/user")
-	public User user(Principal principal, HttpServletResponse response) {
 
-		OAuth2Authentication auth = (OAuth2Authentication) principal;
-		String authenticationProviderId = (String) auth.getUserAuthentication().getPrincipal();
-		List<User> users = userRepository.findAllByAuthenticationServiceIdAndAuthProvider(authenticationProviderId,
-                authUtils.getAuthProviderFromAuthAsString(auth));
-
-		if (users.size() > 0) {
-			return users.get(0);
-		} else {
-			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-			LOGGER.info("Did not find user with auth id of {}", authenticationProviderId);
-			return null;
-		}
-	}
 
 }

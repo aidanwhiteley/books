@@ -27,73 +27,27 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 @RestController
 public class LogonController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(LogonController.class);
+//    private static final Logger LOGGER = LoggerFactory.getLogger(LogonController.class);
+//
+//    @Autowired
+//    private UserRepository userRepository;
+//
+//    @Autowired
+//    private OauthAuthenticationUtils authUtils;
+//
+//    @Value("${books.client.postLogonUrl}")
+//    private String postLogonUrl;
 
-    @Autowired
-    private UserRepository userRepository;
+//    @RequestMapping(value = "/logonWithGoogle", method = GET)
+//    public ResponseEntity logonWithGoogle(Principal principal) {
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setLocation(URI.create(postLogonUrl));
+//
+//        createOrUpdateUserFromGoogleAuth(principal);
+//
+//        return new ResponseEntity<>(headers, HttpStatus.FOUND);
+//    }
 
-    @Autowired
-    private OauthAuthenticationUtils authUtils;
 
-    @Value("${books.client.postLogonUrl}")
-    private String postLogonUrl;
-
-    @RequestMapping(value = "/logonWithGoogle", method = GET)
-    public ResponseEntity logonWithGoogle(Principal principal) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create(postLogonUrl));
-
-        createOrUpdateUserFromGoogleAuth(principal);
-
-        return new ResponseEntity<>(headers, HttpStatus.FOUND);
-    }
-
-    private void createOrUpdateUserFromGoogleAuth(Principal principal) {
-
-        OAuth2Authentication auth = (OAuth2Authentication) principal;
-
-        @SuppressWarnings("unchecked")
-        Map<String, String> userDetails = (LinkedHashMap) auth.getDetails();
-
-        String id = userDetails.get("id");
-
-        List<User> googleUsers = userRepository.findAllByAuthenticationServiceIdAndAuthProvider(id,
-                authUtils.getAuthProviderFromAuthAsString(auth));
-
-        User googleUser;
-
-        if (googleUsers.size() == 0) {
-
-            googleUser = User.builder().authenticationServiceId(userDetails.get("id")).
-                    firstName(userDetails.get("given_name")).
-                    lastName(userDetails.get("family_name")).
-                    fullName(userDetails.get("name")).
-                    link(userDetails.get("link")).
-                    picture(userDetails.get("picture")).
-                    email(userDetails.get("email")).
-                    lastLogon(LocalDateTime.now()).
-                    firstLogon(LocalDateTime.now()).
-                    authProvider(GOOGLE).
-                    role(User.Role.ROLE_USER).
-                    build();
-
-            userRepository.insert(googleUser);
-            LOGGER.info("User saved to repository: " + googleUser);
-
-        } else {
-            googleUser = googleUsers.get(0);
-            // In case user has made changes on Google e.g. new picture
-            googleUser.setFirstName(userDetails.get("given_name"));
-            googleUser.setLastName(userDetails.get("family_name"));
-            googleUser.setFullName(userDetails.get("name"));
-            googleUser.setLink(userDetails.get("link"));
-            googleUser.setPicture(userDetails.get("picture"));
-            googleUser.setEmail(userDetails.get("email"));
-            googleUser.setLastLogon(LocalDateTime.now());
-            userRepository.save(googleUser);
-            LOGGER.info("User updated in repository: " + googleUser);
-        }
-
-    }
 
 }

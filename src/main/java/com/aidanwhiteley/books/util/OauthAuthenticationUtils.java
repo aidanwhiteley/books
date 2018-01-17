@@ -16,7 +16,7 @@ public class OauthAuthenticationUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(OauthAuthenticationUtils.class);
 
     // TODO - fix this when supporting more than just Google logons
-    @Value("${security.oauth2.client.clientId}")
+    @Value("${google.client.clientId}")
     private String securityOauth2ClientClientId;
 
     public User.AuthenticationProvider getAuthProviderFromAuth(OAuth2Authentication auth) {

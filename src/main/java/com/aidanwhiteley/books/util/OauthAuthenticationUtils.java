@@ -16,20 +16,23 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.FACEBOOK;
 import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.GOOGLE;
 
 @Component
 @Profile("!" + "integration")
-public class OauthAuthenticationUtils implements AuthenticationUtils{
+public class OauthAuthenticationUtils implements AuthenticationUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OauthAuthenticationUtils.class);
 
     @Autowired
     private UserRepository userRepository;
 
-    // TODO - fix this when supporting more than just Google logons
     @Value("${google.client.clientId}")
-    private String securityOauth2ClientClientId;
+    private String googleClientClientId;
+
+    @Value("${facebook.client.clientId}")
+    private String facebookClientClientId;
 
     public User extractUserFromPrincipal(Principal principal) {
 
@@ -65,16 +68,18 @@ public class OauthAuthenticationUtils implements AuthenticationUtils{
         OAuth2Request storedRquest = auth.getOAuth2Request();
         String clientId = storedRquest.getClientId();
 
-        if (clientId.equals(securityOauth2ClientClientId)) {
+        if (clientId.equals(googleClientClientId)) {
             return GOOGLE;
+        } else if (clientId.equals(facebookClientClientId)) {
+            return FACEBOOK;
         } else {
-            LOGGER.error("Unknown clientId specified of {} so cant determine authentication provider. Config value is {}", clientId, securityOauth2ClientClientId);
+            LOGGER.error("Unknown clientId specified of {} so cant determine authentication provider. Config value is {}", clientId, googleClientClientId);
             throw new IllegalArgumentException("Uknown client id specified");
         }
     }
 
     private void checkPrincipalType(Principal principal) {
-        if (! (principal instanceof OAuth2Authentication)) {
+        if (!(principal instanceof OAuth2Authentication)) {
             LOGGER.error("Only OAuth authentication currently supported and supplied Principal not ouath: {}", principal);
             throw new UnsupportedOperationException("Only OAuth principals currently supported");
         }

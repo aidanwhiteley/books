@@ -26,17 +26,19 @@ import org.springframework.security.oauth2.client.token.grant.code.Authorization
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.web.filter.CompositeFilter;
 
 import javax.servlet.Filter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.GOOGLE;
+import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.*;
 
 /**
  * Supports oauth2 based social logons.
@@ -77,8 +79,11 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     private Filter ssoFilter() {
-        System.out.println("Running prod ssoFilter");
 
+        CompositeFilter filter = new CompositeFilter();
+        List<Filter> filters = new ArrayList<>();
+
+        // Google configuration
         OAuth2ClientAuthenticationProcessingFilter googleFilter = new OAuth2ClientAuthenticationProcessingFilter("/login/google");
 
         googleFilter.setAuthenticationSuccessHandler(new SimpleUrlAuthenticationSuccessHandler() {
@@ -91,12 +96,35 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         OAuth2RestTemplate googleTemplate = new OAuth2RestTemplate(google(), oauth2ClientContext);
         googleFilter.setRestTemplate(googleTemplate);
 
-        UserInfoTokenServices tokenServices = new UserInfoTokenServices(googleResource().getUserInfoUri(), google().getClientId());
-        tokenServices.setRestTemplate(googleTemplate);
-        tokenServices.setAuthoritiesExtractor(new GoogleSocialAuthoritiesExtractor());
+        UserInfoTokenServices googleTokenServices = new UserInfoTokenServices(googleResource().getUserInfoUri(), google().getClientId());
+        googleTokenServices.setRestTemplate(googleTemplate);
+        googleTokenServices.setAuthoritiesExtractor(new GoogleSocialAuthoritiesExtractor());
 
-        googleFilter.setTokenServices(tokenServices);
-        return googleFilter;
+        googleFilter.setTokenServices(googleTokenServices);
+        filters.add(googleFilter);
+
+        // Facebook configuration
+        OAuth2ClientAuthenticationProcessingFilter facebookFilter = new OAuth2ClientAuthenticationProcessingFilter("/login/facebook");
+
+        facebookFilter.setAuthenticationSuccessHandler(new SimpleUrlAuthenticationSuccessHandler() {
+            public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+                this.setDefaultTargetUrl(postLogonUrl);
+                super.onAuthenticationSuccess(request, response, authentication);
+            }
+        });
+
+        OAuth2RestTemplate facebookTemplate = new OAuth2RestTemplate(facebook(), oauth2ClientContext);
+        facebookFilter.setRestTemplate(facebookTemplate);
+
+        UserInfoTokenServices facebookTokenServices = new UserInfoTokenServices(facebookResource().getUserInfoUri(), facebook().getClientId());
+        facebookTokenServices.setRestTemplate(facebookTemplate);
+        facebookTokenServices.setAuthoritiesExtractor(new FacebookSocialAuthoritiesExtractor());
+
+        facebookFilter.setTokenServices(facebookTokenServices);
+        filters.add(facebookFilter);
+
+        filter.setFilters(filters);
+        return filter;
     }
 
     @Bean
@@ -108,6 +136,18 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Bean
     @ConfigurationProperties("google.resource")
     public ResourceServerProperties googleResource() {
+        return new ResourceServerProperties();
+    }
+
+    @Bean
+    @ConfigurationProperties("facebook.client")
+    public AuthorizationCodeResourceDetails facebook() {
+        return new AuthorizationCodeResourceDetails();
+    }
+
+    @Bean
+    @ConfigurationProperties("facebook.resource")
+    public ResourceServerProperties facebookResource() {
         return new ResourceServerProperties();
     }
 
@@ -126,6 +166,22 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
             List<User> users = userRepository.findAllByAuthenticationServiceIdAndAuthProvider((String) map.get("id"),
                     GOOGLE.toString());
+
+            if (users.size() == 1) {
+                String csvRoles = users.get(0).getRoles().stream().map(s -> s.toString()).collect(Collectors.joining(","));
+                return AuthorityUtils.commaSeparatedStringToAuthorityList(csvRoles);
+            } else {
+                return AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_USER");
+            }
+        }
+    }
+
+    class FacebookSocialAuthoritiesExtractor implements AuthoritiesExtractor {
+        @Override
+        public List<GrantedAuthority> extractAuthorities(Map<String, Object> map) {
+
+            List<User> users = userRepository.findAllByAuthenticationServiceIdAndAuthProvider((String) map.get("id"),
+                    FACEBOOK.toString());
 
             if (users.size() == 1) {
                 String csvRoles = users.get(0).getRoles().stream().map(s -> s.toString()).collect(Collectors.joining(","));

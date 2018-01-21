@@ -49,7 +49,7 @@ public class UserController {
                 lastName(userDetails.get("family_name")).
                 fullName(userDetails.get("name")).
                 link(userDetails.get("link")).
-                picture(userDetails.get("picture")).
+                //picture(userDetails.get("picture")).
                 email(userDetails.get("email")).
                 lastLogon(LocalDateTime.now()).
                 firstLogon(LocalDateTime.now()).
@@ -69,7 +69,7 @@ public class UserController {
         googleUser.setLastName(userDetails.get("family_name"));
         googleUser.setFullName(userDetails.get("name"));
         googleUser.setLink(userDetails.get("link"));
-        googleUser.setPicture(userDetails.get("picture"));
+        //googleUser.setPicture(userDetails.get("picture"));
         googleUser.setEmail(userDetails.get("email"));
         googleUser.setLastLogon(LocalDateTime.now());
         userRepository.save(googleUser);

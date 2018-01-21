@@ -1,34 +1,20 @@
 package com.aidanwhiteley.books.repository;
 
-import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.googlebooks.BookSearchResult;
 import com.aidanwhiteley.books.domain.googlebooks.Item;
-import org.junit.After;
-import org.junit.Before;
+import com.aidanwhiteley.books.util.IntegrationTest;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.IfProfileValue;
-import org.springframework.test.context.junit4.SpringRunner;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import static org.junit.Assert.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@IfProfileValue(name = "spring.profiles.active", value = "integration")
-public class GoogleBooksDaoTest {
-
-    @Autowired
-    GoogleBooksDao theDao;
+public class GoogleBooksDaoTest extends IntegrationTest {
 
     public static final String SPRING_FRAMEWORK_GOOGLE_BOOK_ID = "oMVIzzKjJCcC";
     public static final String SPRING_BOOK_TITLE = "Professional Java Development with the Spring Framework";
+
+    @Autowired
+    GoogleBooksDao theDao;
 
     @Test
     public void findByTitle() {
@@ -44,5 +30,9 @@ public class GoogleBooksDaoTest {
         Item result = theDao.searchGoogleBooksByGoogleBookId(SPRING_FRAMEWORK_GOOGLE_BOOK_ID);
         assertNotNull(result);
         assertEquals(result.getVolumeInfo().getTitle(), SPRING_BOOK_TITLE);
+
+        assertEquals(result.getAccessInfo().isPublicDomain(), false);
+
+        assertNotNull(result.getVolumeInfo().getImageLinks().getThumbnail());
     }
 }

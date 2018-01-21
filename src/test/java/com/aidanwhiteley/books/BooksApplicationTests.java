@@ -1,15 +1,9 @@
 package com.aidanwhiteley.books;
 
+import com.aidanwhiteley.books.util.IntegrationTest;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.IfProfileValue;
-import org.springframework.test.context.junit4.SpringRunner;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@IfProfileValue(name = "spring.profiles.active", value = "integration")
-public class BooksApplicationTests {
+public class BooksApplicationTests extends IntegrationTest {
 
     @SuppressWarnings("EmptyMethod")
     @Test

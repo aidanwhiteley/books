@@ -72,6 +72,10 @@ public class User {
         Role(int role) {
             this.role = role;
         }
+
+        public String getShortName() {
+            return this.toString().split("ROLE_")[1];
+        }
     }
 
     public enum AuthenticationProvider {

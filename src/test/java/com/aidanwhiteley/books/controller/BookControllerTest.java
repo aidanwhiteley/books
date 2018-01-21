@@ -1,39 +1,27 @@
 package com.aidanwhiteley.books.controller;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import com.aidanwhiteley.books.domain.Book;
+import com.aidanwhiteley.books.repository.BookRepositoryTest;
+import com.aidanwhiteley.books.util.IntegrationTest;
+import com.jayway.jsonpath.JsonPath;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.*;
 
 import java.net.URI;
 import java.util.List;
 
-import com.aidanwhiteley.books.controller.config.WebSecurityConfiguration;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.junit4.SpringRunner;
+import static com.aidanwhiteley.books.controller.config.BasicAuthInsteadOfOauthWebAccess.AN_ADMIN;
+import static com.aidanwhiteley.books.controller.config.BasicAuthInsteadOfOauthWebAccess.PASSWORD;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import com.aidanwhiteley.books.domain.Book;
-import com.aidanwhiteley.books.repository.BookRepositoryTest;
-import com.jayway.jsonpath.JsonPath;
-
-@RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class BookControllerTest {
+public class BookControllerTest extends IntegrationTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BookControllerTest.class);
-
-    @MockBean
-    private WebSecurityConfiguration noSecurityBean;
 
     @Autowired
     private TestRestTemplate testRestTemplate;
@@ -66,8 +54,12 @@ public class BookControllerTest {
         Book testBook = BookRepositoryTest.createTestBook();
         HttpEntity<Book> request = new HttpEntity<>(testBook);
 
-        return testRestTemplate
+        TestRestTemplate trtWithAuth = testRestTemplate.withBasicAuth(AN_ADMIN, PASSWORD);
+
+        ResponseEntity entity = trtWithAuth
                 .exchange("/secure/api/books", HttpMethod.POST, request, Book.class);
+
+        return entity;
     }
 
 }

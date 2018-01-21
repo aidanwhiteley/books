@@ -2,19 +2,16 @@ package com.aidanwhiteley.books.controller;
 
 import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.repository.UserRepository;
-import com.aidanwhiteley.books.util.OauthAuthenticationUtils;
+import com.aidanwhiteley.books.util.AuthenticationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.GOOGLE;
@@ -30,23 +27,18 @@ public class UserController {
     private UserRepository userRepository;
 
     @Autowired
-    private OauthAuthenticationUtils authUtils;
+    private AuthenticationUtils authUtils;
 
     @RequestMapping("/user")
     public User user(Principal principal) {
 
-        OAuth2Authentication auth = (OAuth2Authentication) principal;
-        @SuppressWarnings("unchecked")
-        Map<String, String> userDetails = (LinkedHashMap) auth.getUserAuthentication().getDetails();
+        Map<String, String> userDetails = authUtils.getRemoteUserDetails(principal);
+        User user = authUtils.extractUserFromPrincipal(principal);
 
-        String authenticationProviderId = (String) auth.getUserAuthentication().getPrincipal();
-        List<User> users = userRepository.findAllByAuthenticationServiceIdAndAuthProvider(authenticationProviderId,
-                authUtils.getAuthProviderFromAuthAsString(auth));
-
-        if (users.size() == 0) {
+        if (user == null) {
             return createUserFromGoogleAuth(userDetails);
         } else {
-            return updateUserFromGoogleAuth(userDetails, users.get(0));
+            return updateUserFromGoogleAuth(userDetails, user);
         }
     }
 

@@ -11,13 +11,13 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.OAuth2ClientContext;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.security.oauth2.client.filter.OAuth2ClientAuthenticationProcessingFilter;
@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static  com.aidanwhiteley.books.domain.User.AuthenticationProvider.GOOGLE;
+import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.GOOGLE;
 
 /**
  * Supports oauth2 based social logons.
@@ -47,6 +47,7 @@ import static  com.aidanwhiteley.books.domain.User.AuthenticationProvider.GOOGLE
 @EnableOAuth2Client
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
+@Profile("!" + "integration")
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -76,6 +77,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     private Filter ssoFilter() {
+        System.out.println("Running prod ssoFilter");
+
         OAuth2ClientAuthenticationProcessingFilter googleFilter = new OAuth2ClientAuthenticationProcessingFilter("/login/google");
 
         googleFilter.setAuthenticationSuccessHandler(new SimpleUrlAuthenticationSuccessHandler() {
@@ -87,9 +90,11 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         OAuth2RestTemplate googleTemplate = new OAuth2RestTemplate(google(), oauth2ClientContext);
         googleFilter.setRestTemplate(googleTemplate);
+
         UserInfoTokenServices tokenServices = new UserInfoTokenServices(googleResource().getUserInfoUri(), google().getClientId());
         tokenServices.setRestTemplate(googleTemplate);
         tokenServices.setAuthoritiesExtractor(new GoogleSocialAuthoritiesExtractor());
+
         googleFilter.setTokenServices(tokenServices);
         return googleFilter;
     }

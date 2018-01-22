@@ -1,5 +1,7 @@
 package com.aidanwhiteley.books.controller;
 
+import com.aidanwhiteley.books.controller.dtos.ClientRoles;
+import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.repository.UserRepository;
 import com.aidanwhiteley.books.util.AuthenticationUtils;
@@ -8,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,6 +23,7 @@ import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.FACEBOO
 import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.GOOGLE;
 import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.PATCH;
 
 @RestController
 @RequestMapping("/secure/api")
@@ -60,7 +64,7 @@ public class UserController {
 
     @RequestMapping(value = "/users/{id}", method = DELETE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public void deleteBookById(@PathVariable("id") String id, Principal principal) {
+    public void deleteUserById(@PathVariable("id") String id, Principal principal) {
 
         User user = authUtils.extractUserFromPrincipal(principal);
         if (user.getId().equals(id)) {
@@ -69,6 +73,20 @@ public class UserController {
         }
 
         userRepository.delete(id);
+    }
+
+    @RequestMapping(value = "/users/{id}", method = PATCH)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public void patchUserRolesById(@PathVariable("id") String id, @RequestBody ClientRoles clientRoles, Principal principal) {
+
+        User user = authUtils.extractUserFromPrincipal(principal);
+        if (user.getId().equals(id)) {
+            LOGGER.warn("User {} on {} attempted to change their own roles. This isn't allowed", user.getFullName(), user.getAuthProvider());
+            throw new IllegalStateException("You cannot change your own roles! Logon with a different admin user if you really want to change permissions for this user.");
+        }
+
+        LOGGER.debug("Received patch of: {}", clientRoles);
+        //userRepository.patch(id);
     }
 
     private User createUser(Map<String, String> userDetails, User.AuthenticationProvider provider) {

@@ -28,12 +28,8 @@ public class BooksApplication extends WebMvcConfigurerAdapter {
 
                 registry.
                         addMapping("/api/**").allowedOrigins(allowedCorsOrigin).allowedMethods("GET");
-
                 registry.
-                        addMapping("/logonWith**").allowedOrigins(allowedCorsOrigin).allowedMethods("GET");
-
-                registry.
-                        addMapping("/secure/api/**").allowedOrigins(allowedCorsOrigin).allowedMethods("GET", "POST", "PUT", "DELETE");
+                        addMapping("/secure/api/**").allowedOrigins(allowedCorsOrigin).allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH");
             }
         };
     }

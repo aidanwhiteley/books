@@ -48,6 +48,8 @@ public class BookSecureController {
 
 		User user = authUtils.extractUserFromPrincipal(principal);
 
+		// TODO - change user data stored with book to have separate fields for id, provider, name etc
+        // i.e. nest a fair amount of user data inside of book document
 		book.setCreatedBy(user.getAuthProvider() + CREATED_BY_DELIMETER + user.getAuthenticationServiceId());
 
 		// Get the Google book details for this book

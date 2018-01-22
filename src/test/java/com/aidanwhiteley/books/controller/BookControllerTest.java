@@ -56,7 +56,7 @@ public class BookControllerTest extends IntegrationTest {
 
         TestRestTemplate trtWithAuth = testRestTemplate.withBasicAuth(AN_ADMIN, PASSWORD);
 
-        ResponseEntity entity = trtWithAuth
+        ResponseEntity<Book> entity = trtWithAuth
                 .exchange("/secure/api/books", HttpMethod.POST, request, Book.class);
 
         return entity;

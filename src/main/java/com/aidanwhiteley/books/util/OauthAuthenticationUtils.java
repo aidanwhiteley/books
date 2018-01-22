@@ -41,7 +41,7 @@ public class OauthAuthenticationUtils implements AuthenticationUtils {
         OAuth2Authentication auth = (OAuth2Authentication) principal;
         String authenticationProviderId = (String) auth.getUserAuthentication().getPrincipal();
         List<User> users = userRepository.findAllByAuthenticationServiceIdAndAuthProvider(authenticationProviderId,
-                getAuthProviderFromAuthAsString(auth));
+                getAuthProviderFromPrincipalAsString(principal));
 
         if (users.size() == 0) {
             return null;
@@ -59,12 +59,17 @@ public class OauthAuthenticationUtils implements AuthenticationUtils {
 
         OAuth2Authentication auth = (OAuth2Authentication) principal;
         @SuppressWarnings("unchecked")
-        Map<String, String> userDetails = (LinkedHashMap) auth.getUserAuthentication().getDetails();
+        Map<String, String> userDetails = (LinkedHashMap<String, String>) auth.getUserAuthentication().getDetails();
 
         return userDetails;
     }
 
-    private User.AuthenticationProvider getAuthProviderFromAuth(OAuth2Authentication auth) {
+    public User.AuthenticationProvider getAuthProviderFromPrincipal(Principal principal) {
+    	
+    	checkPrincipalType(principal);
+    	
+    	OAuth2Authentication auth = (OAuth2Authentication) principal;
+    	
         OAuth2Request storedRquest = auth.getOAuth2Request();
         String clientId = storedRquest.getClientId();
 
@@ -77,6 +82,10 @@ public class OauthAuthenticationUtils implements AuthenticationUtils {
             throw new IllegalArgumentException("Uknown client id specified");
         }
     }
+    
+    public String getAuthProviderFromPrincipalAsString(Principal principal) {
+        return this.getAuthProviderFromPrincipal(principal).toString();
+    }
 
     private void checkPrincipalType(Principal principal) {
         if (!(principal instanceof OAuth2Authentication)) {
@@ -85,7 +94,5 @@ public class OauthAuthenticationUtils implements AuthenticationUtils {
         }
     }
 
-    private String getAuthProviderFromAuthAsString(OAuth2Authentication auth) {
-        return this.getAuthProviderFromAuth(auth).toString();
-    }
+
 }

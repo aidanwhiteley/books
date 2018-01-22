@@ -1,11 +1,11 @@
 package com.aidanwhiteley.books.repository;
 
-import com.aidanwhiteley.books.domain.Book;
-import com.aidanwhiteley.books.domain.User;
+import java.util.List;
+
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
+import com.aidanwhiteley.books.domain.User;
 
 public interface UserRepository extends MongoRepository<User, String> {
 

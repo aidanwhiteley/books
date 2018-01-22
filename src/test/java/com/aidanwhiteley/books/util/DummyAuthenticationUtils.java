@@ -1,16 +1,16 @@
 package com.aidanwhiteley.books.util;
 
-import com.aidanwhiteley.books.domain.User;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
-import org.springframework.stereotype.Component;
-
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.springframework.stereotype.Component;
+
+import com.aidanwhiteley.books.domain.User;
+import com.aidanwhiteley.books.domain.User.AuthenticationProvider;
 
 @Component
 public class DummyAuthenticationUtils implements AuthenticationUtils {
@@ -33,4 +33,14 @@ public class DummyAuthenticationUtils implements AuthenticationUtils {
     public Map<String, String> getRemoteUserDetails(Principal principal) {
         return new LinkedHashMap<String, String>();
     }
+
+	@Override
+	public AuthenticationProvider getAuthProviderFromPrincipal(Principal principal) {
+		return User.AuthenticationProvider.GOOGLE;
+	}
+
+	@Override
+	public String getAuthProviderFromPrincipalAsString(Principal principal) {
+		return User.AuthenticationProvider.GOOGLE.toString();
+	}
 }

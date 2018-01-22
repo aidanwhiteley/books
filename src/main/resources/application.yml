@@ -41,7 +41,7 @@ facebook:
     authenticationScheme: query
     clientAuthenticationScheme: form
   resource:
-    userInfoUri: https://graph.facebook.com/me?fields=name, first_name, last_name, picture, email
+    userInfoUri: https://graph.facebook.com/me?fields=name, first_name, last_name, link, picture, email
 
 books:
   client:

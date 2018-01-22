@@ -1,21 +1,17 @@
 package com.aidanwhiteley.books.controller;
 
-import com.aidanwhiteley.books.domain.Book;
-import com.aidanwhiteley.books.domain.User;
-import com.aidanwhiteley.books.util.IntegrationTest;
+import static com.aidanwhiteley.books.controller.config.BasicAuthInsteadOfOauthWebAccess.A_USER;
+import static com.aidanwhiteley.books.controller.config.BasicAuthInsteadOfOauthWebAccess.PASSWORD;
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import static com.aidanwhiteley.books.controller.config.BasicAuthInsteadOfOauthWebAccess.*;
-
-import java.net.URI;
-
-import static org.junit.Assert.assertEquals;
+import com.aidanwhiteley.books.domain.User;
+import com.aidanwhiteley.books.util.IntegrationTest;
 
 public class UserControllerTest extends IntegrationTest {
 

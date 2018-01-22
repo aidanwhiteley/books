@@ -7,7 +7,7 @@ import org.springframework.data.repository.query.Param;
 
 import com.aidanwhiteley.books.domain.User;
 
-public interface UserRepository extends MongoRepository<User, String> {
+public interface UserRepository extends MongoRepository<User, String>, UserRepositoryCustomMethods {
 
     List<User> findAllByAuthenticationServiceIdAndAuthProvider(@Param("authenticationServiceId") String authenticationServiceId,
                                                                 @Param("authenticationProvider") String authenticationProvider);

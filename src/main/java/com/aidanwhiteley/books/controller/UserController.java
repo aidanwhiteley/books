@@ -1,29 +1,31 @@
 package com.aidanwhiteley.books.controller;
 
-import com.aidanwhiteley.books.controller.dtos.ClientRoles;
-import com.aidanwhiteley.books.domain.Book;
-import com.aidanwhiteley.books.domain.User;
-import com.aidanwhiteley.books.repository.UserRepository;
-import com.aidanwhiteley.books.util.AuthenticationUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.FACEBOOK;
+import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.GOOGLE;
+import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.PATCH;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
-import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.FACEBOOK;
-import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.GOOGLE;
-import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.PATCH;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.aidanwhiteley.books.controller.dtos.ClientRoles;
+import com.aidanwhiteley.books.domain.User;
+import com.aidanwhiteley.books.repository.UserRepository;
+import com.aidanwhiteley.books.util.AuthenticationUtils;
 
 @RestController
 @RequestMapping("/secure/api")
@@ -64,29 +66,31 @@ public class UserController {
 
     @RequestMapping(value = "/users/{id}", method = DELETE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public void deleteUserById(@PathVariable("id") String id, Principal principal) {
+    public ResponseEntity<?> deleteUserById(@PathVariable("id") String id, Principal principal) {
 
         User user = authUtils.extractUserFromPrincipal(principal);
         if (user.getId().equals(id)) {
             LOGGER.warn("User {} on {} attempted to delete themselves. This isn't allowed", user.getFullName(), user.getAuthProvider());
-            throw new IllegalStateException("You cannot delete yourself! Logon with a different admin user if you really want delete this user");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Cant delete your own logged on user");
         }
 
         userRepository.delete(id);
+        return ResponseEntity.ok().build();
     }
 
     @RequestMapping(value = "/users/{id}", method = PATCH)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public void patchUserRolesById(@PathVariable("id") String id, @RequestBody ClientRoles clientRoles, Principal principal) {
+    public ResponseEntity<?> patchUserRolesById(@PathVariable("id") String id, @RequestBody ClientRoles clientRoles, Principal principal) {
 
         User user = authUtils.extractUserFromPrincipal(principal);
         if (user.getId().equals(id)) {
             LOGGER.warn("User {} on {} attempted to change their own roles. This isn't allowed", user.getFullName(), user.getAuthProvider());
-            throw new IllegalStateException("You cannot change your own roles! Logon with a different admin user if you really want to change permissions for this user.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Cant change permissions for your own logged on user");
         }
 
         LOGGER.debug("Received patch of: {}", clientRoles);
-        //userRepository.patch(id);
+        userRepository.updateUserRoles(clientRoles);
+        return ResponseEntity.ok().build();
     }
 
     private User createUser(Map<String, String> userDetails, User.AuthenticationProvider provider) {

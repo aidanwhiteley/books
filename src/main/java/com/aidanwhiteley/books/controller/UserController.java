@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,7 +72,7 @@ public class UserController {
         User user = authUtils.extractUserFromPrincipal(principal);
         if (user.getId().equals(id)) {
             LOGGER.warn("User {} on {} attempted to delete themselves. This isn't allowed", user.getFullName(), user.getAuthProvider());
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Cant delete your own logged on user");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("{\"msg\" : \"Cant delete your own logged on user\"}");
         }
 
         userRepository.delete(id);
@@ -85,7 +86,7 @@ public class UserController {
         User user = authUtils.extractUserFromPrincipal(principal);
         if (user.getId().equals(id)) {
             LOGGER.warn("User {} on {} attempted to change their own roles. This isn't allowed", user.getFullName(), user.getAuthProvider());
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Cant change permissions for your own logged on user");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("{\"msg\" : \"Cant change permissions for your own logged on user\"}");
         }
 
         LOGGER.debug("Received patch of: {}", clientRoles);

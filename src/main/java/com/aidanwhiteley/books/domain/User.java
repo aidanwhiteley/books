@@ -21,7 +21,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.Singular;
 import lombok.ToString;
 
 @Getter
@@ -63,13 +62,16 @@ public class User {
     @NotNull
     private LocalDateTime firstLogon;
 
-    @Singular
-    private List<Role> roles = new ArrayList<Role>();
+    final private List<Role> roles = new ArrayList<>();
 
     private AuthenticationProvider authProvider;
 
     public boolean isFirstVisit() {
         return (firstLogon.equals(lastLogon));
+    }
+
+    public void addRole(Role role) {
+        this.roles.add(role);
     }
 
     public enum Role {

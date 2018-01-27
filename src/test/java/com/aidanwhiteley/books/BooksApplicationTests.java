@@ -1,7 +1,8 @@
 package com.aidanwhiteley.books;
 
-import com.aidanwhiteley.books.util.IntegrationTest;
 import org.junit.Test;
+
+import com.aidanwhiteley.books.util.IntegrationTest;
 
 public class BooksApplicationTests extends IntegrationTest {
 

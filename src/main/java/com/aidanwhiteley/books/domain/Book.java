@@ -59,7 +59,10 @@ public class Book implements Serializable {
 
     private Item googleBookDetails;
 
-    private String createdBy;
+    // Not marked a @NotNull as validation is done on the
+    // input object from the client and this data is 
+    // set on the server side after validation.
+    private Owner createdBy;
 
     public enum Rating {
         // Note Jackson default deserialisation is 0 based - changing values below

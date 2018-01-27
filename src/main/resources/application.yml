@@ -56,5 +56,5 @@ books:
         connect:
           timeout: 2000
         read:
-          timeout: 5000
+          timeout: 3000
 

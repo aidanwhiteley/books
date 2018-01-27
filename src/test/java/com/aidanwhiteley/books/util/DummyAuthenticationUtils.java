@@ -2,9 +2,7 @@ package com.aidanwhiteley.books.util;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Component;
@@ -14,18 +12,24 @@ import com.aidanwhiteley.books.domain.User.AuthenticationProvider;
 
 @Component
 public class DummyAuthenticationUtils implements AuthenticationUtils {
+
+    public static final String DUMMY_USER_FOR_TESTING_ONLY = "Dummy user for testing only";
+    public static final String THIS_IS_NOT_A_REAL_AUTH_ID = "This is not a real auth id";
+
     @Override
     public User extractUserFromPrincipal(Principal principal) {
+        return getTestUser();
+    }
+
+    public static User getTestUser() {
         User user = new User();
-        user.setFullName("Dummy user for testing only");
-        user.setAuthProvider(User.AuthenticationProvider.GOOGLE);
+        user.setFullName(DUMMY_USER_FOR_TESTING_ONLY);
+        user.setAuthProvider(AuthenticationProvider.GOOGLE);
         user.setFirstLogon(LocalDateTime.now());
         user.setLastLogon(LocalDateTime.now());
 
-        user.setAuthenticationServiceId("This is not a real auth id");
-        List<User.Role> roles = new ArrayList<User.Role>();
-        roles.add(User.Role.ROLE_USER);
-        user.setRoles(roles);
+        user.setAuthenticationServiceId(THIS_IS_NOT_A_REAL_AUTH_ID);
+        user.addRole(User.Role.ROLE_USER);
         return user;
     }
 

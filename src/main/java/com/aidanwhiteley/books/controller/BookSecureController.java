@@ -9,6 +9,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.Principal;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.aidanwhiteley.books.domain.Book;
+import com.aidanwhiteley.books.domain.Owner;
 import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.repository.BookRepository;
 import com.aidanwhiteley.books.repository.GoogleBooksDao;
@@ -43,14 +45,12 @@ public class BookSecureController {
 	private AuthenticationUtils authUtils;
 
 	@RequestMapping(value = "/books", method = POST)
-	public ResponseEntity<?> createBook(@Valid @RequestBody Book book, Principal principal)
+	public ResponseEntity<?> createBook(@Valid @RequestBody Book book, Principal principal, HttpServletRequest request)
 			throws MalformedURLException, URISyntaxException {
 
 		User user = authUtils.extractUserFromPrincipal(principal);
 
-		// TODO - change user data stored with book to have separate fields for id, provider, name etc
-        // i.e. nest a fair amount of user data inside of book document
-		book.setCreatedBy(user.getAuthProvider() + CREATED_BY_DELIMETER + user.getAuthenticationServiceId());
+		book.setCreatedBy(new Owner(user));
 
 		// Get the Google book details for this book
 		// TODO - move this out to a message queue driven async implementation.

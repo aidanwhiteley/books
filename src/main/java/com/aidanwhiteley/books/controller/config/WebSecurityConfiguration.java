@@ -49,7 +49,7 @@ import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.*;
 @EnableOAuth2Client
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-@Profile("!" + "integration")
+@Profile("!integration")
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired

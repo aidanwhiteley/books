@@ -20,7 +20,7 @@ import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.FACEBOO
 import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.GOOGLE;
 
 @Component
-@Profile("!" + "integration")
+@Profile({"!integration"})
 public class OauthAuthenticationUtils implements AuthenticationUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OauthAuthenticationUtils.class);

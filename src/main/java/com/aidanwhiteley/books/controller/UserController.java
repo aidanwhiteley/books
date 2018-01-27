@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -110,8 +109,8 @@ public class UserController {
                         lastLogon(LocalDateTime.now()).
                         firstLogon(LocalDateTime.now()).
                         authProvider(GOOGLE).
-                        role(User.Role.ROLE_USER).
                         build();
+                user.addRole(User.Role.ROLE_USER);
                 break;
             }
             case FACEBOOK: {
@@ -121,12 +120,12 @@ public class UserController {
                         fullName(userDetails.get("name")).
                         link(userDetails.get("link")).
                         // picture(userDetails.get("picture.data.url")).
-                                email(userDetails.get("email")).
-                                lastLogon(LocalDateTime.now()).
-                                firstLogon(LocalDateTime.now()).
-                                authProvider(FACEBOOK).
-                                role(User.Role.ROLE_USER).
-                                build();
+                        email(userDetails.get("email")).
+                        lastLogon(LocalDateTime.now()).
+                        firstLogon(LocalDateTime.now()).
+                        authProvider(FACEBOOK).
+                        build();
+                user.addRole(User.Role.ROLE_USER);
                 break;
             }
             default: {

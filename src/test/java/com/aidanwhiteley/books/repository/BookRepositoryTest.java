@@ -1,6 +1,8 @@
 package com.aidanwhiteley.books.repository;
 
 import com.aidanwhiteley.books.domain.Book;
+import com.aidanwhiteley.books.domain.Owner;
+import com.aidanwhiteley.books.util.DummyAuthenticationUtils;
 import com.aidanwhiteley.books.util.IntegrationTest;
 import org.junit.After;
 import org.junit.Before;
@@ -25,8 +27,13 @@ public class BookRepositoryTest extends IntegrationTest {
     BookRepository bookRepository;
 
     public static Book createTestBook() {
-        return Book.builder().title(J_UNIT_TESTING_FOR_BEGINNERS).summary(A_GUIDE_TO_POKING_SOFTWARE).genre(COMPUTING)
-                .author(DR_ZEUSS).rating(Book.Rating.POOR).entered(LocalDateTime.of(2016, 11, 20, 0, 0)).similarTo(DESIGN_PATTERNS).build();
+        return Book.builder().title(J_UNIT_TESTING_FOR_BEGINNERS)
+                .summary(A_GUIDE_TO_POKING_SOFTWARE).genre(COMPUTING)
+                .author(DR_ZEUSS).rating(Book.Rating.POOR)
+                .entered(LocalDateTime.of(2016, 11, 20, 0, 0))
+                .similarTo(DESIGN_PATTERNS)
+                .createdBy(new Owner(DummyAuthenticationUtils.getTestUser()))
+                .build();
     }
 
     @Before

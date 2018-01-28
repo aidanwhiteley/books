@@ -80,4 +80,25 @@ public class Book implements Serializable {
             this.ratingLevel = ratingLevel;
         }
     }
+
+    /**
+     * Remove data (particularly details of created a review) from book data if the user isnt known.
+     *
+     * @param book
+     * @return a Book with some PII data removed.
+     */
+    public static Book removeDataIfUnknownUser(Book book) {
+        Book publicBook = new BookBuilder().
+                googleBookDetails(book.googleBookDetails).
+                googleBookId(book.googleBookId).
+                author(book.author).
+                entered(book.entered).
+                genre(book.genre).
+                rating(book.rating).
+                summary(book.summary).
+                title(book.title).
+                build();
+
+        return publicBook;
+    }
 }

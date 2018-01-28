@@ -9,7 +9,7 @@ spring:
 books:
   reload:
     development:
-      data: true    # Whether the contents of the /src/main/resources/sample_data will be reloaded into the database at application startup. Deletes all existing data!!!
+      data: false    # Whether the contents of the /src/main/resources/sample_data will be reloaded into the database at application startup. Deletes all existing data!!!
 
   users:
     default:

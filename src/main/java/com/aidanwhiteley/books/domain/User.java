@@ -74,6 +74,9 @@ public class User {
         this.roles.add(role);
     }
 
+    // A user gets the ROLE_USER as soon as they log on via an authentication provider.
+    // It does not mean they are "trusted" users of the application. That only happens
+    // when an admin gives them the ROLE_EDITOR role.
     public enum Role {
         ROLE_USER(0),
         ROLE_EDITOR(1),

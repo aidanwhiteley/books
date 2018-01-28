@@ -14,6 +14,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -32,6 +33,12 @@ import com.aidanwhiteley.books.util.AuthenticationUtils;
 public class UserController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
+
+    @Value("${books.users.default.admin.authenticationServiceId}")
+    private String defaultAdminAuthenticationServiceId;
+
+    @Value("${books.users.default.admin.authProvider}")
+    private String defaultAdminAuthProvider;
 
     @Autowired
     private UserRepository userRepository;
@@ -110,6 +117,8 @@ public class UserController {
                         firstLogon(LocalDateTime.now()).
                         authProvider(GOOGLE).
                         build();
+
+                setDefaultAdminUser(userDetails, user, GOOGLE);
                 user.addRole(User.Role.ROLE_USER);
                 break;
             }
@@ -125,6 +134,7 @@ public class UserController {
                         firstLogon(LocalDateTime.now()).
                         authProvider(FACEBOOK).
                         build();
+                setDefaultAdminUser(userDetails, user, FACEBOOK);
                 user.addRole(User.Role.ROLE_USER);
                 break;
             }
@@ -137,6 +147,15 @@ public class UserController {
         userRepository.insert(user);
         LOGGER.info("User created in repository: " + user);
         return user;
+    }
+
+    private void setDefaultAdminUser(Map<String, String> userDetails, User user, User.AuthenticationProvider provider) {
+        if (defaultAdminAuthenticationServiceId != null && defaultAdminAuthenticationServiceId.length() > 0
+                && defaultAdminAuthenticationServiceId.equals(userDetails.get("id")) && defaultAdminAuthProvider != null
+                && defaultAdminAuthProvider.equals(provider.toString())) {
+            user.addRole(User.Role.ROLE_EDITOR);
+            user.addRole(User.Role.ROLE_ADMIN);
+        }
     }
 
     private User updateUser(Map<String, String> userDetails, User user, User.AuthenticationProvider provider) {

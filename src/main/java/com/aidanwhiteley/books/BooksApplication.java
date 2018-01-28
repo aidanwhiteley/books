@@ -34,6 +34,9 @@ public class BooksApplication extends WebMvcConfigurerAdapter {
 	@Value("${books.client.allowedCorsOrigin}")
 	private String allowedCorsOrigin;
 
+    @Value("${books.reload.development.data}")
+    private boolean reloadDevelopmentData;
+
 	@Autowired
 	private MongoTemplate template;
 
@@ -59,25 +62,33 @@ public class BooksApplication extends WebMvcConfigurerAdapter {
 	public CommandLineRunner populateDummyData() {
 		return args -> {
 
-			// Clearing and loading data into books collection
-			template.dropCollection(BOOKS_COLLECTION);
-			ClassPathResource classPathResource = new ClassPathResource("sample_data/books.json");
-			List<String> jsons = new ArrayList<>();
-			Stream<String> stream = Files.lines(Paths.get(classPathResource.getFile().toURI()), StandardCharsets.UTF_8);
-			stream.forEach(jsons::add);
-			jsons.stream().map(Document::parse).forEach(i -> template.insert(i, BOOKS_COLLECTION));
-			stream.close();
-			LOGGER.info("Loaded development data for books as running in dev mode");
+		    if (reloadDevelopmentData) {
 
-			// Clearing and loading data into user collection
-			template.dropCollection(USERS_COLLECTION);
-			classPathResource = new ClassPathResource("sample_data/users.json");
-			jsons = new ArrayList<>();
-			stream = Files.lines(Paths.get(classPathResource.getFile().toURI()), StandardCharsets.UTF_8);
-			stream.forEach(jsons::add);
-			jsons.stream().map(Document::parse).forEach(i -> template.insert(i, USERS_COLLECTION));
-			stream.close();
-			LOGGER.info("Loaded development data for users as running in dev mode");
+                // Clearing and loading data into books collection
+                template.dropCollection(BOOKS_COLLECTION);
+                ClassPathResource classPathResource = new ClassPathResource("sample_data/books.json");
+                List<String> jsons = new ArrayList<>();
+                Stream<String> stream = Files.lines(Paths.get(classPathResource.getFile().toURI()), StandardCharsets.UTF_8);
+                stream.forEach(jsons::add);
+                jsons.stream().map(Document::parse).forEach(i -> template.insert(i, BOOKS_COLLECTION));
+                stream.close();
+                LOGGER.info("*********************************************************");
+                LOGGER.info("Loaded development data for books as running in dev mode");
+
+                // Clearing and loading data into user collection
+                template.dropCollection(USERS_COLLECTION);
+                classPathResource = new ClassPathResource("sample_data/users.json");
+                jsons = new ArrayList<>();
+                stream = Files.lines(Paths.get(classPathResource.getFile().toURI()), StandardCharsets.UTF_8);
+                stream.forEach(jsons::add);
+                jsons.stream().map(Document::parse).forEach(i -> template.insert(i, USERS_COLLECTION));
+                stream.close();
+                LOGGER.info("Loaded development data for users as running in dev mode");
+
+                LOGGER.info("*********************************************************");
+            } else {
+		        LOGGER.info("Development data not reloaded due to config settings");
+            }
 		};
 	}
 }

@@ -51,10 +51,20 @@ books:
   google:
     books:
       api:
-        searchUrl: https://www.googleapis.com/books/v1/volumes?q=
+        searchUrl: https://www.googleapis.com/books/v1/volumes?maxResults=30&q=
         getByIdUrl: https://www.googleapis.com/books/v1/volumes/
         connect:
           timeout: 2000
         read:
           timeout: 3000
+
+  reload:
+    development:
+      data: false  # Whether the contents of the /src/main/resources/sample_data will be reloaded into the database at application startup. Deletes all existing data!!!
+
+    users:
+      default:
+        admin:
+          authenticationServiceId:
+          authProvider:
 

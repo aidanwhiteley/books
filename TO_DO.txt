@@ -1,0 +1,38 @@
+
+New functionality
+~~~~~~~~~~~~~~~~~
+
+1. Add first logon welcome page
+2. Add help content and link
+3. Support correct display of edit and delete for Book entries - possibly via Hateoas / HAL links
+4. Pagination of Books list
+5. Create "stats" API for cards at top of summary page
+6. Add stats cards to Book detail page
+7. Add Comments functionality
+8. Migrate to stateless JWT based authentication - carrying "signed" roles data
+8. Create "pop out" window for by genre, by authrom bt reader links
+9. Create Twitter based typeahead for above links
+10. Create typeahead of suggested genres (based on genres already used)
+11. Spring Data based auditing
+12. Set up endpoints and security for Actuator
+13. Support "multi tenant" i.e. multiple instances of app sharing same codebase and Mongo
+14. Create "digest emails"
+15. Allow users to sign up (and unsubscribe) for digest emails
+16. Mongo based full text search support - copying across UX from TheGpsBlog
+17. Create a logo image!
+18. Support logout (after moving to JWT)
+19. Fix identation GUI indicator of which "menu" item was clicked
+20. Write notes to say that must close / re-open browser for default admin to work.
+
+Completed new functionality
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+Bugs
+~~~~
+
+1. Why are users intermittently shown as logged out on client side?
+
+
+Fixed bugs
+~~~~~~~~~~

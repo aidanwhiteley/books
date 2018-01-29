@@ -68,6 +68,7 @@ public class UserController {
     @RequestMapping(value = "/users", method = GET)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public List<User> users(Principal principal) {
+        User user = authUtils.extractUserFromPrincipal(principal);
         return userRepository.findAll();
     }
 

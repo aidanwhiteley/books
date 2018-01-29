@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,10 +44,11 @@ public class BookController {
 		return bookRepository.findAllByAuthor(author);
 	}
 
-	@RequestMapping(value = "/books", method = GET)
-	public Page<Book> findAllByWhenEnteredDesc(Pageable page, Principal principal) {
+	@RequestMapping(value = "/books", params = { "page", "size" }, method = GET)
+	public Page<Book> findAllByWhenEnteredDesc(@RequestParam("page") int page, @RequestParam("size") int size, Principal principal) {
 
-		return limitDataVisibility(bookRepository.findAllByOrderByEnteredDesc(page), principal);
+		PageRequest pageObj = new PageRequest(page, size);
+		return limitDataVisibility(bookRepository.findAllByOrderByEnteredDesc(pageObj), principal);
 	}
 
 	@RequestMapping(value = "/books", method = GET, params = "genre")

@@ -46,7 +46,7 @@ facebook:
 books:
   client:
     allowedCorsOrigin: http://localhost:9000
-    postLogonUrl: http://localhost:9000/#/?l=1
+    postLogonUrl: http://localhost:9000/
 
   google:
     books:

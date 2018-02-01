@@ -12,6 +12,8 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.aidanwhiteley.books.domain.googlebooks.BookSearchResult;
@@ -62,6 +64,15 @@ public class GoogleBooksDao {
 
 	public Item searchGoogleBooksByGoogleBookId(String id) {
 		googleBooksRestTemplate.getMessageConverters().add(0, new StringHttpMessageConverter(Charset.forName("UTF-8")));
+		try {
 		return googleBooksRestTemplate.getForObject(booksGoogleBooksApiGetByIdUrl + id, Item.class);
+		} catch (HttpStatusCodeException e){
+			String errorpayload = e.getResponseBodyAsString();
+			LOGGER.error("Error calling Google Books API: " + errorpayload, e);
+			throw e;
+		} catch(RestClientException e){
+			LOGGER.error("Rest client error calling Google Books API: ", e);
+			throw e;
+		}
 	}
 }

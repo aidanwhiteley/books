@@ -51,8 +51,9 @@ books:
   google:
     books:
       api:
-        searchUrl: https://www.googleapis.com/books/v1/volumes?maxResults=30&country=GB&q=
+        searchUrl: https://www.googleapis.com/books/v1/volumes?maxResults=30&q=
         getByIdUrl: https://www.googleapis.com/books/v1/volumes/
+        countryCode: country=GB
         connect:
           timeout: 2000
         read:

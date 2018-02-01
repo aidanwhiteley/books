@@ -29,6 +29,9 @@ public class GoogleBooksDao {
 
 	@Value("${books.google.books.api.getByIdUrl}")
 	private String booksGoogleBooksApiGetByIdUrl;
+	
+	@Value("${books.google.books.api.countryCode}")
+	private String booksGoogleBooksApiCountryCode;
 
 	@Value("${books.google.books.api.connect.timeout}")
 	private int booksGoogleBooksApiConnectTimeout;
@@ -58,14 +61,14 @@ public class GoogleBooksDao {
 
 		googleBooksRestTemplate.getMessageConverters().add(0, new StringHttpMessageConverter(Charset.forName("UTF-8")));
 
-		return googleBooksRestTemplate.getForObject(booksGoogleBooksApiSearchUrl + encodedTitle,
+		return googleBooksRestTemplate.getForObject(booksGoogleBooksApiSearchUrl + encodedTitle + "&" + booksGoogleBooksApiCountryCode,
 				BookSearchResult.class);
 	}
 
 	public Item searchGoogleBooksByGoogleBookId(String id) {
 		googleBooksRestTemplate.getMessageConverters().add(0, new StringHttpMessageConverter(Charset.forName("UTF-8")));
 		try {
-		return googleBooksRestTemplate.getForObject(booksGoogleBooksApiGetByIdUrl + id, Item.class);
+		return googleBooksRestTemplate.getForObject(booksGoogleBooksApiGetByIdUrl + id + "/?" + booksGoogleBooksApiCountryCode , Item.class);
 		} catch (HttpStatusCodeException e){
 			String errorpayload = e.getResponseBodyAsString();
 			LOGGER.error("Error calling Google Books API: " + errorpayload, e);

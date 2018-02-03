@@ -11,4 +11,5 @@ public interface AuthenticationUtils {
     Map<String, String> getRemoteUserDetails(Principal principal);
     User.AuthenticationProvider getAuthProviderFromPrincipal(Principal principal);
     String getAuthProviderFromPrincipalAsString(Principal principal);
+    User.Role getUsersHighestRole(Principal principal);
 }

@@ -40,11 +40,12 @@ public class BookControllerTest extends IntegrationTest {
     public void findByAuthor() {
         postBookToServer();
 
-        ResponseEntity<String> response = testRestTemplate.exchange("/api/books?author=" + BookRepositoryTest.DR_ZEUSS, HttpMethod.GET,
+        ResponseEntity<String> response = testRestTemplate.exchange("/api/books?author=" + BookRepositoryTest.DR_ZEUSS + "&page=0&size=10", HttpMethod.GET,
                 null, String.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
-        List<Book> books = JsonPath.read(response.getBody(), "$");
+        // Returns a "page" of books - so look for the content of the page
+        List<Book> books = JsonPath.read(response.getBody(), "$.content");
         LOGGER.debug("Retrieved JSON was: " + response.getBody());
 
         assertTrue("No books found", books.size() > 0);

@@ -1,10 +1,6 @@
 package com.aidanwhiteley.books.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 @Getter
 @AllArgsConstructor
@@ -48,5 +44,8 @@ public class Owner {
         this.authProvider = user.getAuthProvider();
     }
 
+    public static Owner getOwnerDataForEditorView(Owner anOwner) {
+        return new Owner(User.builder().fullName(anOwner.fullName).lastName(anOwner.lastName).firstName(anOwner.firstName).build());
+    }
 
 }

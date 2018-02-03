@@ -34,6 +34,7 @@ public class OauthAuthenticationUtils implements AuthenticationUtils {
     @Value("${facebook.client.clientId}")
     private String facebookClientClientId;
 
+    @Override
     public User extractUserFromPrincipal(Principal principal) {
 
         checkPrincipalType(principal);
@@ -53,6 +54,7 @@ public class OauthAuthenticationUtils implements AuthenticationUtils {
         }
     }
 
+    @Override
     public Map<String, String> getRemoteUserDetails(Principal principal) {
 
         checkPrincipalType(principal);
@@ -64,6 +66,7 @@ public class OauthAuthenticationUtils implements AuthenticationUtils {
         return userDetails;
     }
 
+    @Override
     public User.AuthenticationProvider getAuthProviderFromPrincipal(Principal principal) {
     	
     	checkPrincipalType(principal);
@@ -82,9 +85,26 @@ public class OauthAuthenticationUtils implements AuthenticationUtils {
             throw new IllegalArgumentException("Uknown client id specified");
         }
     }
-    
+
+    @Override
     public String getAuthProviderFromPrincipalAsString(Principal principal) {
         return this.getAuthProviderFromPrincipal(principal).toString();
+    }
+
+    @Override
+    public User.Role getUsersHighestRole(Principal principal) {
+
+        User user = extractUserFromPrincipal(principal);
+
+        User.Role highestRole = User.Role.ROLE_USER;
+
+        for (User.Role role : user.getRoles()) {
+            if (role.getRoleNumber() > highestRole.getRoleNumber()) {
+                highestRole = role;
+            }
+        }
+
+        return highestRole;
     }
 
     private void checkPrincipalType(Principal principal) {

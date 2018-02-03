@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,8 +33,6 @@ import com.aidanwhiteley.books.util.AuthenticationUtils;
 @RequestMapping("/secure/api")
 @PreAuthorize("hasAnyRole('ROLE_EDITOR', 'ROLE_ADMIN')")
 public class BookSecureController {
-
-	public static final String CREATED_BY_DELIMETER = "|";
 
 	@Autowired
 	private BookRepository bookRepository;
@@ -70,15 +69,31 @@ public class BookSecureController {
 	}
 
 	@RequestMapping(value = "/books", method = PUT)
-	public ResponseEntity<?> updateBook(@Valid @RequestBody Book book) {
+	public ResponseEntity<?> updateBook(@Valid @RequestBody Book book, Principal principal) {
 
-		bookRepository.save(book);
-		return ResponseEntity.noContent().build();
+        User user = authUtils.extractUserFromPrincipal(principal);
+        Book currentBookState = bookRepository.findOne(book.getId());
+
+	    if (currentBookState.isOwner(user) || user.getRoles().contains(User.Role.ROLE_ADMIN)) {
+            bookRepository.save(book);
+            return ResponseEntity.noContent().build();
+        } else {
+	        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
 	}
 
 	@RequestMapping(value = "/books/{id}", method = DELETE)
-	public void deleteBookById(@PathVariable("id") String id) {
-		bookRepository.delete(id);
+	public ResponseEntity<?> deleteBookById(@PathVariable("id") String id, Principal principal) {
+
+        User user = authUtils.extractUserFromPrincipal(principal);
+        Book currentBookState = bookRepository.findOne(id);
+
+        if (currentBookState.isOwner(user) || user.getRoles().contains(User.Role.ROLE_ADMIN)) {
+            bookRepository.delete(id);
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
 	}
 
 }

@@ -8,6 +8,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,6 +25,9 @@ public class BookRepositoryTest extends IntegrationTest {
     private static final String A_GUIDE_TO_POKING_SOFTWARE = "A guide to poking software";
     private static final String COMPUTING = "Computing";
     private static final String DESIGN_PATTERNS = "Design Patterns";
+
+    private static final int PAGE = 0;
+    private static final int PAGE_SIZE = 10;
 
     @Autowired
     BookRepository bookRepository;
@@ -48,11 +54,12 @@ public class BookRepositoryTest extends IntegrationTest {
 
     @Test
     public void findByAuthor() {
-        List<Book> books = bookRepository.findAllByAuthor(DR_ZEUSS);
-        assertTrue(books.size() >= 1);
-        assertTrue(books.get(0).getAuthor().equals(DR_ZEUSS));
+        PageRequest pageObj = new PageRequest(PAGE, PAGE_SIZE);
+        Page<Book> books = bookRepository.findAllByAuthor(pageObj, DR_ZEUSS);
+        assertTrue(books.getContent().size() >= 1);
+        assertTrue(books.getContent().get(0).getAuthor().equals(DR_ZEUSS));
 
         // The book should have a system created id value.
-        assertNotNull(books.get(0).getId());
+        assertNotNull(books.getContent().get(0).getId());
     }
 }

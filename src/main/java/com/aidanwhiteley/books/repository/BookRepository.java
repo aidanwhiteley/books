@@ -11,7 +11,7 @@ import com.aidanwhiteley.books.domain.Book;
 
 public interface BookRepository extends MongoRepository<Book, String> {
 
-    List<Book> findAllByAuthor(@Param("author") String author);
+    Page<Book> findAllByAuthor(Pageable page, String author);
 
     List<Book> findAllByGenre(@Param("genre") String genre);
 

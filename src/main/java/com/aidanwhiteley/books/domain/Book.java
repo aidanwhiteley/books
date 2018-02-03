@@ -74,6 +74,11 @@ public class Book implements Serializable {
     // set on the server side after validation.
     private Owner createdBy;
 
+    public boolean isOwner(User user) {
+        return (user.getAuthenticationServiceId().equals(this.createdBy.getAuthenticationServiceId()) && user.getAuthProvider() == this.getCreatedBy().getAuthProvider()
+        );
+    }
+
     public enum Rating {
         // Note Jackson default deserialisation is 0 based - changing values below
         // would mean that that default serialisation / deserialisation would need overriding.
@@ -111,5 +116,23 @@ public class Book implements Serializable {
                 build();
 
         return publicBook;
+    }
+
+    public static Book removeDataIfEditor(Book book) {
+
+        Book editorBook = new BookBuilder().
+                id(book.id).
+                googleBookDetails(book.googleBookDetails).
+                googleBookId(book.googleBookId).
+                author(book.author).
+                entered(book.entered).
+                genre(book.genre).
+                rating(book.rating).
+                summary(book.summary).
+                title(book.title).
+                createdBy(Owner.getOwnerDataForEditorView(book.createdBy)).
+                build();
+
+        return editorBook;
     }
 }

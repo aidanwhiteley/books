@@ -34,11 +34,8 @@ public class UserController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
-    @Value("${books.users.default.admin.authenticationServiceId}")
-    private String defaultAdminAuthenticationServiceId;
-
-    @Value("${books.users.default.admin.authProvider}")
-    private String defaultAdminAuthProvider;
+    @Value("${books.users.default.admin.email}")
+    private String defaultAdminEmail;
 
     @Autowired
     private UserRepository userRepository;
@@ -151,9 +148,7 @@ public class UserController {
     }
 
     private void setDefaultAdminUser(Map<String, String> userDetails, User user, User.AuthenticationProvider provider) {
-        if (defaultAdminAuthenticationServiceId != null && defaultAdminAuthenticationServiceId.length() > 0
-                && defaultAdminAuthenticationServiceId.equals(userDetails.get("id")) && defaultAdminAuthProvider != null
-                && defaultAdminAuthProvider.equals(provider.toString())) {
+        if (defaultAdminEmail != null && defaultAdminEmail.equals(user.getEmail())) {
             user.addRole(User.Role.ROLE_EDITOR);
             user.addRole(User.Role.ROLE_ADMIN);
         }

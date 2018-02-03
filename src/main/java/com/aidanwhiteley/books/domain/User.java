@@ -90,6 +90,9 @@ public class User {
         public String getShortName() {
             return this.toString().split("ROLE_")[1];
         }
+        public int getRoleNumber() {
+            return this.role;
+        }
     }
 
     public enum AuthenticationProvider {

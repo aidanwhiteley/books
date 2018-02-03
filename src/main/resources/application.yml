@@ -66,6 +66,5 @@ books:
   users:
     default:
       admin:
-        authenticationServiceId: ReplaceThisIfYouWantAUserToAutoBeAdmin
-        authProvider: GOOGLE
+        email:   # The remote email address for a user that will be automatically made an admin on first logon.
 

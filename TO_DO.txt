@@ -5,7 +5,6 @@ New functionality
 1. Add first logon welcome page
 2. Add help content and link
 3. Support correct display of edit and delete for Book entries - possibly via Hateoas / HAL links
-4. Pagination of Books list
 5. Create "stats" API for cards at top of summary page
 6. Add stats cards to Book detail page
 7. Add Comments functionality
@@ -23,16 +22,21 @@ New functionality
 18. Support logout (after moving to JWT)
 19. Fix identation GUI indicator of which "menu" item was clicked
 20. Write notes to say that must close / re-open browser for default admin to work.
+21. Remove user data from list of books. Trim down other data
 
 Completed new functionality
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+4. Pagination of Books list
+22. Check for owner or admin on update / delete actions on books
 
 Bugs
 ~~~~
 
-1. Why are users intermittently shown as logged out on client side?
+1. Why are users intermittently shown as logged out on client side? Seems this only happens on "auto admin" first use. User needs to log off and log back on again before using.
+3. Fix correct selection of book rating when going back in to edit a book.
+
 
 
 Fixed bugs
 ~~~~~~~~~~
+2. Why is the /books api called twice when going into the detail of a book.

@@ -6,6 +6,7 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
+import com.aidanwhiteley.books.repository.dtos.BooksByGenre;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,6 +80,11 @@ public class BookController {
     @GetMapping(value = "/books/stats")
     public SummaryStats getSummaryStats() {
         return statsService.getSummaryStats();
+    }
+
+    @GetMapping(value = "/books/genres")
+    public List<BooksByGenre> findBookGenres() {
+        return bookRepository.countBooksByGenre();
     }
 
     @GetMapping(value = "/googlebooks", params = "title")

@@ -51,7 +51,7 @@ public class Book implements Serializable {
     private String genre;
 
     @NotNull
-    @Length(min = 1, max = 5000)
+    @Length(min = 1, max = 20000)
     private String summary;
 
     @NotNull
@@ -94,6 +94,16 @@ public class Book implements Serializable {
         Rating(int ratingLevel) {
             this.ratingLevel = ratingLevel;
         }
+
+        public static Rating getRatingByString(String aRating) {
+            for (Rating rating: Rating.values()) {
+                if (rating.name().equalsIgnoreCase(aRating)) {
+                    return rating;
+                }
+            }
+            return null;
+        }
+
     }
 
     /**

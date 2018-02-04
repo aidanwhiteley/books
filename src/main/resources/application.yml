@@ -67,4 +67,6 @@ books:
     default:
       admin:
         email:   # The remote email address for a user that will be automatically made an admin on first logon.
+      page:
+        size: 5
 

@@ -4,8 +4,7 @@ import org.junit.Test;
 
 import java.time.LocalDateTime;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * Some basic tests really only checking how Lombok is working (and in the IntelliJ IDE...)
@@ -38,5 +37,13 @@ public class BookTest {
 
         Book testBookWithoutAllFields = Book.builder().author(AIDAN).genre(WHODUNNIT).entered(NOW).rating(GREAT).build();
         assertEquals(testBookWithoutAllFields.getGenre(), WHODUNNIT);
+    }
+
+    @Test
+    public void testGetRatingByString() {
+        assertEquals(Book.Rating.POOR, Book.Rating.getRatingByString("poor"));
+        assertNotEquals(Book.Rating.POOR, Book.Rating.getRatingByString("DoesntExist"));
+        assertNull(Book.Rating.getRatingByString("DoesntExist"));
+        assertEquals(Book.Rating.GREAT, Book.Rating.getRatingByString("gReAt"));
     }
 }

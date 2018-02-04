@@ -11,11 +11,13 @@ import com.aidanwhiteley.books.domain.Book;
 
 public interface BookRepository extends MongoRepository<Book, String> {
 
-    Page<Book> findAllByAuthor(Pageable page, String author);
+    Page<Book> findAllByAuthorOrderByEnteredDesc(Pageable page, String author);
 
-    List<Book> findAllByGenre(@Param("genre") String genre);
+    List<Book> findAllByGenreOrderByEnteredDesc(@Param("genre") String genre);
 
     Page<Book> findAllByOrderByEnteredDesc(Pageable page);
+
+    Page<Book> findByRatingOrderByEnteredDesc(Pageable page, Book.Rating rating);
     
     long countByRating(Book.Rating rating);
 }

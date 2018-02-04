@@ -4,16 +4,16 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.googlebooks.BookSearchResult;
@@ -41,37 +41,63 @@ public class BookController {
     @Autowired
     private StatsService statsService;
 
-    @RequestMapping(value = "/books/{id}", method = GET)
+    @Value("${books.users.default.page.size}")
+    private int defaultPageSize;
+
+
+    @GetMapping(value = "/books/{id}")
     public Book findBookById(@PathVariable("id") String id, Principal principal) {
         return limitDataVisibility(bookRepository.findOne(id), principal);
     }
 
-    @RequestMapping(value = "/books", method = GET, params = {"author", "page", "size"})
-    public Page<Book> findByAuthor(@RequestParam("author") String author, @RequestParam("page") int page, @RequestParam("size") int size, Principal principal) {
-        PageRequest pageObj = new PageRequest(page, size);
-        return limitDataVisibility(bookRepository.findAllByAuthor(pageObj, author), principal);
+    @GetMapping(value = "/books", params = {"author"})
+    public Page<Book> findByAuthor(@RequestParam("author") String author, @RequestParam(value="page") Optional<Integer> page,
+                                   @RequestParam(value="size") Optional<Integer> size, Principal principal) {
+
+        PageRequest pageObj = new PageRequest(page.orElse(Integer.valueOf(0)).intValue(),
+                size.orElse(Integer.valueOf(defaultPageSize)).intValue());
+        return limitDataVisibility(bookRepository.findAllByAuthorOrderByEnteredDesc(pageObj, author), principal);
     }
 
-    @RequestMapping(value = "/books", params = {"page", "size"}, method = GET)
-    public Page<Book> findAllByWhenEnteredDesc(@RequestParam("page") int page, @RequestParam("size") int size, Principal principal) {
+    @GetMapping(value = "/books")
+    public Page<Book> findAllByWhenEnteredDesc(@RequestParam(value="page") Optional<Integer> page, @RequestParam(value="size") Optional<Integer> size, Principal principal) {
 
-        PageRequest pageObj = new PageRequest(page, size);
+        PageRequest pageObj = new PageRequest(page.orElse(Integer.valueOf(0)).intValue(),
+                size.orElse(Integer.valueOf(defaultPageSize)).intValue());
         return limitDataVisibility(bookRepository.findAllByOrderByEnteredDesc(pageObj), principal);
     }
 
-    @RequestMapping(value = "/books", method = GET, params = "genre")
+    @GetMapping(value = "/books",params = "genre")
     public List<Book> findByGenre(@RequestParam("genre") String genre) {
         throw new UnsupportedOperationException();
     }
     
-    @RequestMapping(value = "/booksstats", method = GET)
+    @GetMapping(value = "/books/stats")
     public SummaryStats getSummaryStats() {
         return statsService.getSummaryStats();
     }
 
-    @RequestMapping(value = "/googlebooks", method = GET, params = "title")
+    @GetMapping(value = "/googlebooks", params = "title")
     public BookSearchResult findGoogleBooksByTitle(@RequestParam("title") String title) {
         return googleBooksDao.searchGoogBooksByTitle(title);
+    }
+
+    @GetMapping(value = "/books", params = {"rating"})
+    public Page<Book> findByRating(@RequestParam("rating") String rating, @RequestParam(value="page") Optional<Integer> page, @RequestParam(value="size") Optional<Integer> size, Principal principal) {
+
+        Book.Rating aRating = Book.Rating.getRatingByString(rating);
+        PageRequest pageObj = new PageRequest(page.orElse(Integer.valueOf(0)).intValue(),
+                size.orElse(Integer.valueOf(defaultPageSize)).intValue());
+
+        if (aRating == null) {
+            throw new IllegalArgumentException();
+        } else {
+            return limitDataVisibility(bookRepository.findByRatingOrderByEnteredDesc(pageObj, aRating), principal);
+        }
+    }
+
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public class IllegalArgumentException extends RuntimeException {
     }
 
     /**

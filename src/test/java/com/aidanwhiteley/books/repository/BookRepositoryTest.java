@@ -55,7 +55,7 @@ public class BookRepositoryTest extends IntegrationTest {
     @Test
     public void findByAuthor() {
         PageRequest pageObj = new PageRequest(PAGE, PAGE_SIZE);
-        Page<Book> books = bookRepository.findAllByAuthor(pageObj, DR_ZEUSS);
+        Page<Book> books = bookRepository.findAllByAuthorOrderByEnteredDesc(pageObj, DR_ZEUSS);
         assertTrue(books.getContent().size() >= 1);
         assertTrue(books.getContent().get(0).getAuthor().equals(DR_ZEUSS));
 

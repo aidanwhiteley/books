@@ -1,7 +1,6 @@
 
 New functionality
 ~~~~~~~~~~~~~~~~~
-
 1. Add first logon welcome page
 2. Add help content and link
 3. Support correct display of edit and delete for Book entries - possibly via Hateoas / HAL links
@@ -9,7 +8,7 @@ New functionality
 6. Add stats cards to Book detail page
 7. Add Comments functionality
 8. Migrate to stateless JWT based authentication - carrying "signed" roles data
-8. Create "pop out" window for by genre, by authrom bt reader links
+8. Create "pop out" window for by genre, by author, by reader links
 9. Create Twitter based typeahead for above links
 10. Create typeahead of suggested genres (based on genres already used)
 11. Spring Data based auditing
@@ -20,23 +19,21 @@ New functionality
 16. Mongo based full text search support - copying across UX from TheGpsBlog
 17. Create a logo image!
 18. Support logout (after moving to JWT)
-19. Fix identation GUI indicator of which "menu" item was clicked
 20. Write notes to say that must close / re-open browser for default admin to work.
-21. Remove user data from list of books. Trim down other data
+22. Improve efficiency of processing for which menu item is active.
 
 Completed new functionality
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 4. Pagination of Books list
+19. Fix identation GUI indicator of which "menu" item was clicked
+21. Remove user data from list of books. Trim down other data
 22. Check for owner or admin on update / delete actions on books
 
 Bugs
 ~~~~
-
-1. Why are users intermittently shown as logged out on client side? Seems this only happens on "auto admin" first use. User needs to log off and log back on again before using.
 3. Fix correct selection of book rating when going back in to edit a book.
-
-
 
 Fixed bugs
 ~~~~~~~~~~
+1. Why are users intermittently shown as logged out on client side? Seems this only happens on "auto admin" first use. User needs to log off and log back on again before using.
 2. Why is the /books api called twice when going into the detail of a book.

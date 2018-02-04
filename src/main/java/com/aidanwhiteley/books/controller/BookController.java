@@ -1,11 +1,10 @@
 package com.aidanwhiteley.books.controller;
 
-import com.aidanwhiteley.books.domain.Book;
-import com.aidanwhiteley.books.domain.User;
-import com.aidanwhiteley.books.domain.googlebooks.BookSearchResult;
-import com.aidanwhiteley.books.repository.BookRepository;
-import com.aidanwhiteley.books.repository.GoogleBooksDao;
-import com.aidanwhiteley.books.util.AuthenticationUtils;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+
+import java.security.Principal;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +15,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.security.Principal;
-import java.util.List;
-
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import com.aidanwhiteley.books.domain.Book;
+import com.aidanwhiteley.books.domain.googlebooks.BookSearchResult;
+import com.aidanwhiteley.books.repository.BookRepository;
+import com.aidanwhiteley.books.repository.GoogleBooksDao;
+import com.aidanwhiteley.books.service.StatsService;
+import com.aidanwhiteley.books.service.dtos.SummaryStats;
+import com.aidanwhiteley.books.util.AuthenticationUtils;
 
 @RestController
 @RequestMapping("/api")
@@ -35,6 +37,9 @@ public class BookController {
 
     @Autowired
     private AuthenticationUtils authUtils;
+    
+    @Autowired
+    private StatsService statsService;
 
     @RequestMapping(value = "/books/{id}", method = GET)
     public Book findBookById(@PathVariable("id") String id, Principal principal) {
@@ -57,6 +62,11 @@ public class BookController {
     @RequestMapping(value = "/books", method = GET, params = "genre")
     public List<Book> findByGenre(@RequestParam("genre") String genre) {
         throw new UnsupportedOperationException();
+    }
+    
+    @RequestMapping(value = "/booksstats", method = GET)
+    public SummaryStats getSummaryStats() {
+        return statsService.getSummaryStats();
     }
 
     @RequestMapping(value = "/googlebooks", method = GET, params = "title")

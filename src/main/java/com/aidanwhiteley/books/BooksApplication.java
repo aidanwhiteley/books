@@ -58,7 +58,7 @@ public class BooksApplication extends WebMvcConfigurerAdapter {
 	}
 
 	@Bean
-	@Profile("dev")
+	@Profile({"dev", "integration"})
 	public CommandLineRunner populateDummyData() {
 		return args -> {
 

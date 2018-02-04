@@ -16,4 +16,6 @@ public interface BookRepository extends MongoRepository<Book, String> {
     List<Book> findAllByGenre(@Param("genre") String genre);
 
     Page<Book> findAllByOrderByEnteredDesc(Pageable page);
+    
+    long countByRating(Book.Rating rating);
 }

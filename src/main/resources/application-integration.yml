@@ -5,3 +5,8 @@ spring:
   data:
     mongodb:
       uri: mongodb://localhost:27017/books-integration-test?safe=true&journal=true&w=majority&connectTimeoutMS=1001&wtimeoutMS=1000&serverSelectionTimeoutMS=10000
+      
+books:
+  reload:
+    development:
+      data: true  # Whether the contents of the /src/main/resources/sample_data will be reloaded into the database at application startup. Deletes all existing data!!!

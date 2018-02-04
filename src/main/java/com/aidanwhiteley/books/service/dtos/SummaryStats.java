@@ -1,11 +1,10 @@
 package com.aidanwhiteley.books.service.dtos;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import com.aidanwhiteley.books.repository.dtos.BooksByGenre;
+import com.aidanwhiteley.books.repository.dtos.BooksByRating;
+import lombok.*;
+
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -14,12 +13,9 @@ import lombok.ToString;
 @EqualsAndHashCode
 @ToString
 public class SummaryStats {
-	
-	private long count;
-	private long countGreatBooks;
-	private long countGoodBook;
-	private long countOkBooks;
-	private long countPoorBooks;
-	private long countTerribleBooks;
-	
+
+    private long count;
+    private List<BooksByRating> booksByRating;
+    private List<BooksByGenre> bookByGenre;
+
 }

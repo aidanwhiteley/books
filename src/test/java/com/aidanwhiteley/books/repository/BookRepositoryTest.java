@@ -2,6 +2,10 @@ package com.aidanwhiteley.books.repository;
 
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.Owner;
+import com.aidanwhiteley.books.repository.dtos.BooksByAuthor;
+import com.aidanwhiteley.books.repository.dtos.BooksByGenre;
+import com.aidanwhiteley.books.repository.dtos.BooksByRating;
+import com.aidanwhiteley.books.repository.dtos.BooksByReader;
 import com.aidanwhiteley.books.util.DummyAuthenticationUtils;
 import com.aidanwhiteley.books.util.IntegrationTest;
 import org.junit.After;
@@ -61,5 +65,34 @@ public class BookRepositoryTest extends IntegrationTest {
 
         // The book should have a system created id value.
         assertNotNull(books.getContent().get(0).getId());
+    }
+
+    @Test
+    public void countBooksByGenre() {
+        List<BooksByGenre> list = bookRepository.countBooksByGenre();
+        assertTrue(list.size() > 0);
+        assertTrue(list.get(0).getGenre().length() > 0);
+        assertTrue(list.get(0).getCountOfBooks() > 0);
+    }
+
+    @Test
+    public void countBooksByRating() {
+        List<BooksByRating> list = bookRepository.countBooksByRating();
+        assertTrue(list.size() > 0);
+        assertTrue(list.get(0).getCountOfBooks() > 0);
+    }
+
+    @Test
+    public void countBooksByAuthor() {
+        List<BooksByAuthor> list = bookRepository.countBooksByAuthor();
+        assertTrue(list.size() > 0);
+        assertTrue(list.get(0).getCountOfBooks() > 0);
+    }
+
+    @Test
+    public void countBooksByReader() {
+        List<BooksByReader> list = bookRepository.countBooksByReader();
+        assertTrue(list.size() > 0);
+        assertTrue(list.get(0).getCountOfBooks() > 0);
     }
 }

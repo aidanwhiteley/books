@@ -68,8 +68,12 @@ public class BookController {
     }
 
     @GetMapping(value = "/books",params = "genre")
-    public List<Book> findByGenre(@RequestParam("genre") String genre) {
-        throw new UnsupportedOperationException();
+    public Page<Book> findByGenre(@RequestParam("genre") String genre, @RequestParam(value="page") Optional<Integer> page, @RequestParam(value="size") Optional<Integer> size, Principal principal) {
+
+        PageRequest pageObj = new PageRequest(page.orElse(Integer.valueOf(0)).intValue(),
+                size.orElse(Integer.valueOf(defaultPageSize)).intValue());
+
+        return limitDataVisibility(bookRepository.findAllByGenreOrderByEnteredDesc(pageObj, genre), principal);
     }
     
     @GetMapping(value = "/books/stats")

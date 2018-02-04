@@ -17,11 +17,8 @@ public class StatsService {
 			
 		return SummaryStats.builder(). 
 			count(bookRepository.count()). 
-			countGreatBooks(bookRepository.countByRating(Rating.GREAT)). 
-			countGoodBook(bookRepository.countByRating(Rating.GOOD)). 
-			countOkBooks(bookRepository.countByRating(Rating.OK)). 
-			countPoorBooks(bookRepository.countByRating(Rating.POOR)). 
-			countTerribleBooks(bookRepository.countByRating(Rating.TERRIBLE)). 
+			bookByGenre(bookRepository.countBooksByGenre()).
+			booksByRating(bookRepository.countBooksByRating()).
 			build();
 	}
 

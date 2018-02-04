@@ -9,11 +9,11 @@ import org.springframework.data.repository.query.Param;
 
 import com.aidanwhiteley.books.domain.Book;
 
-public interface BookRepository extends MongoRepository<Book, String> {
+public interface BookRepository extends MongoRepository<Book, String>, BookRepositoryCustomMethods {
 
     Page<Book> findAllByAuthorOrderByEnteredDesc(Pageable page, String author);
 
-    List<Book> findAllByGenreOrderByEnteredDesc(@Param("genre") String genre);
+    Page<Book> findAllByGenreOrderByEnteredDesc(Pageable page, String genre);
 
     Page<Book> findAllByOrderByEnteredDesc(Pageable page);
 

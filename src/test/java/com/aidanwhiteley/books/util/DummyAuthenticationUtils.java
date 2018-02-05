@@ -1,14 +1,13 @@
 package com.aidanwhiteley.books.util;
 
+import com.aidanwhiteley.books.domain.User;
+import com.aidanwhiteley.books.domain.User.AuthenticationProvider;
+import org.springframework.stereotype.Component;
+
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
-import org.springframework.stereotype.Component;
-
-import com.aidanwhiteley.books.domain.User;
-import com.aidanwhiteley.books.domain.User.AuthenticationProvider;
 
 @Component
 public class DummyAuthenticationUtils implements AuthenticationUtils {
@@ -34,8 +33,8 @@ public class DummyAuthenticationUtils implements AuthenticationUtils {
     }
 
     @Override
-    public Map<String, String> getRemoteUserDetails(Principal principal) {
-        return new LinkedHashMap<String, String>();
+    public Map<String, Object> getRemoteUserDetails(Principal principal) {
+        return new LinkedHashMap<String, Object>();
     }
 
 	@Override

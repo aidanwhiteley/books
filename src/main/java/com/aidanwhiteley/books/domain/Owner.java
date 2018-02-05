@@ -45,7 +45,8 @@ public class Owner {
     }
 
     public static Owner getOwnerDataForEditorView(Owner anOwner) {
-        return new Owner(User.builder().fullName(anOwner.fullName).lastName(anOwner.lastName).firstName(anOwner.firstName).build());
+        return new Owner(User.builder().fullName(anOwner.fullName).lastName(anOwner.lastName).
+                firstName(anOwner.firstName).picture(anOwner.picture).link(anOwner.link).build());
     }
 
 }

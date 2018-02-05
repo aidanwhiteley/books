@@ -55,13 +55,14 @@ public class OauthAuthenticationUtils implements AuthenticationUtils {
     }
 
     @Override
-    public Map<String, String> getRemoteUserDetails(Principal principal) {
+    public Map<String, Object> getRemoteUserDetails(Principal principal) {
 
         checkPrincipalType(principal);
 
         OAuth2Authentication auth = (OAuth2Authentication) principal;
         @SuppressWarnings("unchecked")
-        Map<String, String> userDetails = (LinkedHashMap<String, String>) auth.getUserAuthentication().getDetails();
+        Map<String, Object> userDetails = (LinkedHashMap<String, Object>) auth.getUserAuthentication().getDetails();
+
 
         return userDetails;
     }

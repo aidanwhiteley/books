@@ -1,16 +1,9 @@
 package com.aidanwhiteley.books.controller;
 
-import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.FACEBOOK;
-import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.GOOGLE;
-import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.PATCH;
-
-import java.security.Principal;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-
+import com.aidanwhiteley.books.controller.dtos.ClientRoles;
+import com.aidanwhiteley.books.domain.User;
+import com.aidanwhiteley.books.repository.UserRepository;
+import com.aidanwhiteley.books.util.AuthenticationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +16,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.aidanwhiteley.books.controller.dtos.ClientRoles;
-import com.aidanwhiteley.books.domain.User;
-import com.aidanwhiteley.books.repository.UserRepository;
-import com.aidanwhiteley.books.util.AuthenticationUtils;
+import java.security.Principal;
+import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.FACEBOOK;
+import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.GOOGLE;
+import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @RestController
 @RequestMapping("/secure/api")
@@ -48,7 +46,7 @@ public class UserController {
     @PreAuthorize("hasAnyRole('ROLE_EDITOR', 'ROLE_ADMIN', 'ROLE_USER')")
     public User user(Principal principal) {
 
-        Map<String, String> userDetails = authUtils.getRemoteUserDetails(principal);
+        Map<String, Object> userDetails = authUtils.getRemoteUserDetails(principal);
 
         LOGGER.debug("Remote user details: " + userDetails);
 
@@ -98,19 +96,19 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    private User createUser(Map<String, String> userDetails, User.AuthenticationProvider provider) {
+    private User createUser(Map<String, Object> userDetails, User.AuthenticationProvider provider) {
 
         User user = null;
 
         switch (provider) {
             case GOOGLE: {
-                user = User.builder().authenticationServiceId(userDetails.get("id")).
-                        firstName(userDetails.get("given_name")).
-                        lastName(userDetails.get("family_name")).
-                        fullName(userDetails.get("name")).
-                        link(userDetails.get("link")).
-                        picture(userDetails.get("picture")).
-                        email(userDetails.get("email")).
+                user = User.builder().authenticationServiceId((String) userDetails.get("id")).
+                        firstName((String) userDetails.get("given_name")).
+                        lastName((String) userDetails.get("family_name")).
+                        fullName((String) userDetails.get("name")).
+                        link((String) userDetails.get("link")).
+                        picture((String) userDetails.get("picture")).
+                        email((String) userDetails.get("email")).
                         lastLogon(LocalDateTime.now()).
                         firstLogon(LocalDateTime.now()).
                         authProvider(GOOGLE).
@@ -121,19 +119,25 @@ public class UserController {
                 break;
             }
             case FACEBOOK: {
-                user = User.builder().authenticationServiceId(userDetails.get("id")).
-                        firstName(userDetails.get("first_name")).
-                        lastName(userDetails.get("last_name")).
-                        fullName(userDetails.get("name")).
-                        link(userDetails.get("link")).
-                        // picture(userDetails.get("picture.data.url")).
-                        email(userDetails.get("email")).
+
+                user = User.builder().authenticationServiceId((String) userDetails.get("id")).
+                        firstName((String) userDetails.get("first_name")).
+                        lastName((String) userDetails.get("last_name")).
+                        fullName((String) userDetails.get("name")).
+                        link((String) userDetails.get("link")).
+                        email((String) userDetails.get("email")).
                         lastLogon(LocalDateTime.now()).
                         firstLogon(LocalDateTime.now()).
                         authProvider(FACEBOOK).
                         build();
                 setDefaultAdminUser(userDetails, user, FACEBOOK);
                 user.addRole(User.Role.ROLE_USER);
+
+                String url = extractFaceBookPictureUrl(userDetails);
+                if (url != null) {
+                    user.setPicture(url);
+                }
+
                 break;
             }
             default: {
@@ -147,33 +151,36 @@ public class UserController {
         return user;
     }
 
-    private void setDefaultAdminUser(Map<String, String> userDetails, User user, User.AuthenticationProvider provider) {
+    private void setDefaultAdminUser(Map<String, Object> userDetails, User user, User.AuthenticationProvider provider) {
         if (defaultAdminEmail != null && defaultAdminEmail.equals(user.getEmail())) {
             user.addRole(User.Role.ROLE_EDITOR);
             user.addRole(User.Role.ROLE_ADMIN);
         }
     }
 
-    private User updateUser(Map<String, String> userDetails, User user, User.AuthenticationProvider provider) {
+    private User updateUser(Map<String, Object> userDetails, User user, User.AuthenticationProvider provider) {
 
         switch (provider) {
             case GOOGLE: {
-                user.setFirstName(userDetails.get("given_name"));
-                user.setLastName(userDetails.get("family_name"));
-                user.setFullName(userDetails.get("name"));
-                user.setLink(userDetails.get("link"));
-                user.setPicture(userDetails.get("picture"));
-                user.setEmail(userDetails.get("email"));
+                user.setFirstName((String) userDetails.get("given_name"));
+                user.setLastName((String) userDetails.get("family_name"));
+                user.setFullName((String) userDetails.get("name"));
+                user.setLink((String) userDetails.get("link"));
+                user.setPicture((String) userDetails.get("picture"));
+                user.setEmail((String) userDetails.get("email"));
                 user.setLastLogon(LocalDateTime.now());
                 break;
             }
             case FACEBOOK: {
-                user.setFirstName(userDetails.get("first_name"));
-                user.setLastName(userDetails.get("last_name"));
-                user.setFullName(userDetails.get("name"));
-                user.setLink(userDetails.get("link"));
-                //user.setPicture(userDetails.get("picture.data.url"));
-                user.setEmail(userDetails.get("email"));
+                user.setFirstName((String) userDetails.get("first_name"));
+                user.setLastName((String) userDetails.get("last_name"));
+                user.setFullName((String) userDetails.get("name"));
+                user.setLink((String) userDetails.get("link"));
+                String url = extractFaceBookPictureUrl(userDetails);
+                if (url != null) {
+                    user.setPicture(url);
+                }
+                user.setEmail((String) userDetails.get("email"));
                 user.setLastLogon(LocalDateTime.now());
                 break;
             }
@@ -186,5 +193,16 @@ public class UserController {
         userRepository.save(user);
         LOGGER.info("User updated in repository: " + user);
         return user;
+    }
+
+    private String extractFaceBookPictureUrl(Map<String, Object> userDetails) {
+        if (userDetails.get("picture") != null && userDetails.get("picture") instanceof LinkedHashMap) {
+            LinkedHashMap<String, Object> picture = (LinkedHashMap<String, Object>) userDetails.get("picture");
+            if (picture.get("data") != null && picture.get("data") instanceof LinkedHashMap) {
+                LinkedHashMap<String, Object> data = (LinkedHashMap<String, Object>) picture.get("data");
+                return (String) data.get("url");
+            }
+        }
+        return null;
     }
 }

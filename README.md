@@ -75,3 +75,6 @@ The running application can be seen at TBC
 
 Why "The Cloudy BookClub"? Well - it's gong to run in the cloud innit. And I couldnt think
 of any other domain names that weren't already taken.
+
+## Client functionality
+![Screen shot](https://github.com/aidanwhiteley/books-web/blob/master/app/images/cloudy-book-club-screen-grab.jpg "Book review")

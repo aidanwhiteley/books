@@ -7,7 +7,6 @@ New functionality
 6. Add stats cards to Book detail page
 7. Add Comments functionality
 8. Migrate to stateless JWT based authentication - carrying "signed" roles data
-10. Create typeahead of suggested genres (based on genres already used)
 11. Spring Data based auditing
 12. Set up endpoints and security for Actuator
 13. Support "multi tenant" i.e. multiple instances of app sharing same codebase and Mongo
@@ -16,7 +15,6 @@ New functionality
 16. Mongo based full text search support - copying across UX from TheGpsBlog
 17. Create a logo image!
 18. Support logout (after moving to JWT)
-20. Write notes to say that must close / re-open browser for default admin to work.
 22. Improve efficiency of processing for which menu item is active.
 23. Further randomise / anonomise the created field in the test data
 
@@ -26,7 +24,9 @@ Completed new functionality
 5. Create "stats" API for cards at top of summary page
 8. Create "pop out" window for by genre, by author, by reader links
 9. Create Twitter based typeahead for above links
+10. Create typeahead of suggested genres (based on genres already used)
 19. Fix indentation GUI indicator of which "menu" item was clicked
+20. Write notes to say that must close / re-open browser for default admin to work.
 21. Remove user data from list of books. Trim down other data
 22. Check for owner or admin on update / delete actions on books
 23. What books data should a non logged on user be able to search by reader. None!
@@ -38,6 +38,7 @@ Bugs
 ~~~~
 3. Fix correct selection of book rating when going back in to edit a book.
 4. The search by author input box isnt being cleared after use
+6. Auto admin functionality requires a user to log in twice before it works
 
 Fixed bugs
 ~~~~~~~~~~

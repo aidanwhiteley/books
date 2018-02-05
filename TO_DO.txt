@@ -18,7 +18,8 @@ New functionality
 18. Support logout (after moving to JWT)
 20. Write notes to say that must close / re-open browser for default admin to work.
 22. Improve efficiency of processing for which menu item is active.
-23. What books data should a non logged on user be able to search by reader
+23. Furtehr randmise / anonomise the created field in the test data
+24. Move the Goog Book data to 2nd tab and put comments on first tab.
 
 Completed new functionality
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -29,11 +30,12 @@ Completed new functionality
 19. Fix indentation GUI indicator of which "menu" item was clicked
 21. Remove user data from list of books. Trim down other data
 22. Check for owner or admin on update / delete actions on books
+23. What books data should a non logged on user be able to search by reader. None!
 
 Bugs
 ~~~~
 3. Fix correct selection of book rating when going back in to edit a book.
-4. The search by author input bix isnt being cleared
+4. The search by author input bix isnt being cleared after use
 
 Fixed bugs
 ~~~~~~~~~~

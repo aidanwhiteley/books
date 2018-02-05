@@ -4,6 +4,7 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
+import com.aidanwhiteley.books.controller.util.LimitBookDataVisibility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,21 +41,30 @@ public class BookController {
 
     @Autowired
     private GoogleBooksDao googleBooksDao;
-
-    @Autowired
-    private AuthenticationUtils authUtils;
     
     @Autowired
     private StatsService statsService;
+
+    @Autowired
+    private LimitBookDataVisibility dataVisibilityService;
 
     @Value("${books.users.default.page.size}")
     private int defaultPageSize;
 
 
+    @GetMapping(value = "/books")
+    public Page<Book> findAllByWhenEnteredDesc(@RequestParam(value="page") Optional<Integer> page, @RequestParam(value="size") Optional<Integer> size, Principal principal) {
+
+        PageRequest pageObj = new PageRequest(page.orElse(Integer.valueOf(0)).intValue(),
+                size.orElse(Integer.valueOf(defaultPageSize)).intValue());
+        return dataVisibilityService.limitDataVisibility(bookRepository.findAllByOrderByEnteredDesc(pageObj), principal);
+    }
+
     @GetMapping(value = "/books/{id}")
     public Book findBookById(@PathVariable("id") String id, Principal principal) {
-        return limitDataVisibility(bookRepository.findOne(id), principal);
+        return dataVisibilityService.limitDataVisibility(bookRepository.findOne(id), principal);
     }
+
 
     @GetMapping(value = "/books", params = {"author"})
     public Page<Book> findByAuthor(@RequestParam("author") String author, @RequestParam(value="page") Optional<Integer> page,
@@ -62,16 +72,9 @@ public class BookController {
 
         PageRequest pageObj = new PageRequest(page.orElse(Integer.valueOf(0)).intValue(),
                 size.orElse(Integer.valueOf(defaultPageSize)).intValue());
-        return limitDataVisibility(bookRepository.findAllByAuthorOrderByEnteredDesc(pageObj, author), principal);
+        return dataVisibilityService.limitDataVisibility(bookRepository.findAllByAuthorOrderByEnteredDesc(pageObj, author), principal);
     }
 
-    @GetMapping(value = "/books")
-    public Page<Book> findAllByWhenEnteredDesc(@RequestParam(value="page") Optional<Integer> page, @RequestParam(value="size") Optional<Integer> size, Principal principal) {
-
-        PageRequest pageObj = new PageRequest(page.orElse(Integer.valueOf(0)).intValue(),
-                size.orElse(Integer.valueOf(defaultPageSize)).intValue());
-        return limitDataVisibility(bookRepository.findAllByOrderByEnteredDesc(pageObj), principal);
-    }
 
     @GetMapping(value = "/books",params = "genre")
     public Page<Book> findByGenre(@RequestParam("genre") String genre, @RequestParam(value="page") Optional<Integer> page, @RequestParam(value="size") Optional<Integer> size, Principal principal) {
@@ -79,37 +82,33 @@ public class BookController {
         PageRequest pageObj = new PageRequest(page.orElse(Integer.valueOf(0)).intValue(),
                 size.orElse(Integer.valueOf(defaultPageSize)).intValue());
 
-        return limitDataVisibility(bookRepository.findAllByGenreOrderByEnteredDesc(pageObj, genre), principal);
+        return dataVisibilityService.limitDataVisibility(bookRepository.findAllByGenreOrderByEnteredDesc(pageObj, genre), principal);
     }
-    
-    @GetMapping(value = "/books",params = "reader")
-    public Page<Book> findByReader(@RequestParam("reader") String genre, @RequestParam(value="page") Optional<Integer> page, @RequestParam(value="size") Optional<Integer> size, Principal principal) {
 
-        PageRequest pageObj = new PageRequest(page.orElse(Integer.valueOf(0)).intValue(),
-                size.orElse(Integer.valueOf(defaultPageSize)).intValue(), new Sort(Sort.Direction.DESC, "entered"));
 
-        return limitDataVisibility(bookRepository.findByReaderOrderByEnteredDesc(pageObj, genre), principal);
-    }
-    
     @GetMapping(value = "/books/stats")
     public SummaryStats getSummaryStats() {
         return statsService.getSummaryStats();
     }
 
+
     @GetMapping(value = "/books/genres")
     public List<BooksByGenre> findBookGenres() {
         return bookRepository.countBooksByGenre();
     }
-    
+
+
     @GetMapping(value = "/books/authors")
     public List<BooksByAuthor> findBookAuthors() {
         return bookRepository.countBooksByAuthor();
     }
 
+
     @GetMapping(value = "/googlebooks", params = "title")
     public BookSearchResult findGoogleBooksByTitle(@RequestParam("title") String title) {
         return googleBooksDao.searchGoogBooksByTitle(title);
     }
+
 
     @GetMapping(value = "/books", params = {"rating"})
     public Page<Book> findByRating(@RequestParam("rating") String rating, @RequestParam(value="page") Optional<Integer> page, @RequestParam(value="size") Optional<Integer> size, Principal principal) {
@@ -121,75 +120,13 @@ public class BookController {
         if (aRating == null) {
             throw new IllegalArgumentException();
         } else {
-            return limitDataVisibility(bookRepository.findByRatingOrderByEnteredDesc(pageObj, aRating), principal);
+            return dataVisibilityService.limitDataVisibility(bookRepository.findByRatingOrderByEnteredDesc(pageObj, aRating), principal);
         }
     }
+
 
     @SuppressWarnings("serial")
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public class IllegalArgumentException extends RuntimeException {
-    }
-
-    /**
-     * Remove data from Book entries if the doesnt have admin access.
-     *
-     * @param books
-     * @param principal
-     * @return
-     */
-    private Page<Book> limitDataVisibility(Page<Book> books, Principal principal) {
-
-        Page<Book> filteredData = null;
-
-        if (principal == null) {
-            filteredData = books.map(Book::removeDataIfUnknownUser);
-        } else {
-            switch (authUtils.getUsersHighestRole(principal)) {
-                case ROLE_USER:
-                    filteredData = books.map(Book::removeDataIfUnknownUser);
-                    break;
-                case ROLE_EDITOR:
-                    filteredData = books.map(Book::removeDataIfEditor);
-                    break;
-                case ROLE_ADMIN:
-                    filteredData = books;
-                    break;
-
-                default: {
-                    LOGGER.error("Unknown user roles for principal {}", principal);
-                    throw new IllegalStateException("Unknown user role");
-                }
-            }
-        }
-
-        return filteredData;
-    }
-
-    private Book limitDataVisibility(Book book, Principal principal) {
-
-        Book filteredData;
-
-        if (principal == null) {
-            filteredData = Book.removeDataIfUnknownUser(book);
-        } else {
-            switch (authUtils.getUsersHighestRole(principal)) {
-                case ROLE_USER:
-                    filteredData = Book.removeDataIfUnknownUser(book);
-                    break;
-                case ROLE_EDITOR:
-                    filteredData = Book.removeDataIfEditor(book);
-                    break;
-                case ROLE_ADMIN:
-                    filteredData = book;
-                    break;
-
-                default: {
-                    LOGGER.error("Unknown user roles for principal {}", principal);
-                    throw new IllegalStateException("Unknown user role");
-                }
-            }
-        }
-
-        return filteredData;
     }
 }

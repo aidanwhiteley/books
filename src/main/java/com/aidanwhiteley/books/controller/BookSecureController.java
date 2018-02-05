@@ -1,6 +1,7 @@
 package com.aidanwhiteley.books.controller;
 
 import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
@@ -8,6 +9,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.Principal;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -27,6 +29,7 @@ import com.aidanwhiteley.books.domain.Owner;
 import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.repository.BookRepository;
 import com.aidanwhiteley.books.repository.GoogleBooksDao;
+import com.aidanwhiteley.books.repository.dtos.BooksByReader;
 import com.aidanwhiteley.books.util.AuthenticationUtils;
 
 @RestController
@@ -81,6 +84,11 @@ public class BookSecureController {
 	        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 	}
+	
+	@RequestMapping(value = "/books/readers", method = GET)
+    public List<BooksByReader> findBookReaders() {
+        return bookRepository.countBooksByReader();
+    }
 
 	@RequestMapping(value = "/books/{id}", method = DELETE)
 	public ResponseEntity<?> deleteBookById(@PathVariable("id") String id, Principal principal) {
@@ -95,5 +103,7 @@ public class BookSecureController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 	}
+	
+	
 
 }

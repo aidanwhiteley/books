@@ -1,25 +1,30 @@
 package com.aidanwhiteley.books.controller;
 
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
-import com.aidanwhiteley.books.repository.dtos.BooksByGenre;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.googlebooks.BookSearchResult;
 import com.aidanwhiteley.books.repository.BookRepository;
 import com.aidanwhiteley.books.repository.GoogleBooksDao;
+import com.aidanwhiteley.books.repository.dtos.BooksByAuthor;
+import com.aidanwhiteley.books.repository.dtos.BooksByGenre;
 import com.aidanwhiteley.books.service.StatsService;
 import com.aidanwhiteley.books.service.dtos.SummaryStats;
 import com.aidanwhiteley.books.util.AuthenticationUtils;
@@ -77,6 +82,15 @@ public class BookController {
         return limitDataVisibility(bookRepository.findAllByGenreOrderByEnteredDesc(pageObj, genre), principal);
     }
     
+    @GetMapping(value = "/books",params = "reader")
+    public Page<Book> findByReader(@RequestParam("reader") String genre, @RequestParam(value="page") Optional<Integer> page, @RequestParam(value="size") Optional<Integer> size, Principal principal) {
+
+        PageRequest pageObj = new PageRequest(page.orElse(Integer.valueOf(0)).intValue(),
+                size.orElse(Integer.valueOf(defaultPageSize)).intValue(), new Sort(Sort.Direction.DESC, "entered"));
+
+        return limitDataVisibility(bookRepository.findByReaderOrderByEnteredDesc(pageObj, genre), principal);
+    }
+    
     @GetMapping(value = "/books/stats")
     public SummaryStats getSummaryStats() {
         return statsService.getSummaryStats();
@@ -85,6 +99,11 @@ public class BookController {
     @GetMapping(value = "/books/genres")
     public List<BooksByGenre> findBookGenres() {
         return bookRepository.countBooksByGenre();
+    }
+    
+    @GetMapping(value = "/books/authors")
+    public List<BooksByAuthor> findBookAuthors() {
+        return bookRepository.countBooksByAuthor();
     }
 
     @GetMapping(value = "/googlebooks", params = "title")
@@ -106,7 +125,8 @@ public class BookController {
         }
     }
 
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    @SuppressWarnings("serial")
+	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public class IllegalArgumentException extends RuntimeException {
     }
 
@@ -172,6 +192,4 @@ public class BookController {
 
         return filteredData;
     }
-
-
 }

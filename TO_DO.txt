@@ -4,12 +4,9 @@ New functionality
 1. Add first logon welcome page
 2. Add help content and link
 3. Support correct display of edit and delete for Book entries - possibly via Hateoas / HAL links
-5. Create "stats" API for cards at top of summary page
 6. Add stats cards to Book detail page
 7. Add Comments functionality
 8. Migrate to stateless JWT based authentication - carrying "signed" roles data
-8. Create "pop out" window for by genre, by author, by reader links
-9. Create Twitter based typeahead for above links
 10. Create typeahead of suggested genres (based on genres already used)
 11. Spring Data based auditing
 12. Set up endpoints and security for Actuator
@@ -21,17 +18,22 @@ New functionality
 18. Support logout (after moving to JWT)
 20. Write notes to say that must close / re-open browser for default admin to work.
 22. Improve efficiency of processing for which menu item is active.
+23. What books data should a non logged on user be able to search by reader
 
 Completed new functionality
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 4. Pagination of Books list
-19. Fix identation GUI indicator of which "menu" item was clicked
+5. Create "stats" API for cards at top of summary page
+8. Create "pop out" window for by genre, by author, by reader links
+9. Create Twitter based typeahead for above links
+19. Fix indentation GUI indicator of which "menu" item was clicked
 21. Remove user data from list of books. Trim down other data
 22. Check for owner or admin on update / delete actions on books
 
 Bugs
 ~~~~
 3. Fix correct selection of book rating when going back in to edit a book.
+4. The search by author input bix isnt being cleared
 
 Fixed bugs
 ~~~~~~~~~~

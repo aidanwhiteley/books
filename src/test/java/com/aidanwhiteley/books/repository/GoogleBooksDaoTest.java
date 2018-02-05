@@ -10,8 +10,8 @@ import static org.junit.Assert.*;
 
 public class GoogleBooksDaoTest extends IntegrationTest {
 
-    public static final String SPRING_FRAMEWORK_GOOGLE_BOOK_ID = "oMVIzzKjJCcC";
-    public static final String SPRING_BOOK_TITLE = "Professional Java Development with the Spring Framework";
+    private static final String SPRING_FRAMEWORK_GOOGLE_BOOK_ID = "oMVIzzKjJCcC";
+    private static final String SPRING_BOOK_TITLE = "Professional Java Development with the Spring Framework";
 
     @Autowired
     GoogleBooksDao theDao;

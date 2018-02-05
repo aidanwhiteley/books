@@ -119,8 +119,8 @@ public class BookSecureController {
     @GetMapping(value = "/books", params = "reader")
     public Page<Book> findByReader(@RequestParam("reader") String genre, @RequestParam(value = "page") Optional<Integer> page, @RequestParam(value = "size") Optional<Integer> size, Principal principal) {
 
-        PageRequest pageObj = new PageRequest(page.orElse(Integer.valueOf(0)).intValue(),
-                size.orElse(Integer.valueOf(defaultPageSize)).intValue(), new Sort(Sort.Direction.DESC, "entered"));
+        PageRequest pageObj = new PageRequest(page.orElse(0),
+                size.orElse(defaultPageSize), new Sort(Sort.Direction.DESC, "entered"));
 
         return dataVisibilityService.limitDataVisibility(bookRepository.findByReaderOrderByEnteredDesc(pageObj, genre), principal);
     }

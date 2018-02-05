@@ -20,7 +20,7 @@ public class StatsService {
 
         List<BooksByRating> booksByRatingList = bookRepository.countBooksByRating();
 
-        List<BooksByRating> modifiableList = new ArrayList<BooksByRating>(booksByRatingList);
+        List<BooksByRating> modifiableList = new ArrayList<>(booksByRatingList);
         Collections.sort(modifiableList, (a, b) -> b.compareTo(a));
 			
 		return SummaryStats.builder(). 

@@ -26,8 +26,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @SpringBootApplication
 public class BooksApplication extends WebMvcConfigurerAdapter {
 
-	public static final String BOOKS_COLLECTION = "book";
-	public static final String USERS_COLLECTION = "user";
+	private static final String BOOKS_COLLECTION = "book";
+	private static final String USERS_COLLECTION = "user";
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BooksApplication.class);
 

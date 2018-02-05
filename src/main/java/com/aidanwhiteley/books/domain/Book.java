@@ -107,7 +107,7 @@ public class Book implements Serializable {
      * @return a Book with some PII data removed.
      */
     public static Book removeDataIfUnknownUser(Book book) {
-        Book publicBook = new BookBuilder(). 
+        return new BookBuilder().
         		id(book.id).
                 googleBookDetails(book.googleBookDetails).
                 googleBookId(book.googleBookId).
@@ -118,13 +118,11 @@ public class Book implements Serializable {
                 summary(book.summary).
                 title(book.title).
                 build();
-
-        return publicBook;
     }
 
     public static Book removeDataIfEditor(Book book) {
 
-        Book editorBook = new BookBuilder().
+        return new BookBuilder().
                 id(book.id).
                 googleBookDetails(book.googleBookDetails).
                 googleBookId(book.googleBookId).
@@ -136,7 +134,5 @@ public class Book implements Serializable {
                 title(book.title).
                 createdBy(Owner.getOwnerDataForEditorView(book.createdBy)).
                 build();
-
-        return editorBook;
     }
 }

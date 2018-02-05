@@ -27,7 +27,7 @@ public class LimitBookDataVisibility {
      */
     public Page<Book> limitDataVisibility(Page<Book> books, Principal principal) {
 
-        Page<Book> filteredData = null;
+        Page<Book> filteredData;
 
         if (principal == null) {
             filteredData = books.map(Book::removeDataIfUnknownUser);

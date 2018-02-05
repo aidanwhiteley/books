@@ -98,7 +98,7 @@ public class UserController {
 
     private User createUser(Map<String, Object> userDetails, User.AuthenticationProvider provider) {
 
-        User user = null;
+        User user;
 
         switch (provider) {
             case GOOGLE: {
@@ -197,8 +197,10 @@ public class UserController {
 
     private String extractFaceBookPictureUrl(Map<String, Object> userDetails) {
         if (userDetails.get("picture") != null && userDetails.get("picture") instanceof LinkedHashMap) {
+            @SuppressWarnings("unchecked")
             LinkedHashMap<String, Object> picture = (LinkedHashMap<String, Object>) userDetails.get("picture");
             if (picture.get("data") != null && picture.get("data") instanceof LinkedHashMap) {
+                @SuppressWarnings("unchecked")
                 LinkedHashMap<String, Object> data = (LinkedHashMap<String, Object>) picture.get("data");
                 return (String) data.get("url");
             }

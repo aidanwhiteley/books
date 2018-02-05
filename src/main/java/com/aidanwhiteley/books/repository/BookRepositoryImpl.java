@@ -6,17 +6,17 @@ import com.aidanwhiteley.books.repository.dtos.BooksByGenre;
 import com.aidanwhiteley.books.repository.dtos.BooksByRating;
 import com.aidanwhiteley.books.repository.dtos.BooksByReader;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 
+@Repository
 public class BookRepositoryImpl implements BookRepositoryCustomMethods {
 
     @Autowired
@@ -32,9 +32,7 @@ public class BookRepositoryImpl implements BookRepositoryCustomMethods {
         //Convert the aggregation result into a List
         AggregationResults<BooksByGenre> groupResults
                 = mongoTemplate.aggregate(agg, Book.class, BooksByGenre.class);
-        List<BooksByGenre> result = groupResults.getMappedResults();
-
-        return result;
+        return groupResults.getMappedResults();
     }
 
     @Override
@@ -47,9 +45,7 @@ public class BookRepositoryImpl implements BookRepositoryCustomMethods {
         //Convert the aggregation result into a List
         AggregationResults<BooksByRating> groupResults
                 = mongoTemplate.aggregate(agg, Book.class, BooksByRating.class);
-        List<BooksByRating> result = groupResults.getMappedResults();
-
-        return result;
+        return groupResults.getMappedResults();
     }
 
     @Override
@@ -62,9 +58,7 @@ public class BookRepositoryImpl implements BookRepositoryCustomMethods {
         //Convert the aggregation result into a List
         AggregationResults<BooksByAuthor> groupResults
                 = mongoTemplate.aggregate(agg, Book.class, BooksByAuthor.class);
-        List<BooksByAuthor> result = groupResults.getMappedResults();
-
-        return result;
+        return groupResults.getMappedResults();
     }
 
     @Override
@@ -77,8 +71,6 @@ public class BookRepositoryImpl implements BookRepositoryCustomMethods {
         //Convert the aggregation result into a List
         AggregationResults<BooksByReader> groupResults
                 = mongoTemplate.aggregate(agg, Book.class, BooksByReader.class);
-        List<BooksByReader> result = groupResults.getMappedResults();
-
-        return result;
+        return groupResults.getMappedResults();
     }
 }

@@ -1,25 +1,6 @@
 package com.aidanwhiteley.books.controller;
 
-import java.security.Principal;
-import java.util.List;
-import java.util.Optional;
-
 import com.aidanwhiteley.books.controller.util.LimitBookDataVisibility;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.googlebooks.BookSearchResult;
 import com.aidanwhiteley.books.repository.BookRepository;
@@ -28,7 +9,18 @@ import com.aidanwhiteley.books.repository.dtos.BooksByAuthor;
 import com.aidanwhiteley.books.repository.dtos.BooksByGenre;
 import com.aidanwhiteley.books.service.StatsService;
 import com.aidanwhiteley.books.service.dtos.SummaryStats;
-import com.aidanwhiteley.books.util.AuthenticationUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -41,7 +33,7 @@ public class BookController {
 
     @Autowired
     private GoogleBooksDao googleBooksDao;
-    
+
     @Autowired
     private StatsService statsService;
 
@@ -53,10 +45,10 @@ public class BookController {
 
 
     @GetMapping(value = "/books")
-    public Page<Book> findAllByWhenEnteredDesc(@RequestParam(value="page") Optional<Integer> page, @RequestParam(value="size") Optional<Integer> size, Principal principal) {
+    public Page<Book> findAllByWhenEnteredDesc(@RequestParam(value = "page") Optional<Integer> page, @RequestParam(value = "size") Optional<Integer> size, Principal principal) {
 
-        PageRequest pageObj = new PageRequest(page.orElse(Integer.valueOf(0)).intValue(),
-                size.orElse(Integer.valueOf(defaultPageSize)).intValue());
+        PageRequest pageObj = new PageRequest(page.orElse(0),
+                size.orElse(defaultPageSize));
         return dataVisibilityService.limitDataVisibility(bookRepository.findAllByOrderByEnteredDesc(pageObj), principal);
     }
 
@@ -67,20 +59,20 @@ public class BookController {
 
 
     @GetMapping(value = "/books", params = {"author"})
-    public Page<Book> findByAuthor(@RequestParam("author") String author, @RequestParam(value="page") Optional<Integer> page,
-                                   @RequestParam(value="size") Optional<Integer> size, Principal principal) {
+    public Page<Book> findByAuthor(@RequestParam("author") String author, @RequestParam(value = "page") Optional<Integer> page,
+                                   @RequestParam(value = "size") Optional<Integer> size, Principal principal) {
 
-        PageRequest pageObj = new PageRequest(page.orElse(Integer.valueOf(0)).intValue(),
-                size.orElse(Integer.valueOf(defaultPageSize)).intValue());
+        PageRequest pageObj = new PageRequest(page.orElse(0),
+                size.orElse(defaultPageSize));
         return dataVisibilityService.limitDataVisibility(bookRepository.findAllByAuthorOrderByEnteredDesc(pageObj, author), principal);
     }
 
 
-    @GetMapping(value = "/books",params = "genre")
-    public Page<Book> findByGenre(@RequestParam("genre") String genre, @RequestParam(value="page") Optional<Integer> page, @RequestParam(value="size") Optional<Integer> size, Principal principal) {
+    @GetMapping(value = "/books", params = "genre")
+    public Page<Book> findByGenre(@RequestParam("genre") String genre, @RequestParam(value = "page") Optional<Integer> page, @RequestParam(value = "size") Optional<Integer> size, Principal principal) {
 
-        PageRequest pageObj = new PageRequest(page.orElse(Integer.valueOf(0)).intValue(),
-                size.orElse(Integer.valueOf(defaultPageSize)).intValue());
+        PageRequest pageObj = new PageRequest(page.orElse(0),
+                size.orElse(defaultPageSize));
 
         return dataVisibilityService.limitDataVisibility(bookRepository.findAllByGenreOrderByEnteredDesc(pageObj, genre), principal);
     }
@@ -111,11 +103,11 @@ public class BookController {
 
 
     @GetMapping(value = "/books", params = {"rating"})
-    public Page<Book> findByRating(@RequestParam("rating") String rating, @RequestParam(value="page") Optional<Integer> page, @RequestParam(value="size") Optional<Integer> size, Principal principal) {
+    public Page<Book> findByRating(@RequestParam("rating") String rating, @RequestParam(value = "page") Optional<Integer> page, @RequestParam(value = "size") Optional<Integer> size, Principal principal) {
 
         Book.Rating aRating = Book.Rating.getRatingByString(rating);
-        PageRequest pageObj = new PageRequest(page.orElse(Integer.valueOf(0)).intValue(),
-                size.orElse(Integer.valueOf(defaultPageSize)).intValue());
+        PageRequest pageObj = new PageRequest(page.orElse(0),
+                size.orElse(defaultPageSize));
 
         if (aRating == null) {
             throw new IllegalArgumentException();
@@ -126,7 +118,7 @@ public class BookController {
 
 
     @SuppressWarnings("serial")
-	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public class IllegalArgumentException extends RuntimeException {
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    class IllegalArgumentException extends RuntimeException {
     }
 }

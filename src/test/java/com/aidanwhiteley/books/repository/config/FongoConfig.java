@@ -26,7 +26,7 @@ public class FongoConfig extends AbstractMongoConfiguration {
 
     @Override
     @Bean
-    public Mongo mongo() throws Exception {
+    public Mongo mongo() {
         return new Fongo(getDatabaseName()).getMongo();
     }
 

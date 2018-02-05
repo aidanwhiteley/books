@@ -34,7 +34,7 @@ public class DummyAuthenticationUtils implements AuthenticationUtils {
 
     @Override
     public Map<String, Object> getRemoteUserDetails(Principal principal) {
-        return new LinkedHashMap<String, Object>();
+        return new LinkedHashMap<>();
     }
 
 	@Override

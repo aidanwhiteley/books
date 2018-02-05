@@ -68,8 +68,7 @@ public class UserRepositoryTest extends IntegrationTest {
 	}
 
 	public static User createTestUser() {
-		User user = User.builder().authenticationServiceId(SERVICE_ID).authProvider(GOOGLE).fullName(FULL_NAME).build();
-		return user;
+		return User.builder().authenticationServiceId(SERVICE_ID).authProvider(GOOGLE).fullName(FULL_NAME).build();
 	}
 
 }

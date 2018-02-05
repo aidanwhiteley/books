@@ -12,7 +12,9 @@ import org.springframework.data.mongodb.core.query.Update;
 import com.aidanwhiteley.books.controller.dtos.ClientRoles;
 import com.aidanwhiteley.books.domain.User;
 import com.mongodb.WriteResult;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class UserRepositoryImpl implements UserRepositoryCustomMethods {
 
 	@Autowired
@@ -21,7 +23,7 @@ public class UserRepositoryImpl implements UserRepositoryCustomMethods {
 	@Override
 	public int updateUserRoles(ClientRoles clientRoles) {
 		
-		List<User.Role> roles = new ArrayList<User.Role>();
+		List<User.Role> roles = new ArrayList<>();
 		if (clientRoles.isAdmin()) {
 			roles.add(User.Role.ROLE_ADMIN);
 		}

@@ -8,7 +8,7 @@ spring:
 
 books:
   client:
-    enableCORS: false
+    enableCORS: true
 
   reload:
     development:

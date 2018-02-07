@@ -12,6 +12,7 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.env.Environment;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -34,6 +35,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -53,7 +55,10 @@ import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.*;
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    OAuth2ClientContext oauth2ClientContext;
+    private OAuth2ClientContext oauth2ClientContext;
+
+    @Autowired
+    private Environment environment;
 
     @Value("${books.client.postLogonUrl}")
     private String postLogonUrl;
@@ -61,12 +66,45 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserRepository userRepository;
 
+    @Bean
+    @ConfigurationProperties("google.client")
+    public AuthorizationCodeResourceDetails google() {
+        return new AuthorizationCodeResourceDetails();
+    }
+
+    @Bean
+    @ConfigurationProperties("google.resource")
+    public ResourceServerProperties googleResource() {
+        return new ResourceServerProperties();
+    }
+
+    @Bean
+    @ConfigurationProperties("facebook.client")
+    public AuthorizationCodeResourceDetails facebook() {
+        return new AuthorizationCodeResourceDetails();
+    }
+
+    @Bean
+    @ConfigurationProperties("facebook.resource")
+    public ResourceServerProperties facebookResource() {
+        return new ResourceServerProperties();
+    }
+
+    @Value("${books.client.enableCORS}")
+    private boolean enableCORS;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+
+        // Is CORS to be enabled? If yes, the allowedCorsOrigin config
+        // property should also be set.
+        // Normally only expected to be used in dev when there is no "front proxy" of some sort
+        if (enableCORS) {
+            http.cors();
+        }
+
         // @formatter:off
         http
-            .cors()
-            .and()
             .csrf().disable()
             .antMatcher("/**")
                 .authorizeRequests()
@@ -98,7 +136,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         UserInfoTokenServices googleTokenServices = new UserInfoTokenServices(googleResource().getUserInfoUri(), google().getClientId());
         googleTokenServices.setRestTemplate(googleTemplate);
-        googleTokenServices.setAuthoritiesExtractor(new GoogleSocialAuthoritiesExtractor());
+        googleTokenServices.setAuthoritiesExtractor(new SocialAuthoritiesExtractor(User.AuthenticationProvider.GOOGLE));
 
         googleFilter.setTokenServices(googleTokenServices);
         filters.add(googleFilter);
@@ -118,7 +156,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         UserInfoTokenServices facebookTokenServices = new UserInfoTokenServices(facebookResource().getUserInfoUri(), facebook().getClientId());
         facebookTokenServices.setRestTemplate(facebookTemplate);
-        facebookTokenServices.setAuthoritiesExtractor(new FacebookSocialAuthoritiesExtractor());
+        facebookTokenServices.setAuthoritiesExtractor(new SocialAuthoritiesExtractor(User.AuthenticationProvider.FACEBOOK));
 
         facebookFilter.setTokenServices(facebookTokenServices);
         filters.add(facebookFilter);
@@ -128,44 +166,26 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    @ConfigurationProperties("google.client")
-    public AuthorizationCodeResourceDetails google() {
-        return new AuthorizationCodeResourceDetails();
-    }
-
-    @Bean
-    @ConfigurationProperties("google.resource")
-    public ResourceServerProperties googleResource() {
-        return new ResourceServerProperties();
-    }
-
-    @Bean
-    @ConfigurationProperties("facebook.client")
-    public AuthorizationCodeResourceDetails facebook() {
-        return new AuthorizationCodeResourceDetails();
-    }
-
-    @Bean
-    @ConfigurationProperties("facebook.resource")
-    public ResourceServerProperties facebookResource() {
-        return new ResourceServerProperties();
-    }
-
-    @Bean
-    public FilterRegistrationBean oauth2ClientFilterRegistration(
-            OAuth2ClientContextFilter filter) {
+    public FilterRegistrationBean oauth2ClientFilterRegistration(OAuth2ClientContextFilter filter) {
         FilterRegistrationBean registration = new FilterRegistrationBean();
         registration.setFilter(filter);
         registration.setOrder(-100);
         return registration;
     }
 
-    class GoogleSocialAuthoritiesExtractor implements AuthoritiesExtractor {
+    class SocialAuthoritiesExtractor implements AuthoritiesExtractor {
+        private String authProvider;
+
+        public SocialAuthoritiesExtractor(User.AuthenticationProvider authProvider) {
+            super();
+            this.authProvider = authProvider.toString();
+        }
+
         @Override
         public List<GrantedAuthority> extractAuthorities(Map<String, Object> map) {
 
             List<User> users = userRepository.findAllByAuthenticationServiceIdAndAuthProvider((String) map.get("id"),
-                    GOOGLE.toString());
+                    authProvider);
 
             if (users.size() == 1) {
                 String csvRoles = users.get(0).getRoles().stream().map(s -> s.toString()).collect(Collectors.joining(","));
@@ -176,19 +196,4 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         }
     }
 
-    class FacebookSocialAuthoritiesExtractor implements AuthoritiesExtractor {
-        @Override
-        public List<GrantedAuthority> extractAuthorities(Map<String, Object> map) {
-
-            List<User> users = userRepository.findAllByAuthenticationServiceIdAndAuthProvider((String) map.get("id"),
-                    FACEBOOK.toString());
-
-            if (users.size() == 1) {
-                String csvRoles = users.get(0).getRoles().stream().map(s -> s.toString()).collect(Collectors.joining(","));
-                return AuthorityUtils.commaSeparatedStringToAuthorityList(csvRoles);
-            } else {
-                return AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_USER");
-            }
-        }
-    }
 }

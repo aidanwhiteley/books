@@ -1,10 +1,14 @@
 package com.aidanwhiteley.books;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.bson.Document;
@@ -45,7 +49,7 @@ public class BooksApplication extends WebMvcConfigurerAdapter {
 	}
 
 	@Bean
-	@Profile({ "dev", "test" })
+	@Profile({ "dev"})
 	public WebMvcConfigurer corsConfigurer() {
 		return new WebMvcConfigurerAdapter() {
 			@Override
@@ -57,6 +61,13 @@ public class BooksApplication extends WebMvcConfigurerAdapter {
 		};
 	}
 
+    /**
+     * Reload data for development and integration tests.
+     * Whether this runs or not is also controlled by the
+     * books.reload.development.data config setting.
+     *
+     * @return
+     */
 	@Bean
 	@Profile({"dev", "integration"})
 	public CommandLineRunner populateDummyData() {
@@ -67,25 +78,26 @@ public class BooksApplication extends WebMvcConfigurerAdapter {
                 // Clearing and loading data into books collection
                 template.dropCollection(BOOKS_COLLECTION);
                 ClassPathResource classPathResource = new ClassPathResource("sample_data/books.json");
-                List<String> jsons = new ArrayList<>();
-                Stream<String> stream = Files.lines(Paths.get(classPathResource.getFile().toURI()), StandardCharsets.UTF_8);
-                stream.forEach(jsons::add);
+                List<String> jsons;
+
+				try (InputStream resource = classPathResource.getInputStream()) {
+					jsons =	new BufferedReader(new InputStreamReader(resource,
+									StandardCharsets.UTF_8)).lines().collect(Collectors.toList());
+				}
                 jsons.stream().map(Document::parse).forEach(i -> template.insert(i, BOOKS_COLLECTION));
-                stream.close();
-                LOGGER.info("*********************************************************");
-                LOGGER.info("Loaded development data for books as running in dev mode");
+                LOGGER.info("****************************************************************************");
+                LOGGER.info("Loaded development data for books as running with dev or integration profile");
 
                 // Clearing and loading data into user collection
                 template.dropCollection(USERS_COLLECTION);
                 classPathResource = new ClassPathResource("sample_data/users.json");
-                jsons = new ArrayList<>();
-                stream = Files.lines(Paths.get(classPathResource.getFile().toURI()), StandardCharsets.UTF_8);
-                stream.forEach(jsons::add);
+                try (InputStream resource = classPathResource.getInputStream()) {
+                    jsons =	new BufferedReader(new InputStreamReader(resource,
+                            StandardCharsets.UTF_8)).lines().collect(Collectors.toList());
+                }
                 jsons.stream().map(Document::parse).forEach(i -> template.insert(i, USERS_COLLECTION));
-                stream.close();
-                LOGGER.info("Loaded development data for users as running in dev mode");
-
-                LOGGER.info("*********************************************************");
+                LOGGER.info("Loaded development data for users as running with dev or integration profile");
+                LOGGER.info("****************************************************************************");
             } else {
 		        LOGGER.info("Development data not reloaded due to config settings");
             }

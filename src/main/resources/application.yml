@@ -45,6 +45,7 @@ facebook:
 
 books:
   client:
+    enableCORS: false
     allowedCorsOrigin: http://localhost:9000
     postLogonUrl: http://localhost:9000/
 

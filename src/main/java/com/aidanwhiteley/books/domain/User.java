@@ -106,5 +106,9 @@ public class User {
         AuthenticationProvider(int provider) {
             this.provider = provider;
         }
+        
+        public int getAuthProvider() {
+        	return this.provider;
+        }
     }
 }

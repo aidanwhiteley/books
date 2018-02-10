@@ -9,32 +9,27 @@ import lombok.*;
 @AllArgsConstructor
 @EqualsAndHashCode
 @ToString
-public class BooksByRating implements Comparable {
+public class BooksByRating implements Comparable<BooksByRating> {
 
-    private Book.Rating rating;
-    private long countOfBooks;
+	private Book.Rating rating;
+	private long countOfBooks;
 
-    /**
-     * We want these sorted from best to worst.
-     *
-     * @param o
-     * @return
-     */
-    @Override
-    public int compareTo(Object o) {
-        if (o instanceof BooksByRating) {
+	/**
+	 * We want these sorted from best to worst.
+	 *
+	 * @param o
+	 * @return
+	 */
+	@Override
+	public int compareTo(BooksByRating other) {
 
-            BooksByRating other = (BooksByRating) o;
+		if (rating.getRatingLevel() == other.getRating().getRatingLevel()) {
+			return 0;
+		} else if (rating.getRatingLevel() > other.getRating().getRatingLevel()) {
+			return 1;
+		} else {
+			return -1;
+		}
 
-            if (rating.getRatingLevel() == other.getRating().getRatingLevel()) {
-                return 0;
-            } else if (rating.getRatingLevel() > other.getRating().getRatingLevel()) {
-                return 1;
-            } else {
-                return -1;
-            }
-        } else {
-            throw new IllegalArgumentException("Not comparing a BooksByRating");
-        }
-    }
+	}
 }

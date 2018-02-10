@@ -1,27 +1,28 @@
 package com.aidanwhiteley.books.domain;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.Length;
+import org.springframework.data.annotation.Id;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.validator.constraints.Length;
-import org.springframework.data.annotation.Id;
-
-import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Setter
 @Getter
 @EqualsAndHashCode
 @ToString
 public class Comment {
-
-    private static final long serialVersionUID = 1L;
 
     // Mandatory but not marked as @NotNull as set by controller
     private Owner owner;

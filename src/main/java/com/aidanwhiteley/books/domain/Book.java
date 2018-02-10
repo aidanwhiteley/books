@@ -117,7 +117,6 @@ public class Book implements Serializable {
         GOOD(3),
         GREAT(4);
 
-        @SuppressWarnings("unused")
         private final int ratingLevel;
 
         Rating(int ratingLevel) {

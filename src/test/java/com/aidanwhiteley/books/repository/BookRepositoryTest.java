@@ -1,6 +1,7 @@
 package com.aidanwhiteley.books.repository;
 
 import com.aidanwhiteley.books.domain.Book;
+import com.aidanwhiteley.books.domain.Comment;
 import com.aidanwhiteley.books.domain.Owner;
 import com.aidanwhiteley.books.repository.dtos.BooksByAuthor;
 import com.aidanwhiteley.books.repository.dtos.BooksByGenre;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.PageRequest;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -28,6 +30,8 @@ public class BookRepositoryTest extends IntegrationTest {
     private static final String A_GUIDE_TO_POKING_SOFTWARE = "A guide to poking software";
     private static final String COMPUTING = "Computing";
     private static final String DESIGN_PATTERNS = "Design Patterns";
+
+    private static final String A_COMMENT = "Comments can be tested";
 
     private static final int PAGE = 0;
     private static final int PAGE_SIZE = 10;
@@ -93,5 +97,22 @@ public class BookRepositoryTest extends IntegrationTest {
         List<BooksByReader> list = bookRepository.countBooksByReader();
         assertTrue(list.size() > 0);
         assertTrue(list.get(0).getCountOfBooks() > 0);
+    }
+
+    @Test
+    public void addCommentToBook() {
+        Book book = createTestBook();
+
+        Book savedBook = bookRepository.insert(book);
+
+        Comment comment = new Comment(A_COMMENT, new Owner());
+        bookRepository.addCommentToBook(savedBook.getId(), comment);
+
+        Book updatedBook = bookRepository.findOne(savedBook.getId());
+        assertEquals(updatedBook.getComments().size(), 1);
+        assertEquals(updatedBook.getComments().get(0).getComment(), A_COMMENT);
+
+        Book justComments = bookRepository.findCommentsForBook(savedBook.getId());
+        System.out.println("Stripped down: " + justComments);
     }
 }

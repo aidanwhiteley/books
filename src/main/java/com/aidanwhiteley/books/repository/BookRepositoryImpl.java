@@ -1,6 +1,7 @@
 package com.aidanwhiteley.books.repository;
 
 import com.aidanwhiteley.books.domain.Book;
+import com.aidanwhiteley.books.domain.Comment;
 import com.aidanwhiteley.books.repository.dtos.BooksByAuthor;
 import com.aidanwhiteley.books.repository.dtos.BooksByGenre;
 import com.aidanwhiteley.books.repository.dtos.BooksByRating;
@@ -10,6 +11,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -72,5 +76,20 @@ public class BookRepositoryImpl implements BookRepositoryCustomMethods {
         AggregationResults<BooksByReader> groupResults
                 = mongoTemplate.aggregate(agg, Book.class, BooksByReader.class);
         return groupResults.getMappedResults();
+    }
+
+    @Override
+    public void addCommentToBook(String bookId, Comment comment) {
+        mongoTemplate.updateFirst(
+                Query.query(Criteria.where("id").is(bookId)),
+                new Update().push("comments", comment), Book.class);
+    }
+
+    @Override
+    public Book findCommentsForBook(String bookId) {
+        Query query = new Query(Criteria.where("id").is(bookId));
+        query.fields().include("_id").include("comments");
+
+        return mongoTemplate.find(query, Book.class).get(0);
     }
 }

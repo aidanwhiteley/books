@@ -18,7 +18,7 @@ The main functionality included in the microservice includes
 * Spring Security for method level authorisation
 * Mongo based persistence with the use of Spring Data MongoRepository 
     * next to no persistence code
-    * except for some Mongo aggregation queries added to the Repository implmentation
+    * except for some Mongo aggregation queries added to the Repository implementation
 * Accessing the Google Books API with the Spring RestTemplate
 
 ### Tests
@@ -37,6 +37,9 @@ There are lots of other ways to pass in these values e.g. they can be passed as 
 --google.client.clientSecret=xxxxxxxx --google.client.clientId=yyyyyyyy --facebook.client.clientSecret=aaaaaaaa --facebook.client.clientId=bbbbbbbb
 
 Otherwise, see the Spring documentation for more options.
+
+You will also need access to a Mongo instance. The connection URL (in the yml files) will result in the automatic
+creation of a Mongo database and the two required collections (dependant on the security config of your Mongo install).
 
 ### Sample data
 There is some sample data provided to make initial understanding of the functionality a bit easier.
@@ -69,7 +72,7 @@ The main "to do"s include
 There is an Angular 1.x based front end that consumes the microservice that is available 
 at https://github.com/aidanwhiteley
 
-The running application can be seen at TBC
+The running application can be seen at https://cloudybookclub.com/
 
 ## The name
 

@@ -1,8 +1,6 @@
 
 New functionality
 ~~~~~~~~~~~~~~~~~
-1. Add first logon welcome page
-2. Add help content and link
 3. Support correct display of edit and delete for Book entries - possibly via Hateoas / HAL links
 6. Add stats cards to Book detail page
 7. Add Comments functionality
@@ -17,9 +15,14 @@ New functionality
 18. Support logout (after moving to JWT)
 22. Improve efficiency of processing for which menu item is active.
 23. Further randomise / anonomise the created field in the test data
+24. Fix oauth redirect config / code such that re-direct is over HTTPS rather than HTTP. Spring Boot issue?
+    Then update config in Google and Facebook oauth to only support HTTPS redirect URLs
+25. Add edit support within book detail display for authorised users
 
 Completed new functionality
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1. Add first logon welcome page
+2. Add help content and link
 4. Pagination of Books list
 5. Create "stats" API for cards at top of summary page
 8. Create "pop out" window for by genre, by author, by reader links
@@ -39,6 +42,8 @@ Bugs
 3. Fix correct selection of book rating when going back in to edit a book.
 4. The search by author input box isnt being cleared after use
 6. Auto admin functionality requires a user to log in twice before it works
+7. Why arent the "theme" font files picked up in the production build of the client project?
+8. Mobile (small) view - logon probelms. Facebook not working? Not displaying logged on user details?
 
 Fixed bugs
 ~~~~~~~~~~

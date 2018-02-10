@@ -2,6 +2,7 @@ package com.aidanwhiteley.books.controller;
 
 import com.aidanwhiteley.books.controller.util.LimitBookDataVisibility;
 import com.aidanwhiteley.books.domain.Book;
+import com.aidanwhiteley.books.domain.Comment;
 import com.aidanwhiteley.books.domain.Owner;
 import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.repository.BookRepository;
@@ -101,6 +102,23 @@ public class BookSecureController {
         if (currentBookState.isOwner(user) || user.getRoles().contains(User.Role.ROLE_ADMIN)) {
             bookRepository.delete(id);
             return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+    }
+
+    @RequestMapping(value = "/books/{id}/comments", method = POST)
+    public ResponseEntity<?> addCommentToBook(@PathVariable("id") String id, @Valid @RequestBody Comment comment, Principal principal) {
+
+        User user = authUtils.extractUserFromPrincipal(principal);
+
+        comment.setOwner(new Owner(user));
+        Book currentBookState = bookRepository.findOne(id);
+
+        if (currentBookState.isOwner(user) || user.getRoles().contains(User.Role.ROLE_ADMIN)) {
+            bookRepository.addCommentToBook(id, comment);
+            Book commentsOnly = bookRepository.findCommentsForBook(id);
+            return new ResponseEntity<>(commentsOnly, HttpStatus.OK);
         } else {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }

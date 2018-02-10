@@ -1,27 +1,20 @@
 package com.aidanwhiteley.books.domain;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.validation.constraints.NotNull;
-
-import org.hibernate.validator.constraints.Length;
-import org.springframework.data.annotation.Id;
-
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import lombok.*;
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.URL;
+import org.springframework.data.annotation.Id;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -32,6 +25,8 @@ import lombok.ToString;
 @Builder
 public class User {
 
+    final private List<Role> roles = new ArrayList<>();
+
     @Id
     @Setter(AccessLevel.PROTECTED)
     private String id;
@@ -40,16 +35,22 @@ public class User {
     @Length(min = 1, max = 255)
     private String authenticationServiceId;
 
+    @Length(min = 0, max = 100)
     private String firstName;
 
+    @Length(min = 0, max = 100)
     private String lastName;
 
+    @Length(min = 0, max = 200)
     private String fullName;
 
+    @Email
     private String email;
 
+    @URL
     private String link;
 
+    @Length(min = 0, max = 500)
     private String picture;
 
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
@@ -62,12 +63,11 @@ public class User {
     @NotNull
     private LocalDateTime firstLogon;
 
-    final private List<Role> roles = new ArrayList<>();
-
+    @NotNull
     private AuthenticationProvider authProvider;
 
     public boolean isFirstVisit() {
-        return (firstLogon.equals(lastLogon));
+        return (firstLogon.truncatedTo(ChronoUnit.SECONDS).equals(lastLogon.truncatedTo(ChronoUnit.SECONDS)));
     }
 
     public void addRole(Role role) {
@@ -83,6 +83,7 @@ public class User {
         ROLE_ADMIN(2);
 
         private final int role;
+
         Role(int role) {
             this.role = role;
         }
@@ -90,6 +91,7 @@ public class User {
         public String getShortName() {
             return this.toString().split("ROLE_")[1];
         }
+
         public int getRoleNumber() {
             return this.role;
         }
@@ -100,6 +102,7 @@ public class User {
         FACEBOOK(1);
 
         private final int provider;
+
         AuthenticationProvider(int provider) {
             this.provider = provider;
         }

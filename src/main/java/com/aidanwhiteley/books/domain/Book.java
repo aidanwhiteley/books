@@ -12,6 +12,8 @@ import org.springframework.data.annotation.Id;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -23,6 +25,8 @@ import java.time.LocalDateTime;
 public class Book implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    final private List<Comment> comments = new ArrayList<>();
 
     @Id
     @Setter(AccessLevel.PROTECTED)
@@ -54,61 +58,24 @@ public class Book implements Serializable {
 
     @Length(max = 200)
     private String similarTo;
-    
+
     private String googleBookId;
 
     private Item googleBookDetails;
-
     // Not marked a @NotNull as validation is done on the
     // input object from the client and this data is 
     // set on the server side after validation.
     private Owner createdBy;
 
-    public boolean isOwner(User user) {
-        return (user.getAuthenticationServiceId().equals(this.createdBy.getAuthenticationServiceId()) && user.getAuthProvider() == this.getCreatedBy().getAuthProvider()
-        );
-    }
-
-    public enum Rating {
-        // Note Jackson default deserialisation is 0 based - changing values below
-        // would mean that that default serialisation / deserialisation would need overriding.
-        TERRIBLE(0),
-        POOR(1),
-        OK(2),
-        GOOD(3),
-        GREAT(4);
-
-        @SuppressWarnings("unused")
-        private final int ratingLevel;
-
-        Rating(int ratingLevel) {
-            this.ratingLevel = ratingLevel;
-        }
-
-        public static Rating getRatingByString(String aRating) {
-            for (Rating rating: Rating.values()) {
-                if (rating.name().equalsIgnoreCase(aRating)) {
-                    return rating;
-                }
-            }
-            return null;
-        }
-
-        public int getRatingLevel() {
-            return this.ratingLevel;
-        }
-
-    }
-
     /**
-     * Remove data (particularly details of created a review) from book data if the user isnt known.
+     * Remove data (particularly details of who created a review or a comment) from book data if the user isnt known.
      *
      * @param book
      * @return a Book with some PII data removed.
      */
     public static Book removeDataIfUnknownUser(Book book) {
         return new BookBuilder().
-        		id(book.id).
+                id(book.id).
                 googleBookDetails(book.googleBookDetails).
                 googleBookId(book.googleBookId).
                 author(book.author).
@@ -134,5 +101,41 @@ public class Book implements Serializable {
                 title(book.title).
                 createdBy(Owner.getOwnerDataForEditorView(book.createdBy)).
                 build();
+    }
+
+    public boolean isOwner(User user) {
+        return (user.getAuthenticationServiceId().equals(this.createdBy.getAuthenticationServiceId()) && user.getAuthProvider() == this.getCreatedBy().getAuthProvider()
+        );
+    }
+
+    public enum Rating {
+        // Note Jackson default deserialisation is 0 based - changing values below
+        // would mean that that default serialisation / deserialisation would need overriding.
+        TERRIBLE(0),
+        POOR(1),
+        OK(2),
+        GOOD(3),
+        GREAT(4);
+
+        @SuppressWarnings("unused")
+        private final int ratingLevel;
+
+        Rating(int ratingLevel) {
+            this.ratingLevel = ratingLevel;
+        }
+
+        public static Rating getRatingByString(String aRating) {
+            for (Rating rating : Rating.values()) {
+                if (rating.name().equalsIgnoreCase(aRating)) {
+                    return rating;
+                }
+            }
+            return null;
+        }
+
+        public int getRatingLevel() {
+            return this.ratingLevel;
+        }
+
     }
 }

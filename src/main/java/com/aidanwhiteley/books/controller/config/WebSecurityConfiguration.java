@@ -35,12 +35,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.*;
 
 /**
  * Supports oauth2 based social logons.
@@ -65,6 +62,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private UserRepository userRepository;
+    @Value("${books.client.enableCORS}")
+    private boolean enableCORS;
 
     @Bean
     @ConfigurationProperties("google.client")
@@ -89,9 +88,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     public ResourceServerProperties facebookResource() {
         return new ResourceServerProperties();
     }
-
-    @Value("${books.client.enableCORS}")
-    private boolean enableCORS;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {

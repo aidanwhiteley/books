@@ -68,7 +68,7 @@ public class Comment {
         this.allowDelete = false;
 
         if (null == user || user.getHighestRole() == ROLE_USER) {
-            // Do nothing
+            this.deletedBy = "";
         } else if (user.getHighestRole() == ROLE_EDITOR) {
             if (isOwner(user)) {
                 this.allowDelete = true;

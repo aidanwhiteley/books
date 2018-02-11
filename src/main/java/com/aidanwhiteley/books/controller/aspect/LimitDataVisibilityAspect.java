@@ -67,7 +67,6 @@ public class LimitDataVisibilityAspect {
         Principal principal = null;
         principal = getPrincipal(joinPoint, principal);
         User user = authUtils.extractUserFromPrincipal(principal);
-        System.out.println("User was: " + user);
 
         if (retVal instanceof Book) {
             LOGGER.info("About to call setPermissionsAndContentForUser for " + joinPoint.getSignature().toString());
@@ -79,7 +78,8 @@ public class LimitDataVisibilityAspect {
         return retVal;
     }
 
-    @Around("limitPageBookData()")
+    @SuppressWarnings("unchecked")
+	@Around("limitPageBookData()")
     public Object limitPageOfBookDataImpl(ProceedingJoinPoint joinPoint) throws Throwable {
 
         Object retVal = joinPoint.proceed();
@@ -90,7 +90,7 @@ public class LimitDataVisibilityAspect {
 
         if (retVal instanceof Page) {
             LOGGER.info("About to call setPermissionsAndContentForUser for " + joinPoint.getSignature().toString());
-            ((Page) retVal).getContent().forEach(s -> ((Book) s).setPermissionsAndContentForUser(user));
+            ((Page<Book>) retVal).getContent().forEach(s -> ((Book) s).setPermissionsAndContentForUser(user));
         } else {
             LOGGER.error("Unexpected return type found by aspect");
         }

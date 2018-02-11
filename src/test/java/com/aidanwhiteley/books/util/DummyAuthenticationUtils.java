@@ -1,16 +1,25 @@
 package com.aidanwhiteley.books.util;
 
-import com.aidanwhiteley.books.domain.User;
-import com.aidanwhiteley.books.domain.User.AuthenticationProvider;
-import org.springframework.stereotype.Component;
-
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.stereotype.Component;
+
+import com.aidanwhiteley.books.domain.User;
+import com.aidanwhiteley.books.domain.User.AuthenticationProvider;
+import com.aidanwhiteley.books.domain.User.Role;
+
 @Component
 public class DummyAuthenticationUtils implements AuthenticationUtils {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(DummyAuthenticationUtils.class);
 
     public static final String DUMMY_USER_FOR_TESTING_ONLY = "Dummy user for testing only";
     public static final String THIS_IS_NOT_A_REAL_AUTH_ID = "This is not a real auth id";
@@ -18,6 +27,28 @@ public class DummyAuthenticationUtils implements AuthenticationUtils {
 
     @Override
     public User extractUserFromPrincipal(Principal principal) {
+
+    	if (principal != null) {
+    		if (principal instanceof UsernamePasswordAuthenticationToken) {
+    			UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) principal;
+    			Collection<GrantedAuthority> authorities = token.getAuthorities();
+    			
+    			// The following code expects that only one Role has been assigned to a test user!
+    			GrantedAuthority g = authorities.iterator().hasNext() ? authorities.iterator().next() : null;
+    			
+    			if (g == null) {
+    				return getTestUser();
+    			} else if (g.toString().equals(Role.ROLE_USER.toString())) {
+    				return getTestUser();
+    			} else if (g.toString().equals(Role.ROLE_EDITOR.toString())) {
+    				return getEditorUser();
+    			} else if (g.toString().equals(Role.ROLE_ADMIN.toString())) {
+    				return getAdminUser();
+    			} else {
+    				LOGGER.error("Unable to determine what role is required for test user");
+    			}
+    		}
+    	}
         return getTestUser();
     }
 

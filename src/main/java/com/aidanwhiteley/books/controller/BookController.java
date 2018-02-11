@@ -4,7 +4,6 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
-import com.aidanwhiteley.books.controller.aspect.LimitDataVisibility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -17,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.aidanwhiteley.books.controller.util.LimitBookDataVisibility;
+import com.aidanwhiteley.books.controller.aspect.LimitDataVisibility;
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.googlebooks.BookSearchResult;
 import com.aidanwhiteley.books.repository.BookRepository;

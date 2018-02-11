@@ -1,15 +1,20 @@
 package com.aidanwhiteley.books.controller;
 
-import com.aidanwhiteley.books.controller.aspect.LimitDataVisibility;
-import com.aidanwhiteley.books.controller.util.LimitBookDataVisibility;
-import com.aidanwhiteley.books.domain.Book;
-import com.aidanwhiteley.books.domain.Comment;
-import com.aidanwhiteley.books.domain.Owner;
-import com.aidanwhiteley.books.domain.User;
-import com.aidanwhiteley.books.repository.BookRepository;
-import com.aidanwhiteley.books.repository.GoogleBooksDao;
-import com.aidanwhiteley.books.repository.dtos.BooksByReader;
-import com.aidanwhiteley.books.util.AuthenticationUtils;
+import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static org.springframework.web.bind.annotation.RequestMethod.PUT;
+
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.security.Principal;
+import java.util.List;
+import java.util.Optional;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -18,19 +23,24 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.security.Principal;
-import java.util.List;
-import java.util.Optional;
-
-import static org.springframework.web.bind.annotation.RequestMethod.*;
+import com.aidanwhiteley.books.controller.aspect.LimitDataVisibility;
+import com.aidanwhiteley.books.domain.Book;
+import com.aidanwhiteley.books.domain.Comment;
+import com.aidanwhiteley.books.domain.Owner;
+import com.aidanwhiteley.books.domain.User;
+import com.aidanwhiteley.books.repository.BookRepository;
+import com.aidanwhiteley.books.repository.GoogleBooksDao;
+import com.aidanwhiteley.books.repository.dtos.BooksByReader;
+import com.aidanwhiteley.books.util.AuthenticationUtils;
 
 @LimitDataVisibility
 @RestController
@@ -112,7 +122,6 @@ public class BookSecureController {
         User user = authUtils.extractUserFromPrincipal(principal);
 
         comment.setOwner(new Owner(user));
-        Book currentBookState = bookRepository.findOne(id);
 
         return bookRepository.addCommentToBook(id, comment);
     }

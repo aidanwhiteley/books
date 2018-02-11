@@ -168,7 +168,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     class SocialAuthoritiesExtractor implements AuthoritiesExtractor {
-        private String authProvider;
+        private final String authProvider;
 
         public SocialAuthoritiesExtractor(User.AuthenticationProvider authProvider) {
             super();

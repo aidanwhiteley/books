@@ -32,6 +32,8 @@ public class BookRepositoryTest extends IntegrationTest {
     private static final String DESIGN_PATTERNS = "Design Patterns";
 
     private static final String A_COMMENT = "Comments can be tested";
+    private static final String ANOTHER_COMMENT = "Especially when there is more than one of them";
+    private static final String COMMENT_REMOVER = "Ilie Nastasie";
 
     private static final int PAGE = 0;
     private static final int PAGE_SIZE = 10;
@@ -106,13 +108,35 @@ public class BookRepositoryTest extends IntegrationTest {
         Book savedBook = bookRepository.insert(book);
 
         Comment comment = new Comment(A_COMMENT, new Owner());
-        bookRepository.addCommentToBook(savedBook.getId(), comment);
 
-        Book updatedBook = bookRepository.findOne(savedBook.getId());
+        // Returned book holds just the Book's comments - no other data other than the book id.
+        Book updatedBook = bookRepository.addCommentToBook(savedBook.getId(), comment);
+
         assertEquals(updatedBook.getComments().size(), 1);
         assertEquals(updatedBook.getComments().get(0).getComment(), A_COMMENT);
+    }
 
-        Book justComments = bookRepository.findCommentsForBook(savedBook.getId());
-        System.out.println("Stripped down: " + justComments);
+    @Test
+    public void removeCommentFromBook() {
+
+        // Set up a couple of comments
+        Book book = createTestBook();
+        Book savedBook = bookRepository.insert(book);
+        Comment comment = new Comment(A_COMMENT, new Owner());
+        bookRepository.addCommentToBook(savedBook.getId(), comment);
+        comment = new Comment(ANOTHER_COMMENT, new Owner());
+        bookRepository.addCommentToBook(savedBook.getId(), comment);
+        Book updatedBook = bookRepository.findOne(savedBook.getId());
+        assertEquals(updatedBook.getComments().size(), 2);
+
+        // Returned Book holds just the updated comments
+        updatedBook = bookRepository.removeCommentFromBook(savedBook.getId(),
+                updatedBook.getComments().get(0).getId(), COMMENT_REMOVER);
+
+        // There should still be two comments but the first should now be "marked" as deleted
+        assertEquals(updatedBook.getComments().size(), 2);
+        assertEquals("", updatedBook.getComments().get(0).getComment());
+        assertTrue(updatedBook.getComments().get(0).isDeleted());
+        assertEquals(updatedBook.getComments().get(0).getDeletedBy(), COMMENT_REMOVER);
     }
 }

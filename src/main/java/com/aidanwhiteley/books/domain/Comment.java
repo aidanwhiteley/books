@@ -51,9 +51,8 @@ public class Comment {
         this.owner = owner;
     }
 
-    private void deleteComment(String name) {
-        this.deletedBy = name;
-        this.deleted = true;
-        this.comment = "";
+    public boolean isOwner(User user) {
+        return (user.getAuthenticationServiceId().equals(this.owner.getAuthenticationServiceId()) && user.getAuthProvider() == this.owner.getAuthProvider()
+        );
     }
 }

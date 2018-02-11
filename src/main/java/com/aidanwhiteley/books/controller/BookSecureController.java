@@ -116,8 +116,26 @@ public class BookSecureController {
         Book currentBookState = bookRepository.findOne(id);
 
         if (currentBookState.isOwner(user) || user.getRoles().contains(User.Role.ROLE_ADMIN)) {
-            bookRepository.addCommentToBook(id, comment);
-            Book commentsOnly = bookRepository.findCommentsForBook(id);
+            Book commentsOnly = bookRepository.addCommentToBook(id, comment);
+            return new ResponseEntity<>(commentsOnly, HttpStatus.OK);
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+    }
+
+    @RequestMapping(value = "/books/{id}/comments/{commentId}", method = DELETE)
+    public ResponseEntity<?> RemoveCommentFromBook(@PathVariable("id") String id, @PathVariable("commentId") String commentId, Principal principal) {
+
+        User user = authUtils.extractUserFromPrincipal(principal);
+
+        Book currentBook = bookRepository.findOne(id);
+        Comment comment = currentBook.getComments().stream().filter(c-> c.getId().equals(commentId)).findFirst().orElse(null);
+        if (comment == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
+        if (comment.isOwner(user) || user.getRoles().contains(User.Role.ROLE_ADMIN)) {
+            Book commentsOnly = bookRepository.removeCommentFromBook(id, commentId, user.getFullName());
             return new ResponseEntity<>(commentsOnly, HttpStatus.OK);
         } else {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();

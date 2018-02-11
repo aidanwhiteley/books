@@ -113,7 +113,7 @@ public class UserController {
                         authProvider(GOOGLE).
                         build();
 
-                setDefaultAdminUser(userDetails, user, GOOGLE);
+                user = setDefaultAdminUser(user);
                 user.addRole(User.Role.ROLE_USER);
                 break;
             }
@@ -129,7 +129,7 @@ public class UserController {
                         firstLogon(LocalDateTime.now()).
                         authProvider(FACEBOOK).
                         build();
-                setDefaultAdminUser(userDetails, user, FACEBOOK);
+                user = setDefaultAdminUser(user);
                 user.addRole(User.Role.ROLE_USER);
 
                 String url = extractFaceBookPictureUrl(userDetails);
@@ -150,11 +150,13 @@ public class UserController {
         return user;
     }
 
-    private void setDefaultAdminUser(Map<String, Object> userDetails, User user, User.AuthenticationProvider provider) {
+    private User setDefaultAdminUser(User user) {
         if (defaultAdminEmail != null && defaultAdminEmail.equals(user.getEmail())) {
             user.addRole(User.Role.ROLE_EDITOR);
             user.addRole(User.Role.ROLE_ADMIN);
         }
+
+        return user;
     }
 
     private User updateUser(Map<String, Object> userDetails, User user, User.AuthenticationProvider provider) {

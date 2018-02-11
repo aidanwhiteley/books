@@ -17,7 +17,7 @@ public class BooksByRating implements Comparable<BooksByRating> {
 	/**
 	 * We want these sorted from best to worst.
 	 *
-	 * @param o
+	 * @param other
 	 * @return
 	 */
 	@Override

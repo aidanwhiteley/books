@@ -26,7 +26,7 @@ import static org.junit.Assert.assertTrue;
 public class BookRepositoryTest extends IntegrationTest {
 
     public static final String DR_ZEUSS = "Dr Zuess";
-    private static final String J_UNIT_TESTING_FOR_BEGINNERS = "JUnit testing for beginners";
+    public static final String J_UNIT_TESTING_FOR_BEGINNERS = "JUnit testing for beginners";
     private static final String A_GUIDE_TO_POKING_SOFTWARE = "A guide to poking software";
     private static final String COMPUTING = "Computing";
     private static final String DESIGN_PATTERNS = "Design Patterns";

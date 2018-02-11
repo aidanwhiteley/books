@@ -1,5 +1,6 @@
 package com.aidanwhiteley.books.controller;
 
+import com.aidanwhiteley.books.controller.aspect.LimitDataVisibility;
 import com.aidanwhiteley.books.controller.util.LimitBookDataVisibility;
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.Comment;
@@ -31,6 +32,7 @@ import java.util.Optional;
 
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
+@LimitDataVisibility
 @RestController
 @RequestMapping("/secure/api")
 @PreAuthorize("hasAnyRole('ROLE_EDITOR', 'ROLE_ADMIN')")
@@ -44,9 +46,6 @@ public class BookSecureController {
 
     @Autowired
     private AuthenticationUtils authUtils;
-
-    @Autowired
-    private LimitBookDataVisibility dataVisibilityService;
 
     @Value("${books.users.default.page.size}")
     private int defaultPageSize;
@@ -66,7 +65,7 @@ public class BookSecureController {
             book.setGoogleBookDetails(googleBooksDao.searchGoogleBooksByGoogleBookId(book.getGoogleBookId()));
         }
 
-        Book insertedBook = dataVisibilityService.limitDataVisibility(bookRepository.insert(book), principal);
+        Book insertedBook = bookRepository.insert(book);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(insertedBook.getId()).toUri();
@@ -108,37 +107,31 @@ public class BookSecureController {
     }
 
     @RequestMapping(value = "/books/{id}/comments", method = POST)
-    public ResponseEntity<?> addCommentToBook(@PathVariable("id") String id, @Valid @RequestBody Comment comment, Principal principal) {
+    public Book addCommentToBook(@PathVariable("id") String id, @Valid @RequestBody Comment comment, Principal principal) {
 
         User user = authUtils.extractUserFromPrincipal(principal);
 
         comment.setOwner(new Owner(user));
         Book currentBookState = bookRepository.findOne(id);
 
-        if (currentBookState.isOwner(user) || user.getRoles().contains(User.Role.ROLE_ADMIN)) {
-            Book commentsOnly = dataVisibilityService.limitDataVisibility(bookRepository.addCommentToBook(id, comment), principal);
-            return new ResponseEntity<>(commentsOnly, HttpStatus.OK);
-        } else {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
+        return bookRepository.addCommentToBook(id, comment);
     }
 
     @RequestMapping(value = "/books/{id}/comments/{commentId}", method = DELETE)
-    public ResponseEntity<?> RemoveCommentFromBook(@PathVariable("id") String id, @PathVariable("commentId") String commentId, Principal principal) {
+    public Book removeCommentFromBook(@PathVariable("id") String id, @PathVariable("commentId") String commentId, Principal principal) {
 
         User user = authUtils.extractUserFromPrincipal(principal);
 
         Book currentBook = bookRepository.findOne(id);
         Comment comment = currentBook.getComments().stream().filter(c-> c.getId().equals(commentId)).findFirst().orElse(null);
         if (comment == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            throw new IllegalArgumentException();
         }
 
         if (comment.isOwner(user) || user.getRoles().contains(User.Role.ROLE_ADMIN)) {
-            Book commentsOnly = bookRepository.removeCommentFromBook(id, commentId, user.getFullName());
-            return new ResponseEntity<>(dataVisibilityService.limitDataVisibility(commentsOnly, principal), HttpStatus.OK);
+            return bookRepository.removeCommentFromBook(id, commentId, user.getFullName());
         } else {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            throw new AccessForbiddenException();
         }
     }
 
@@ -158,13 +151,23 @@ public class BookSecureController {
         PageRequest pageObj = new PageRequest(page.orElse(0),
                 size.orElse(defaultPageSize), new Sort(Sort.Direction.DESC, "entered"));
 
-        return dataVisibilityService.limitDataVisibility(bookRepository.findByReaderOrderByEnteredDesc(pageObj, genre), principal);
+        return bookRepository.findByReaderOrderByEnteredDesc(pageObj, genre);
     }
 
 
     @RequestMapping(value = "/books/readers", method = GET)
     public List<BooksByReader> findBookReaders() {
         return bookRepository.countBooksByReader();
+    }
+
+    @SuppressWarnings("serial")
+    @ResponseStatus(value = HttpStatus.FORBIDDEN)
+    class AccessForbiddenException extends RuntimeException {
+    }
+
+    @SuppressWarnings("serial")
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    class IllegalArgumentException extends RuntimeException {
     }
 
 }

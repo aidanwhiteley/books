@@ -6,4 +6,5 @@
     <logger name="org.mongodb" level="WARN"/>
     <logger name="org.apache.catalina" level="WARN"/>
     <logger name="com.aidanwhiteley" level="WARN"/>
+    <logger name="com.aidanwhiteley.books.controller.aspect" level="INFO" />
 </configuration>

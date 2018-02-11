@@ -4,6 +4,7 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
+import com.aidanwhiteley.books.controller.aspect.LimitDataVisibility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -26,6 +27,7 @@ import com.aidanwhiteley.books.repository.dtos.BooksByGenre;
 import com.aidanwhiteley.books.service.StatsService;
 import com.aidanwhiteley.books.service.dtos.SummaryStats;
 
+@LimitDataVisibility
 @RestController
 @RequestMapping("/api")
 public class BookController {
@@ -39,8 +41,6 @@ public class BookController {
     @Autowired
     private StatsService statsService;
 
-    @Autowired
-    private LimitBookDataVisibility dataVisibilityService;
 
     @Value("${books.users.default.page.size}")
     private int defaultPageSize;
@@ -51,12 +51,12 @@ public class BookController {
 
         PageRequest pageObj = new PageRequest(page.orElse(0),
                 size.orElse(defaultPageSize));
-        return dataVisibilityService.limitDataVisibility(bookRepository.findAllByOrderByEnteredDesc(pageObj), principal);
+        return bookRepository.findAllByOrderByEnteredDesc(pageObj);
     }
 
     @GetMapping(value = "/books/{id}")
     public Book findBookById(@PathVariable("id") String id, Principal principal) {
-        return dataVisibilityService.limitDataVisibility(bookRepository.findOne(id), principal);
+        return bookRepository.findOne(id);
     }
 
 
@@ -66,7 +66,7 @@ public class BookController {
 
         PageRequest pageObj = new PageRequest(page.orElse(0),
                 size.orElse(defaultPageSize));
-        return dataVisibilityService.limitDataVisibility(bookRepository.findAllByAuthorOrderByEnteredDesc(pageObj, author), principal);
+        return bookRepository.findAllByAuthorOrderByEnteredDesc(pageObj, author);
     }
 
 
@@ -76,7 +76,7 @@ public class BookController {
         PageRequest pageObj = new PageRequest(page.orElse(0),
                 size.orElse(defaultPageSize));
 
-        return dataVisibilityService.limitDataVisibility(bookRepository.findAllByGenreOrderByEnteredDesc(pageObj, genre), principal);
+        return bookRepository.findAllByGenreOrderByEnteredDesc(pageObj, genre);
     }
 
 
@@ -114,7 +114,7 @@ public class BookController {
         if (aRating == null) {
             throw new IllegalArgumentException();
         } else {
-            return dataVisibilityService.limitDataVisibility(bookRepository.findByRatingOrderByEnteredDesc(pageObj, aRating), principal);
+            return bookRepository.findByRatingOrderByEnteredDesc(pageObj, aRating);
         }
     }
 

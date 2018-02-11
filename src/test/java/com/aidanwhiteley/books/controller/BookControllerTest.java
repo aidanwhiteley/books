@@ -16,8 +16,10 @@ import java.util.List;
 
 import static com.aidanwhiteley.books.controller.config.BasicAuthInsteadOfOauthWebAccess.AN_ADMIN;
 import static com.aidanwhiteley.books.controller.config.BasicAuthInsteadOfOauthWebAccess.PASSWORD;
+import static com.aidanwhiteley.books.util.DummyAuthenticationUtils.DUMMY_EMAIL;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static com.aidanwhiteley.books.repository.BookRepositoryTest.J_UNIT_TESTING_FOR_BEGINNERS;
 
 public class BookControllerTest extends IntegrationTest {
 
@@ -49,6 +51,35 @@ public class BookControllerTest extends IntegrationTest {
         LOGGER.debug("Retrieved JSON was: " + response.getBody());
 
         assertTrue("No books found", books.size() > 0);
+    }
+
+    @Test
+    public void testSensitiveDataNotReturnedToAnonymousUser() {
+        ResponseEntity<Book> response = postBookToServer();
+        String location = response.getHeaders().getLocation().toString();
+        Book book = testRestTemplate.getForObject(location, Book.class);
+
+        // Title should be available to everyone
+        assertEquals(book.getTitle(), J_UNIT_TESTING_FOR_BEGINNERS);
+        // Email should only be available to admins
+        assertEquals(book.getCreatedBy().getEmail(), "");
+    }
+
+    @Test
+    public void testSensitiveDataIsReturnedToAdminUser() {
+        Book testBook = BookRepositoryTest.createTestBook();
+        HttpEntity<Book> request = new HttpEntity<>(testBook);
+        TestRestTemplate trtWithAuth = testRestTemplate.withBasicAuth(AN_ADMIN, PASSWORD);
+        ResponseEntity<Book>  response = trtWithAuth
+                .exchange("/secure/api/books", HttpMethod.POST, request, Book.class);
+
+        String location = response.getHeaders().getLocation().toString();
+        Book book = trtWithAuth.getForObject(location, Book.class);
+
+        // Title should be available to everyone
+        assertEquals(book.getTitle(), J_UNIT_TESTING_FOR_BEGINNERS);
+        // Email should only be available to admins
+        assertEquals(book.getCreatedBy().getEmail(), DUMMY_EMAIL);
     }
 
     private ResponseEntity<Book> postBookToServer() {

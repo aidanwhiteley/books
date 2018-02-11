@@ -14,6 +14,7 @@ public class DummyAuthenticationUtils implements AuthenticationUtils {
 
     public static final String DUMMY_USER_FOR_TESTING_ONLY = "Dummy user for testing only";
     public static final String THIS_IS_NOT_A_REAL_AUTH_ID = "This is not a real auth id";
+    public static final String DUMMY_EMAIL = "example@example.com";
 
     @Override
     public User extractUserFromPrincipal(Principal principal) {
@@ -26,9 +27,22 @@ public class DummyAuthenticationUtils implements AuthenticationUtils {
         user.setAuthProvider(AuthenticationProvider.GOOGLE);
         user.setFirstLogon(LocalDateTime.now());
         user.setLastLogon(LocalDateTime.now());
+        user.setEmail(DUMMY_EMAIL);
 
         user.setAuthenticationServiceId(THIS_IS_NOT_A_REAL_AUTH_ID);
         user.addRole(User.Role.ROLE_USER);
+        return user;
+    }
+
+    public static User getEditorUser() {
+        User user = getTestUser();
+        user.addRole(User.Role.ROLE_EDITOR);
+        return user;
+    }
+
+    public static User getAdminUser() {
+        User user = getEditorUser();
+        user.addRole(User.Role.ROLE_ADMIN);
         return user;
     }
 

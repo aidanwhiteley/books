@@ -5,4 +5,5 @@
     <logger name="org.springframework.boot.autoconfigure.security.oauth2" level="WARN" />
     <logger name="org.springframework.web.client" level="WARN" />
     <logger name="com.aidanwhiteley.books.controller.UserController" level="WARN" />
+    <logger name="com.aidanwhiteley.books.controller.aspect" level="INFO" />
 </configuration>

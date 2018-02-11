@@ -37,6 +37,10 @@ public class OauthAuthenticationUtils implements AuthenticationUtils {
     @Override
     public User extractUserFromPrincipal(Principal principal) {
 
+        if (null == principal) {
+            return null;
+        }
+
         checkPrincipalType(principal);
 
         OAuth2Authentication auth = (OAuth2Authentication) principal;
@@ -94,23 +98,13 @@ public class OauthAuthenticationUtils implements AuthenticationUtils {
 
     @Override
     public User.Role getUsersHighestRole(Principal principal) {
-
         User user = extractUserFromPrincipal(principal);
-
-        User.Role highestRole = User.Role.ROLE_USER;
-
-        for (User.Role role : user.getRoles()) {
-            if (role.getRoleNumber() > highestRole.getRoleNumber()) {
-                highestRole = role;
-            }
-        }
-
-        return highestRole;
+        return user.getHighestRole();
     }
 
     private void checkPrincipalType(Principal principal) {
         if (!(principal instanceof OAuth2Authentication)) {
-            LOGGER.error("Only OAuth authentication currently supported and supplied Principal not ouath: {}", principal);
+            LOGGER.error("Only OAuth authentication currently supported and supplied Principal not oauth: {}", principal);
             throw new UnsupportedOperationException("Only OAuth principals currently supported");
         }
     }

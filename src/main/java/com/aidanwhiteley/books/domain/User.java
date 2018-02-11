@@ -70,6 +70,18 @@ public class User {
         return (firstLogon.truncatedTo(ChronoUnit.SECONDS).equals(lastLogon.truncatedTo(ChronoUnit.SECONDS)));
     }
 
+    public Role getHighestRole() {
+        User.Role highestRole = User.Role.ROLE_USER;
+
+        for (User.Role role : getRoles()) {
+            if (role.getRoleNumber() > highestRole.getRoleNumber()) {
+                highestRole = role;
+            }
+        }
+
+        return highestRole;
+    }
+
     public void addRole(Role role) {
         this.roles.add(role);
     }

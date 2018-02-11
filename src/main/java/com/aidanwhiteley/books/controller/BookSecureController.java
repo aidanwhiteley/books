@@ -66,7 +66,7 @@ public class BookSecureController {
             book.setGoogleBookDetails(googleBooksDao.searchGoogleBooksByGoogleBookId(book.getGoogleBookId()));
         }
 
-        Book insertedBook = bookRepository.insert(book);
+        Book insertedBook = dataVisibilityService.limitDataVisibility(bookRepository.insert(book), principal);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(insertedBook.getId()).toUri();
@@ -116,7 +116,7 @@ public class BookSecureController {
         Book currentBookState = bookRepository.findOne(id);
 
         if (currentBookState.isOwner(user) || user.getRoles().contains(User.Role.ROLE_ADMIN)) {
-            Book commentsOnly = bookRepository.addCommentToBook(id, comment);
+            Book commentsOnly = dataVisibilityService.limitDataVisibility(bookRepository.addCommentToBook(id, comment), principal);
             return new ResponseEntity<>(commentsOnly, HttpStatus.OK);
         } else {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
@@ -136,7 +136,7 @@ public class BookSecureController {
 
         if (comment.isOwner(user) || user.getRoles().contains(User.Role.ROLE_ADMIN)) {
             Book commentsOnly = bookRepository.removeCommentFromBook(id, commentId, user.getFullName());
-            return new ResponseEntity<>(commentsOnly, HttpStatus.OK);
+            return new ResponseEntity<>(dataVisibilityService.limitDataVisibility(commentsOnly, principal), HttpStatus.OK);
         } else {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }

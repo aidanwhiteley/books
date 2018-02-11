@@ -1,6 +1,10 @@
 package com.aidanwhiteley.books.domain;
 
 import lombok.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static com.aidanwhiteley.books.domain.User.Role.*;
 
 @Getter
 @AllArgsConstructor
@@ -16,6 +20,8 @@ import lombok.*;
  * trade off between accuracy at all times (and disk space) and performance.
  */
 public class Owner {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(Owner.class);
 
     private String authenticationServiceId;
 
@@ -44,9 +50,26 @@ public class Owner {
         this.authProvider = user.getAuthProvider();
     }
 
-    public static Owner getOwnerDataForEditorView(Owner anOwner) {
-        return new Owner(User.builder().fullName(anOwner.fullName).lastName(anOwner.lastName).
-                firstName(anOwner.firstName).picture(anOwner.picture).link(anOwner.link).build());
-    }
+    public void setPermissionsAndContentForUser(User user) {
 
+        if (null == user || user.getHighestRole() == ROLE_USER) {
+            this.authenticationServiceId = "";
+            this.firstName = "";
+            this.lastName = "";
+            this.fullName = "";
+            this.email = "";
+            this.link = "";
+            this.picture = "";
+            this.authProvider = null;
+        } else if (user.getHighestRole() == ROLE_EDITOR) {
+            this.authenticationServiceId = "";
+            this.email = "";
+            this.authProvider = null;
+        } else if (user.getHighestRole() == ROLE_ADMIN) {
+            // Return all
+        } else {
+            LOGGER.error("Unexpected user role found. This is a code logic error");
+            throw new IllegalStateException("Unable to set owner data in a Book appropriate for user");
+        }
+    }
 }

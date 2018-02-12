@@ -96,12 +96,6 @@ public class OauthAuthenticationUtils implements AuthenticationUtils {
         return this.getAuthProviderFromPrincipal(principal).toString();
     }
 
-    @Override
-    public User.Role getUsersHighestRole(Principal principal) {
-        User user = extractUserFromPrincipal(principal);
-        return user.getHighestRole();
-    }
-
     private void checkPrincipalType(Principal principal) {
         if (!(principal instanceof OAuth2Authentication)) {
             LOGGER.error("Only OAuth authentication currently supported and supplied Principal not oauth: {}", principal);

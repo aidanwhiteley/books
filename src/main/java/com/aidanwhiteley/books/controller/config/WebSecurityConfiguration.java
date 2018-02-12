@@ -2,6 +2,7 @@ package com.aidanwhiteley.books.controller.config;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -11,6 +12,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.aidanwhiteley.books.util.RequestLoggingInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.AuthoritiesExtractor;
@@ -39,6 +41,9 @@ import org.springframework.web.filter.CompositeFilter;
 
 import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.repository.UserRepository;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 /**
  * Supports oauth2 based social logons.
@@ -60,8 +65,12 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private UserRepository userRepository;
+
     @Value("${books.client.enableCORS}")
     private boolean enableCORS;
+
+    @Value("${books.client.allowedCorsOrigin}")
+    private String allowedCorsOrigin;
 
     @Bean
     @ConfigurationProperties("google.client")
@@ -110,6 +119,20 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         // @formatter:on
     }
 
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurerAdapter() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                if (enableCORS) {
+                    registry.addMapping("/api/**").allowedOrigins(allowedCorsOrigin).allowedMethods("GET");
+                    registry.addMapping("/secure/api/**").allowedOrigins(allowedCorsOrigin).allowedMethods("GET", "POST",
+                            "PUT", "DELETE", "PATCH");
+                }
+            }
+        };
+    }
+
     private Filter ssoFilter() {
 
         CompositeFilter filter = new CompositeFilter();
@@ -131,8 +154,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         UserInfoTokenServices googleTokenServices = new UserInfoTokenServices(googleResource().getUserInfoUri(), google().getClientId());
         googleTokenServices.setRestTemplate(googleTemplate);
         googleTokenServices.setAuthoritiesExtractor(new SocialAuthoritiesExtractor(User.AuthenticationProvider.GOOGLE));
-
         googleFilter.setTokenServices(googleTokenServices);
+
         filters.add(googleFilter);
 
         // Facebook configuration
@@ -146,13 +169,14 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         });
 
         OAuth2RestTemplate facebookTemplate = new OAuth2RestTemplate(facebook(), oauth2ClientContext);
+        //facebookTemplate.setInterceptors(Collections.singletonList(new RequestLoggingInterceptor()));
         facebookFilter.setRestTemplate(facebookTemplate);
 
         UserInfoTokenServices facebookTokenServices = new UserInfoTokenServices(facebookResource().getUserInfoUri(), facebook().getClientId());
         facebookTokenServices.setRestTemplate(facebookTemplate);
         facebookTokenServices.setAuthoritiesExtractor(new SocialAuthoritiesExtractor(User.AuthenticationProvider.FACEBOOK));
-
         facebookFilter.setTokenServices(facebookTokenServices);
+
         filters.add(facebookFilter);
 
         filter.setFilters(filters);

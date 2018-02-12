@@ -26,77 +26,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @SpringBootApplication
 public class BooksApplication extends WebMvcConfigurerAdapter {
 
-    private static final String BOOKS_COLLECTION = "book";
-    private static final String USERS_COLLECTION = "user";
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(BooksApplication.class);
-
-    @Value("${books.client.allowedCorsOrigin}")
-    private String allowedCorsOrigin;
-
-    @Value("${books.reload.development.data}")
-    private boolean reloadDevelopmentData;
-
-    @Autowired
-    private MongoTemplate template;
 
     public static void main(String[] args) {
         SpringApplication.run(BooksApplication.class, args);
     }
 
-    @Bean
-    @Profile({"dev"})
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurerAdapter() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/api/**").allowedOrigins(allowedCorsOrigin).allowedMethods("GET");
-                registry.addMapping("/secure/api/**").allowedOrigins(allowedCorsOrigin).allowedMethods("GET", "POST",
-                        "PUT", "DELETE", "PATCH");
-            }
-        };
-    }
 
-    /**
-     * Reload data for development and integration tests.
-     * Whether this runs or not is also controlled by the
-     * books.reload.development.data config setting.
-     *
-     * @return
-     */
-    @Bean
-    @Profile({"dev", "integration", "unixtest"})
-    public CommandLineRunner populateDummyData() {
-        return args -> {
-
-            if (reloadDevelopmentData) {
-
-                // Clearing and loading data into books collection
-                template.dropCollection(BOOKS_COLLECTION);
-                ClassPathResource classPathResource = new ClassPathResource("sample_data/books.json");
-                List<String> jsons;
-
-                try (InputStream resource = classPathResource.getInputStream()) {
-                    jsons = new BufferedReader(new InputStreamReader(resource,
-                            StandardCharsets.UTF_8)).lines().collect(Collectors.toList());
-                }
-                jsons.stream().map(Document::parse).forEach(i -> template.insert(i, BOOKS_COLLECTION));
-                LOGGER.info("****************************************************************************");
-                LOGGER.info("Loaded development data for books as running with dev or integration profile");
-
-                // Clearing and loading data into user collection
-                template.dropCollection(USERS_COLLECTION);
-                classPathResource = new ClassPathResource("sample_data/users.json");
-                try (InputStream resource = classPathResource.getInputStream()) {
-                    jsons = new BufferedReader(new InputStreamReader(resource,
-                            StandardCharsets.UTF_8)).lines().collect(Collectors.toList());
-                }
-                jsons.stream().map(Document::parse).forEach(i -> template.insert(i, USERS_COLLECTION));
-                LOGGER.info("Loaded development data for users as running with dev or integration profile");
-                LOGGER.info("****************************************************************************");
-            } else {
-                LOGGER.info("Development data not reloaded due to config settings");
-            }
-        };
-    }
 }

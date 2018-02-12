@@ -92,8 +92,4 @@ public class DummyAuthenticationUtils implements AuthenticationUtils {
 		return User.AuthenticationProvider.GOOGLE.toString();
 	}
 
-    @Override
-    public User.Role getUsersHighestRole(Principal principal) {
-        return User.Role.ROLE_USER;
-    }
 }

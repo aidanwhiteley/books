@@ -42,6 +42,12 @@ facebook:
     clientAuthenticationScheme: form
   resource:
     userInfoUri: https://graph.facebook.com/me?fields=name, first_name, last_name, link, picture, email
+    
+management:
+  context-path: /manage
+  port: -1
+  security:
+    role: ADMIN
 
 books:
   client:

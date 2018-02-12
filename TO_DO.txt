@@ -3,9 +3,7 @@ New functionality
 ~~~~~~~~~~~~~~~~~
 3. Support correct display of edit and delete for Book entries - possibly via Hateoas / HAL links
 6. Add stats cards to Book detail page
-7. Add Comments functionality
-8. Migrate to stateless JWT based authentication - carrying "signed" roles data
-11. Spring Data based auditing
+8. Migrate to stateless JWT based authentication - carrying "signed" roles data - so getUser isnt constantly called
 12. Set up endpoints and security for Actuator
 13. Support "multi tenant" i.e. multiple instances of app sharing same codebase and Mongo
 14. Create "digest emails"
@@ -17,7 +15,7 @@ New functionality
 23. Further randomise / anonomise the created field in the test data
 24. Fix oauth redirect config / code such that re-direct is over HTTPS rather than HTTP. Spring Boot issue?
     Then update config in Google and Facebook oauth to only support HTTPS redirect URLs
-25. Add edit support within book detail display for authorised users
+
 
 Completed new functionality
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -25,9 +23,11 @@ Completed new functionality
 2. Add help content and link
 4. Pagination of Books list
 5. Create "stats" API for cards at top of summary page
+7. Add Comments functionality
 8. Create "pop out" window for by genre, by author, by reader links
 9. Create Twitter based typeahead for above links
 10. Create typeahead of suggested genres (based on genres already used)
+11. Spring Data based auditing - interesting but not for this project
 19. Fix indentation GUI indicator of which "menu" item was clicked
 20. Write notes to say that must close / re-open browser for default admin to work.
 21. Remove user data from list of books. Trim down other data
@@ -35,7 +35,8 @@ Completed new functionality
 23. What books data should a non logged on user be able to search by reader. None!
 24. Move the Google Book data to 2nd tab and put comments on first tab.
 25. Remove Google book detail display on Save of new book or go to Summary (better option)
-26. Added extracting pciture details from Facebook logon.
+26. Add edit support within book detail display for authorised users
+27. Added extracting pciture details from Facebook logon.
 
 Bugs
 ~~~~
@@ -44,6 +45,7 @@ Bugs
 6. Auto admin functionality requires a user to log in twice before it works
 7. Why arent the "theme" font files picked up in the production build of the client project?
 8. Mobile (small) view - logon probelms. Facebook not working? Not displaying logged on user details?
+9. Fix summary table and comments grid layout on small mobiles
 
 Fixed bugs
 ~~~~~~~~~~

@@ -28,7 +28,7 @@ import java.security.Principal;
  * in the returned Book, the code needs to see a Principal parameter in the called method. This code
  * should "fail safe" in that if a new method is added and a Principal parameter is not part of the
  * method signature, then we assume the method is being called by an anonymous user and all
- * restrictions on th ereturned data are applied.
+ * restrictions on the returned data are applied.
  */
 @Aspect
 @Component

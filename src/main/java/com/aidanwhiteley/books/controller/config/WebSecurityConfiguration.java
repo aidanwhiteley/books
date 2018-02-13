@@ -2,7 +2,6 @@ package com.aidanwhiteley.books.controller.config;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -12,13 +11,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.aidanwhiteley.books.util.RequestLoggingInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.AuthoritiesExtractor;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,12 +37,13 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.filter.CompositeFilter;
-
-import com.aidanwhiteley.books.domain.User;
-import com.aidanwhiteley.books.repository.UserRepository;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+
+import com.aidanwhiteley.books.domain.User;
+import com.aidanwhiteley.books.domain.User.AuthenticationProvider;
+import com.aidanwhiteley.books.repository.UserRepository;
 
 /**
  * Supports oauth2 based social logons.
@@ -57,161 +57,143 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @Profile("!integration")
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private OAuth2ClientContext oauth2ClientContext;
+	@Autowired
+	private OAuth2ClientContext oauth2ClientContext;
 
-    @Value("${books.client.postLogonUrl}")
-    private String postLogonUrl;
+	@Value("${books.client.postLogonUrl}")
+	private String postLogonUrl;
 
-    @Autowired
-    private UserRepository userRepository;
+	@Autowired
+	private UserRepository userRepository;
 
-    @Value("${books.client.enableCORS}")
-    private boolean enableCORS;
+	@Value("${books.client.enableCORS}")
+	private boolean enableCORS;
 
-    @Value("${books.client.allowedCorsOrigin}")
-    private String allowedCorsOrigin;
+	@Value("${books.client.allowedCorsOrigin}")
+	private String allowedCorsOrigin;
 
-    @Bean
-    @ConfigurationProperties("google.client")
-    public AuthorizationCodeResourceDetails google() {
-        return new AuthorizationCodeResourceDetails();
-    }
+	@Bean
+	@ConfigurationProperties("google")
+	public ClientResources google() {
+	  return new ClientResources();
+	}
 
-    @Bean
-    @ConfigurationProperties("google.resource")
-    public ResourceServerProperties googleResource() {
-        return new ResourceServerProperties();
-    }
+	@Bean
+	@ConfigurationProperties("facebook")
+	public ClientResources facebook() {
+	  return new ClientResources();
+	}
 
-    @Bean
-    @ConfigurationProperties("facebook.client")
-    public AuthorizationCodeResourceDetails facebook() {
-        return new AuthorizationCodeResourceDetails();
-    }
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
 
-    @Bean
-    @ConfigurationProperties("facebook.resource")
-    public ResourceServerProperties facebookResource() {
-        return new ResourceServerProperties();
-    }
+		// Is CORS to be enabled? If yes, the allowedCorsOrigin config
+		// property should also be set.
+		// Normally only expected to be used in dev when there is no "front
+		// proxy" of some sort
+		if (enableCORS) {
+			http.cors();
+		}
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+		// @formatter:off
+		http.csrf().disable().antMatcher("/**").authorizeRequests().antMatchers("/api/**", "/login**").permitAll()
+				.anyRequest().authenticated().and().addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class);
+		// @formatter:on
+	}
 
-        // Is CORS to be enabled? If yes, the allowedCorsOrigin config
-        // property should also be set.
-        // Normally only expected to be used in dev when there is no "front proxy" of some sort
-        if (enableCORS) {
-            http.cors();
-        }
+	@Bean
+	public WebMvcConfigurer corsConfigurer() {
+		return new WebMvcConfigurerAdapter() {
+			@Override
+			public void addCorsMappings(CorsRegistry registry) {
+				if (enableCORS) {
+					registry.addMapping("/api/**").allowedOrigins(allowedCorsOrigin).allowedMethods("GET");
+					registry.addMapping("/secure/api/**").allowedOrigins(allowedCorsOrigin).allowedMethods("GET",
+							"POST", "PUT", "DELETE", "PATCH");
+				}
+			}
+		};
+	}
+	
+	private Filter ssoFilter() {
+		  CompositeFilter filter = new CompositeFilter();
+		  List<Filter> filters = new ArrayList<>();
+		  filters.add(ssoFilter(facebook(), "/login/facebook", AuthenticationProvider.FACEBOOK));
+		  filters.add(ssoFilter(google(), "/login/google", AuthenticationProvider.GOOGLE));
+		  filter.setFilters(filters);
+		  return filter;
+		}
 
-        // @formatter:off
-        http
-            .csrf().disable()
-            .antMatcher("/**")
-                .authorizeRequests()
-            .antMatchers("/api/**", "/login**")
-                .permitAll()
-            .anyRequest()
-                .authenticated()
-            .and().addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class);
-        // @formatter:on
-    }
 
-    @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurerAdapter() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                if (enableCORS) {
-                    registry.addMapping("/api/**").allowedOrigins(allowedCorsOrigin).allowedMethods("GET");
-                    registry.addMapping("/secure/api/**").allowedOrigins(allowedCorsOrigin).allowedMethods("GET", "POST",
-                            "PUT", "DELETE", "PATCH");
-                }
-            }
-        };
-    }
+	private Filter ssoFilter(ClientResources client, String path, AuthenticationProvider provider) {
+		
+		OAuth2ClientAuthenticationProcessingFilter filter = new OAuth2ClientAuthenticationProcessingFilter(path);
+		filter.setAuthenticationSuccessHandler(new SimpleUrlAuthenticationSuccessHandler() {
+			public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
+					Authentication authentication) throws IOException, ServletException {
+				this.setDefaultTargetUrl(postLogonUrl);
+				super.onAuthenticationSuccess(request, response, authentication);
+			}
+		});
+		OAuth2RestTemplate template = new OAuth2RestTemplate(client.getClient(), oauth2ClientContext);
+		filter.setRestTemplate(template);
+		
+		UserInfoTokenServices tokenServices = new UserInfoTokenServices(client.getResource().getUserInfoUri(),
+				client.getClient().getClientId());
+		tokenServices.setRestTemplate(template);
+		tokenServices.setAuthoritiesExtractor(new SocialAuthoritiesExtractor(provider));
+		filter.setTokenServices(tokenServices);
+		
+		return filter;
+	}
+	
+	class ClientResources {
 
-    private Filter ssoFilter() {
+		@NestedConfigurationProperty
+		private AuthorizationCodeResourceDetails client = new AuthorizationCodeResourceDetails();
 
-        CompositeFilter filter = new CompositeFilter();
-        List<Filter> filters = new ArrayList<>();
+		@NestedConfigurationProperty
+		private ResourceServerProperties resource = new ResourceServerProperties();
 
-        // Google configuration
-        OAuth2ClientAuthenticationProcessingFilter googleFilter = new OAuth2ClientAuthenticationProcessingFilter("/login/google");
+		public AuthorizationCodeResourceDetails getClient() {
+			return client;
+		}
 
-        googleFilter.setAuthenticationSuccessHandler(new SimpleUrlAuthenticationSuccessHandler() {
-            public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-                this.setDefaultTargetUrl(postLogonUrl);
-                super.onAuthenticationSuccess(request, response, authentication);
-            }
-        });
+		public ResourceServerProperties getResource() {
+			return resource;
+		}
+	}
 
-        OAuth2RestTemplate googleTemplate = new OAuth2RestTemplate(google(), oauth2ClientContext);
-        googleFilter.setRestTemplate(googleTemplate);
+	@Bean
+	public FilterRegistrationBean oauth2ClientFilterRegistration(OAuth2ClientContextFilter filter) {
+		FilterRegistrationBean registration = new FilterRegistrationBean();
+		registration.setFilter(filter);
+		registration.setOrder(-100);
+		return registration;
+	}
 
-        UserInfoTokenServices googleTokenServices = new UserInfoTokenServices(googleResource().getUserInfoUri(), google().getClientId());
-        googleTokenServices.setRestTemplate(googleTemplate);
-        googleTokenServices.setAuthoritiesExtractor(new SocialAuthoritiesExtractor(User.AuthenticationProvider.GOOGLE));
-        googleFilter.setTokenServices(googleTokenServices);
+	class SocialAuthoritiesExtractor implements AuthoritiesExtractor {
+		private final String authProvider;
 
-        filters.add(googleFilter);
+		public SocialAuthoritiesExtractor(User.AuthenticationProvider authProvider) {
+			super();
+			this.authProvider = authProvider.toString();
+		}
 
-        // Facebook configuration
-        OAuth2ClientAuthenticationProcessingFilter facebookFilter = new OAuth2ClientAuthenticationProcessingFilter("/login/facebook");
+		@Override
+		public List<GrantedAuthority> extractAuthorities(Map<String, Object> map) {
 
-        facebookFilter.setAuthenticationSuccessHandler(new SimpleUrlAuthenticationSuccessHandler() {
-            public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-                this.setDefaultTargetUrl(postLogonUrl);
-                super.onAuthenticationSuccess(request, response, authentication);
-            }
-        });
+			List<User> users = userRepository.findAllByAuthenticationServiceIdAndAuthProvider((String) map.get("id"),
+					authProvider);
 
-        OAuth2RestTemplate facebookTemplate = new OAuth2RestTemplate(facebook(), oauth2ClientContext);
-        //facebookTemplate.setInterceptors(Collections.singletonList(new RequestLoggingInterceptor()));
-        facebookFilter.setRestTemplate(facebookTemplate);
-
-        UserInfoTokenServices facebookTokenServices = new UserInfoTokenServices(facebookResource().getUserInfoUri(), facebook().getClientId());
-        facebookTokenServices.setRestTemplate(facebookTemplate);
-        facebookTokenServices.setAuthoritiesExtractor(new SocialAuthoritiesExtractor(User.AuthenticationProvider.FACEBOOK));
-        facebookFilter.setTokenServices(facebookTokenServices);
-
-        filters.add(facebookFilter);
-
-        filter.setFilters(filters);
-        return filter;
-    }
-
-    @Bean
-    public FilterRegistrationBean oauth2ClientFilterRegistration(OAuth2ClientContextFilter filter) {
-        FilterRegistrationBean registration = new FilterRegistrationBean();
-        registration.setFilter(filter);
-        registration.setOrder(-100);
-        return registration;
-    }
-
-    class SocialAuthoritiesExtractor implements AuthoritiesExtractor {
-        private final String authProvider;
-
-        public SocialAuthoritiesExtractor(User.AuthenticationProvider authProvider) {
-            super();
-            this.authProvider = authProvider.toString();
-        }
-
-        @Override
-        public List<GrantedAuthority> extractAuthorities(Map<String, Object> map) {
-
-            List<User> users = userRepository.findAllByAuthenticationServiceIdAndAuthProvider((String) map.get("id"),
-                    authProvider);
-
-            if (users.size() == 1) {
-                String csvRoles = users.get(0).getRoles().stream().map(s -> s.toString()).collect(Collectors.joining(","));
-                return AuthorityUtils.commaSeparatedStringToAuthorityList(csvRoles);
-            } else {
-                return AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_USER");
-            }
-        }
-    }
+			if (users.size() == 1) {
+				String csvRoles = users.get(0).getRoles().stream().map(s -> s.toString())
+						.collect(Collectors.joining(","));
+				return AuthorityUtils.commaSeparatedStringToAuthorityList(csvRoles);
+			} else {
+				return AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_USER");
+			}
+		}
+	}
 
 }

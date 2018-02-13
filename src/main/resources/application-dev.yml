@@ -19,3 +19,7 @@ books:
       admin:
         email: thecloudybookclub@gmail.com  # The remote email address for the user that will be automatically made an admin on first logon
 
+
+  jwt:
+    expiryInMilliSeconds: 60
+    secretKey: This^IsNot!A%Real*Secret

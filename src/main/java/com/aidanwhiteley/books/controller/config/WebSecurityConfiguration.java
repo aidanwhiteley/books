@@ -11,8 +11,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.aidanwhiteley.books.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.actuate.autoconfigure.ManagementServerProperties;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.AuthoritiesExtractor;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices;
@@ -25,6 +27,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -34,6 +37,7 @@ import org.springframework.security.oauth2.client.filter.OAuth2ClientAuthenticat
 import org.springframework.security.oauth2.client.filter.OAuth2ClientContextFilter;
 import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.filter.CompositeFilter;
@@ -60,11 +64,15 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private OAuth2ClientContext oauth2ClientContext;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private UserService userService;
+
+
 	@Value("${books.client.postLogonUrl}")
 	private String postLogonUrl;
-
-	@Autowired
-	private UserRepository userRepository;
 
 	@Value("${books.client.enableCORS}")
 	private boolean enableCORS;
@@ -96,8 +104,14 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 		}
 
 		// @formatter:off
-		http.csrf().disable().antMatcher("/**").authorizeRequests().antMatchers("/api/**", "/login**").permitAll()
-				.anyRequest().authenticated().and().addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class);
+		http.
+				csrf().disable().
+				//sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).
+                //enableSessionUrlRewriting(false).and().
+				antMatcher("/**").authorizeRequests().
+					antMatchers("/api/**", "/login**").permitAll().
+				anyRequest().authenticated().and().
+				addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class);
 		// @formatter:on
 	}
 
@@ -131,8 +145,14 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 		filter.setAuthenticationSuccessHandler(new SimpleUrlAuthenticationSuccessHandler() {
 			public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 					Authentication authentication) throws IOException, ServletException {
-				this.setDefaultTargetUrl(postLogonUrl);
-				super.onAuthenticationSuccess(request, response, authentication);
+
+                OAuth2Authentication auth2 = (OAuth2Authentication) authentication;
+                User user = userService.createOrUpdateUser(auth2);
+
+			    if (enableCORS) {
+                    this.setDefaultTargetUrl(postLogonUrl);
+                    super.onAuthenticationSuccess(request, response, authentication);
+                }
 			}
 		});
 		OAuth2RestTemplate template = new OAuth2RestTemplate(client.getClient(), oauth2ClientContext);

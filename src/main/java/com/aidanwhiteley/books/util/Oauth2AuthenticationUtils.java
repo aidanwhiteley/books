@@ -15,15 +15,16 @@ import java.security.Principal;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.FACEBOOK;
 import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.GOOGLE;
 
 @Component
 @Profile({"!integration"})
-public class OauthAuthenticationUtils implements AuthenticationUtils {
+public class Oauth2AuthenticationUtils implements AuthenticationUtils {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(OauthAuthenticationUtils.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Oauth2AuthenticationUtils.class);
 
     @Autowired
     private UserRepository userRepository;
@@ -44,40 +45,55 @@ public class OauthAuthenticationUtils implements AuthenticationUtils {
         checkPrincipalType(principal);
 
         OAuth2Authentication auth = (OAuth2Authentication) principal;
+        Optional<User> user = getUserIfExists(auth);
+
+        if (user.isPresent()) {
+            return user.get();
+        } else {
+            return null;
+        }
+    }
+
+    public Optional<User> getUserIfExists(OAuth2Authentication auth) {
+
         String authenticationProviderId = (String) auth.getUserAuthentication().getPrincipal();
         List<User> users = userRepository.findAllByAuthenticationServiceIdAndAuthProvider(authenticationProviderId,
-                getAuthProviderFromPrincipalAsString(principal));
+                this.getAuthenticationProvider(auth).toString());
 
+        User user;
         if (users.size() == 0) {
-            return null;
+            user = null;
         } else if (users.size() == 1) {
-            return users.get(0);
+            user = users.get(0);
         } else {
-            LOGGER.error("More than one user found for principcal: {}", principal);
-            throw new IllegalStateException("More that one user found for a given Principal");
+            LOGGER.error("More than one user found for Authentication: {}", auth);
+            throw new IllegalStateException("More that one user found for a given Authentication");
         }
+
+        return Optional.ofNullable(user);
     }
 
     @Override
     public Map<String, Object> getRemoteUserDetails(Principal principal) {
 
         checkPrincipalType(principal);
-
         OAuth2Authentication auth = (OAuth2Authentication) principal;
-        @SuppressWarnings("unchecked")
-        Map<String, Object> userDetails = (LinkedHashMap<String, Object>) auth.getUserAuthentication().getDetails();
+        return getUserDetails(auth);
+    }
 
-
-        return userDetails;
+    public Map<String, Object> getUserDetails(OAuth2Authentication auth) {
+        return (LinkedHashMap<String, Object>) auth.getUserAuthentication().getDetails();
     }
 
     @Override
     public User.AuthenticationProvider getAuthProviderFromPrincipal(Principal principal) {
     	
     	checkPrincipalType(principal);
-    	
     	OAuth2Authentication auth = (OAuth2Authentication) principal;
-    	
+        return getAuthenticationProvider(auth);
+    }
+
+    public User.AuthenticationProvider getAuthenticationProvider(OAuth2Authentication auth) {
         OAuth2Request storedRquest = auth.getOAuth2Request();
         String clientId = storedRquest.getClientId();
 

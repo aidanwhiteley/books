@@ -14,7 +14,9 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -107,6 +109,19 @@ public class User {
         public int getRoleNumber() {
             return this.role;
         }
+
+        private static Map<Integer, Role> map = new HashMap<>();
+
+        static {
+            for (Role aRole : Role.values()) {
+                map.put(aRole.getRoleNumber(), aRole);
+            }
+        }
+
+        public static Role getRole(int role) {
+            return map.get(role);
+        }
+
     }
 
     public enum AuthenticationProvider {

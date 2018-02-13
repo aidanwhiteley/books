@@ -3,6 +3,7 @@ package com.aidanwhiteley.books.controller;
 import com.aidanwhiteley.books.controller.dtos.ClientRoles;
 import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.repository.UserRepository;
+import com.aidanwhiteley.books.service.UserService;
 import com.aidanwhiteley.books.util.AuthenticationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,32 +33,34 @@ public class UserController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
-    @Value("${books.users.default.admin.email}")
-    private String defaultAdminEmail;
-
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private AuthenticationUtils authUtils;
 
+    @Autowired
+    private UserService userService;
+
 
     @RequestMapping("/user")
     @PreAuthorize("hasAnyRole('ROLE_EDITOR', 'ROLE_ADMIN', 'ROLE_USER')")
     public User user(Principal principal) {
 
-        Map<String, Object> userDetails = authUtils.getRemoteUserDetails(principal);
+        //Map<String, Object> userDetails = authUtils.getRemoteUserDetails(principal);
 
-        LOGGER.debug("Remote user details: " + userDetails);
+        //LOGGER.debug("Remote user details: " + userDetails);
 
         User user = authUtils.extractUserFromPrincipal(principal);
-        User.AuthenticationProvider provider = authUtils.getAuthProviderFromPrincipal(principal);
 
-        if (user == null) {
-            return createUser(userDetails, provider);
-        } else {
-            return updateUser(userDetails, user, provider);
-        }
+        return user;
+//        User.AuthenticationProvider provider = authUtils.getAuthProviderFromPrincipal(principal);
+//
+//        if (user == null) {
+//            return userService.createUser(userDetails, provider);
+//        } else {
+//            return userService.updateUser(userDetails, user, provider);
+//        }
     }
 
     @RequestMapping(value = "/users", method = GET)
@@ -93,119 +96,5 @@ public class UserController {
         LOGGER.debug("Received patch of: {}", clientRoles);
         userRepository.updateUserRoles(clientRoles);
         return ResponseEntity.ok().build();
-    }
-
-    private User createUser(Map<String, Object> userDetails, User.AuthenticationProvider provider) {
-
-        User user;
-
-        switch (provider) {
-            case GOOGLE: {
-                user = User.builder().authenticationServiceId((String) userDetails.get("id")).
-                        firstName((String) userDetails.get("given_name")).
-                        lastName((String) userDetails.get("family_name")).
-                        fullName((String) userDetails.get("name")).
-                        link((String) userDetails.get("link")).
-                        picture((String) userDetails.get("picture")).
-                        email((String) userDetails.get("email")).
-                        lastLogon(LocalDateTime.now()).
-                        firstLogon(LocalDateTime.now()).
-                        authProvider(GOOGLE).
-                        build();
-
-                user = setDefaultAdminUser(user);
-                user.addRole(User.Role.ROLE_USER);
-                break;
-            }
-            case FACEBOOK: {
-
-                user = User.builder().authenticationServiceId((String) userDetails.get("id")).
-                        firstName((String) userDetails.get("first_name")).
-                        lastName((String) userDetails.get("last_name")).
-                        fullName((String) userDetails.get("name")).
-                        link((String) userDetails.get("link")).
-                        email((String) userDetails.get("email")).
-                        lastLogon(LocalDateTime.now()).
-                        firstLogon(LocalDateTime.now()).
-                        authProvider(FACEBOOK).
-                        build();
-                user = setDefaultAdminUser(user);
-                user.addRole(User.Role.ROLE_USER);
-
-                String url = extractFaceBookPictureUrl(userDetails);
-                if (url != null) {
-                    user.setPicture(url);
-                }
-
-                break;
-            }
-            default: {
-                LOGGER.error("Unexpected oauth user type {}", provider);
-                throw new IllegalArgumentException("Unexpected oauth type: " + provider);
-            }
-        }
-
-        userRepository.insert(user);
-        LOGGER.info("User created in repository: " + user);
-        return user;
-    }
-
-    private User setDefaultAdminUser(User user) {
-        if (defaultAdminEmail != null && defaultAdminEmail.equals(user.getEmail())) {
-            user.addRole(User.Role.ROLE_EDITOR);
-            user.addRole(User.Role.ROLE_ADMIN);
-        }
-
-        return user;
-    }
-
-    private User updateUser(Map<String, Object> userDetails, User user, User.AuthenticationProvider provider) {
-
-        switch (provider) {
-            case GOOGLE: {
-                user.setFirstName((String) userDetails.get("given_name"));
-                user.setLastName((String) userDetails.get("family_name"));
-                user.setFullName((String) userDetails.get("name"));
-                user.setLink((String) userDetails.get("link"));
-                user.setPicture((String) userDetails.get("picture"));
-                user.setEmail((String) userDetails.get("email"));
-                user.setLastLogon(LocalDateTime.now());
-                break;
-            }
-            case FACEBOOK: {
-                user.setFirstName((String) userDetails.get("first_name"));
-                user.setLastName((String) userDetails.get("last_name"));
-                user.setFullName((String) userDetails.get("name"));
-                user.setLink((String) userDetails.get("link"));
-                String url = extractFaceBookPictureUrl(userDetails);
-                if (url != null) {
-                    user.setPicture(url);
-                }
-                user.setEmail((String) userDetails.get("email"));
-                user.setLastLogon(LocalDateTime.now());
-                break;
-            }
-            default: {
-                LOGGER.error("Unexpected oauth user type {}", provider);
-                throw new IllegalArgumentException("Unexpected oauth type: " + provider);
-            }
-        }
-
-        userRepository.save(user);
-        LOGGER.info("User updated in repository: " + user);
-        return user;
-    }
-
-    private String extractFaceBookPictureUrl(Map<String, Object> userDetails) {
-        if (userDetails.get("picture") != null && userDetails.get("picture") instanceof LinkedHashMap) {
-            @SuppressWarnings("unchecked")
-            LinkedHashMap<String, Object> picture = (LinkedHashMap<String, Object>) userDetails.get("picture");
-            if (picture.get("data") != null && picture.get("data") instanceof LinkedHashMap) {
-                @SuppressWarnings("unchecked")
-                LinkedHashMap<String, Object> data = (LinkedHashMap<String, Object>) picture.get("data");
-                return (String) data.get("url");
-            }
-        }
-        return null;
     }
 }

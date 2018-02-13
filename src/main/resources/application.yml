@@ -77,3 +77,9 @@ books:
       page:
         size: 5
 
+  jwt:
+    expiryInMilliSeconds: 60
+    secretKey:
+    issuer: "CloudyBookClub"
+
+

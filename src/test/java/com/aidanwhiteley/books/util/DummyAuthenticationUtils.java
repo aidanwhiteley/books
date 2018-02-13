@@ -5,11 +5,13 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Component;
 
 import com.aidanwhiteley.books.domain.User;
@@ -91,5 +93,20 @@ public class DummyAuthenticationUtils implements AuthenticationUtils {
 	public String getAuthProviderFromPrincipalAsString(Principal principal) {
 		return User.AuthenticationProvider.GOOGLE.toString();
 	}
+
+    @Override
+    public Optional<User> getUserIfExists(OAuth2Authentication auth) {
+        return Optional.empty();
+    }
+
+    @Override
+    public Map<String, Object> getUserDetails(OAuth2Authentication auth) {
+        return null;
+    }
+
+    @Override
+    public AuthenticationProvider getAuthenticationProvider(OAuth2Authentication auth) {
+        return null;
+    }
 
 }

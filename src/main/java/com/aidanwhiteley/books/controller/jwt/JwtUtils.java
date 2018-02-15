@@ -1,31 +1,29 @@
 package com.aidanwhiteley.books.controller.jwt;
 
-import com.aidanwhiteley.books.domain.User;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Header;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import java.util.ArrayList;
+import java.util.Date;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import com.aidanwhiteley.books.domain.User;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Header;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 
 @Component
 public class JwtUtils {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(JwtUtils.class);
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(JwtUtils.class);
 
     private static final String AUTH_PROVIDER = "provider";
     private static final String FULL_NAME = "name";
     private static final String ROLES = "roles";
     private static final String ROLES_DELIMETER = ",";
-    private static final String CSRF_UUID = "csrf";
 
     @Value("${books.jwt.expiryInMilliSeconds}")
     private int expiryInMilliSeconds;
@@ -55,10 +53,16 @@ public class JwtUtils {
                 .getBody();
 
         String authenticationServiceId = claims.getSubject();
-        String issuer = claims.getIssuer();
+        String extractedIssuer = claims.getIssuer();
         String authProvider = (String) claims.get(AUTH_PROVIDER);
         String fullName = (String) claims.get(FULL_NAME);
         String roles = (String) claims.get(ROLES);
+        
+        if (! issuer.equals(extractedIssuer)) {
+        	String errMsg = "Expected token issuer of " + issuer + " but found " + extractedIssuer;
+        	LOGGER.error(errMsg);
+        	throw new IllegalArgumentException(errMsg);
+        }
 
         User user = User.builder().
                 authenticationServiceId(authenticationServiceId).

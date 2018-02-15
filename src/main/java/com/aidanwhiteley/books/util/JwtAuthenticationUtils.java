@@ -1,25 +1,20 @@
 package com.aidanwhiteley.books.util;
 
-import com.aidanwhiteley.books.controller.jwt.JwtAuthentication;
-import com.aidanwhiteley.books.domain.User;
-import com.aidanwhiteley.books.repository.UserRepository;
+import java.security.Principal;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
-import org.springframework.security.oauth2.provider.OAuth2Request;
 import org.springframework.stereotype.Component;
 
-import java.security.Principal;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.FACEBOOK;
-import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.GOOGLE;
+import com.aidanwhiteley.books.controller.jwt.JwtAuthentication;
+import com.aidanwhiteley.books.domain.User;
+import com.aidanwhiteley.books.repository.UserRepository;
 
 @Component
 @Profile({"!integration"})
@@ -56,9 +51,12 @@ public class JwtAuthenticationUtils {
 
     public Optional<User> getUserIfExists(JwtAuthentication auth) {
 
-        String authenticationProviderId = (String) auth.getAuthProvider();
-        List<User> users = userRepository.findAllByAuthenticationServiceIdAndAuthProvider(authenticationProviderId,
-                auth.getAuthProvider());
+    	String authenticationServiceId = auth.getAuthenticationServiceId();
+        String authenticationProviderId = auth.getAuthProvider();
+        
+        LOGGER.debug("Query user repository with id of {} and provider of {}", authenticationServiceId, authenticationProviderId);
+        
+        List<User> users = userRepository.findAllByAuthenticationServiceIdAndAuthProvider(authenticationServiceId, authenticationProviderId);
 
         User user;
         if (users.size() == 0) {

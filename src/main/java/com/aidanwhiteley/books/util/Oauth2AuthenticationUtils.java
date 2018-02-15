@@ -81,7 +81,8 @@ public class Oauth2AuthenticationUtils implements AuthenticationUtils {
         return getUserDetails(auth);
     }
 
-    public Map<String, Object> getUserDetails(OAuth2Authentication auth) {
+    @SuppressWarnings("unchecked")
+	public Map<String, Object> getUserDetails(OAuth2Authentication auth) {
         return (LinkedHashMap<String, Object>) auth.getUserAuthentication().getDetails();
     }
 

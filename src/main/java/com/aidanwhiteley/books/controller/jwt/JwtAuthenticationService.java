@@ -1,18 +1,18 @@
 package com.aidanwhiteley.books.controller.jwt;
 
-import com.aidanwhiteley.books.domain.User;
-import com.sun.deploy.net.HttpResponse;
-import io.jsonwebtoken.ExpiredJwtException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import com.aidanwhiteley.books.domain.User;
+
+import io.jsonwebtoken.ExpiredJwtException;
 
 @Service
 public class JwtAuthenticationService {

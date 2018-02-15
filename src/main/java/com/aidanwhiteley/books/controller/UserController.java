@@ -1,15 +1,15 @@
 package com.aidanwhiteley.books.controller;
 
-import com.aidanwhiteley.books.controller.dtos.ClientRoles;
-import com.aidanwhiteley.books.domain.User;
-import com.aidanwhiteley.books.repository.UserRepository;
-import com.aidanwhiteley.books.service.UserService;
-import com.aidanwhiteley.books.util.AuthenticationUtils;
-import com.aidanwhiteley.books.util.JwtAuthenticationUtils;
+import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.PATCH;
+
+import java.security.Principal;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,15 +18,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.security.Principal;
-import java.time.LocalDateTime;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.FACEBOOK;
-import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.GOOGLE;
-import static org.springframework.web.bind.annotation.RequestMethod.*;
+import com.aidanwhiteley.books.controller.dtos.ClientRoles;
+import com.aidanwhiteley.books.domain.User;
+import com.aidanwhiteley.books.repository.UserRepository;
+import com.aidanwhiteley.books.util.JwtAuthenticationUtils;
 
 @RestController
 @RequestMapping("/secure/api")
@@ -39,10 +34,6 @@ public class UserController {
 
     @Autowired
     private JwtAuthenticationUtils authUtils;
-
-    @Autowired
-    private UserService userService;
-
 
     @RequestMapping("/user")
     @PreAuthorize("hasAnyRole('ROLE_EDITOR', 'ROLE_ADMIN', 'ROLE_USER')")

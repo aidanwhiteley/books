@@ -1,13 +1,16 @@
 package com.aidanwhiteley.books.controller.config;
 
-import com.aidanwhiteley.books.controller.jwt.JwtAuthenticationFilter;
-import com.aidanwhiteley.books.controller.jwt.JwtAuthenticationService;
-import com.aidanwhiteley.books.domain.User;
-import com.aidanwhiteley.books.domain.User.AuthenticationProvider;
-import com.aidanwhiteley.books.repository.UserRepository;
-import com.aidanwhiteley.books.service.UserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.servlet.Filter;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.AuthoritiesExtractor;
@@ -41,15 +44,12 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
-import javax.servlet.Filter;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import com.aidanwhiteley.books.controller.jwt.JwtAuthenticationFilter;
+import com.aidanwhiteley.books.controller.jwt.JwtAuthenticationService;
+import com.aidanwhiteley.books.domain.User;
+import com.aidanwhiteley.books.domain.User.AuthenticationProvider;
+import com.aidanwhiteley.books.repository.UserRepository;
+import com.aidanwhiteley.books.service.UserService;
 
 /**
  * Supports oauth2 based social logons and JWT based authentication and authorisation.
@@ -62,8 +62,6 @@ import java.util.stream.Collectors;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @Profile("!integration")
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(WebSecurityConfigurerAdapter.class);
 
     @Autowired
     JwtAuthenticationFilter jwtAuththenticationFilter;

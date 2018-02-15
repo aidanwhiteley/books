@@ -12,7 +12,9 @@ import java.util.Objects;
 
 public class JwtAuthentication implements Authentication {
 
-    private List<GrantedAuthority> grantedAuthorities = new LinkedList<>();
+	private static final long serialVersionUID = 1L;
+	
+	private List<GrantedAuthority> grantedAuthorities = new LinkedList<>();
     private boolean isAuthenticated = false;
     private String fullName;
     private String authProvider;

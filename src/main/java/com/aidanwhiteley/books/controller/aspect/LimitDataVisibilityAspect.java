@@ -1,9 +1,7 @@
 package com.aidanwhiteley.books.controller.aspect;
 
-import com.aidanwhiteley.books.domain.Book;
-import com.aidanwhiteley.books.domain.User;
-import com.aidanwhiteley.books.util.AuthenticationUtils;
-import com.aidanwhiteley.books.util.JwtAuthenticationUtils;
+import java.security.Principal;
+
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -14,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
-import java.security.Principal;
+import com.aidanwhiteley.books.domain.Book;
+import com.aidanwhiteley.books.domain.User;
+import com.aidanwhiteley.books.util.JwtAuthenticationUtils;
 
 /**
  * This aspect is responsible for limiting the data returned to a caller based who the caller is.

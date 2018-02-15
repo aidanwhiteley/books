@@ -40,7 +40,7 @@ import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.repository.BookRepository;
 import com.aidanwhiteley.books.repository.GoogleBooksDao;
 import com.aidanwhiteley.books.repository.dtos.BooksByReader;
-import com.aidanwhiteley.books.util.AuthenticationUtils;
+import com.aidanwhiteley.books.util.JwtAuthenticationUtils;
 
 @LimitDataVisibility
 @RestController
@@ -55,7 +55,7 @@ public class BookSecureController {
     private GoogleBooksDao googleBooksDao;
 
     @Autowired
-    private AuthenticationUtils authUtils;
+    private JwtAuthenticationUtils authUtils; 
 
     @Value("${books.users.default.page.size}")
     private int defaultPageSize;

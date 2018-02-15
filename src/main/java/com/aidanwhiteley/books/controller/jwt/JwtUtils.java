@@ -25,6 +25,7 @@ public class JwtUtils {
     private static final String FULL_NAME = "name";
     private static final String ROLES = "roles";
     private static final String ROLES_DELIMETER = ",";
+    private static final String CSRF_UUID = "csrf";
 
     @Value("${books.jwt.expiryInMilliSeconds}")
     private int expiryInMilliSeconds;

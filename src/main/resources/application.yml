@@ -54,6 +54,7 @@ books:
     enableCORS: false
     allowedCorsOrigin: http://localhost:9000
     postLogonUrl: http://localhost:9000/
+    xsrfHeader: X-XSRF
 
   google:
     books:
@@ -81,5 +82,7 @@ books:
     expiryInMilliSeconds: 60
     secretKey:
     issuer: "CloudyBookClub"
+    cookieOverHttpsOnly: true
+    cookieAccessedByHttoOnly: true
 
 

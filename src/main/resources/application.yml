@@ -48,6 +48,13 @@ management:
   port: -1
   security:
     role: ADMIN
+    
+server:
+  session:
+    cookie:
+      max-ag: 0
+    session:
+      timeout: 0
 
 books:
   client:

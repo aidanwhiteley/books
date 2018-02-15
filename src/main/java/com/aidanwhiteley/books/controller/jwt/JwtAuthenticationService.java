@@ -94,6 +94,13 @@ public class JwtAuthenticationService {
                         expireCookie(response, cookie);
                         LOGGER.warn("Error validating jwt token: {}. So cookie deleted", re.getMessage(), re);
                     }
+                } else if (cookie.getName().equals("JSESSIONID")) {
+                	LOGGER.debug("Found and removing unwanted JSESSIONID based cookie");
+                	expireCookie(response, cookie);
+                	if (request.getSession(false) != null) {
+                		LOGGER.debug("Found and invalidating unwanted JSESSIONID based session");
+                		request.getSession(false).invalidate();
+                	}
                 }
             }
         }

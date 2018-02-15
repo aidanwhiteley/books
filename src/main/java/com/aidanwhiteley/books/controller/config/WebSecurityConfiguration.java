@@ -39,6 +39,9 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
+import org.springframework.security.web.savedrequest.NullRequestCache;
 import org.springframework.web.filter.CompositeFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -114,6 +117,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         // @formatter:off
         http.
                 csrf().disable().
+                requestCache().requestCache(new NullRequestCache()).and().
                 sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).
                 enableSessionUrlRewriting(false).and().
                 antMatcher("/**").authorizeRequests().
@@ -122,6 +126,13 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 addFilterBefore(jwtAuththenticationFilter, UsernamePasswordAuthenticationFilter.class).
                 addFilterBefore(oauth2SsoFilter(), BasicAuthenticationFilter.class);
         // @formatter:on
+    }
+    
+    public HttpSessionRequestCache getHttpSessionRequestCache() {
+        HttpSessionRequestCache httpSessionRequestCache = new HttpSessionRequestCache();
+        httpSessionRequestCache.setCreateSessionAllowed(false);
+        ((HttpSessionSecurityContextRepository) new HttpSessionSecurityContextRepository()).setAllowSessionCreation(false);
+        return httpSessionRequestCache;
     }
 
     @Bean
@@ -151,6 +162,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     private Filter oauth2SsoFilter(ClientResources client, String path, AuthenticationProvider provider) {
 
         OAuth2ClientAuthenticationProcessingFilter filter = new OAuth2ClientAuthenticationProcessingFilter(path);
+        filter.setAllowSessionCreation(false);
         filter.setAuthenticationSuccessHandler(new SimpleUrlAuthenticationSuccessHandler() {
             public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                                 Authentication authentication) throws IOException, ServletException {

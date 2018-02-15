@@ -73,7 +73,6 @@ public class JwtAuthentication implements Authentication {
 
     @Override
     public Object getPrincipal() {
-        // TODO - work out what to return here
         return this;
     }
 

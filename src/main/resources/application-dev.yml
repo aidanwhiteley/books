@@ -21,7 +21,7 @@ books:
 
 
   jwt:
-    expiryInMilliSeconds: 60
+    expiryInMilliSeconds: 3600000
     secretKey: This^IsNot!A%Real*Secret
     cookieOverHttpsOnly: false
-    cookieAccessedByHttoOnly: false
+    cookieAccessedByHttoOnly: true

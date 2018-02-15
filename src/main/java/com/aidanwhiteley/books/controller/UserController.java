@@ -5,6 +5,7 @@ import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.repository.UserRepository;
 import com.aidanwhiteley.books.service.UserService;
 import com.aidanwhiteley.books.util.AuthenticationUtils;
+import com.aidanwhiteley.books.util.JwtAuthenticationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,7 @@ public class UserController {
     private UserRepository userRepository;
 
     @Autowired
-    private AuthenticationUtils authUtils;
+    private JwtAuthenticationUtils authUtils;
 
     @Autowired
     private UserService userService;
@@ -50,6 +51,8 @@ public class UserController {
         //Map<String, Object> userDetails = authUtils.getRemoteUserDetails(principal);
 
         //LOGGER.debug("Remote user details: " + userDetails);
+
+        LOGGER.info("Principal passed in to user methoid is: " + (principal == null ? null : principal.toString()));
 
         User user = authUtils.extractUserFromPrincipal(principal);
 

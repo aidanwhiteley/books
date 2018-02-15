@@ -1,12 +1,13 @@
 package com.aidanwhiteley.books.controller.config;
 
+import com.aidanwhiteley.books.controller.jwt.JwtAuthenticationFilter;
 import com.aidanwhiteley.books.controller.jwt.JwtAuthenticationService;
-import com.aidanwhiteley.books.controller.jwt.JwtAuththenticationFilter;
-import com.aidanwhiteley.books.controller.jwt.JwtUtils;
 import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.domain.User.AuthenticationProvider;
 import com.aidanwhiteley.books.repository.UserRepository;
 import com.aidanwhiteley.books.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.AuthoritiesExtractor;
@@ -62,6 +63,14 @@ import java.util.stream.Collectors;
 @Profile("!integration")
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(WebSecurityConfigurerAdapter.class);
+
+    @Autowired
+    JwtAuthenticationFilter jwtAuththenticationFilter;
+
+    @Autowired
+    JwtAuthenticationService jwtAuthenticationService;
+
     @Autowired
     private OAuth2ClientContext oauth2ClientContext;
 
@@ -71,22 +80,14 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    JwtAuththenticationFilter jwtAuththenticationFilter;
-
-    Autowired
-    JwtAuthenticationService jwtAuthenticationService
-
-
-    @Value("${books.client.postLogonUrl}")
-    private String postLogonUrl;
-
     @Value("${books.client.enableCORS}")
     private boolean enableCORS;
 
     @Value("${books.client.allowedCorsOrigin}")
     private String allowedCorsOrigin;
 
+    @Value("${books.client.postLogonUrl}")
+    private String postLogonUrl;
 
 
     @Bean
@@ -158,11 +159,11 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
                 OAuth2Authentication auth2 = (OAuth2Authentication) authentication;
                 User user = userService.createOrUpdateUser(auth2);
-                jwtAuthenticationService.setAuthenticationData(request, response, authentication, user);
-                if (enableCORS) {
-                    this.setDefaultTargetUrl(postLogonUrl);
-                    super.onAuthenticationSuccess(request, response, authentication);
-                }
+
+                jwtAuthenticationService.setAuthenticationData(request, response, user);
+
+                this.setDefaultTargetUrl(postLogonUrl);
+                super.onAuthenticationSuccess(request, response, authentication);
             }
 
         });
@@ -176,6 +177,14 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         filter.setTokenServices(tokenServices);
 
         return filter;
+    }
+
+    @Bean
+    public FilterRegistrationBean oauth2ClientFilterRegistration(OAuth2ClientContextFilter filter) {
+        FilterRegistrationBean registration = new FilterRegistrationBean();
+        registration.setFilter(filter);
+        registration.setOrder(-100);
+        return registration;
     }
 
     class ClientResources {
@@ -193,14 +202,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         public ResourceServerProperties getResource() {
             return resource;
         }
-    }
-
-    @Bean
-    public FilterRegistrationBean oauth2ClientFilterRegistration(OAuth2ClientContextFilter filter) {
-        FilterRegistrationBean registration = new FilterRegistrationBean();
-        registration.setFilter(filter);
-        registration.setOrder(-100);
-        return registration;
     }
 
     class SocialAuthoritiesExtractor implements AuthoritiesExtractor {

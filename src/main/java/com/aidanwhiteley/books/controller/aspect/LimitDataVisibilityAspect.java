@@ -3,6 +3,7 @@ package com.aidanwhiteley.books.controller.aspect;
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.util.AuthenticationUtils;
+import com.aidanwhiteley.books.util.JwtAuthenticationUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -37,7 +38,7 @@ public class LimitDataVisibilityAspect {
     private static final Logger LOGGER = LoggerFactory.getLogger(LimitDataVisibilityAspect.class);
 
     @Autowired
-    private AuthenticationUtils authUtils;
+    private JwtAuthenticationUtils authUtils;
 
     @Pointcut("@within(com.aidanwhiteley.books.controller.aspect.LimitDataVisibility)")
     public void isAnnotated() {

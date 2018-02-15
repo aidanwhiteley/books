@@ -8,6 +8,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 public class JwtAuthentication implements Authentication {
 
@@ -59,13 +60,13 @@ public class JwtAuthentication implements Authentication {
 
     @Override
     public Object getCredentials() {
-        throw new UnsupportedOperationException("No reason to call get crentials on JWT based authentication!");
+        throw new UnsupportedOperationException("No reason to call get credentials on JWT based authentication!");
     }
 
     @Override
     public Object getDetails() {
         // TODO - work out what to return here
-        return this;
+        return null;
     }
 
     @Override
@@ -89,4 +90,40 @@ public class JwtAuthentication implements Authentication {
         this.isAuthenticated = authenticated;
     }
 
+    public String getAuthProvider() {
+        return authProvider;
+    }
+
+    public String getAuthenticationServiceId() {
+        return authenticationServiceId;
+    }
+
+    @Override
+    public String toString() {
+        return "JwtAuthentication{" +
+                "grantedAuthorities=" + grantedAuthorities +
+                ", isAuthenticated=" + isAuthenticated +
+                ", fullName='" + fullName + '\'' +
+                ", authProvider='" + authProvider + '\'' +
+                ", authenticationServiceId='" + authenticationServiceId + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        JwtAuthentication that = (JwtAuthentication) o;
+        return isAuthenticated == that.isAuthenticated &&
+                Objects.equals(grantedAuthorities, that.grantedAuthorities) &&
+                Objects.equals(fullName, that.fullName) &&
+                Objects.equals(authProvider, that.authProvider) &&
+                Objects.equals(authenticationServiceId, that.authenticationServiceId);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(grantedAuthorities, isAuthenticated, fullName, authProvider, authenticationServiceId);
+    }
 }

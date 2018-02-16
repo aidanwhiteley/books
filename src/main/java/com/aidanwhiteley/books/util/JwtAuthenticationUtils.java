@@ -2,14 +2,11 @@ package com.aidanwhiteley.books.util;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import com.aidanwhiteley.books.controller.jwt.JwtAuthentication;
@@ -17,14 +14,12 @@ import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.repository.UserRepository;
 
 @Component
-@Profile({"!integration"})
 public class JwtAuthenticationUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtAuthenticationUtils.class);
 
     @Autowired
     private UserRepository userRepository;
-
 
     public Optional<User> extractUserFromPrincipal(Principal principal) {
 

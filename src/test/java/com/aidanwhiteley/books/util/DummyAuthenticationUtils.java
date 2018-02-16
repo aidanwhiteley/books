@@ -19,7 +19,7 @@ import com.aidanwhiteley.books.domain.User.AuthenticationProvider;
 import com.aidanwhiteley.books.domain.User.Role;
 
 @Component
-public class DummyAuthenticationUtils implements AuthenticationUtils {
+public class DummyAuthenticationUtils {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(DummyAuthenticationUtils.class);
 
@@ -27,7 +27,6 @@ public class DummyAuthenticationUtils implements AuthenticationUtils {
     public static final String THIS_IS_NOT_A_REAL_AUTH_ID = "This is not a real auth id";
     public static final String DUMMY_EMAIL = "example@example.com";
 
-    @Override
     public User extractUserFromPrincipal(Principal principal) {
 
     	if (principal != null) {
@@ -79,32 +78,26 @@ public class DummyAuthenticationUtils implements AuthenticationUtils {
         return user;
     }
 
-    @Override
     public Map<String, Object> getRemoteUserDetails(Principal principal) {
         return new LinkedHashMap<>();
     }
 
-	@Override
 	public AuthenticationProvider getAuthProviderFromPrincipal(Principal principal) {
 		return User.AuthenticationProvider.GOOGLE;
 	}
 
-	@Override
 	public String getAuthProviderFromPrincipalAsString(Principal principal) {
 		return User.AuthenticationProvider.GOOGLE.toString();
 	}
 
-    @Override
     public Optional<User> getUserIfExists(OAuth2Authentication auth) {
         return Optional.empty();
     }
 
-    @Override
     public Map<String, Object> getUserDetails(OAuth2Authentication auth) {
         return null;
     }
 
-    @Override
     public AuthenticationProvider getAuthenticationProvider(OAuth2Authentication auth) {
         return null;
     }

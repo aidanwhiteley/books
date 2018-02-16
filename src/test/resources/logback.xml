@@ -7,4 +7,5 @@
     <logger name="org.apache.catalina" level="WARN"/>
     <logger name="com.aidanwhiteley" level="WARN"/>
     <logger name="com.aidanwhiteley.books.controller.aspect" level="WARN" />
+    <logger name="com.aidanwhiteley.books" level="DEBUG" />
 </configuration>

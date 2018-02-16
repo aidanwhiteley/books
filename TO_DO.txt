@@ -3,14 +3,12 @@ New functionality
 ~~~~~~~~~~~~~~~~~
 3. Support correct display of edit and delete for Book entries - possibly via Hateoas / HAL links
 6. Add stats cards to Book detail page
-8. Migrate to stateless JWT based authentication - carrying "signed" roles data - so getUser isnt constantly called
 12. Set up endpoints and security for Actuator
 13. Support "multi tenant" i.e. multiple instances of app sharing same codebase and Mongo
 14. Create "digest emails"
 15. Allow users to sign up (and unsubscribe) for digest emails
 16. Mongo based full text search support - copying across UX from TheGpsBlog
 17. Create a logo image!
-18. Support logout (after moving to JWT)
 22. Improve efficiency of processing for which menu item is active.
 23. Further randomise / anonomise the created field in the test data
 24. Fix oauth redirect config / code such that re-direct is over HTTPS rather than HTTP. Spring Boot issue?
@@ -22,12 +20,14 @@ Completed new functionality
 1. Add first logon welcome page
 2. Add help content and link
 4. Pagination of Books list
+8. Migrate to stateless JWT based authentication - carrying "signed" roles data - so getUser isnt constantly called
 5. Create "stats" API for cards at top of summary page
 7. Add Comments functionality
 8. Create "pop out" window for by genre, by author, by reader links
 9. Create Twitter based typeahead for above links
 10. Create typeahead of suggested genres (based on genres already used)
 11. Spring Data based auditing - interesting but not for this project
+18. Support logout (after moving to JWT)
 19. Fix indentation GUI indicator of which "menu" item was clicked
 20. Write notes to say that must close / re-open browser for default admin to work.
 21. Remove user data from list of books. Trim down other data
@@ -42,7 +42,6 @@ Bugs
 ~~~~
 3. Fix correct selection of book rating when going back in to edit a book.
 4. The search by author input box isnt being cleared after use
-6. Auto admin functionality requires a user to log in twice before it works
 7. Why arent the "theme" font files picked up in the production build of the client project?
 8. Mobile (small) view - logon probelms. Facebook not working? Not displaying logged on user details?
 9. Fix summary table and comments grid layout on small mobiles
@@ -52,3 +51,4 @@ Fixed bugs
 1. Why are users intermittently shown as logged out on client side? Seems this only happens on "auto admin" first use. User needs to log off and log back on again before using.
 2. Why is the /books api called twice when going into the detail of a book.
 5. Make sure that the count by rating is ordered by rating value desc (not count desc)
+6. Auto admin functionality requires a user to log in twice before it works

@@ -39,8 +39,6 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
-import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.NullRequestCache;
 import org.springframework.web.filter.CompositeFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -63,7 +61,6 @@ import com.aidanwhiteley.books.service.UserService;
 @EnableOAuth2Client
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-@Profile("!integration")
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired

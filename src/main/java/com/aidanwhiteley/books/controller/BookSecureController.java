@@ -65,6 +65,8 @@ public class BookSecureController {
     public ResponseEntity<?> createBook(@Valid @RequestBody Book book, Principal principal, HttpServletRequest request)
             throws MalformedURLException, URISyntaxException {
 
+    	System.out.println("In createBook");
+    	
         Optional<User> user = authUtils.extractUserFromPrincipal(principal);
         if (user.isPresent()) {
             book.setCreatedBy(new Owner(user.get()));
@@ -85,6 +87,7 @@ public class BookSecureController {
 
             return ResponseEntity.created(location).build();
         } else {
+        	System.out.println("Not found - no suitbale test uuser");
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
     }

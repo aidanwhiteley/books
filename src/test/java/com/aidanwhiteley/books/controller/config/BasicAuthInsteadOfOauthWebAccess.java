@@ -21,44 +21,44 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
  * Testing of logon against the remote oauth authentication providers works
  * correctly is done through manual testing.
  */
-public class BasicAuthInsteadOfOauthWebAccess extends WebSecurityConfigurerAdapter {
+public class BasicAuthInsteadOfOauthWebAccess  {
 
     public static final String A_USER = "user";
     public static final String AN_EDITOR = "editor";
     public static final String AN_ADMIN = "admin";
     public static final String PASSWORD = "notaRealPassword";
 
-    @Override
-    public void configure(HttpSecurity web) throws Exception {
-
-        web.cors()
-                .and()
-                .csrf().disable()
-                .antMatcher("/**")
-                .authorizeRequests()
-                .antMatchers("/api/**", "/login**")
-                .permitAll()
-                .anyRequest()
-                .authenticated()
-                .and().httpBasic();
-    }
-
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-
-        auth.inMemoryAuthentication()
-                .withUser(AN_EDITOR)
-                .password(PASSWORD)
-                .roles(ROLE_EDITOR.getShortName());
-        auth.inMemoryAuthentication()
-                .withUser(AN_ADMIN)
-                .password(PASSWORD)
-                .roles(ROLE_ADMIN.getShortName());
-        auth.inMemoryAuthentication()
-                .withUser(A_USER)
-                .password(PASSWORD)
-                .roles(ROLE_USER.getShortName());
-    }
+//    @Override
+//    public void configure(HttpSecurity web) throws Exception {
+//
+//        web.cors()
+//                .and()
+//                .csrf().disable()
+//                .antMatcher("/**")
+//                .authorizeRequests()
+//                .antMatchers("/api/**", "/login**")
+//                .permitAll()
+//                .anyRequest()
+//                .authenticated()
+//                .and().httpBasic();
+//    }
+//
+//    @Override
+//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+//
+//        auth.inMemoryAuthentication()
+//                .withUser(AN_EDITOR)
+//                .password(PASSWORD)
+//                .roles(ROLE_EDITOR.getShortName());
+//        auth.inMemoryAuthentication()
+//                .withUser(AN_ADMIN)
+//                .password(PASSWORD)
+//                .roles(ROLE_ADMIN.getShortName());
+//        auth.inMemoryAuthentication()
+//                .withUser(A_USER)
+//                .password(PASSWORD)
+//                .roles(ROLE_USER.getShortName());
+//    }
 
 //    @Override
 //    public void configure(WebSecurity web) throws Exception {

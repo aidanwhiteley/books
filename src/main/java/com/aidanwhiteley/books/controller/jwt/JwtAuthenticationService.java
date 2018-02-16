@@ -62,16 +62,9 @@ public class JwtAuthenticationService {
         cookie.setPath(cookiePath);
         cookie.setMaxAge(cookieExpirySeconds);
 
-
         response.addCookie(cookie);
         LOGGER.debug("JWT cookie written for {}", user.getFullName());
 
-        // We dont bother setting a CSRF header here as after authentication
-        // we typically expect that there will be a 30x redirect sent to the
-        // client and if that is the case, there is no way for the client side
-        // code to read and store a response header before the browser automatically
-        // follows the re-direct.
-        // So we set a CSRF header elsewhere in teh code base - not here.
     }
 
     public JwtAuthentication readAndValidateAuthenticationData(HttpServletRequest request, HttpServletResponse response) {

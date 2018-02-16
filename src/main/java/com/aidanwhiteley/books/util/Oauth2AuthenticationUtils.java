@@ -21,7 +21,6 @@ import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.FACEBOO
 import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.GOOGLE;
 
 @Component
-@Profile({"!integration"})
 public class Oauth2AuthenticationUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Oauth2AuthenticationUtils.class);

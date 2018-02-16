@@ -1,6 +1,7 @@
 package com.aidanwhiteley.books.controller.aspect;
 
 import java.security.Principal;
+import java.util.Optional;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -65,13 +66,12 @@ public class LimitDataVisibilityAspect {
 
         Object retVal = joinPoint.proceed();
 
-        Principal principal = null;
-        principal = getPrincipal(joinPoint, principal);
-        User user = authUtils.extractUserFromPrincipal(principal);
+        Principal principal = getPrincipal(joinPoint);
+        Optional<User> user = authUtils.extractUserFromPrincipal(principal);
 
         if (retVal instanceof Book) {
             LOGGER.info("About to call setPermissionsAndContentForUser for " + joinPoint.getSignature().toString());
-            ((Book) retVal).setPermissionsAndContentForUser(user);
+            ((Book) retVal).setPermissionsAndContentForUser(user.isPresent() ? user.get() : null);
         } else {
             LOGGER.error("Unexpected return type found by aspect");
         }
@@ -85,13 +85,13 @@ public class LimitDataVisibilityAspect {
 
         Object retVal = joinPoint.proceed();
 
-        Principal principal = null;
-        principal = getPrincipal(joinPoint, principal);
-        User user = authUtils.extractUserFromPrincipal(principal);
+        Principal principal = getPrincipal(joinPoint);
+        Optional<User> user = authUtils.extractUserFromPrincipal(principal);
 
         if (retVal instanceof Page) {
             LOGGER.info("About to call setPermissionsAndContentForUser for " + joinPoint.getSignature().toString());
-            ((Page<Book>) retVal).getContent().forEach(s -> ((Book) s).setPermissionsAndContentForUser(user));
+            User theUser = user.isPresent() ? user.get() : null;
+            ((Page<Book>) retVal).getContent().forEach(s -> ((Book) s).setPermissionsAndContentForUser(theUser));
         } else {
             LOGGER.error("Unexpected return type found by aspect");
         }
@@ -99,7 +99,9 @@ public class LimitDataVisibilityAspect {
         return retVal;
     }
 
-    private Principal getPrincipal(ProceedingJoinPoint joinPoint, Principal principal) {
+    private Principal getPrincipal(ProceedingJoinPoint joinPoint) {
+
+        Principal principal = null;
         Object[] args = joinPoint.getArgs();
         for (Object o : args) {
             if (o instanceof Principal) {

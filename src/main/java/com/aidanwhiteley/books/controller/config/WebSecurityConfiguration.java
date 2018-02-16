@@ -117,6 +117,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         // @formatter:off
         http.
                 csrf().disable().
+                logout().deleteCookies(JwtAuthenticationService.JWT_COOKIE_NAME, JwtAuthenticationService.JSESSIONID_COOKIE_NAME)
+                    .logoutSuccessUrl(postLogonUrl).and().
                 requestCache().requestCache(new NullRequestCache()).and().
                 sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).
                 enableSessionUrlRewriting(false).and().
@@ -128,13 +130,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         // @formatter:on
     }
     
-    public HttpSessionRequestCache getHttpSessionRequestCache() {
-        HttpSessionRequestCache httpSessionRequestCache = new HttpSessionRequestCache();
-        httpSessionRequestCache.setCreateSessionAllowed(false);
-        ((HttpSessionSecurityContextRepository) new HttpSessionSecurityContextRepository()).setAllowSessionCreation(false);
-        return httpSessionRequestCache;
-    }
-
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurerAdapter() {

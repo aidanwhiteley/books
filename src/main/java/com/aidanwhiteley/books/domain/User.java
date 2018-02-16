@@ -12,6 +12,7 @@ import org.springframework.data.annotation.Id;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -69,7 +70,7 @@ public class User {
     private AuthenticationProvider authProvider;
 
     public boolean isFirstVisit() {
-        return (firstLogon.truncatedTo(ChronoUnit.SECONDS).equals(lastLogon.truncatedTo(ChronoUnit.SECONDS)));
+        return (firstLogon.truncatedTo(ChronoUnit.MINUTES).equals(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES)));
     }
 
     public Role getHighestRole() {

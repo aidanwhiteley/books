@@ -46,8 +46,6 @@ public class BookController {
     @GetMapping(value = "/books")
     public Page<Book> findAllByWhenEnteredDesc(@RequestParam(value = "page") Optional<Integer> page, @RequestParam(value = "size") Optional<Integer> size, Principal principal) {
 
-        LOGGER.info("Principal passed is: " + (principal == null ? null : principal.toString()));
-
         PageRequest pageObj = new PageRequest(page.orElse(0),
                 size.orElse(defaultPageSize));
         return bookRepository.findAllByOrderByEnteredDesc(pageObj);

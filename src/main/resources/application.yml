@@ -90,7 +90,8 @@ books:
     secretKey:
     issuer: "CloudyBookClub"
     cookieOverHttpsOnly: true
-    cookieAccessedByHttoOnly: true
+    cookieAccessedByHttpOnly: true
     cookiePath: /
+    cookieExpirySeconds: 3600
 
 

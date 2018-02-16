@@ -22,7 +22,7 @@ import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.GOOGLE;
 
 @Component
 @Profile({"!integration"})
-public class Oauth2AuthenticationUtils implements AuthenticationUtils {
+public class Oauth2AuthenticationUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Oauth2AuthenticationUtils.class);
 
@@ -34,25 +34,6 @@ public class Oauth2AuthenticationUtils implements AuthenticationUtils {
 
     @Value("${facebook.client.clientId}")
     private String facebookClientClientId;
-
-    @Override
-    public User extractUserFromPrincipal(Principal principal) {
-
-        if (null == principal) {
-            return null;
-        }
-
-        checkPrincipalType(principal);
-
-        OAuth2Authentication auth = (OAuth2Authentication) principal;
-        Optional<User> user = getUserIfExists(auth);
-
-        if (user.isPresent()) {
-            return user.get();
-        } else {
-            return null;
-        }
-    }
 
     public Optional<User> getUserIfExists(OAuth2Authentication auth) {
 
@@ -73,20 +54,11 @@ public class Oauth2AuthenticationUtils implements AuthenticationUtils {
         return Optional.ofNullable(user);
     }
 
-    @Override
-    public Map<String, Object> getRemoteUserDetails(Principal principal) {
-
-        checkPrincipalType(principal);
-        OAuth2Authentication auth = (OAuth2Authentication) principal;
-        return getUserDetails(auth);
-    }
-
     @SuppressWarnings("unchecked")
 	public Map<String, Object> getUserDetails(OAuth2Authentication auth) {
         return (LinkedHashMap<String, Object>) auth.getUserAuthentication().getDetails();
     }
 
-    @Override
     public User.AuthenticationProvider getAuthProviderFromPrincipal(Principal principal) {
     	
     	checkPrincipalType(principal);
@@ -108,17 +80,11 @@ public class Oauth2AuthenticationUtils implements AuthenticationUtils {
         }
     }
 
-    @Override
-    public String getAuthProviderFromPrincipalAsString(Principal principal) {
-        return this.getAuthProviderFromPrincipal(principal).toString();
-    }
-
     private void checkPrincipalType(Principal principal) {
         if (!(principal instanceof OAuth2Authentication)) {
             LOGGER.error("Only OAuth authentication currently supported and supplied Principal not oauth: {}", principal);
             throw new UnsupportedOperationException("Only OAuth principals currently supported");
         }
     }
-
 
 }

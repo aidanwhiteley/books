@@ -25,31 +25,24 @@ public class JwtAuthenticationUtils {
     @Autowired
     private UserRepository userRepository;
 
-    @Value("${google.client.clientId}")
-    private String googleClientClientId;
 
-    @Value("${facebook.client.clientId}")
-    private String facebookClientClientId;
-
-    public User extractUserFromPrincipal(Principal principal) {
+    public Optional<User> extractUserFromPrincipal(Principal principal) {
 
         if (null == principal) {
-            return null;
+            return Optional.ofNullable(null);
         }
 
         checkPrincipalType(principal);
 
         JwtAuthentication auth = (JwtAuthentication) principal;
-        Optional<User> user = getUserIfExists(auth);
-
-        if (user.isPresent()) {
-            return user.get();
-        } else {
-            return null;
-        }
+        return getUserIfExists(auth);
     }
 
     public Optional<User> getUserIfExists(JwtAuthentication auth) {
+
+        if (auth == null) {
+            return Optional.ofNullable(null);
+        }
 
     	String authenticationServiceId = auth.getAuthenticationServiceId();
         String authenticationProviderId = auth.getAuthProvider();
@@ -69,30 +62,6 @@ public class JwtAuthenticationUtils {
         }
 
         return Optional.ofNullable(user);
-    }
-
-    public Map<String, Object> getRemoteUserDetails(Principal principal) {
-
-        throw new UnsupportedOperationException("getRemoteUserDetails: Is this needed for Jwt???");
-    }
-
-    public Map<String, Object> getUserDetails(JwtAuthentication auth) {
-        throw new UnsupportedOperationException("getUserDetails: Is this needed for Jwt???");
-    }
-
-    public User.AuthenticationProvider getAuthProviderFromPrincipal(Principal principal) {
-    	
-    	checkPrincipalType(principal);
-        JwtAuthentication auth = (JwtAuthentication) principal;
-        return getAuthenticationProvider(auth);
-    }
-
-    public User.AuthenticationProvider getAuthenticationProvider(JwtAuthentication auth) {
-        return User.AuthenticationProvider.valueOf(auth.getAuthProvider());
-    }
-
-    public String getAuthProviderFromPrincipalAsString(Principal principal) {
-        return this.getAuthProviderFromPrincipal(principal).toString();
     }
 
     private void checkPrincipalType(Principal principal) {

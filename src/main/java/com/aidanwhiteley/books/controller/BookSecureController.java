@@ -65,37 +65,44 @@ public class BookSecureController {
     public ResponseEntity<?> createBook(@Valid @RequestBody Book book, Principal principal, HttpServletRequest request)
             throws MalformedURLException, URISyntaxException {
 
-        User user = authUtils.extractUserFromPrincipal(principal);
+        Optional<User> user = authUtils.extractUserFromPrincipal(principal);
+        if (user.isPresent()) {
+            book.setCreatedBy(new Owner(user.get()));
 
-        book.setCreatedBy(new Owner(user));
+            // Get the Google book details for this book
+            // TODO - move this out to a message queue driven async implementation.
+            if (book.getGoogleBookId() != null && book.getGoogleBookId().length() > 0) {
+                book.setGoogleBookDetails(googleBooksDao.searchGoogleBooksByGoogleBookId(book.getGoogleBookId()));
+            }
 
-        // Get the Google book details for this book
-        // TODO - move this out to a message queue driven async implementation.
-        if (book.getGoogleBookId() != null && book.getGoogleBookId().length() > 0) {
-            book.setGoogleBookDetails(googleBooksDao.searchGoogleBooksByGoogleBookId(book.getGoogleBookId()));
+            Book insertedBook = bookRepository.insert(book);
+
+            URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                    .buildAndExpand(insertedBook.getId()).toUri();
+
+            // Basic GET of book details are not on a secure API
+            location = new URI(location.toURL().toString().replaceAll("/secure", ""));
+
+            return ResponseEntity.created(location).build();
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
-
-        Book insertedBook = bookRepository.insert(book);
-
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                .buildAndExpand(insertedBook.getId()).toUri();
-
-        // Basic GET of book details are not on a secure API
-        location = new URI(location.toURL().toString().replaceAll("/secure", ""));
-
-        return ResponseEntity.created(location).build();
     }
 
 
     @RequestMapping(value = "/books", method = PUT)
     public ResponseEntity<?> updateBook(@Valid @RequestBody Book book, Principal principal) {
 
-        User user = authUtils.extractUserFromPrincipal(principal);
-        Book currentBookState = bookRepository.findOne(book.getId());
+        Optional<User> user = authUtils.extractUserFromPrincipal(principal);
+        if (user.isPresent()) {
+            Book currentBookState = bookRepository.findOne(book.getId());
 
-        if (currentBookState.isOwner(user) || user.getRoles().contains(User.Role.ROLE_ADMIN)) {
-            bookRepository.save(book);
-            return ResponseEntity.noContent().build();
+            if (currentBookState.isOwner(user.get()) || user.get().getRoles().contains(User.Role.ROLE_ADMIN)) {
+                bookRepository.save(book);
+                return ResponseEntity.noContent().build();
+            } else {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
         } else {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
@@ -105,12 +112,16 @@ public class BookSecureController {
     @RequestMapping(value = "/books/{id}", method = DELETE)
     public ResponseEntity<?> deleteBookById(@PathVariable("id") String id, Principal principal) {
 
-        User user = authUtils.extractUserFromPrincipal(principal);
-        Book currentBookState = bookRepository.findOne(id);
+        Optional<User> user = authUtils.extractUserFromPrincipal(principal);
+        if (user.isPresent()) {
+            Book currentBookState = bookRepository.findOne(id);
 
-        if (currentBookState.isOwner(user) || user.getRoles().contains(User.Role.ROLE_ADMIN)) {
-            bookRepository.delete(id);
-            return ResponseEntity.noContent().build();
+            if (currentBookState.isOwner(user.get()) || user.get().getRoles().contains(User.Role.ROLE_ADMIN)) {
+                bookRepository.delete(id);
+                return ResponseEntity.noContent().build();
+            } else {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
         } else {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
@@ -119,28 +130,35 @@ public class BookSecureController {
     @RequestMapping(value = "/books/{id}/comments", method = POST)
     public Book addCommentToBook(@PathVariable("id") String id, @Valid @RequestBody Comment comment, Principal principal) {
 
-        User user = authUtils.extractUserFromPrincipal(principal);
+        Optional<User> user = authUtils.extractUserFromPrincipal(principal);
+        if (user.isPresent()) {
+            comment.setOwner(new Owner(user.get()));
 
-        comment.setOwner(new Owner(user));
-
-        return bookRepository.addCommentToBook(id, comment);
+            return bookRepository.addCommentToBook(id, comment);
+        } else {
+            return null;
+        }
     }
 
     @RequestMapping(value = "/books/{id}/comments/{commentId}", method = DELETE)
     public Book removeCommentFromBook(@PathVariable("id") String id, @PathVariable("commentId") String commentId, Principal principal) {
 
-        User user = authUtils.extractUserFromPrincipal(principal);
+        Optional<User> user = authUtils.extractUserFromPrincipal(principal);
 
-        Book currentBook = bookRepository.findOne(id);
-        Comment comment = currentBook.getComments().stream().filter(c-> c.getId().equals(commentId)).findFirst().orElse(null);
-        if (comment == null) {
-            throw new IllegalArgumentException();
-        }
+        if (user.isPresent()) {
+            Book currentBook = bookRepository.findOne(id);
+            Comment comment = currentBook.getComments().stream().filter(c -> c.getId().equals(commentId)).findFirst().orElse(null);
+            if (comment == null) {
+                throw new IllegalArgumentException();
+            }
 
-        if (comment.isOwner(user) || user.getRoles().contains(User.Role.ROLE_ADMIN)) {
-            return bookRepository.removeCommentFromBook(id, commentId, user.getFullName());
+            if (comment.isOwner(user.get()) || user.get().getRoles().contains(User.Role.ROLE_ADMIN)) {
+                return bookRepository.removeCommentFromBook(id, commentId, user.get().getFullName());
+            } else {
+                throw new AccessForbiddenException();
+            }
         } else {
-            throw new AccessForbiddenException();
+            return null;
         }
     }
 

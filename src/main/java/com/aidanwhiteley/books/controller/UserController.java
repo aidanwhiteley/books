@@ -6,6 +6,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.PATCH;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,22 +40,9 @@ public class UserController {
     @PreAuthorize("hasAnyRole('ROLE_EDITOR', 'ROLE_ADMIN', 'ROLE_USER')")
     public User user(Principal principal) {
 
-        //Map<String, Object> userDetails = authUtils.getRemoteUserDetails(principal);
-
-        //LOGGER.debug("Remote user details: " + userDetails);
-
-        LOGGER.info("Principal passed in to user methoid is: " + (principal == null ? null : principal.toString()));
-
-        User user = authUtils.extractUserFromPrincipal(principal);
-
-        return user;
-//        User.AuthenticationProvider provider = authUtils.getAuthProviderFromPrincipal(principal);
-//
-//        if (user == null) {
-//            return userService.createUser(userDetails, provider);
-//        } else {
-//            return userService.updateUser(userDetails, user, provider);
-//        }
+        LOGGER.info("Principal passed in to user method is: " + (principal == null ? null : principal.toString()));
+        Optional<User> user = authUtils.extractUserFromPrincipal(principal);
+        return user.isPresent() ? user.get() : null;
     }
 
     @RequestMapping(value = "/users", method = GET)
@@ -67,28 +55,36 @@ public class UserController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> deleteUserById(@PathVariable("id") String id, Principal principal) {
 
-        User user = authUtils.extractUserFromPrincipal(principal);
-        if (user.getId().equals(id)) {
-            LOGGER.warn("User {} on {} attempted to delete themselves. This isn't allowed", user.getFullName(), user.getAuthProvider());
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("{\"msg\" : \"Cant delete your own logged on user\"}");
-        }
+        Optional<User> user = authUtils.extractUserFromPrincipal(principal);
+        if (user.isPresent()) {
+            if (user.get().getId().equals(id)) {
+                LOGGER.warn("User {} on {} attempted to delete themselves. This isn't allowed", user.get().getFullName(), user.get().getAuthProvider());
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("{\"msg\" : \"Cant delete your own logged on user\"}");
+            }
 
-        userRepository.delete(id);
-        return ResponseEntity.ok().build();
+            userRepository.delete(id);
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
     }
 
     @RequestMapping(value = "/users/{id}", method = PATCH)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> patchUserRolesById(@PathVariable("id") String id, @RequestBody ClientRoles clientRoles, Principal principal) {
 
-        User user = authUtils.extractUserFromPrincipal(principal);
-        if (user.getId().equals(id)) {
-            LOGGER.warn("User {} on {} attempted to change their own roles. This isn't allowed", user.getFullName(), user.getAuthProvider());
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("{\"msg\" : \"Cant change permissions for your own logged on user\"}");
-        }
+        Optional<User> user = authUtils.extractUserFromPrincipal(principal);
+        if (user.isPresent()) {
+            if (user.get().getId().equals(id)) {
+                LOGGER.warn("User {} on {} attempted to change their own roles. This isn't allowed", user.get().getFullName(), user.get().getAuthProvider());
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("{\"msg\" : \"Cant change permissions for your own logged on user\"}");
+            }
 
-        LOGGER.debug("Received patch of: {}", clientRoles);
-        userRepository.updateUserRoles(clientRoles);
-        return ResponseEntity.ok().build();
+            LOGGER.debug("Received patch of: {}", clientRoles);
+            userRepository.updateUserRoles(clientRoles);
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
     }
 }

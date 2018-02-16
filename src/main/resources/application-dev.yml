@@ -24,4 +24,4 @@ books:
     expiryInMilliSeconds: 3600000
     secretKey: This^IsNot!A%Real*Secret
     cookieOverHttpsOnly: false
-    cookieAccessedByHttoOnly: true
+    cookieAccessedByHttpOnly: true

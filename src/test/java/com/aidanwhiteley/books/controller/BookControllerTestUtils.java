@@ -1,0 +1,81 @@
+package com.aidanwhiteley.books.controller;
+
+import com.aidanwhiteley.books.controller.jwt.JwtAuthenticationService;
+import com.aidanwhiteley.books.controller.jwt.JwtUtils;
+import com.aidanwhiteley.books.domain.Book;
+import com.aidanwhiteley.books.domain.User;
+import com.aidanwhiteley.books.repository.BookRepositoryTest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.*;
+
+import java.time.LocalDateTime;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+public class BookControllerTestUtils {
+
+    // These values match data in /src/main/resourees/sample_data that are auto loaded into
+    // the Fongo / Mongo at the start of the tests
+    public static final String USER_WITH_ALL_ROLES_FULL_NAME = "Joe Dimagio";
+    public static final String USER_WITH_EDITOR_ROLE_FULL_NAME = "Babe Ruth";
+    public static final String USER_WITH_ALL_ROLES = "107641999401234521888";
+    public static final String USER_WITH_EDITOR_ROLE = "1632142143412347";
+    public static final String DUMMY_EMAIL = "joe.dimagio@gmail.com";
+    public static final User.AuthenticationProvider PROVIDER_ALL_ROLES_USER = User.AuthenticationProvider.GOOGLE;
+    public static final User.AuthenticationProvider PROVIDER_EDITOR_USER = User.AuthenticationProvider.FACEBOOK;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(BookControllerTestUtils.class);
+
+    public static User getTestUser() {
+        User user = new User();
+        user.setFullName(USER_WITH_ALL_ROLES_FULL_NAME);
+        user.setAuthProvider(PROVIDER_ALL_ROLES_USER);
+        user.setFirstLogon(LocalDateTime.now());
+        user.setLastLogon(LocalDateTime.now());
+        user.setEmail(DUMMY_EMAIL);
+
+        user.setAuthenticationServiceId(USER_WITH_ALL_ROLES);
+        user.addRole(User.Role.ROLE_USER);
+        user.addRole(User.Role.ROLE_EDITOR);
+        user.addRole(User.Role.ROLE_ADMIN);
+        return user;
+    }
+
+    public static User getEditorTestUser() {
+        User user = new User();
+        user.setFullName(USER_WITH_EDITOR_ROLE_FULL_NAME);
+        user.setAuthenticationServiceId(USER_WITH_EDITOR_ROLE);
+        user.setAuthProvider(PROVIDER_EDITOR_USER);
+        user.addRole(User.Role.ROLE_USER);
+        user.addRole(User.Role.ROLE_EDITOR);
+
+        return user;
+    }
+
+    public static HttpEntity<Book> getBookHttpEntity(Book testBook, User user, String token) {
+        HttpHeaders requestHeaders = new HttpHeaders();
+        requestHeaders.add("Cookie", JwtAuthenticationService.JWT_COOKIE_NAME + "=" + token);
+        return new HttpEntity<>(testBook, requestHeaders);
+    }
+
+    public static ResponseEntity<Book> postBookToServer(JwtUtils jwtUtils, TestRestTemplate testRestTemplate) {
+
+        Book testBook = BookRepositoryTest.createTestBook();
+        User user = getTestUser();
+
+        String token = jwtUtils.createTokenForUser(user);
+        HttpEntity<Book> request = getBookHttpEntity(testBook, user, token);
+        ResponseEntity<Book> book = testRestTemplate.exchange("/secure/api/books", HttpMethod.POST, request, Book.class);
+
+        assertNotNull(book);
+        assertEquals(book.getStatusCode(), HttpStatus.CREATED);
+        LOGGER.debug("postBookToServer posted book to server successfully");
+
+        return book;
+    }
+
+
+}

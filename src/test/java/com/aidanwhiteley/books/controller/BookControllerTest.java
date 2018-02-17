@@ -1,33 +1,24 @@
 package com.aidanwhiteley.books.controller;
 
-import static com.aidanwhiteley.books.controller.config.BasicAuthInsteadOfOauthWebAccess.AN_ADMIN;
-import static com.aidanwhiteley.books.controller.config.BasicAuthInsteadOfOauthWebAccess.AN_EDITOR;
-import static com.aidanwhiteley.books.controller.config.BasicAuthInsteadOfOauthWebAccess.PASSWORD;
-import static com.aidanwhiteley.books.repository.BookRepositoryTest.J_UNIT_TESTING_FOR_BEGINNERS;
-import static com.aidanwhiteley.books.util.DummyAuthenticationUtils.DUMMY_EMAIL;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.net.URI;
-import java.util.List;
-
+import com.aidanwhiteley.books.controller.jwt.JwtUtils;
+import com.aidanwhiteley.books.domain.Book;
+import com.aidanwhiteley.books.domain.User;
+import com.aidanwhiteley.books.repository.BookRepositoryTest;
+import com.aidanwhiteley.books.util.IntegrationTest;
+import com.jayway.jsonpath.JsonPath;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 
-import com.aidanwhiteley.books.domain.Book;
-import com.aidanwhiteley.books.repository.BookRepositoryTest;
-import com.aidanwhiteley.books.util.IntegrationTest;
-import com.jayway.jsonpath.JsonPath;
+import java.net.URI;
+import java.util.List;
 
-import static com.aidanwhiteley.books.util.DummyAuthenticationUtils.DUMMY_USER_FOR_TESTING_ONLY;
+import static com.aidanwhiteley.books.repository.BookRepositoryTest.J_UNIT_TESTING_FOR_BEGINNERS;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class BookControllerTest extends IntegrationTest {
 
@@ -36,9 +27,12 @@ public class BookControllerTest extends IntegrationTest {
     @Autowired
     private TestRestTemplate testRestTemplate;
 
+    @Autowired
+    private JwtUtils jwtUtils;
+
     @Test
     public void findBookById() {
-        ResponseEntity<Book> response = postBookToServer();
+        ResponseEntity<Book> response = BookControllerTestUtils.postBookToServer(jwtUtils, testRestTemplate);
         HttpHeaders headers = response.getHeaders();
         URI uri = headers.getLocation();
 
@@ -48,7 +42,7 @@ public class BookControllerTest extends IntegrationTest {
 
     @Test
     public void findByAuthor() {
-        postBookToServer();
+        BookControllerTestUtils.postBookToServer(jwtUtils, testRestTemplate);
 
         ResponseEntity<String> response = testRestTemplate.exchange("/api/books?author=" + BookRepositoryTest.DR_ZEUSS + "&page=0&size=10", HttpMethod.GET,
                 null, String.class);
@@ -63,7 +57,7 @@ public class BookControllerTest extends IntegrationTest {
 
     @Test
     public void testSensitiveDataNotReturnedToAnonymousUser() {
-        ResponseEntity<Book> response = postBookToServer();
+        ResponseEntity<Book> response = BookControllerTestUtils.postBookToServer(jwtUtils, testRestTemplate);
         String location = response.getHeaders().getLocation().toString();
         Book book = testRestTemplate.getForObject(location, Book.class);
 
@@ -76,48 +70,44 @@ public class BookControllerTest extends IntegrationTest {
     @Test
     public void testSensitiveDataIsReturnedToAdminUser() {
         Book testBook = BookRepositoryTest.createTestBook();
-        HttpEntity<Book> request = new HttpEntity<>(testBook);
-        TestRestTemplate trtWithAuth = testRestTemplate.withBasicAuth(AN_ADMIN, PASSWORD);
-        ResponseEntity<Book>  response = trtWithAuth
+        User user = BookControllerTestUtils.getTestUser();
+        String token = jwtUtils.createTokenForUser(user);
+        HttpEntity<Book> request = BookControllerTestUtils.getBookHttpEntity(testBook, user, token);
+
+        ResponseEntity<Book>  response = testRestTemplate
                 .exchange("/secure/api/books", HttpMethod.POST, request, Book.class);
 
         String location = response.getHeaders().getLocation().toString();
-        Book book = trtWithAuth.getForObject(location, Book.class);
+        Book book = testRestTemplate
+                .exchange(location, HttpMethod.GET, request, Book.class).getBody();
 
         // Title should be available to everyone
         assertEquals(book.getTitle(), J_UNIT_TESTING_FOR_BEGINNERS);
         // Email should only be available to admins
-        assertEquals(book.getCreatedBy().getEmail(), DUMMY_EMAIL);
+        assertEquals(book.getCreatedBy().getEmail(), BookControllerTestUtils.DUMMY_EMAIL);
     }
     
     @Test
     public void testUserDataIsReturnedToEditorUser() {
         Book testBook = BookRepositoryTest.createTestBook();
-        HttpEntity<Book> request = new HttpEntity<>(testBook);
-        TestRestTemplate trtWithAuth = testRestTemplate.withBasicAuth(AN_EDITOR, PASSWORD);
-        ResponseEntity<Book>  response = trtWithAuth
+        User user = BookControllerTestUtils.getEditorTestUser();
+        String token = jwtUtils.createTokenForUser(user);
+        HttpEntity<Book> request = BookControllerTestUtils.getBookHttpEntity(testBook, user, token);
+
+        ResponseEntity<Book>  response = testRestTemplate
                 .exchange("/secure/api/books", HttpMethod.POST, request, Book.class);
 
         String location = response.getHeaders().getLocation().toString();
-        Book book = trtWithAuth.getForObject(location, Book.class);
+        Book book = testRestTemplate
+                .exchange(location, HttpMethod.GET, request, Book.class).getBody();
 
         // Title should be available to everyone
         assertEquals(book.getTitle(), J_UNIT_TESTING_FOR_BEGINNERS);
         // Email should only be available to admins - not editors
         assertEquals(book.getCreatedBy().getEmail(), "");
         // But the name of the person who created the Book should be available
-        assertEquals(book.getCreatedBy().getFullName(), DUMMY_USER_FOR_TESTING_ONLY);
+        assertEquals(book.getCreatedBy().getFullName(), BookControllerTestUtils.USER_WITH_EDITOR_ROLE_FULL_NAME);
 
-    }
-
-    private ResponseEntity<Book> postBookToServer() {
-        Book testBook = BookRepositoryTest.createTestBook();
-        HttpEntity<Book> request = new HttpEntity<>(testBook);
-
-        TestRestTemplate trtWithAuth = testRestTemplate.withBasicAuth(AN_ADMIN, PASSWORD);
-
-        return trtWithAuth
-                .exchange("/secure/api/books", HttpMethod.POST, request, Book.class);
     }
 
 }

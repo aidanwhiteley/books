@@ -15,6 +15,9 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import com.aidanwhiteley.books.controller.jwt.JwtAuthenticationService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -48,6 +51,8 @@ import com.aidanwhiteley.books.util.JwtAuthenticationUtils;
 @PreAuthorize("hasAnyRole('ROLE_EDITOR', 'ROLE_ADMIN')")
 public class BookSecureController {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(BookSecureController.class);
+
     @Autowired
     private BookRepository bookRepository;
 
@@ -65,8 +70,6 @@ public class BookSecureController {
     public ResponseEntity<?> createBook(@Valid @RequestBody Book book, Principal principal, HttpServletRequest request)
             throws MalformedURLException, URISyntaxException {
 
-    	System.out.println("In createBook");
-    	
         Optional<User> user = authUtils.extractUserFromPrincipal(principal);
         if (user.isPresent()) {
             book.setCreatedBy(new Owner(user.get()));
@@ -87,7 +90,7 @@ public class BookSecureController {
 
             return ResponseEntity.created(location).build();
         } else {
-        	System.out.println("Not found - no suitbale test uuser");
+        	LOGGER.error("Couldnt create a book as user to own book not found! Principal: {}", principal);
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
     }

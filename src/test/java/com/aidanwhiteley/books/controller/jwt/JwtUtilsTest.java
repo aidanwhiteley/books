@@ -1,7 +1,7 @@
 package com.aidanwhiteley.books.controller.jwt;
 
+import com.aidanwhiteley.books.controller.BookControllerTestUtils;
 import com.aidanwhiteley.books.domain.User;
-import com.aidanwhiteley.books.util.DummyAuthenticationUtils;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.junit.Test;
 import io.jsonwebtoken.SignatureException;
@@ -21,7 +21,7 @@ public class JwtUtilsTest {
         jwt.setExpiryInMilliSeconds(60 * 1000);
         jwt.setSecretKey("A test secret key");
 
-        User testUser = DummyAuthenticationUtils.getTestUser();
+        User testUser = BookControllerTestUtils.getTestUser();
         testUser.addRole(User.Role.ROLE_ADMIN);
         String token = jwt.createTokenForUser(testUser);
         LOGGER.debug("Token was: {}", token);
@@ -38,7 +38,7 @@ public class JwtUtilsTest {
         jwt.setExpiryInMilliSeconds(60 * 1000);
         jwt.setSecretKey("A test secret key");
 
-        User testUser = DummyAuthenticationUtils.getTestUser();
+        User testUser = BookControllerTestUtils.getTestUser();
         String token = jwt.createTokenForUser(testUser);
 
         StringBuilder tampered = new StringBuilder(token);
@@ -57,7 +57,7 @@ public class JwtUtilsTest {
         jwt.setExpiryInMilliSeconds(-1);
         jwt.setSecretKey("A test secret key");
 
-        User testUser = DummyAuthenticationUtils.getTestUser();
+        User testUser = BookControllerTestUtils.getTestUser();
         String token = jwt.createTokenForUser(testUser);
 
         jwt.getUserFromToken(token.toString());

@@ -81,6 +81,7 @@ public class JwtAuthenticationService {
                 if (cookie.getName().equals(JWT_COOKIE_NAME)) {
                     String token = cookie.getValue();
                     if (token == null || token.trim().isEmpty()) {
+                        expireJwtCookie(response, cookie);
                         LOGGER.warn("JWT cookie found but was empty");
                     } else {
                         try {
@@ -91,10 +92,10 @@ public class JwtAuthenticationService {
                             auth.setAuthenticated(true);
                             LOGGER.debug("JWT found and validated - setting authentication true");
                         } catch (ExpiredJwtException eje) {
-                            expireCookie(response, cookie);
+                            expireJwtCookie(response, cookie);
                             LOGGER.info("JWT expired so cookie deleted");
                         } catch (RuntimeException re) {
-                            expireCookie(response, cookie);
+                            expireJwtCookie(response, cookie);
                             LOGGER.warn("Error validating jwt token: {}. So cookie deleted", re.getMessage(), re);
                         }
                     }
@@ -105,7 +106,7 @@ public class JwtAuthenticationService {
                     // To stop any chance of it being used / relied upon, the JSESSIONID
                     // based cookie is removed.
                 	LOGGER.debug("Found an unwated JSESSIONID based cookie - removing it");
-                	expireCookie(response, cookie);
+                	expireJwtCookie(response, cookie);
                 	// We don't remove the session - we'd have race conditions with
                     // other API calls that might also try remove the session - leading
                     // to possible NPEs.
@@ -116,7 +117,7 @@ public class JwtAuthenticationService {
         return auth;
     }
 
-    private void expireCookie(HttpServletResponse response, Cookie cookie) {
+    private void expireJwtCookie(HttpServletResponse response, Cookie cookie) {
         // Anything wrong with token - delete it from cookie
         Cookie emptyCookie = new Cookie(JWT_COOKIE_NAME, "");
         cookie.setMaxAge(0);

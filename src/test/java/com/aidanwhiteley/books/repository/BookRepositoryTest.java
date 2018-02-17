@@ -1,5 +1,6 @@
 package com.aidanwhiteley.books.repository;
 
+import com.aidanwhiteley.books.controller.BookControllerTestUtils;
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.Comment;
 import com.aidanwhiteley.books.domain.Owner;
@@ -7,7 +8,6 @@ import com.aidanwhiteley.books.repository.dtos.BooksByAuthor;
 import com.aidanwhiteley.books.repository.dtos.BooksByGenre;
 import com.aidanwhiteley.books.repository.dtos.BooksByRating;
 import com.aidanwhiteley.books.repository.dtos.BooksByReader;
-import com.aidanwhiteley.books.util.DummyAuthenticationUtils;
 import com.aidanwhiteley.books.util.IntegrationTest;
 import org.junit.After;
 import org.junit.Before;
@@ -47,7 +47,7 @@ public class BookRepositoryTest extends IntegrationTest {
                 .author(DR_ZEUSS).rating(Book.Rating.POOR)
                 .entered(LocalDateTime.of(2016, 11, 20, 0, 0))
                 .similarTo(DESIGN_PATTERNS)
-                .createdBy(new Owner(DummyAuthenticationUtils.getTestUser()))
+                .createdBy(new Owner(BookControllerTestUtils.getTestUser()))
                 .build();
     }
 

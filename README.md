@@ -14,17 +14,16 @@ The main functionality included in the microservice includes
 * Oauth2 based logon to
     * Google
     * Facebook
-    * while also creating users locally so they can be assigned roles
-* Spring Security for method level authorisation
+* the oauth2 logon data is transmogrified into locally stored users - with associated roles - and into a JWT token - making the web application entirely statless
+(which has its pros and cons!)
+* Spring Security for role based method level authorisation
 * Mongo based persistence with the use of Spring Data MongoRepository 
     * next to no persistence code
     * except for some Mongo aggregation queries added to the Repository implementation
 * Accessing the Google Books API with the Spring RestTemplate
 
 ### Tests
-All tests should run fine "out of the box". To make this simpler
-* the integration tests (the vast majority of the tests) use Fongo - an in memory Mongo replacement
-* the outh2 "logon via a social network" functionality is replaced, for the tests, by configuring in basic auth
+All tests should run fine "out of the box". To make this simpler the integration tests (the vast majority of the tests) use Fongo - an in memory Mongo replacement
 
 ### How to run
 A lot of the functionality is protected behind oauth2 authentication (via Google and Facebook). 
@@ -37,6 +36,10 @@ There are lots of other ways to pass in these values e.g. they can be passed as 
 --google.client.clientSecret=xxxxxxxx --google.client.clientId=yyyyyyyy --facebook.client.clientSecret=aaaaaaaa --facebook.client.clientId=bbbbbbbb
 
 Otherwise, see the Spring documentation for more options.
+
+"Out of the box" the code runs with the "dev" Spring profile. When running in other environments you will need to decide the 
+required profile and set some Spring parameters accordingly. For instance, you **WILL** want to 
+set/change the secretKey used for the JWT token signing (see books:jwt:secretKey in the yml files).
 
 You will also need access to a Mongo instance. The connection URL (in the yml files) will result in the automatic
 creation of a Mongo database and the two required collections (dependant on the security config of your Mongo install).
@@ -55,17 +58,14 @@ The code supports four access levels
 * ROLE_ADMIN (logged in with full admin access)
 
 The application-<env>.yml files can be edited to automatically give a logged on user admin access 
-by specifying there email on Google / Facebook. See the books:users:default:admin:email setting.
+by specifying their email on Google / Facebook. See the books:users:default:admin:email setting.
 
-There's currently a bug with this functionality in the the user only gets properly
-configured with admin access on the second time they log in.
 
 ### To-dos
 
 The main "to do"s include
-* change from http sessions and jsessionid to stateless JWT
 * more exploration of HATEOAS and HAL in the JSON APIs
-* more functionality e.g. supporting comments on book reviews
+* making the front end app a bit prettier!
 
 ## Functionality
 

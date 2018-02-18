@@ -1,25 +1,26 @@
 package com.aidanwhiteley.books.controller.jwt;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.aidanwhiteley.books.domain.User;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.aidanwhiteley.books.domain.User;
-
-import io.jsonwebtoken.ExpiredJwtException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @Service
 public class JwtAuthenticationService {
 
-    public static final String JWT_COOKIE_NAME = "jwt";
+    public static final String JWT_COOKIE_NAME = "JWT";
 
     public static final String JSESSIONID_COOKIE_NAME = "JSESSIONID";
+
+    public static final String XSRF_HEADER_NAME = "X-XSRF-TOKEN";
+    public static final String XSRF_COOKIE_NAME = "XSRF-TOKEN";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtAuthenticationService.class);
 
@@ -33,7 +34,7 @@ public class JwtAuthenticationService {
     private boolean cookieAccessedByHttpOnly;
 
     @Value("${books.jwt.cookiePath}")
-    private String cookiePath;
+    private String jwtCookiePath;
 
     @Value("${books.jwt.cookieExpirySeconds}")
     private int cookieExpirySeconds;
@@ -53,13 +54,9 @@ public class JwtAuthenticationService {
 
         Cookie cookie = new Cookie(JWT_COOKIE_NAME, token);
 
-        if (cookieAccessedByHttpOnly) {
-            cookie.setHttpOnly(true);
-        }
-        if (cookieOverHttpsOnly) {
-            cookie.setSecure(true);
-        }
-        cookie.setPath(cookiePath);
+        cookie.setHttpOnly(cookieAccessedByHttpOnly);
+        cookie.setSecure(cookieOverHttpsOnly);
+        cookie.setPath(jwtCookiePath);
         cookie.setMaxAge(cookieExpirySeconds);
 
         response.addCookie(cookie);
@@ -81,8 +78,8 @@ public class JwtAuthenticationService {
                 if (cookie.getName().equals(JWT_COOKIE_NAME)) {
                     String token = cookie.getValue();
                     if (token == null || token.trim().isEmpty()) {
-                        expireJwtCookie(response, cookie);
-                        LOGGER.warn("JWT cookie found but was empty");
+                        // expireJwtCookie(JWT_COOKIE_NAME, response);
+                        LOGGER.warn("JWT cookie found but was empty - we will look to remove this later");
                     } else {
                         try {
                             User user = jwtUtils.getUserFromToken(token);
@@ -92,10 +89,10 @@ public class JwtAuthenticationService {
                             auth.setAuthenticated(true);
                             LOGGER.debug("JWT found and validated - setting authentication true");
                         } catch (ExpiredJwtException eje) {
-                            expireJwtCookie(response, cookie);
+                            expireJwtCookie(response);
                             LOGGER.info("JWT expired so cookie deleted");
                         } catch (RuntimeException re) {
-                            expireJwtCookie(response, cookie);
+                            expireJwtCookie(response);
                             LOGGER.warn("Error validating jwt token: {}. So cookie deleted", re.getMessage(), re);
                         }
                     }
@@ -105,9 +102,9 @@ public class JwtAuthenticationService {
                     // Its not needed.
                     // To stop any chance of it being used / relied upon, the JSESSIONID
                     // based cookie is removed.
-                	LOGGER.debug("Found an unwated JSESSIONID based cookie - removing it");
-                	expireJwtCookie(response, cookie);
-                	// We don't remove the session - we'd have race conditions with
+                    LOGGER.debug("Found an unwated JSESSIONID based cookie - not used - but not removing it");
+                    //expireJsessionIdCookie(JSESSIONID_COOKIE_NAME, response);
+                    // We don't remove the session - we'd have race conditions with
                     // other API calls that might also try remove the session - leading
                     // to possible NPEs.
                 }
@@ -117,10 +114,31 @@ public class JwtAuthenticationService {
         return auth;
     }
 
-    private void expireJwtCookie(HttpServletResponse response, Cookie cookie) {
-        // Anything wrong with token - delete it from cookie
+    public void expireJwtCookie(HttpServletResponse response) {
         Cookie emptyCookie = new Cookie(JWT_COOKIE_NAME, "");
-        cookie.setMaxAge(0);
+        emptyCookie.setMaxAge(0);
+        emptyCookie.setHttpOnly(cookieAccessedByHttpOnly);
+        emptyCookie.setSecure(cookieOverHttpsOnly);
+        emptyCookie.setPath(jwtCookiePath);
         response.addCookie(emptyCookie);
     }
+
+    public void expireXsrfCookie(HttpServletResponse response) {
+        Cookie emptyCookie = new Cookie(XSRF_COOKIE_NAME, "");
+        emptyCookie.setMaxAge(0);
+        emptyCookie.setHttpOnly(false);
+        emptyCookie.setSecure(cookieOverHttpsOnly);
+        emptyCookie.setPath(jwtCookiePath);
+        response.addCookie(emptyCookie);
+    }
+
+    public void expireJsessionIdfCookie(HttpServletResponse response) {
+        Cookie emptyCookie = new Cookie(JSESSIONID_COOKIE_NAME, "");
+        emptyCookie.setMaxAge(0);
+        emptyCookie.setHttpOnly(true);
+        //emptyCookie.setSecure(cookieOverHttpsOnly);
+        emptyCookie.setPath(jwtCookiePath);
+        response.addCookie(emptyCookie);
+    }
+
 }

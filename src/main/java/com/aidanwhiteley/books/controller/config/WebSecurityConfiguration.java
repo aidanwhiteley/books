@@ -11,6 +11,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.aidanwhiteley.books.util.JwtAuthenticationUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.AuthoritiesExtractor;
@@ -39,7 +42,11 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.savedrequest.NullRequestCache;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CompositeFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -62,6 +69,8 @@ import com.aidanwhiteley.books.service.UserService;
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(WebSecurityConfigurerAdapter.class);
 
     @Autowired
     JwtAuthenticationFilter jwtAuththenticationFilter;
@@ -111,12 +120,36 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             http.cors();
         }
 
+        // Getting required server side config for enabling Angular to send X-CSRF-TOKEN request header has
+        // currently defeated me.
+        // Client side this wouldnt work out of the box with Angular either but the following library would
+        // probably help if I could get the server side config right.
+        // https://github.com/pasupulaphani/angular-csrf-cross-domain
+        //
+        // So if using CORS, there's no XSRF protection!
+        if (enableCORS) {
+            http.csrf().disable();
+
+            LOGGER.warn("****************************************************************************");
+            LOGGER.warn("*** WARNING!                                                             ***");
+            LOGGER.warn("*** You are running with CORS enabled. This is only supported for        ***");
+            LOGGER.warn("*** development.                                                         ***");
+            LOGGER.warn("*** There is no cross site request forgery prevention in place when      ***");
+            LOGGER.warn("*** running with CORS enabled. Change the settings in the .yml files     ***");
+            LOGGER.warn("*** if you are not developing locally.                                   ***");
+            LOGGER.warn("****************************************************************************");
+        } else {
+            http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+        }
+
         // @formatter:off
         http.
-                csrf().disable().
-                logout().deleteCookies(JwtAuthenticationService.JWT_COOKIE_NAME, JwtAuthenticationService.JSESSIONID_COOKIE_NAME)
-                    .logoutSuccessUrl(postLogonUrl).and().
-                requestCache().requestCache(new NullRequestCache()).and().
+                // We dont use the Spring Security logout functionality as I _think_ that it is ahead of the
+                // CORS config filter meaning that a cross domain request to logoff will fail.
+                // Instead there is a custom method in the UserController class.
+
+                //logout().deleteCookies(JwtAuthenticationService.JWT_COOKIE_NAME, JwtAuthenticationService.JSESSIONID_COOKIE_NAME)
+                //   .logoutSuccessUrl(postLogonUrl).and().
                 sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).
                 enableSessionUrlRewriting(false).and().
                 antMatcher("/**").authorizeRequests().
@@ -126,16 +159,16 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 addFilterBefore(oauth2SsoFilter(), BasicAuthenticationFilter.class);
         // @formatter:on
     }
-    
+
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurerAdapter() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 if (enableCORS) {
-                    registry.addMapping("/api/**").allowedOrigins(allowedCorsOrigin).allowedMethods("GET");
+                    registry.addMapping("/api/**").allowedOrigins(allowedCorsOrigin).allowedMethods("GET").allowedHeaders("origin", "content-type" , "X-CSRF-TOKEN");
                     registry.addMapping("/secure/api/**").allowedOrigins(allowedCorsOrigin).allowedMethods("GET",
-                            "POST", "PUT", "DELETE", "PATCH");
+                            "POST", "PUT", "DELETE", "PATCH", "OPTIONS").allowedHeaders("Origin", "Content-Type" , "X-CSRF-TOKEN", "X-Requested-With");
                 }
             }
         };
@@ -169,6 +202,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             }
 
         });
+
         OAuth2RestTemplate template = new OAuth2RestTemplate(client.getClient(), oauth2ClientContext);
         filter.setRestTemplate(template);
 

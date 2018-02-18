@@ -42,15 +42,16 @@ public class BookSecureControllerTest extends IntegrationTest {
         Book emptyBook = new Book();
         User user = BookControllerTestUtils.getTestUser();
         String token = jwtUtils.createTokenForUser(user);
+        String xsrfToken = BookControllerTestUtils.getXsrfToken(testRestTemplate);
 
-        HttpEntity<Book> request = BookControllerTestUtils.getBookHttpEntity(emptyBook, user, token);
+        HttpEntity<Book> request = BookControllerTestUtils.getBookHttpEntity(emptyBook, user, token, xsrfToken);
         ResponseEntity<Book> response = testRestTemplate.exchange("/secure/api/books", HttpMethod.POST, request, Book.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
 
         // Create a valid book and then exceed one of the max field sizes
         Book testBook = BookRepositoryTest.createTestBook();
         testBook.setGenre(GENRE_TOO_LONG);
-        request = BookControllerTestUtils.getBookHttpEntity(testBook, user, token);
+        request = BookControllerTestUtils.getBookHttpEntity(testBook, user, token, xsrfToken);
         response = testRestTemplate.exchange("/secure/api/books", HttpMethod.POST, request, Book.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
@@ -101,7 +102,8 @@ public class BookSecureControllerTest extends IntegrationTest {
         final String updatedTitle = "An updated book title";
         book.setTitle(updatedTitle);
         String token = jwtUtils.createTokenForUser(user);
-        HttpEntity<Book> putData = BookControllerTestUtils.getBookHttpEntity(book, user, token);
+        String xsrfToken = BookControllerTestUtils.getXsrfToken(testRestTemplate);
+        HttpEntity<Book> putData = BookControllerTestUtils.getBookHttpEntity(book, user, token, xsrfToken);
         ResponseEntity<Book> putResponse = testRestTemplate.exchange("/secure/api/books", HttpMethod.PUT, putData,
                 Book.class);
 

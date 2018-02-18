@@ -1,28 +1,28 @@
 package com.aidanwhiteley.books.controller;
 
-import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.PATCH;
+import com.aidanwhiteley.books.controller.dtos.ClientRoles;
+import com.aidanwhiteley.books.controller.jwt.JwtAuthenticationService;
+import com.aidanwhiteley.books.domain.User;
+import com.aidanwhiteley.books.repository.UserRepository;
+import com.aidanwhiteley.books.util.JwtAuthenticationUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.aidanwhiteley.books.controller.dtos.ClientRoles;
-import com.aidanwhiteley.books.domain.User;
-import com.aidanwhiteley.books.repository.UserRepository;
-import com.aidanwhiteley.books.util.JwtAuthenticationUtils;
+import static com.aidanwhiteley.books.controller.jwt.JwtAuthenticationService.JSESSIONID_COOKIE_NAME;
+import static com.aidanwhiteley.books.controller.jwt.JwtAuthenticationService.JWT_COOKIE_NAME;
+import static com.aidanwhiteley.books.controller.jwt.JwtAuthenticationService.XSRF_COOKIE_NAME;
+import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @RestController
 @RequestMapping("/secure/api")
@@ -36,13 +36,26 @@ public class UserController {
     @Autowired
     private JwtAuthenticationUtils authUtils;
 
+    @Autowired
+    private JwtAuthenticationService authService;
+
+    @Value("${books.client.postLogonUrl}")
+    private String postLogonUrl;
+
     @RequestMapping("/user")
     @PreAuthorize("hasAnyRole('ROLE_EDITOR', 'ROLE_ADMIN', 'ROLE_USER')")
     public User user(Principal principal) {
 
         LOGGER.info("Principal passed in to user method is: " + (principal == null ? null : principal.toString()));
         Optional<User> user = authUtils.extractUserFromPrincipal(principal);
-        return user.isPresent() ? user.get() : null;
+        if (user.isPresent()) {
+            return user.get();
+        } else {
+            // We've been supplied a valid JWT but the user is no longer in the database.
+            LOGGER.warn("Valid JWT passed but no corresponding user in data store");
+            // TODO - remove the JWT cookie
+            throw new IllegalArgumentException();
+        }
     }
 
     @RequestMapping(value = "/users", method = GET)
@@ -87,4 +100,35 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
     }
+
+    @RequestMapping(value = "/logout", method = POST)
+    public LogoutInfo logout(HttpServletResponse response)  {
+        authService.expireJwtCookie(response);
+        authService.expireXsrfCookie(response);
+
+        // There should be no http session but this cookie is being set at the moment (for some reason).
+        authService.expireJsessionIdfCookie(response);
+
+        return new LogoutInfo();
+    }
+
+    @SuppressWarnings("serial")
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    class IllegalArgumentException extends RuntimeException {
+    }
+
+    class LogoutInfo {
+
+        private boolean loggedOut = true;
+        private String redirectUrl = postLogonUrl;
+
+        public boolean isLoggedOut() {
+            return loggedOut;
+        }
+
+        public String getRedirectUrl() {
+            return redirectUrl;
+        }
+    }
+
 }

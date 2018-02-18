@@ -55,19 +55,29 @@ public class BookControllerTestUtils {
         return user;
     }
 
-    public static HttpEntity<Book> getBookHttpEntity(Book testBook, User user, String token) {
+    public static HttpEntity<Book> getBookHttpEntity(Book testBook, User user, String jwtToken, String xsrfToken) {
         HttpHeaders requestHeaders = new HttpHeaders();
-        requestHeaders.add("Cookie", JwtAuthenticationService.JWT_COOKIE_NAME + "=" + token);
+        requestHeaders.add("Cookie", JwtAuthenticationService.JWT_COOKIE_NAME + "=" + jwtToken);
+        if (xsrfToken != null && (!xsrfToken.trim().isEmpty())) {
+            requestHeaders.add("Cookie", JwtAuthenticationService.XSRF_COOKIE_NAME + "=" + xsrfToken);
+            requestHeaders.add(JwtAuthenticationService.XSRF_HEADER_NAME, xsrfToken);
+        }
+
         return new HttpEntity<>(testBook, requestHeaders);
     }
 
+    public static HttpEntity<Book> getBookHttpEntity(Book testBook, User user, String jwtToken) {
+        return getBookHttpEntity(testBook, user, jwtToken, null);
+    }
+
     public static ResponseEntity<Book> postBookToServer(JwtUtils jwtUtils, TestRestTemplate testRestTemplate) {
+        String xsrfToken = getXsrfToken(testRestTemplate);
 
         Book testBook = BookRepositoryTest.createTestBook();
         User user = getTestUser();
 
         String token = jwtUtils.createTokenForUser(user);
-        HttpEntity<Book> request = getBookHttpEntity(testBook, user, token);
+        HttpEntity<Book> request = getBookHttpEntity(testBook, user, token, xsrfToken);
         ResponseEntity<Book> book = testRestTemplate.exchange("/secure/api/books", HttpMethod.POST, request, Book.class);
 
         assertNotNull(book);
@@ -75,6 +85,16 @@ public class BookControllerTestUtils {
         LOGGER.debug("postBookToServer posted book to server successfully");
 
         return book;
+    }
+
+    public static String getXsrfToken(TestRestTemplate testRestTemplate) {
+        // First we call a GET endpoint to get a required XSRF-TOKEN cookie value
+        ResponseEntity<Book> nonExistentBook = testRestTemplate.getForEntity("/book/12345678", Book.class);
+        HttpHeaders headers = nonExistentBook.getHeaders();
+        String cookies = headers.getFirst(headers.SET_COOKIE);
+        String[] tokenCookies = cookies.split("XSRF-TOKEN=");
+        String tokenCookie = tokenCookies[1];
+        return tokenCookie.split(";")[0];
     }
 
 

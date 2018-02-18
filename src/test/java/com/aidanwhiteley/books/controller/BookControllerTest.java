@@ -72,7 +72,8 @@ public class BookControllerTest extends IntegrationTest {
         Book testBook = BookRepositoryTest.createTestBook();
         User user = BookControllerTestUtils.getTestUser();
         String token = jwtUtils.createTokenForUser(user);
-        HttpEntity<Book> request = BookControllerTestUtils.getBookHttpEntity(testBook, user, token);
+        String xsrfToken = BookControllerTestUtils.getXsrfToken(testRestTemplate);
+        HttpEntity<Book> request = BookControllerTestUtils.getBookHttpEntity(testBook, user, token, xsrfToken);
 
         ResponseEntity<Book>  response = testRestTemplate
                 .exchange("/secure/api/books", HttpMethod.POST, request, Book.class);
@@ -92,7 +93,9 @@ public class BookControllerTest extends IntegrationTest {
         Book testBook = BookRepositoryTest.createTestBook();
         User user = BookControllerTestUtils.getEditorTestUser();
         String token = jwtUtils.createTokenForUser(user);
-        HttpEntity<Book> request = BookControllerTestUtils.getBookHttpEntity(testBook, user, token);
+        String xsrfToken = BookControllerTestUtils.getXsrfToken(testRestTemplate);
+
+        HttpEntity<Book> request = BookControllerTestUtils.getBookHttpEntity(testBook, user, token, xsrfToken);
 
         ResponseEntity<Book>  response = testRestTemplate
                 .exchange("/secure/api/books", HttpMethod.POST, request, Book.class);

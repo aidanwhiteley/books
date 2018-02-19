@@ -86,12 +86,12 @@ books:
         size: 5
 
   jwt:
-    expiryInMilliSeconds: 3600000
+    expiryInMilliSeconds: 86400000 # One day
     secretKey:
     issuer: "CloudyBookClub"
     cookieOverHttpsOnly: true
     cookieAccessedByHttpOnly: true
     cookiePath: /
-    cookieExpirySeconds: 3600
+    cookieExpirySeconds: 86400 # One day
 
 

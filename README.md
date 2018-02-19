@@ -67,6 +67,22 @@ The main "to do"s include
 * more exploration of HATEOAS and HAL in the JSON APIs
 * making the front end app a bit prettier!
 
+### Security
+Lots of to and froing on this. When two of the main JWT related companies can't agree of where to store a JWT token, you know alarm bells should be ringing a little bit.
+Stormpath (who got taken over by Okta) [say](https://stormpath.com/blog/where-to-store-your-jwts-cookies-vs-html5-web-storage) use cookies.
+Auth0 [say] (https://auth0.com/blog/cookies-vs-tokens-definitive-guide/) use local storage.
+
+In my mind, it comes down to whether you are more scared of XSS or XSRF. Given the average marketing 
+departments predilection to use their tag managers to include all sorts of random JavaScript, I'm more scared of XSS.
+
+So this demo application stores the JWT token in a secure and "httpOnly" cookie. So that blocks XSS exploits (as the rogue JavaScript cant read the httpOnly cookie containing the JWT logon token). However, it leaves the application open
+to XSRF exploits. To mitigate that, the application uses an XSRF filter and expects that a (non httpOnly) cookie will be
+sent to the server side and, for state changing (non GET) requests, the value of the XSRF token must be added, via JavaScript, as an X-XSRF-TOKEN request header. The application will check that the two values are the same.
+
+This works well (or seems to!) when the API and the HTML is on the same domain. When CORS is needed to call the API, this 
+doesn't currently work. So only use this application with CORS configured (i.e. with no "front proxy") in development.
+Don't use this application with CORS in production - it will leave you open to XSRF based attacks.
+
 ## Functionality
 
 There is an Angular 1.x based front end that consumes the microservice that is available 

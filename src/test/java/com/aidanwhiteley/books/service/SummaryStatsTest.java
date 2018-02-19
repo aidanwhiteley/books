@@ -25,5 +25,4 @@ public class SummaryStatsTest extends IntegrationTest {
 
 		assertEquals(stats.getCount(), count);
 	}
-
 }

@@ -12,9 +12,13 @@ import java.util.List;
 
 @Service
 public class StatsService {
-	
+
+	private final BookRepository bookRepository;
+
 	@Autowired
-	BookRepository bookRepository;
+	public StatsService(BookRepository bookRepository) {
+		this.bookRepository = bookRepository;
+	}
 	
 	public SummaryStats getSummaryStats() {
 

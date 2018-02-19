@@ -17,8 +17,12 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class UserRepositoryImpl implements UserRepositoryCustomMethods {
 
+	private final MongoTemplate mongoTemplate;
+
 	@Autowired
-	MongoTemplate mongoTemplate;
+	public UserRepositoryImpl(MongoTemplate mongoTemplate) {
+		this.mongoTemplate = mongoTemplate;
+	}
 
 	@Override
 	public int updateUserRoles(ClientRoles clientRoles) {

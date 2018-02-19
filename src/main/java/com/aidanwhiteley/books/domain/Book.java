@@ -69,14 +69,14 @@ public class Book implements Serializable {
 	private String googleBookId;
 
 	private Item googleBookDetails;
+
 	// Not marked a @NotNull as validation is done on the
 	// input object from the client and this data is
 	// set on the server side after validation.
 	private Owner createdBy;
 
 	// The following three transient fields are intended as "helpers" to enable
-	// the client
-	// side to create links to fucntionality that will pass the server side
+	// the client side to create links to functionality that will pass the server side
 	// method level security.
 	@Transient
 	@Setter(AccessLevel.NONE)
@@ -95,6 +95,7 @@ public class Book implements Serializable {
 		this.allowDelete = false;
 		this.allowUpdate = false;
 
+		//noinspection StatementWithEmptyBody
 		if (null == user || user.getHighestRole() == ROLE_USER) {
 			// No permissions
 		} else if (user.getHighestRole() == ROLE_EDITOR) {
@@ -112,6 +113,7 @@ public class Book implements Serializable {
 			throw new IllegalStateException("Unable to set content in a Book appropriate for user");
 		}
 
+		//noinspection ConstantConditions
 		if (this.comments != null) {
 			this.comments.forEach(c -> c.setPermissionsAndContentForUser(user));
 		}
@@ -121,6 +123,7 @@ public class Book implements Serializable {
 	}
 
 	public boolean isOwner(User user) {
+		//noinspection SimplifiableIfStatement
 		if (user == null || this.createdBy == null) {
 			return false;
 		} else {
@@ -131,9 +134,8 @@ public class Book implements Serializable {
 
 	public enum Rating {
 		// Note Jackson default deserialisation is 0 based - changing values
-		// below
-		// would mean that that default serialisation / deserialisation would
-		// need overriding.
+        // below would mean that that default serialisation / deserialisation would
+        // need overriding.
 		TERRIBLE(0), POOR(1), OK(2), GOOD(3), GREAT(4);
 
 		private final int ratingLevel;

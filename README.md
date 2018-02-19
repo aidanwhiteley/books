@@ -44,9 +44,13 @@ set/change the secretKey used for the JWT token signing (see books:jwt:secretKey
 You will also need access to a Mongo instance. The connection URL (in the yml files) will result in the automatic
 creation of a Mongo database and the two required collections (dependant on the security config of your Mongo install).
 
+### How to build
+This project makes use of the excellent Lombok project. So to build in your favourite IDE, if necessary
+head on over to [Lombok](https://projectlombok.org/) and click the appropriate "Install" link (tested with IntelliJ and Eclipse).
+
 ### Sample data
 There is some sample data provided to make initial understanding of the functionality a bit easier.
-It is is the /src/main/resources/sample_data. See teh #README.txt in that directory.
+It is is the /src/main/resources/sample_data. See the #README.txt in that directory.
 The sample data is auto loaded when running with Spring profiles of "dev" (the checked in default)
 and "integration".
 
@@ -69,7 +73,7 @@ The main "to do"s include
 
 ### Security
 Lots of to and froing on this. When two of the main JWT related companies can't agree of where to store a JWT token, you know alarm bells should be ringing a little bit.
-Stormpath (who got taken over by Okta) [say](https://stormpath.com/blog/where-to-store-your-jwts-cookies-vs-html5-web-storage) use cookies.
+Stormpath (who joined forces with Okta) [say](https://stormpath.com/blog/where-to-store-your-jwts-cookies-vs-html5-web-storage) use cookies.
 Auth0 [say](https://auth0.com/blog/cookies-vs-tokens-definitive-guide/) use local storage.
 
 In my mind, it comes down to whether you are more scared of XSS or XSRF. Given the average marketing 
@@ -86,7 +90,7 @@ Don't use this application with CORS in production - it will leave you open to X
 This is all a work in progress. It's getting there but there are bugs e.g. JSESSIONs are being returned to the client unnecessarily and I'm not 100% convinced by the logoff functionality..
 
 ## Stateless Apps
-An awful lot of the time developing this microservice was spent in making it entirely stateless - based around using JWTs.
+An lot of the time developing this microservice was spent in making it entirely independant of HTTP session state  - based around using JWTs.
 
 Would I do the same in a real application?
 

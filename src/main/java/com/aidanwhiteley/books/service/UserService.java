@@ -27,23 +27,22 @@ public class UserService {
     @Value("${books.users.default.admin.email}")
     private String defaultAdminEmail;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    private final Oauth2AuthenticationUtils authUtils;
 
     @Autowired
-    private Oauth2AuthenticationUtils authUtils;
+    public UserService(UserRepository userRepository, Oauth2AuthenticationUtils oauth2AuthenticationUtils) {
+        this.userRepository = userRepository;
+        this.authUtils = oauth2AuthenticationUtils;
+    }
 
     public User createOrUpdateUser(OAuth2Authentication authentication) {
 
         Map<String, Object> userDetails = authUtils.getUserDetails(authentication);
         User.AuthenticationProvider provider = authUtils.getAuthenticationProvider(authentication);
         Optional<User> user = authUtils.getUserIfExists(authentication);
-
-        if (user.isPresent()) {
-            return updateUser(userDetails, user.get(), provider);
-        } else {
-            return createUser(userDetails, provider);
-        }
+        return user.map(user1 -> updateUser(userDetails, user1, provider)).orElseGet(() -> createUser(userDetails, provider));
     }
 
     private User createUser(Map<String, Object> userDetails, User.AuthenticationProvider provider) {

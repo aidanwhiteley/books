@@ -9,8 +9,6 @@ import com.aidanwhiteley.books.repository.dtos.BooksByAuthor;
 import com.aidanwhiteley.books.repository.dtos.BooksByGenre;
 import com.aidanwhiteley.books.service.StatsService;
 import com.aidanwhiteley.books.service.dtos.SummaryStats;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -20,34 +18,38 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.Optional;
 
 @LimitDataVisibility
 @RestController
 @RequestMapping("/api")
 public class BookController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(BookController.class);
+    private final BookRepository bookRepository;
 
-    @Autowired
-    private BookRepository bookRepository;
+    private final GoogleBooksDao googleBooksDao;
 
-    @Autowired
-    private GoogleBooksDao googleBooksDao;
-
-    @Autowired
-    private StatsService statsService;
-
+    private final StatsService statsService;
 
     @Value("${books.users.default.page.size}")
     private int defaultPageSize;
 
 
-    @GetMapping(value = "/books")
-    public Page<Book> findAllByWhenEnteredDesc(@RequestParam(value = "page") Optional<Integer> page, @RequestParam(value = "size") Optional<Integer> size, Principal principal) {
+    @Autowired
+    public BookController(BookRepository bookRepository, GoogleBooksDao googleBooksDao, StatsService statsService) {
+        this.bookRepository = bookRepository;
+        this.googleBooksDao = googleBooksDao;
+        this.statsService = statsService;
+    }
 
-        PageRequest pageObj = new PageRequest(page.orElse(0),
-                size.orElse(defaultPageSize));
+    @GetMapping(value = "/books")
+    public Page<Book> findAllByWhenEnteredDesc(Principal principal) {
+        return findAllByWhenEnteredDesc(0, defaultPageSize, principal);
+    }
+
+    @GetMapping(value = "/books", params = {"page", "size"})
+    public Page<Book> findAllByWhenEnteredDesc(@RequestParam(value = "page") int page, @RequestParam(value = "size") int size, Principal principal) {
+
+        PageRequest pageObj = new PageRequest(page, size);
         return bookRepository.findAllByOrderByEnteredDesc(pageObj);
     }
 
@@ -58,21 +60,34 @@ public class BookController {
 
 
     @GetMapping(value = "/books", params = {"author"})
-    public Page<Book> findByAuthor(@RequestParam("author") String author, @RequestParam(value = "page") Optional<Integer> page,
-                                   @RequestParam(value = "size") Optional<Integer> size, Principal principal) {
+    public Page<Book> findByAuthor(@RequestParam("author") String author, Principal principal) {
+        return findByAuthor(author, 0, defaultPageSize, principal);
+    }
 
-        PageRequest pageObj = new PageRequest(page.orElse(0),
-                size.orElse(defaultPageSize));
+    @GetMapping(value = "/books", params = {"author", "page", "size"})
+    public Page<Book> findByAuthor(@RequestParam("author") String author, @RequestParam(value = "page") int page,
+                                   @RequestParam(value = "size") int size, Principal principal) {
+
+        if (null == author || author.trim().isEmpty()) {
+            throw new IllegalArgumentException("Author parameter cannot be empty");
+        }
+        PageRequest pageObj = new PageRequest(page, size);
         return bookRepository.findAllByAuthorOrderByEnteredDesc(pageObj, author);
     }
 
 
-    @GetMapping(value = "/books", params = "genre")
-    public Page<Book> findByGenre(@RequestParam("genre") String genre, @RequestParam(value = "page") Optional<Integer> page, @RequestParam(value = "size") Optional<Integer> size, Principal principal) {
+    @GetMapping(value = "/books", params = {"genre"})
+    public Page<Book> findByGenre(@RequestParam("genre") String genre, Principal principal) {
+        return findByGenre(genre, 0, defaultPageSize, principal);
+    }
 
-        PageRequest pageObj = new PageRequest(page.orElse(0),
-                size.orElse(defaultPageSize));
+    @GetMapping(value = "/books", params = {"genre", "page", "size"})
+    public Page<Book> findByGenre(@RequestParam("genre") String genre, @RequestParam(value = "page") int page, @RequestParam(value = "size") int size, Principal principal) {
 
+        if (null == genre || genre.trim().isEmpty()) {
+            throw new IllegalArgumentException("Genre parameter cannot be empty");
+        }
+        PageRequest pageObj = new PageRequest(page, size);
         return bookRepository.findAllByGenreOrderByEnteredDesc(pageObj, genre);
     }
 
@@ -100,24 +115,33 @@ public class BookController {
         return googleBooksDao.searchGoogBooksByTitle(title);
     }
 
-
     @GetMapping(value = "/books", params = {"rating"})
-    public Page<Book> findByRating(@RequestParam("rating") String rating, @RequestParam(value = "page") Optional<Integer> page, @RequestParam(value = "size") Optional<Integer> size, Principal principal) {
+    public Page<Book> findByRating(@RequestParam("rating") String rating, Principal principal) {
+        return findByRating(rating, 0, defaultPageSize, principal);
+    }
+
+    @GetMapping(value = "/books", params = {"rating", "page", "size"})
+    public Page<Book> findByRating(@RequestParam("rating") String rating, @RequestParam(value = "page") int page, @RequestParam(value = "size") int size, Principal principal) {
+
+        if (null == rating || rating.trim().isEmpty()) {
+            throw new IllegalArgumentException("Rating parameter cannot be empty");
+        }
 
         Book.Rating aRating = Book.Rating.getRatingByString(rating);
-        PageRequest pageObj = new PageRequest(page.orElse(0),
-                size.orElse(defaultPageSize));
-
-        if (aRating == null) {
-            throw new IllegalArgumentException();
-        } else {
-            return bookRepository.findByRatingOrderByEnteredDesc(pageObj, aRating);
+        if (null == aRating) {
+            throw new IllegalArgumentException("Supplied rating parameter not recognised");
         }
+
+        PageRequest pageObj = new PageRequest(page, size);
+        return bookRepository.findByRatingOrderByEnteredDesc(pageObj, aRating);
     }
 
 
     @SuppressWarnings("serial")
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     class IllegalArgumentException extends RuntimeException {
+        public IllegalArgumentException(String msg) {
+            super(msg);
+        }
     }
 }

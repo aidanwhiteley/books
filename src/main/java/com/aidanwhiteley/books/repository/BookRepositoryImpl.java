@@ -28,8 +28,12 @@ public class BookRepositoryImpl implements BookRepositoryCustomMethods {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BookRepositoryImpl.class);
 
+    private final MongoTemplate mongoTemplate;
+
     @Autowired
-    MongoTemplate mongoTemplate;
+    public BookRepositoryImpl(MongoTemplate mongoTemplate) {
+        this.mongoTemplate = mongoTemplate;
+    }
 
     @Override
     public List<BooksByGenre> countBooksByGenre() {

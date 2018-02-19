@@ -16,16 +16,13 @@ import javax.servlet.http.HttpServletResponse;
 public class JwtAuthenticationService {
 
     public static final String JWT_COOKIE_NAME = "JWT";
-
     public static final String JSESSIONID_COOKIE_NAME = "JSESSIONID";
-
     public static final String XSRF_HEADER_NAME = "X-XSRF-TOKEN";
     public static final String XSRF_COOKIE_NAME = "XSRF-TOKEN";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtAuthenticationService.class);
 
-    @Autowired
-    JwtUtils jwtUtils;
+    private final JwtUtils jwtUtils;
 
     @Value("${books.jwt.cookieOverHttpsOnly}")
     private boolean cookieOverHttpsOnly;
@@ -47,6 +44,11 @@ public class JwtAuthenticationService {
 
     @Value("${books.client.enableCORS}")
     private boolean enableCORS;
+
+    @Autowired
+    public JwtAuthenticationService(JwtUtils jwtUtils) {
+        this.jwtUtils = jwtUtils;
+    }
 
     public void setAuthenticationData(HttpServletRequest request, HttpServletResponse response, User user) {
 
@@ -132,7 +134,7 @@ public class JwtAuthenticationService {
         response.addCookie(emptyCookie);
     }
 
-    public void expireJsessionIdfCookie(HttpServletResponse response) {
+    public void expireJsessionIdCookie(HttpServletResponse response) {
         Cookie emptyCookie = new Cookie(JSESSIONID_COOKIE_NAME, "");
         emptyCookie.setMaxAge(0);
         emptyCookie.setHttpOnly(true);

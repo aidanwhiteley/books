@@ -1,6 +1,3 @@
-security:
-  basic:
-    enabled: false
 spring:
   data:
     mongodb:

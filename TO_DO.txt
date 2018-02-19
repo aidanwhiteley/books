@@ -1,8 +1,6 @@
 
 New functionality
 ~~~~~~~~~~~~~~~~~
-3. Support correct display of edit and delete for Book entries - possibly via Hateoas / HAL links
-6. Add stats cards to Book detail page
 12. Set up endpoints and security for Actuator
 13. Support "multi tenant" i.e. multiple instances of app sharing same codebase and Mongo
 14. Create "digest emails"
@@ -19,7 +17,9 @@ Completed new functionality
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 1. Add first logon welcome page
 2. Add help content and link
+3. Support correct display of edit and delete for Book entries - possibly via Hateoas / HAL links (didnt use Hateoas)
 4. Pagination of Books list
+6. Add stats cards to Book detail page - wont do
 8. Migrate to stateless JWT based authentication - carrying "signed" roles data - so getUser isnt constantly called
 5. Create "stats" API for cards at top of summary page
 7. Add Comments functionality

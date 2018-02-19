@@ -19,9 +19,6 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
-import static com.aidanwhiteley.books.controller.jwt.JwtAuthenticationService.JSESSIONID_COOKIE_NAME;
-import static com.aidanwhiteley.books.controller.jwt.JwtAuthenticationService.JWT_COOKIE_NAME;
-import static com.aidanwhiteley.books.controller.jwt.JwtAuthenticationService.XSRF_COOKIE_NAME;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @RestController
@@ -30,31 +27,37 @@ public class UserController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private JwtAuthenticationUtils authUtils;
+    private final JwtAuthenticationUtils authUtils;
 
-    @Autowired
-    private JwtAuthenticationService authService;
+    private final JwtAuthenticationService authService;
 
     @Value("${books.client.postLogonUrl}")
     private String postLogonUrl;
 
+    @Autowired
+    public UserController(UserRepository userRepository, JwtAuthenticationUtils jwtAuthenticationUtils,
+                          JwtAuthenticationService jwtAuthenticationService) {
+        this.userRepository = userRepository;
+        this.authUtils = jwtAuthenticationUtils;
+        this.authService = jwtAuthenticationService;
+    }
+
     @RequestMapping("/user")
     @PreAuthorize("hasAnyRole('ROLE_EDITOR', 'ROLE_ADMIN', 'ROLE_USER')")
-    public User user(Principal principal) {
+    public User user(Principal principal, HttpServletResponse response) {
 
-        LOGGER.info("Principal passed in to user method is: " + (principal == null ? null : principal.toString()));
-        Optional<User> user = authUtils.extractUserFromPrincipal(principal);
+        LOGGER.debug("Principal passed in to user method is: " + (principal == null ? null : principal.toString()));
+
+        Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
         if (user.isPresent()) {
             return user.get();
         } else {
             // We've been supplied a valid JWT but the user is no longer in the database.
             LOGGER.warn("Valid JWT passed but no corresponding user in data store");
-            // TODO - remove the JWT cookie
-            throw new IllegalArgumentException();
+            authService.expireJwtCookie(response);
+            throw new IllegalArgumentException("No user found in user store for input JWT");
         }
     }
 
@@ -68,7 +71,7 @@ public class UserController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> deleteUserById(@PathVariable("id") String id, Principal principal) {
 
-        Optional<User> user = authUtils.extractUserFromPrincipal(principal);
+        Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
         if (user.isPresent()) {
             if (user.get().getId().equals(id)) {
                 LOGGER.warn("User {} on {} attempted to delete themselves. This isn't allowed", user.get().getFullName(), user.get().getAuthProvider());
@@ -86,7 +89,7 @@ public class UserController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> patchUserRolesById(@PathVariable("id") String id, @RequestBody ClientRoles clientRoles, Principal principal) {
 
-        Optional<User> user = authUtils.extractUserFromPrincipal(principal);
+        Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
         if (user.isPresent()) {
             if (user.get().getId().equals(id)) {
                 LOGGER.warn("User {} on {} attempted to change their own roles. This isn't allowed", user.get().getFullName(), user.get().getAuthProvider());
@@ -101,13 +104,21 @@ public class UserController {
         }
     }
 
+
+    /**
+     * A custom logout method that removes the necessary client side cookies.
+     *
+     * We dont use the Spring Security config based logout as our needs are
+     * simple and there are complexities with the ordering of Spring Security
+     * filters when we want to be able to call logout when CORS is enabled.
+     */
     @RequestMapping(value = "/logout", method = POST)
-    public LogoutInfo logout(HttpServletResponse response)  {
+    public LogoutInfo logout(HttpServletResponse response) {
         authService.expireJwtCookie(response);
         authService.expireXsrfCookie(response);
 
         // There should be no http session but this cookie is being set at the moment (for some reason).
-        authService.expireJsessionIdfCookie(response);
+        authService.expireJsessionIdCookie(response);
 
         return new LogoutInfo();
     }
@@ -115,12 +126,18 @@ public class UserController {
     @SuppressWarnings("serial")
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     class IllegalArgumentException extends RuntimeException {
+        public IllegalArgumentException(String msg) {
+            super(msg);
+        }
     }
 
+    /**
+     * A data holder to pass some data / suggestions back to the client.
+     */
     class LogoutInfo {
 
-        private boolean loggedOut = true;
-        private String redirectUrl = postLogonUrl;
+        private final boolean loggedOut = true;
+        private final String redirectUrl = postLogonUrl;
 
         public boolean isLoggedOut() {
             return loggedOut;

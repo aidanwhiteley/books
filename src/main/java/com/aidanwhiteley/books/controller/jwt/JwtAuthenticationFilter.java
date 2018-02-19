@@ -23,9 +23,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
-    @Autowired
-    private JwtAuthenticationService jwtService;
+    private final JwtAuthenticationService jwtService;
 
+    @Autowired
+    public JwtAuthenticationFilter(JwtAuthenticationService jwtAuthenticationService) {
+        this.jwtService = jwtAuthenticationService;
+    }
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -40,8 +43,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	}
 	
 	@Override
-	protected boolean shouldNotFilter(HttpServletRequest request)
-            throws ServletException {
+	protected boolean shouldNotFilter(HttpServletRequest request) {
 		
 		if (request.getRequestURI().startsWith(API_PREFIX) || request.getRequestURI().startsWith(SECURE_API_PREFIX)) { 
 			LOGGER.debug("Including {}", request.getRequestURI());

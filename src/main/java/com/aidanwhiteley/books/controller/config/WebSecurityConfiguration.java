@@ -1,17 +1,11 @@
 package com.aidanwhiteley.books.controller.config;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import javax.servlet.Filter;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import com.aidanwhiteley.books.util.JwtAuthenticationUtils;
+import com.aidanwhiteley.books.controller.jwt.JwtAuthenticationFilter;
+import com.aidanwhiteley.books.controller.jwt.JwtAuthenticationService;
+import com.aidanwhiteley.books.domain.User;
+import com.aidanwhiteley.books.domain.User.AuthenticationProvider;
+import com.aidanwhiteley.books.repository.UserRepository;
+import com.aidanwhiteley.books.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +18,6 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -43,27 +36,27 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.security.web.csrf.CsrfTokenRepository;
-import org.springframework.security.web.savedrequest.NullRequestCache;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CompositeFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
-import com.aidanwhiteley.books.controller.jwt.JwtAuthenticationFilter;
-import com.aidanwhiteley.books.controller.jwt.JwtAuthenticationService;
-import com.aidanwhiteley.books.domain.User;
-import com.aidanwhiteley.books.domain.User.AuthenticationProvider;
-import com.aidanwhiteley.books.repository.UserRepository;
-import com.aidanwhiteley.books.service.UserService;
+import javax.servlet.Filter;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Supports oauth2 based social logons and JWT based authentication and authorisation.
  * <p>
  * Initially based on the details at
  * https://spring.io/guides/tutorials/spring-boot-oauth2/
+ * but all additions and bugs are my own!
  */
 @EnableOAuth2Client
 @Configuration
@@ -72,20 +65,15 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WebSecurityConfigurerAdapter.class);
 
-    @Autowired
-    JwtAuthenticationFilter jwtAuththenticationFilter;
+    private final JwtAuthenticationFilter jwtAuththenticationFilter;
 
-    @Autowired
-    JwtAuthenticationService jwtAuthenticationService;
+    private final JwtAuthenticationService jwtAuthenticationService;
 
-    @Autowired
-    private OAuth2ClientContext oauth2ClientContext;
+    private final OAuth2ClientContext oauth2ClientContext;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
     @Value("${books.client.enableCORS}")
     private boolean enableCORS;
@@ -96,6 +84,20 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Value("${books.client.postLogonUrl}")
     private String postLogonUrl;
 
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+    @Autowired
+    public WebSecurityConfiguration(JwtAuthenticationFilter jwtAuthenticationFilter, JwtAuthenticationService jwtAuthenticationService,
+                                    OAuth2ClientContext oAuth2ClientContext, UserRepository userRepository,
+                                    UserService userService) {
+        // Note - IntelliJ claims that there are multiple possible providers for the OAuth2ClientContext but I
+        //        cant find them! The code works - so warning suppressed.
+
+        this.jwtAuththenticationFilter = jwtAuthenticationFilter;
+        this.jwtAuthenticationService = jwtAuthenticationService;
+        this.oauth2ClientContext = oAuth2ClientContext;
+        this.userRepository = userRepository;
+        this.userService = userService;
+    }
 
     @Bean
     @ConfigurationProperties("google")
@@ -120,8 +122,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             http.cors();
         }
 
-        // Getting required server side config for enabling Angular to send X-CSRF-TOKEN request header has
-        // currently defeated me.
+        // Getting required server side config for enabling Angular to send X-CSRF-TOKEN request header across
+        // CORS domains has currently defeated me.
         // Client side this wouldnt work out of the box with Angular either but the following library would
         // probably help if I could get the server side config right.
         // https://github.com/pasupulaphani/angular-csrf-cross-domain
@@ -144,7 +146,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         // @formatter:off
         http.
-                // We dont use the Spring Security logout functionality as I _think_ that it is ahead of the
+                // We dont currently use the Spring Security logout functionality as I _think_ that it is ahead of the
                 // CORS config filter meaning that a cross domain request to logoff will fail.
                 // Instead there is a custom method in the UserController class.
 
@@ -166,9 +168,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 if (enableCORS) {
-                    registry.addMapping("/api/**").allowedOrigins(allowedCorsOrigin).allowedMethods("GET").allowedHeaders("origin", "content-type" , "X-CSRF-TOKEN");
+                    registry.addMapping("/api/**").allowedOrigins(allowedCorsOrigin).allowedMethods("GET").allowedHeaders("origin", "content-type", "X-CSRF-TOKEN");
                     registry.addMapping("/secure/api/**").allowedOrigins(allowedCorsOrigin).allowedMethods("GET",
-                            "POST", "PUT", "DELETE", "PATCH", "OPTIONS").allowedHeaders("Origin", "Content-Type" , "X-CSRF-TOKEN", "X-Requested-With");
+                            "POST", "PUT", "DELETE", "PATCH", "OPTIONS").allowedHeaders("Origin", "Content-Type", "X-CSRF-TOKEN", "X-Requested-With");
                 }
             }
         };
@@ -226,10 +228,10 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     class ClientResources {
 
         @NestedConfigurationProperty
-        private AuthorizationCodeResourceDetails client = new AuthorizationCodeResourceDetails();
+        private final AuthorizationCodeResourceDetails client = new AuthorizationCodeResourceDetails();
 
         @NestedConfigurationProperty
-        private ResourceServerProperties resource = new ResourceServerProperties();
+        private final ResourceServerProperties resource = new ResourceServerProperties();
 
         public AuthorizationCodeResourceDetails getClient() {
             return client;

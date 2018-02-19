@@ -50,6 +50,7 @@ public class Owner {
         this.authProvider = user.getAuthProvider();
     }
 
+    @SuppressWarnings("StatementWithEmptyBody")
     public void setPermissionsAndContentForUser(User user) {
 
         if (null == user || user.getHighestRole() == ROLE_USER) {

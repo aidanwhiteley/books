@@ -21,21 +21,12 @@ public interface BookRepositoryCustomMethods {
 
     Book findCommentsForBook(String bookId);
 
-    /**
-     * Adds a comment to a Book
-     * @param bookId
-     * @param comment
-     * @return Returns a Book with JUST the comments and the bookId populated
-     */
     Book addCommentToBook(String bookId, Comment comment);
 
     /**
      * Marks a comment as deleted. Empties the comment text and  marks comment as deleted.
      * Doesnt actually remove the Comment from the database.
      *
-     * @param bookId
-     * @param commentId
-     * @param removerName
      * @return Returns a Book with JUST the comments and the bookId populated
      */
     Book removeCommentFromBook(String bookId, String commentId, String removerName);

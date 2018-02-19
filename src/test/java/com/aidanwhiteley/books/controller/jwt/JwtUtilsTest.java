@@ -60,6 +60,6 @@ public class JwtUtilsTest {
         User testUser = BookControllerTestUtils.getTestUser();
         String token = jwt.createTokenForUser(testUser);
 
-        jwt.getUserFromToken(token.toString());
+        jwt.getUserFromToken(token);
     }
 }

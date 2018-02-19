@@ -12,7 +12,6 @@ import org.springframework.data.annotation.Id;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,13 +37,13 @@ public class User {
     @Length(min = 1, max = 255)
     private String authenticationServiceId;
 
-    @Length(min = 0, max = 100)
+    @Length(max = 100)
     private String firstName;
 
-    @Length(min = 0, max = 100)
+    @Length(max = 100)
     private String lastName;
 
-    @Length(min = 0, max = 200)
+    @Length(max = 200)
     private String fullName;
 
     @Email
@@ -53,7 +52,7 @@ public class User {
     @URL
     private String link;
 
-    @Length(min = 0, max = 500)
+    @Length(max = 500)
     private String picture;
 
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
@@ -115,7 +114,7 @@ public class User {
             return this.role;
         }
 
-        private static Map<Integer, Role> map = new HashMap<>();
+        private static final Map<Integer, Role> map = new HashMap<>();
 
         static {
             for (Role aRole : Role.values()) {

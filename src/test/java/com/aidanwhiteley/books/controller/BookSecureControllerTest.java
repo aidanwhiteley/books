@@ -7,8 +7,6 @@ import com.aidanwhiteley.books.domain.User.Role;
 import com.aidanwhiteley.books.repository.BookRepositoryTest;
 import com.aidanwhiteley.books.util.IntegrationTest;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
@@ -18,8 +16,6 @@ import java.net.URI;
 import static org.junit.Assert.assertEquals;
 
 public class BookSecureControllerTest extends IntegrationTest {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(BookSecureControllerTest.class);
 
     private static final String GENRE_TOO_LONG = "abcdefghjijklmnopqrstuvwxyz01234567890";
 
@@ -93,7 +89,6 @@ public class BookSecureControllerTest extends IntegrationTest {
         URI uri = headers.getLocation();
 
         // Now go and get the Book
-        HttpHeaders requestHeaders = new HttpHeaders();
         User user = BookControllerTestUtils.getTestUser();
         Book book = testRestTemplate.getForEntity(uri, Book.class).getBody();
         assertEquals(book.getTitle(), BookRepositoryTest.createTestBook().getTitle());

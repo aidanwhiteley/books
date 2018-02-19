@@ -1,23 +1,21 @@
 package com.aidanwhiteley.books.repository;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.Charset;
-
+import com.aidanwhiteley.books.domain.googlebooks.BookSearchResult;
+import com.aidanwhiteley.books.domain.googlebooks.Item;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import com.aidanwhiteley.books.domain.googlebooks.BookSearchResult;
-import com.aidanwhiteley.books.domain.googlebooks.Item;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
 
 @Repository
 public class GoogleBooksDao {
@@ -39,15 +37,12 @@ public class GoogleBooksDao {
 	@Value("${books.google.books.api.read.timeout}")
 	private int booksGoogleBooksApiReadTimeout;
 
-	@Autowired
-	private RestTemplate googleBooksRestTemplate;
+	private final RestTemplate googleBooksRestTemplate;
 
-	@Bean
-	public RestTemplate restTemplate(RestTemplateBuilder builder) {
-		builder.setConnectTimeout(booksGoogleBooksApiConnectTimeout);
-		builder.setReadTimeout(booksGoogleBooksApiReadTimeout);
-		return builder.build();
-	}
+    @Autowired
+	public GoogleBooksDao(RestTemplateBuilder restTemplateBuilder) {
+	    this.googleBooksRestTemplate = buildRestTemplate(restTemplateBuilder);
+    }
 
 	public BookSearchResult searchGoogBooksByTitle(String title) {
 
@@ -78,4 +73,10 @@ public class GoogleBooksDao {
 			throw e;
 		}
 	}
+
+    private RestTemplate buildRestTemplate(RestTemplateBuilder builder) {
+        builder.setConnectTimeout(booksGoogleBooksApiConnectTimeout);
+        builder.setReadTimeout(booksGoogleBooksApiReadTimeout);
+        return builder.build();
+    }
 }

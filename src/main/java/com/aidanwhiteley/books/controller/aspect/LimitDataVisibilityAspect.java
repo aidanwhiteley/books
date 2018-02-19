@@ -31,15 +31,22 @@ import com.aidanwhiteley.books.util.JwtAuthenticationUtils;
  * should "fail safe" in that if a new method is added and a Principal parameter is not part of the
  * method signature, then we assume the method is being called by an anonymous user and all
  * restrictions on the returned data are applied.
+ *
+ * TODO - this doesnt need to be an "around" advice - it could just be an "after".
  */
+@SuppressWarnings({"EmptyMethod", "unused"})
 @Aspect
 @Component
 public class LimitDataVisibilityAspect {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LimitDataVisibilityAspect.class);
 
+    private final JwtAuthenticationUtils authUtils;
+
     @Autowired
-    private JwtAuthenticationUtils authUtils;
+    public LimitDataVisibilityAspect(JwtAuthenticationUtils jwtAuthenticationUtils) {
+        this.authUtils = jwtAuthenticationUtils;
+    }
 
     @Pointcut("@within(com.aidanwhiteley.books.controller.aspect.LimitDataVisibility)")
     public void isAnnotated() {
@@ -67,11 +74,14 @@ public class LimitDataVisibilityAspect {
         Object retVal = joinPoint.proceed();
 
         Principal principal = getPrincipal(joinPoint);
-        Optional<User> user = authUtils.extractUserFromPrincipal(principal);
+
+        // Note - we only look at data from the JWT to build the User here - we are
+        // only interested in the users roles and they are in the JWT.
+        Optional<User> user = authUtils.extractUserFromPrincipal(principal, true);
 
         if (retVal instanceof Book) {
             LOGGER.info("About to call setPermissionsAndContentForUser for " + joinPoint.getSignature().toString());
-            ((Book) retVal).setPermissionsAndContentForUser(user.isPresent() ? user.get() : null);
+            ((Book) retVal).setPermissionsAndContentForUser(user.orElse(null));
         } else {
             LOGGER.error("Unexpected return type found by aspect");
         }
@@ -86,12 +96,12 @@ public class LimitDataVisibilityAspect {
         Object retVal = joinPoint.proceed();
 
         Principal principal = getPrincipal(joinPoint);
-        Optional<User> user = authUtils.extractUserFromPrincipal(principal);
+        Optional<User> user = authUtils.extractUserFromPrincipal(principal, true);
 
         if (retVal instanceof Page) {
             LOGGER.info("About to call setPermissionsAndContentForUser for " + joinPoint.getSignature().toString());
-            User theUser = user.isPresent() ? user.get() : null;
-            ((Page<Book>) retVal).getContent().forEach(s -> ((Book) s).setPermissionsAndContentForUser(theUser));
+            User theUser = user.orElse(null);
+            ((Page<Book>) retVal).getContent().forEach(s -> s.setPermissionsAndContentForUser(theUser));
         } else {
             LOGGER.error("Unexpected return type found by aspect");
         }

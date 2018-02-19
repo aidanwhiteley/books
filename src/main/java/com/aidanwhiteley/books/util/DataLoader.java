@@ -1,12 +1,5 @@
 package com.aidanwhiteley.books.util;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,29 +12,35 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Component;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Component
 public class DataLoader {
 
     private static final String BOOKS_COLLECTION = "book";
     private static final String USERS_COLLECTION = "user";
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(DataLoader.class);
+    private final MongoTemplate template;
     @Value("${books.reload.development.data}")
     private boolean reloadDevelopmentData;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DataLoader.class);
-
     @Autowired
-    private MongoTemplate template;
+    public DataLoader(MongoTemplate mongoTemplate) {
+        this.template = mongoTemplate;
+    }
 
     /**
      * Reload data for development and integration tests.
      * Whether this runs or not is also controlled by the
      * books.reload.development.data config setting.
-     *
+     * <p>
      * Double "fail safe" of checking for required Spring profile
      * beign active and also a config switch setting.
-     *
-     * @return
      */
     @Bean
     @Profile({"dev", "integration", "unixtest"})
@@ -52,7 +51,7 @@ public class DataLoader {
 
                 // Clearing and loading data into books collection
                 template.dropCollection(BOOKS_COLLECTION);
-                ClassPathResource classPathResource = new ClassPathResource("sample_data/books.json");
+                ClassPathResource classPathResource = new ClassPathResource("sample_data/books.data");
                 List<String> jsons;
 
                 try (InputStream resource = classPathResource.getInputStream()) {
@@ -65,7 +64,7 @@ public class DataLoader {
 
                 // Clearing and loading data into user collection
                 template.dropCollection(USERS_COLLECTION);
-                classPathResource = new ClassPathResource("sample_data/users.json");
+                classPathResource = new ClassPathResource("sample_data/users.data");
                 try (InputStream resource = classPathResource.getInputStream()) {
                     jsons = new BufferedReader(new InputStreamReader(resource,
                             StandardCharsets.UTF_8)).lines().collect(Collectors.toList());

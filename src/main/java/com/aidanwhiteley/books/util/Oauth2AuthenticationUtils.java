@@ -1,38 +1,41 @@
 package com.aidanwhiteley.books.util;
 
-import com.aidanwhiteley.books.domain.User;
-import com.aidanwhiteley.books.repository.UserRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Profile;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
-import org.springframework.security.oauth2.provider.OAuth2Request;
-import org.springframework.stereotype.Component;
+import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.FACEBOOK;
+import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.GOOGLE;
 
-import java.security.Principal;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.FACEBOOK;
-import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.GOOGLE;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.OAuth2Request;
+import org.springframework.stereotype.Component;
+
+import com.aidanwhiteley.books.domain.User;
+import com.aidanwhiteley.books.repository.UserRepository;
 
 @Component
 public class Oauth2AuthenticationUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Oauth2AuthenticationUtils.class);
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Value("${google.client.clientId}")
     private String googleClientClientId;
 
     @Value("${facebook.client.clientId}")
     private String facebookClientClientId;
+
+    @Autowired
+    public Oauth2AuthenticationUtils(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     public Optional<User> getUserIfExists(OAuth2Authentication auth) {
 
@@ -41,13 +44,16 @@ public class Oauth2AuthenticationUtils {
                 this.getAuthenticationProvider(auth).toString());
 
         User user;
-        if (users.size() == 0) {
-            user = null;
-        } else if (users.size() == 1) {
-            user = users.get(0);
-        } else {
-            LOGGER.error("More than one user found for Authentication: {}", auth);
-            throw new IllegalStateException("More that one user found for a given Authentication");
+        switch (users.size()) {
+            case 0:
+                user = null;
+                break;
+            case 1:
+                user = users.get(0);
+                break;
+            default:
+                LOGGER.error("More than one user found for Authentication: {}", auth);
+                throw new IllegalStateException("More that one user found for a given Authentication");
         }
 
         return Optional.ofNullable(user);
@@ -56,13 +62,6 @@ public class Oauth2AuthenticationUtils {
     @SuppressWarnings("unchecked")
 	public Map<String, Object> getUserDetails(OAuth2Authentication auth) {
         return (LinkedHashMap<String, Object>) auth.getUserAuthentication().getDetails();
-    }
-
-    public User.AuthenticationProvider getAuthProviderFromPrincipal(Principal principal) {
-    	
-    	checkPrincipalType(principal);
-    	OAuth2Authentication auth = (OAuth2Authentication) principal;
-        return getAuthenticationProvider(auth);
     }
 
     public User.AuthenticationProvider getAuthenticationProvider(OAuth2Authentication auth) {
@@ -76,13 +75,6 @@ public class Oauth2AuthenticationUtils {
         } else {
             LOGGER.error("Unknown clientId specified of {} so cant determine authentication provider. Config value is {}", clientId, googleClientClientId);
             throw new IllegalArgumentException("Uknown client id specified");
-        }
-    }
-
-    private void checkPrincipalType(Principal principal) {
-        if (!(principal instanceof OAuth2Authentication)) {
-            LOGGER.error("Only OAuth authentication currently supported and supplied Principal not oauth: {}", principal);
-            throw new UnsupportedOperationException("Only OAuth principals currently supported");
         }
     }
 

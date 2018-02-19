@@ -10,15 +10,20 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * A class that holds a subset of the User class data based on what is read from a JWT.
+ * <p>
+ * Contains convenience methods to convert between a this and a (partially populated) User
+ * and vice versa.
+ */
 public class JwtAuthentication implements Authentication {
 
-	private static final long serialVersionUID = 1L;
-	
-	private List<GrantedAuthority> grantedAuthorities = new LinkedList<>();
+    private static final long serialVersionUID = 1L;
+    private final String fullName;
+    private final String authProvider;
+    private final String authenticationServiceId;
+    private List<GrantedAuthority> grantedAuthorities = new LinkedList<>();
     private boolean isAuthenticated = false;
-    private String fullName;
-    private String authProvider;
-    private String authenticationServiceId;
 
 
     public JwtAuthentication(String fullName, String authProvider, String authenticationServiceId) {
@@ -44,7 +49,7 @@ public class JwtAuthentication implements Authentication {
     }
 
     public User getUser() {
-        User user =  User.builder().fullName(this.fullName).
+        User user = User.builder().fullName(this.fullName).
                 authProvider(User.AuthenticationProvider.valueOf(this.authProvider)).
                 authenticationServiceId(this.authenticationServiceId).
                 build();
@@ -82,13 +87,13 @@ public class JwtAuthentication implements Authentication {
     }
 
     @Override
-    public String getName() {
-        return this.fullName;
+    public void setAuthenticated(boolean authenticated) throws IllegalArgumentException {
+        this.isAuthenticated = authenticated;
     }
 
     @Override
-    public void setAuthenticated(boolean authenticated) throws IllegalArgumentException {
-        this.isAuthenticated = authenticated;
+    public String getName() {
+        return this.fullName;
     }
 
     public String getAuthProvider() {
@@ -124,7 +129,6 @@ public class JwtAuthentication implements Authentication {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(grantedAuthorities, isAuthenticated, fullName, authProvider, authenticationServiceId);
     }
 }

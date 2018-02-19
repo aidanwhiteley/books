@@ -90,9 +90,11 @@ Don't use this application with CORS in production - it will leave you open to X
 This is all a work in progress. It's getting there but there are bugs e.g. JSESSIONs are being returned to the client unnecessarily and I'm not 100% convinced by the logoff functionality..
 
 ## Stateless Apps
-An lot of the time developing this microservice was spent in making it entirely independant of HTTP session state  - based around using JWTs.
+An lot of the time developing this microservice was spent in trying to make it entirely independant of HTTP session state  - based around using JWTs.
 
-Would I do the same in a real application?
+This has almost worked! However, there's a problem with using Spring's OAuth2ClientContext which stores data into Session scope I believe. This is a WIP investigation at the moment. It looks as though the Google/Facebook re-direct back to the microservice needs to hit the same JVM. Currently reading https://github.com/spring-projects/spring-security-oauth/issues/661 and looking at @SessionAttribute options.
+
+Would I do "entirely HTTP session stateless" in a real application?
 
 Almost certainly - **NO!**
 

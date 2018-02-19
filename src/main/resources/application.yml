@@ -9,14 +9,6 @@ spring:
     livereload:
       enabled: false  # off as we already have live reload in the web tier project
 
-logging:
-  level:
-    root:INFO
-    org.springframework.test.:INFO
-    com.aidanwhiteley.books.controller.LogonController:DEBUG
-    org.springframework.web.client.RestTemplate:DEBUG
-    com.aidanwhiteley.books.repository.debugging.:INFO
-
 google:
   client:
     clientId: NotInSCM
@@ -48,13 +40,14 @@ management:
   port: -1
   security:
     role: ADMIN
-    
-server:
-  session:
-    cookie:
-      max-ag: 0
-    session:
-      timeout: 0
+  
+# Whoops - TO-DO - cant set session cookie to 0 and have oauth spring functionality working  
+#server:
+#  session:
+#    cookie:
+#      max-age: 0
+#    session:
+#      timeout: 0
 
 books:
   client:
@@ -93,5 +86,3 @@ books:
     cookieAccessedByHttpOnly: true
     cookiePath: /
     cookieExpirySeconds: 86400 # One day
-
-

@@ -1,8 +1,8 @@
 Loading data for development
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-When running with the spring profile of "dev", the json file contents of this directory will be auto loaded into Mongo
-(dependant on the setting of the books:reload:development:data config parameters
+When running with defined spring profiles, the .data file contents of this directory will be auto loaded into Mongo
+(dependant on the setting of the books:reload:development:data config parameters)
 i.e. the Mongo data will be "refreshed".
 
 N.B. Commands below only tested on Windows (10)

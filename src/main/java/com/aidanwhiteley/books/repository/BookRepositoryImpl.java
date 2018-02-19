@@ -55,7 +55,6 @@ public class BookRepositoryImpl implements BookRepositoryCustomMethods {
                 project("countOfBooks").and("rating").previousOperation(),
                 sort(Sort.Direction.DESC, "countOfBooks"));
 
-        //Convert the aggregation result into a List
         AggregationResults<BooksByRating> groupResults
                 = mongoTemplate.aggregate(agg, Book.class, BooksByRating.class);
         return groupResults.getMappedResults();
@@ -68,7 +67,6 @@ public class BookRepositoryImpl implements BookRepositoryCustomMethods {
                 project("countOfBooks").and("author").previousOperation(),
                 sort(Sort.Direction.ASC, "author"));
 
-        //Convert the aggregation result into a List
         AggregationResults<BooksByAuthor> groupResults
                 = mongoTemplate.aggregate(agg, Book.class, BooksByAuthor.class);
         return groupResults.getMappedResults();
@@ -81,7 +79,6 @@ public class BookRepositoryImpl implements BookRepositoryCustomMethods {
                 project("countOfBooks").and("reader").previousOperation(),
                 sort(Sort.Direction.ASC, "reader"));
 
-        //Convert the aggregation result into a List
         AggregationResults<BooksByReader> groupResults
                 = mongoTemplate.aggregate(agg, Book.class, BooksByReader.class);
         return groupResults.getMappedResults();
@@ -91,7 +88,6 @@ public class BookRepositoryImpl implements BookRepositoryCustomMethods {
     public Book findCommentsForBook(String bookId) {
         Query query = new Query(Criteria.where("id").is(bookId));
         query.fields().include("_id").include("comments");
-
         return mongoTemplate.find(query, Book.class).get(0);
     }
 
@@ -102,7 +98,6 @@ public class BookRepositoryImpl implements BookRepositoryCustomMethods {
                 new Update().push("comments", comment), Book.class);
 
         if (writeResult.getN() != 1) {
-            System.out.println(writeResult);
             LOGGER.error("Failed to add a comment to bookId {}. WriteResult: {} ", bookId, writeResult);
             throw new RuntimeException("Failed to add a comment");
         }
@@ -118,7 +113,6 @@ public class BookRepositoryImpl implements BookRepositoryCustomMethods {
                 Book.class);
 
         if (writeResult.getN() != 1) {
-            System.out.println(writeResult);
             LOGGER.error("Failed to remove commentId {} from bookId {}. WriteResult: {} ", commentId, bookId, writeResult);
             throw new RuntimeException("Failed to remove a comment");
         }

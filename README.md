@@ -14,8 +14,8 @@ The main functionality included in the microservice includes
 * Oauth2 based logon to
     * Google
     * Facebook
-* the oauth2 logon data is transmogrified into locally stored users - with associated roles - and into a JWT token - making the web application entirely statless
-(which has its pros and cons!)
+* the oauth2 logon data is transmogrified into locally stored users - with associated roles - and into a JWT token - 
+making the web application almost entirely statless (which has its pros and cons!)
 * Spring Security for role based method level authorisation
 * Mongo based persistence with the use of Spring Data MongoRepository 
     * next to no persistence code
@@ -87,12 +87,14 @@ This works well (or seems to!) when the API and the HTML is on the same domain. 
 doesn't currently work. So only use this application with CORS configured (i.e. with no "front proxy") in development.
 Don't use this application with CORS in production - it will leave you open to XSRF based attacks.
 
-This is all a work in progress. It's getting there but there are bugs e.g. JSESSIONs are being returned to the client unnecessarily and I'm not 100% convinced by the logoff functionality..
 
 ## Stateless Apps
 An lot of the time developing this microservice was spent in trying to make it entirely independant of HTTP session state  - based around using JWTs.
 
-This has almost worked! However, there's a problem with using Spring's OAuth2ClientContext which stores data into Session scope I believe. This is a WIP investigation at the moment. It looks as though the Google/Facebook re-direct back to the microservice needs to hit the same JVM. Currently reading https://github.com/spring-projects/spring-security-oauth/issues/661 and looking at @SessionAttribute options.
+This has almost worked! However, there's a problem with using Spring's OAuth2ClientContext which stores data into Session scope I believe. 
+This is a WIP investigation at the moment. It looks as though the Google/Facebook re-direct back to the microservice needs to hit the same JVM as I think that the
+Oauth2ClientContext is storing some state in http session.
+Currently reading https://github.com/spring-projects/spring-security-oauth/issues/661 and looking at @SessionAttribute options.
 
 Would I do "entirely HTTP session stateless" in a real application?
 

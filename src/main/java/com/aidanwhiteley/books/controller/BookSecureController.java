@@ -5,6 +5,7 @@ import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.Comment;
 import com.aidanwhiteley.books.domain.Owner;
 import com.aidanwhiteley.books.domain.User;
+import com.aidanwhiteley.books.domain.googlebooks.Item;
 import com.aidanwhiteley.books.repository.BookRepository;
 import com.aidanwhiteley.books.repository.GoogleBooksDao;
 import com.aidanwhiteley.books.repository.dtos.BooksByReader;
@@ -95,6 +96,15 @@ public class BookSecureController {
             Book currentBookState = bookRepository.findOne(book.getId());
 
             if (currentBookState.isOwner(user.get()) || user.get().getRoles().contains(User.Role.ROLE_ADMIN)) {
+                // Have the Google book details for this book review changed (or been removed)
+                // TODO - move this out to a message queue driven async implementation.
+                if (book.getGoogleBookId() != null && !book.getGoogleBookId().isEmpty() &&
+                        book.getGoogleBookId() != currentBookState.getGoogleBookId()) {
+                    book.setGoogleBookDetails(googleBooksDao.searchGoogleBooksByGoogleBookId(book.getGoogleBookId()));
+                } else if (book.getGoogleBookId() == null || book.getGoogleBookId().isEmpty()) {
+                    book.setGoogleBookDetails(null);
+                }
+
                 bookRepository.save(book);
                 return ResponseEntity.noContent().build();
             } else {

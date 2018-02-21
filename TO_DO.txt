@@ -11,6 +11,7 @@ New functionality
 23. Further randomise / anonomise the created field in the test data
 24. Fix oauth redirect config / code such that re-direct is over HTTPS rather than HTTP. Spring Boot issue?
     Then update config in Google and Facebook oauth to only support HTTPS redirect URLs
+25. Move findGoogleBooksByTitle to secure api - no need to expose
 
 
 Completed new functionality

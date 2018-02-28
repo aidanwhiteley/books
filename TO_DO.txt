@@ -11,7 +11,6 @@ New functionality
 23. Further randomise / anonomise the created field in the test data
 24. Fix oauth redirect config / code such that re-direct is over HTTPS rather than HTTP. Spring Boot issue?
     Then update config in Google and Facebook oauth to only support HTTPS redirect URLs
-25. Move findGoogleBooksByTitle to secure api - no need to expose
 
 
 Completed new functionality
@@ -38,13 +37,12 @@ Completed new functionality
 25. Remove Google book detail display on Save of new book or go to Summary (better option)
 26. Add edit support within book detail display for authorised users
 27. Added extracting pciture details from Facebook logon.
+28. Move findGoogleBooksByTitle to secure api - no need to expose
 
 Bugs
 ~~~~
 3. Fix correct selection of book rating when going back in to edit a book.
 4. The search by author input box isnt being cleared after use
-7. Why arent the "theme" font files picked up in the production build of the client project?
-9. Fix summary table and comments grid layout on small mobiles
 
 Fixed bugs
 ~~~~~~~~~~
@@ -52,4 +50,6 @@ Fixed bugs
 2. Why is the /books api called twice when going into the detail of a book.
 5. Make sure that the count by rating is ordered by rating value desc (not count desc)
 6. Auto admin functionality requires a user to log in twice before it works
+7. Why arent the "theme" font files picked up in the production build of the client project?
 8. Mobile (small) view - logon problems. Facebook not working? Not displaying logged on user details?
+9. Fix summary table and comments grid layout on small mobiles

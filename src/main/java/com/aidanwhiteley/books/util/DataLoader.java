@@ -1,5 +1,7 @@
 package com.aidanwhiteley.books.util;
 
+import com.aidanwhiteley.books.domain.Book;
+import com.mongodb.BasicDBObject;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,12 +54,11 @@ public class DataLoader {
 
 			if (reloadDevelopmentData) {
 
+                List<String> jsons;
+
 				// Clearing and loading data into books collection
 				template.dropCollection(BOOKS_COLLECTION);
 				ClassPathResource classPathResource = new ClassPathResource("sample_data/books.data");
-				
-				List<String> jsons;
-
 				try (InputStream resource = classPathResource.getInputStream()) {
 					jsons = new BufferedReader(new InputStreamReader(resource, StandardCharsets.UTF_8)).lines()
 							.collect(Collectors.toList());
@@ -75,6 +76,17 @@ public class DataLoader {
 				}
 				jsons.stream().map(Document::parse).forEach(i -> template.insert(i, USERS_COLLECTION));
 				LOGGER.info("Loaded development data for users as running with dev or integration profile");
+
+
+                classPathResource = new ClassPathResource("indexes/books.data");
+                try (InputStream resource = classPathResource.getInputStream()) {
+                    jsons = new BufferedReader(new InputStreamReader(resource, StandardCharsets.UTF_8)).lines()
+                            .collect(Collectors.toList());
+                }
+                jsons.stream().map(s -> new BasicDBObject().append("$eval", s.toString())).forEach(i -> template.executeCommand(i));
+                LOGGER.info("Created indexes for book collection as running with dev or integration profile");
+
+
 				LOGGER.info("****************************************************************************");
 			} else {
 				LOGGER.info("Development data not reloaded due to config settings");

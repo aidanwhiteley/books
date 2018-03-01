@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.mongodb.core.query.TextCriteria;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -64,13 +65,30 @@ public class BookController {
 
 	@GetMapping(value = "/books", params = { "author", "page", "size" })
 	public Page<Book> findByAuthor(@RequestParam("author") String author, @RequestParam(value = "page") int page,
-			@RequestParam(value = "size") int size, Principal principal) {
+								   @RequestParam(value = "size") int size, Principal principal) {
 
 		if (null == author || author.trim().isEmpty()) {
 			throw new IllegalArgumentException("Author parameter cannot be empty");
 		}
 		PageRequest pageObj = new PageRequest(page, size);
 		return bookRepository.findAllByAuthorOrderByEnteredDesc(pageObj, author);
+	}
+
+	@GetMapping(value = "/books", params = { "search" })
+	public Page<Book> findBySearch(@RequestParam("search") String search, Principal principal) {
+		return findBySearch(search, 0, defaultPageSize, principal);
+	}
+
+	@GetMapping(value = "/books", params = { "search", "page", "size" })
+	public Page<Book> findBySearch(@RequestParam("search") String search, @RequestParam(value = "page") int page,
+			@RequestParam(value = "size") int size, Principal principal) {
+
+		if (null == search || search.trim().isEmpty()) {
+			throw new IllegalArgumentException("Search query string cannot be empty");
+		}
+		PageRequest pageObj = new PageRequest(page, size);
+        TextCriteria criteria = TextCriteria.forDefaultLanguage().matching(search);;
+		return bookRepository.findAllBy(criteria, pageObj   );
 	}
 
 	@GetMapping(value = "/books", params = { "genre" })

@@ -3,6 +3,7 @@ package com.aidanwhiteley.books.repository;
 import com.aidanwhiteley.books.domain.Book;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.core.query.TextCriteria;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
@@ -20,5 +21,7 @@ public interface BookRepository extends MongoRepository<Book, String>, BookRepos
     Page<Book> findByReaderOrderByEnteredDesc(Pageable page, String reader);
 
     long countByRating(Book.Rating rating);
+
+    Page<Book> findAllBy(TextCriteria criteria, Pageable page);
 
 }

@@ -54,6 +54,13 @@ It is is the /src/main/resources/sample_data. See the #README.txt in that direct
 The sample data is auto loaded when running with Spring profiles of "dev" (the checked in default)
 and "integration".
 
+#### Indexes
+The Mongo indexes required by the application are also "auto created" when running in "dev" or "integration" profiles.
+When running with other profiles, you should manually apply the indexes defined in /src/main/resources/indexes.
+In particular, the application's Search functionality won't work unless you run the command to build
+the weighted full text index across various fields of the Book collection. The rest of the application will run without 
+indexes - just more slowly as the data volumes increase!
+
 ### Admin access
 The code supports four access levels
 * anonymous (never logged in)

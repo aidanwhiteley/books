@@ -89,7 +89,7 @@ public class DataLoader {
 
 				LOGGER.info("****************************************************************************");
 			} else {
-				LOGGER.info("Development data not reloaded due to config settings");
+				LOGGER.info("Development data and indexes not reloaded due to config settings");
 			}
 		};
 	}

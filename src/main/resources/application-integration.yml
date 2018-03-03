@@ -9,5 +9,4 @@ books:
       data: true  # Whether the contents of the /src/main/resources/sample_data will be reloaded into the database at application startup. Deletes all existing data!!!
 
   jwt:
-    expiryInMilliSeconds: 3600000
     secretKey: This^IsNot!A%Real*Secret

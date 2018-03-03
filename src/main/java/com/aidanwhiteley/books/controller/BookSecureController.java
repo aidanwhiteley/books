@@ -113,7 +113,7 @@ public class BookSecureController {
 				// TODO - move this out to a message queue driven async
 				// implementation.
 				if (book.getGoogleBookId() != null && !book.getGoogleBookId().isEmpty()
-						&& book.getGoogleBookId() != currentBookState.getGoogleBookId()) {
+						&& (! book.getGoogleBookId().equals(currentBookState.getGoogleBookId()))) {
 					book.setGoogleBookDetails(googleBooksDao.searchGoogleBooksByGoogleBookId(book.getGoogleBookId()));
 				} else if (book.getGoogleBookId() == null || book.getGoogleBookId().isEmpty()) {
 					book.setGoogleBookDetails(null);

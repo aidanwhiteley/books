@@ -7,31 +7,31 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
 public class StatsService {
 
-	private final BookRepository bookRepository;
+    private final BookRepository bookRepository;
 
-	@Autowired
-	public StatsService(BookRepository bookRepository) {
-		this.bookRepository = bookRepository;
-	}
-	
-	public SummaryStats getSummaryStats() {
+    @Autowired
+    public StatsService(BookRepository bookRepository) {
+        this.bookRepository = bookRepository;
+    }
+
+    public SummaryStats getSummaryStats() {
 
         List<BooksByRating> booksByRatingList = bookRepository.countBooksByRating();
 
         List<BooksByRating> modifiableList = new ArrayList<>(booksByRatingList);
-        Collections.sort(modifiableList, (a, b) -> b.compareTo(a));
-			
-		return SummaryStats.builder(). 
-			count(bookRepository.count()). 
-			bookByGenre(bookRepository.countBooksByGenre()).
+        modifiableList.sort(Comparator.reverseOrder());
+
+        return SummaryStats.builder().
+                count(bookRepository.count()).
+                bookByGenre(bookRepository.countBooksByGenre()).
                 booksByRating(modifiableList).
-			build();
-	}
+                build();
+    }
 
 }

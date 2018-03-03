@@ -1,16 +1,16 @@
 
 New functionality
 ~~~~~~~~~~~~~~~~~
-12. Set up endpoints and security for Actuator
+12. Set up endpoints and security for Actuator - awaiting move to Spring Boot 2
 13. Support "multi tenant" i.e. multiple instances of app sharing same codebase and Mongo
 14. Create "digest emails"
 15. Allow users to sign up (and unsubscribe) for digest emails
-16. Mongo based full text search support - copying across UX from TheGpsBlog
 17. Create a logo image!
 22. Improve efficiency of processing for which menu item is active.
 23. Further randomise / anonomise the created field in the test data
 24. Fix oauth redirect config / code such that re-direct is over HTTPS rather than HTTP. Spring Boot issue?
     Then update config in Google and Facebook oauth to only support HTTPS redirect URLs
+29. Support "warning" modal before actually deleting Book Review / Comment entries
 
 
 Completed new functionality
@@ -27,6 +27,7 @@ Completed new functionality
 9. Create Twitter based typeahead for above links
 10. Create typeahead of suggested genres (based on genres already used)
 11. Spring Data based auditing - interesting but not for this project
+16. Mongo based full text search support
 18. Support logout (after moving to JWT)
 19. Fix indentation GUI indicator of which "menu" item was clicked
 20. Write notes to say that must close / re-open browser for default admin to work.
@@ -36,18 +37,18 @@ Completed new functionality
 24. Move the Google Book data to 2nd tab and put comments on first tab.
 25. Remove Google book detail display on Save of new book or go to Summary (better option)
 26. Add edit support within book detail display for authorised users
-27. Added extracting pciture details from Facebook logon.
+27. Added extracting picture details from Facebook logon.
 28. Move findGoogleBooksByTitle to secure api - no need to expose
 
 Bugs
 ~~~~
-3. Fix correct selection of book rating when going back in to edit a book.
-4. The search by author input box isnt being cleared after use
+4. The search by reviewer input box isnt properly re-initialised after use
 
 Fixed bugs
 ~~~~~~~~~~
 1. Why are users intermittently shown as logged out on client side? Seems this only happens on "auto admin" first use. User needs to log off and log back on again before using.
 2. Why is the /books api called twice when going into the detail of a book.
+3. Fix correct selection of book rating when going back in to edit a book.
 5. Make sure that the count by rating is ordered by rating value desc (not count desc)
 6. Auto admin functionality requires a user to log in twice before it works
 7. Why arent the "theme" font files picked up in the production build of the client project?

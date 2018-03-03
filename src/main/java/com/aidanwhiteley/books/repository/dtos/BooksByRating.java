@@ -16,20 +16,11 @@ public class BooksByRating implements Comparable<BooksByRating> {
 
 	/**
 	 * We want these sorted from best to worst.
-	 *
-	 * @param other
-	 * @return
 	 */
 	@Override
 	public int compareTo(BooksByRating other) {
 
-		if (rating.getRatingLevel() == other.getRating().getRatingLevel()) {
-			return 0;
-		} else if (rating.getRatingLevel() > other.getRating().getRatingLevel()) {
-			return 1;
-		} else {
-			return -1;
-		}
+		return Integer.compare(rating.getRatingLevel(), other.getRating().getRatingLevel());
 
 	}
 }

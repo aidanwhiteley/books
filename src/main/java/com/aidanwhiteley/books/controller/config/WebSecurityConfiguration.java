@@ -257,7 +257,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                     authProvider);
 
             if (users.size() == 1) {
-                String csvRoles = users.get(0).getRoles().stream().map(s -> s.toString())
+                String csvRoles = users.get(0).getRoles().stream().map(Enum::toString)
                         .collect(Collectors.joining(","));
                 return AuthorityUtils.commaSeparatedStringToAuthorityList(csvRoles);
             } else {

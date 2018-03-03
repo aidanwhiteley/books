@@ -10,13 +10,14 @@ import com.mongodb.WriteResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.data.mongodb.core.query.*;
+import org.springframework.data.repository.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -117,5 +118,21 @@ public class BookRepositoryImpl implements BookRepositoryCustomMethods {
             throw new RuntimeException("Failed to remove a comment");
         }
         return findCommentsForBook(bookId);
+    }
+
+    @Override
+    public Page<Book> searchForBooks(String searchPhrase, Pageable pageable) {
+
+        TextCriteria criteria = TextCriteria.forDefaultLanguage()
+                .matching(searchPhrase);
+        Query query = TextQuery.queryText(criteria)
+                .sortByScore().with(pageable);
+
+        List<Book> books = mongoTemplate.find(query, Book.class);
+
+        return PageableExecutionUtils.getPage(
+                books,
+                pageable,
+                () -> mongoTemplate.count(query, Book.class));
     }
 }

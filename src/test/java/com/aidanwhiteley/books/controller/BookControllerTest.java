@@ -75,7 +75,7 @@ public class BookControllerTest extends IntegrationTest {
         String xsrfToken = BookControllerTestUtils.getXsrfToken(testRestTemplate);
         HttpEntity<Book> request = BookControllerTestUtils.getBookHttpEntity(testBook, user, token, xsrfToken);
 
-        ResponseEntity<Book>  response = testRestTemplate
+        ResponseEntity<Book> response = testRestTemplate
                 .exchange("/secure/api/books", HttpMethod.POST, request, Book.class);
 
         String location = response.getHeaders().getLocation().toString();
@@ -87,7 +87,7 @@ public class BookControllerTest extends IntegrationTest {
         // Email should only be available to admins
         assertEquals(book.getCreatedBy().getEmail(), BookControllerTestUtils.DUMMY_EMAIL);
     }
-    
+
     @Test
     public void testUserDataIsReturnedToEditorUser() {
         Book testBook = BookRepositoryTest.createTestBook();
@@ -97,7 +97,7 @@ public class BookControllerTest extends IntegrationTest {
 
         HttpEntity<Book> request = BookControllerTestUtils.getBookHttpEntity(testBook, user, token, xsrfToken);
 
-        ResponseEntity<Book>  response = testRestTemplate
+        ResponseEntity<Book> response = testRestTemplate
                 .exchange("/secure/api/books", HttpMethod.POST, request, Book.class);
 
         String location = response.getHeaders().getLocation().toString();
@@ -111,6 +111,42 @@ public class BookControllerTest extends IntegrationTest {
         // But the name of the person who created the Book should be available
         assertEquals(book.getCreatedBy().getFullName(), BookControllerTestUtils.USER_WITH_EDITOR_ROLE_FULL_NAME);
 
+    }
+
+    @Test
+    public void findUsingFullTextSearch() {
+        BookControllerTestUtils.postBookToServer(jwtUtils, testRestTemplate);
+
+        ResponseEntity<String> response = testRestTemplate.exchange("/api/books?search=" + BookRepositoryTest.DR_ZEUSS + "&page=0&size=10", HttpMethod.GET,
+                null, String.class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        // Returns a "page" of books - so look for the content of the page
+        List<Book> books = JsonPath.read(response.getBody(), "$.content");
+        LOGGER.debug("Retrieved JSON was: " + response.getBody());
+
+        assertTrue("No books found", books.size() >= 1);
+    }
+
+    @Test
+    public void fullTextSearchShouldntFindStopWord() {
+        BookControllerTestUtils.postBookToServer(jwtUtils, testRestTemplate);
+
+        // First check that we find the expected data
+        final String bookDescription = "A guide to poking software";
+        ResponseEntity<String> response = testRestTemplate.exchange("/api/books?search=" + bookDescription + "&page=0&size=10", HttpMethod.GET,
+                null, String.class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        List<Book> books = JsonPath.read(response.getBody(), "$.content");
+        assertTrue("Search didnt find a book", books.size() >= 1);
+
+        // Then check that we dont get a match when using a "stop" work
+        final String aStopWord = "A";
+        response = testRestTemplate.exchange("/api/books?search=" + aStopWord + "&page=0&size=10", HttpMethod.GET,
+                null, String.class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        books = JsonPath.read(response.getBody(), "$.content");
+        assertTrue("Search unexpectedly found a book", books.size() == 0);
     }
 
 }

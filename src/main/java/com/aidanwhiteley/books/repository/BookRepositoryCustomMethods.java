@@ -6,6 +6,8 @@ import com.aidanwhiteley.books.repository.dtos.BooksByAuthor;
 import com.aidanwhiteley.books.repository.dtos.BooksByGenre;
 import com.aidanwhiteley.books.repository.dtos.BooksByRating;
 import com.aidanwhiteley.books.repository.dtos.BooksByReader;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -30,4 +32,11 @@ public interface BookRepositoryCustomMethods {
      * @return Returns a Book with JUST the comments and the bookId populated
      */
     Book removeCommentFromBook(String bookId, String commentId, String removerName);
+
+    /**
+     * Custom method implemented to get the matching results sorted by the
+     * "score" that is worked out by Mongo based on the weights given to
+     * each of the indexed fields.
+     */
+    Page<Book> searchForBooks(String searchPhrase, Pageable pageable);
 }

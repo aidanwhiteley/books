@@ -155,7 +155,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 enableSessionUrlRewriting(false).and().
                 antMatcher("/**").authorizeRequests().
                 antMatchers("/api/**", "/login**").permitAll().
-                antMatchers("/actuator/**").hasAnyRole("ROLE_USER", "ROLE_ADMIN", "ROLE_EDITOR", "USER", "EDITOR", "ADMIN").
                 anyRequest().authenticated().and().
                 addFilterBefore(jwtAuththenticationFilter, UsernamePasswordAuthenticationFilter.class).
                 addFilterBefore(oauth2SsoFilter(), BasicAuthenticationFilter.class);
@@ -222,7 +221,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public FilterRegistrationBean oauth2ClientFilterRegistration(OAuth2ClientContextFilter filter) {
+    public FilterRegistrationBean<OAuth2ClientContextFilter> oauth2ClientFilterRegistration(OAuth2ClientContextFilter filter) {
         FilterRegistrationBean<OAuth2ClientContextFilter> registration = new FilterRegistrationBean<>();
         registration.setFilter(filter);
         registration.setOrder(-100);

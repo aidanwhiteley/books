@@ -37,8 +37,6 @@ facebook:
   resource:
     userInfoUri: https://graph.facebook.com/me?fields=name, first_name, last_name, link, picture, email
     
-#management:
-
 management:
   endpoints:
     web:

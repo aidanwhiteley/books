@@ -39,7 +39,6 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.filter.CompositeFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import javax.servlet.Filter;
 import javax.servlet.ServletException;
@@ -89,11 +88,11 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     public WebSecurityConfiguration(JwtAuthenticationFilter jwtAuthenticationFilter, JwtAuthenticationService jwtAuthenticationService,
                                     OAuth2ClientContext oAuth2ClientContext, UserRepository userRepository,
                                     UserService userService) {
-        // Note - IntelliJ claims that there are multiple possible providers for the OAuth2ClientContext but I
-        //        cant find them! The code works - so warning suppressed.
 
         this.jwtAuththenticationFilter = jwtAuthenticationFilter;
         this.jwtAuthenticationService = jwtAuthenticationService;
+        // Note - IntelliJ claims that there are multiple possible providers for the OAuth2ClientContext but I
+        //        cant find them! The code works - so warning suppressed.
         this.oauth2ClientContext = oAuth2ClientContext;
         this.userRepository = userRepository;
         this.userService = userService;
@@ -164,13 +163,17 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Bean
     public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurerAdapter() {
+        return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 if (enableCORS) {
-                    registry.addMapping("/api/**").allowedOrigins(allowedCorsOrigin).allowedMethods("GET").allowedHeaders("origin", "content-type", "X-CSRF-TOKEN");
-                    registry.addMapping("/secure/api/**").allowedOrigins(allowedCorsOrigin).allowedMethods("GET",
-                            "POST", "PUT", "DELETE", "PATCH", "OPTIONS").allowedHeaders("Origin", "Content-Type", "X-CSRF-TOKEN", "X-Requested-With");
+                    registry.addMapping("/api/**").allowedOrigins(allowedCorsOrigin).
+                            allowedMethods("GET").allowedHeaders("origin", "content-type", "X-CSRF-TOKEN", "Access-Control-Allow-Credentials").
+                            allowCredentials(true);
+                    registry.addMapping("/secure/api/**").allowedOrigins(allowedCorsOrigin).
+                            allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS").
+                            allowedHeaders("Origin", "Content-Type", "X-CSRF-TOKEN", "X-Requested-With", "Access-Control-Allow-Credentials").
+                            allowCredentials(true);
                 }
             }
         };
@@ -219,7 +222,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Bean
     public FilterRegistrationBean oauth2ClientFilterRegistration(OAuth2ClientContextFilter filter) {
-        FilterRegistrationBean registration = new FilterRegistrationBean();
+        FilterRegistrationBean<OAuth2ClientContextFilter> registration = new FilterRegistrationBean<>();
         registration.setFilter(filter);
         registration.setOrder(-100);
         return registration;

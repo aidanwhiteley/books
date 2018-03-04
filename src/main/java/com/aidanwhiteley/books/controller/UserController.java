@@ -1,16 +1,11 @@
 package com.aidanwhiteley.books.controller;
 
-import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.PATCH;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
-
-import java.security.Principal;
-import java.util.List;
-import java.util.Optional;
-
-import javax.servlet.http.HttpServletResponse;
-
+import com.aidanwhiteley.books.controller.dtos.ClientRoles;
+import com.aidanwhiteley.books.controller.exceptions.AccessForbiddenException;
+import com.aidanwhiteley.books.controller.jwt.JwtAuthenticationService;
+import com.aidanwhiteley.books.domain.User;
+import com.aidanwhiteley.books.repository.UserRepository;
+import com.aidanwhiteley.books.util.JwtAuthenticationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +18,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.aidanwhiteley.books.controller.dtos.ClientRoles;
-import com.aidanwhiteley.books.controller.jwt.JwtAuthenticationService;
-import com.aidanwhiteley.books.domain.User;
-import com.aidanwhiteley.books.repository.UserRepository;
-import com.aidanwhiteley.books.util.JwtAuthenticationUtils;
+import javax.servlet.http.HttpServletResponse;
+import java.security.Principal;
+import java.util.List;
+import java.util.Optional;
+
+import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @RestController
 @RequestMapping("/secure/api")
@@ -66,7 +62,7 @@ public class UserController {
 			// database.
 			LOGGER.warn("Valid JWT passed but no corresponding user in data store");
 			authService.expireJwtCookie(response);
-			throw new IllegalArgumentException("No user found in user store for input JWT");
+			throw new AccessForbiddenException("No user found in user store for input JWT");
 		}
 	}
 

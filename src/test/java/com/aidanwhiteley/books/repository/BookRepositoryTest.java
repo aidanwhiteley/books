@@ -63,7 +63,7 @@ public class BookRepositoryTest extends IntegrationTest {
 
     @Test
     public void findByAuthor() {
-        PageRequest pageObj = new PageRequest(PAGE, PAGE_SIZE);
+        PageRequest pageObj = PageRequest.of(PAGE, PAGE_SIZE);
         Page<Book> books = bookRepository.findAllByAuthorOrderByEnteredDesc(pageObj, DR_ZEUSS);
         assertTrue(books.getContent().size() >= 1);
         assertTrue(books.getContent().get(0).getAuthor().equals(DR_ZEUSS));
@@ -126,6 +126,7 @@ public class BookRepositoryTest extends IntegrationTest {
         bookRepository.addCommentToBook(savedBook.getId(), comment);
         comment = new Comment(ANOTHER_COMMENT, new Owner());
         bookRepository.addCommentToBook(savedBook.getId(), comment);
+        //noinspection ConstantConditions
         Book updatedBook = bookRepository.findById(savedBook.getId()).get();
         assertEquals(updatedBook.getComments().size(), 2);
 

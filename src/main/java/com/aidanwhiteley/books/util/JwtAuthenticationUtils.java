@@ -38,7 +38,7 @@ public class JwtAuthenticationUtils {
     public Optional<User> extractUserFromPrincipal(Principal principal, boolean useTokenOnly) {
 
         if (null == principal) {
-            return Optional.ofNullable(null);
+            return Optional.empty();
         }
 
         checkPrincipalType(principal);
@@ -55,7 +55,7 @@ public class JwtAuthenticationUtils {
     public Optional<User> getUserIfExists(JwtAuthentication auth) {
 
         if (auth == null) {
-            return Optional.ofNullable(null);
+            return Optional.empty();
         }
 
     	String authenticationServiceId = auth.getAuthenticationServiceId();
@@ -65,13 +65,16 @@ public class JwtAuthenticationUtils {
         
         List<User> users = userRepository.findAllByAuthenticationServiceIdAndAuthProvider(authenticationServiceId, authenticationProviderId);
         User user;
-        if (users.size() == 0) {
-            user = null;
-        } else if (users.size() == 1) {
-            user = users.get(0);
-        } else {
-            LOGGER.error("More than one user found for Authentication: {}", auth);
-            throw new IllegalStateException("More that one user found for a given Authentication");
+        switch (users.size()) {
+            case 0:
+                user = null;
+                break;
+            case 1:
+                user = users.get(0);
+                break;
+            default:
+                LOGGER.error("More than one user found for JwtAuthentication: {}", auth);
+                throw new IllegalStateException("More that one user found for a given Jwt Authentication");
         }
 
         return Optional.ofNullable(user);

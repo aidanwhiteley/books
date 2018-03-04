@@ -1,6 +1,7 @@
 package com.aidanwhiteley.books.controller;
 
 import com.aidanwhiteley.books.controller.aspect.LimitDataVisibility;
+import com.aidanwhiteley.books.controller.exceptions.NotFoundException;
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.repository.BookRepository;
 import com.aidanwhiteley.books.repository.dtos.BooksByAuthor;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.Optional;
 
 @LimitDataVisibility
 @RestController
@@ -44,13 +44,13 @@ public class BookController {
     public Page<Book> findAllByWhenEnteredDesc(@RequestParam(value = "page") int page,
                                                @RequestParam(value = "size") int size, Principal principal) {
 
-        PageRequest pageObj = new PageRequest(page, size);
+        PageRequest pageObj = PageRequest.of(page, size);
         return bookRepository.findAllByOrderByEnteredDesc(pageObj);
     }
 
     @GetMapping(value = "/books/{id}")
-    public Optional<Book> findBookById(@PathVariable("id") String id, Principal principal) {
-        return bookRepository.findById(id);
+    public Book findBookById(@PathVariable("id") String id, Principal principal) {
+        return bookRepository.findById(id).orElseThrow(() -> new NotFoundException("Book id " + id + " not found"));
     }
 
     @GetMapping(value = "/books", params = {"author"})
@@ -65,7 +65,7 @@ public class BookController {
         if (null == author || author.trim().isEmpty()) {
             throw new IllegalArgumentException("Author parameter cannot be empty");
         }
-        PageRequest pageObj = new PageRequest(page, size);
+        PageRequest pageObj = PageRequest.of(page, size);
         return bookRepository.findAllByAuthorOrderByEnteredDesc(pageObj, author);
     }
 
@@ -82,7 +82,7 @@ public class BookController {
             throw new IllegalArgumentException("Search query string cannot be empty");
         }
 
-        PageRequest pageObj = new PageRequest(page, size);
+        PageRequest pageObj = PageRequest.of(page, size);
         return bookRepository.searchForBooks(search, pageObj);
     }
 
@@ -98,7 +98,7 @@ public class BookController {
         if (null == genre || genre.trim().isEmpty()) {
             throw new IllegalArgumentException("Genre parameter cannot be empty");
         }
-        PageRequest pageObj = new PageRequest(page, size);
+        PageRequest pageObj = PageRequest.of(page, size);
         return bookRepository.findAllByGenreOrderByEnteredDesc(pageObj, genre);
     }
 
@@ -135,7 +135,7 @@ public class BookController {
             throw new IllegalArgumentException("Supplied rating parameter not recognised");
         }
 
-        PageRequest pageObj = new PageRequest(page, size);
+        PageRequest pageObj = PageRequest.of(page, size);
         return bookRepository.findByRatingOrderByEnteredDesc(pageObj, aRating);
     }
 

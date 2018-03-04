@@ -41,6 +41,7 @@ public class UserRepositoryImpl implements UserRepositoryCustomMethods {
 
 		UpdateResult result = mongoTemplate.updateFirst(query, update, User.class);
 
+		//noinspection ConstantConditions
 		if (result != null) {
 			return result.getModifiedCount();
 		} else {

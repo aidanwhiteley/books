@@ -11,13 +11,13 @@ import static com.aidanwhiteley.books.domain.User.Role.*;
 @NoArgsConstructor
 @EqualsAndHashCode
 @ToString
-/**
- * A cut down copy of the User object that can be embedded in Book and Comment objects to nest
- * basic details about who created the Book or Comment.
- *
- * Some of the data in instances of this object will go stale over time. That's understood - it
- * is being used to record details of the user at the point in time Book or Comment is created - a
- * trade off between accuracy at all times (and disk space) and performance.
+/*
+  A cut down copy of the User object that can be embedded in Book and Comment objects to nest
+  basic details about who created the Book or Comment.
+
+  Some of the data in instances of this object will go stale over time. That's understood - it
+  is being used to record details of the user at the point in time Book or Comment is created - a
+  trade off between accuracy at all times (and disk space) and performance.
  */
 public class Owner {
 

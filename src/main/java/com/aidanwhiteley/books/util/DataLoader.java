@@ -81,7 +81,7 @@ public class DataLoader {
                     jsons = new BufferedReader(new InputStreamReader(resource, StandardCharsets.UTF_8)).lines()
                             .collect(Collectors.toList());
                 }
-                jsons.stream().map(s -> new Document().append("$eval", s)).forEach(s -> template.executeCommand(s));
+                jsons.stream().map(s -> new Document().append("$eval", s)).forEach(template::executeCommand);
                 LOGGER.info("Created indexes for book collection as running with dev or integration profile");
 
 

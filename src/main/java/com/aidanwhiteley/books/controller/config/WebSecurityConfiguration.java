@@ -155,6 +155,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 enableSessionUrlRewriting(false).and().
                 antMatcher("/**").authorizeRequests().
                 antMatchers("/api/**", "/login**").permitAll().
+                antMatchers("/actuator/**").hasAnyRole("ROLE_USER", "ROLE_ADMIN", "ROLE_EDITOR", "USER", "EDITOR", "ADMIN").
                 anyRequest().authenticated().and().
                 addFilterBefore(jwtAuththenticationFilter, UsernamePasswordAuthenticationFilter.class).
                 addFilterBefore(oauth2SsoFilter(), BasicAuthenticationFilter.class);

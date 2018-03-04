@@ -37,13 +37,16 @@ facebook:
   resource:
     userInfoUri: https://graph.facebook.com/me?fields=name, first_name, last_name, link, picture, email
     
+#management:
+
 management:
-  server:
-    servlet:
-      context-path: /manage
-    port: -1
-    security:
-      role: ADMIN
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+      cors:
+        allowed-origins: http://localhost:9000
+        allowed-methods: GET,POST
   
 # Whoops - TO-DO - cant set session cookie to 0 and have oauth spring functionality working  
 #server:

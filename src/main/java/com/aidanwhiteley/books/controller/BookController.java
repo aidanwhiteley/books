@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 
 @LimitDataVisibility
 @RestController
@@ -48,8 +49,8 @@ public class BookController {
     }
 
     @GetMapping(value = "/books/{id}")
-    public Book findBookById(@PathVariable("id") String id, Principal principal) {
-        return bookRepository.findOne(id);
+    public Optional<Book> findBookById(@PathVariable("id") String id, Principal principal) {
+        return bookRepository.findById(id);
     }
 
     @GetMapping(value = "/books", params = {"author"})

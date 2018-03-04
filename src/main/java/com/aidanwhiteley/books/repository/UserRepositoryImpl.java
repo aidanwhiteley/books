@@ -8,11 +8,11 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.stereotype.Repository;
 
 import com.aidanwhiteley.books.controller.dtos.ClientRoles;
 import com.aidanwhiteley.books.domain.User;
-import com.mongodb.WriteResult;
-import org.springframework.stereotype.Repository;
+import com.mongodb.client.result.UpdateResult;
 
 @Repository
 public class UserRepositoryImpl implements UserRepositoryCustomMethods {
@@ -25,7 +25,7 @@ public class UserRepositoryImpl implements UserRepositoryCustomMethods {
 	}
 
 	@Override
-	public int updateUserRoles(ClientRoles clientRoles) {
+	public long updateUserRoles(ClientRoles clientRoles) {
 		
 		List<User.Role> roles = new ArrayList<>();
 		if (clientRoles.isAdmin()) {
@@ -39,10 +39,10 @@ public class UserRepositoryImpl implements UserRepositoryCustomMethods {
 		Update update = new Update();
 		update.set("roles", roles);
 
-		WriteResult result = mongoTemplate.updateFirst(query, update, User.class);
+		UpdateResult result = mongoTemplate.updateFirst(query, update, User.class);
 
 		if (result != null) {
-			return result.getN();
+			return result.getModifiedCount();
 		} else {
 			return 0;
 		}

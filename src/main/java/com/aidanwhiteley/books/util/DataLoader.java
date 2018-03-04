@@ -1,6 +1,12 @@
 package com.aidanwhiteley.books.util;
 
-import com.mongodb.BasicDBObject;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,13 +18,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Component;
-
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class DataLoader {
@@ -82,7 +81,7 @@ public class DataLoader {
                     jsons = new BufferedReader(new InputStreamReader(resource, StandardCharsets.UTF_8)).lines()
                             .collect(Collectors.toList());
                 }
-                jsons.stream().map(s -> new BasicDBObject().append("$eval", s)).forEach(template::executeCommand);
+                jsons.stream().map(s -> new Document().append("$eval", s)).forEach(s -> template.executeCommand(s));
                 LOGGER.info("Created indexes for book collection as running with dev or integration profile");
 
 

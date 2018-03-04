@@ -89,7 +89,7 @@ public class UserController {
 						.body("{\"msg\" : \"Cant delete your own logged on user\"}");
 			}
 
-			userRepository.delete(id);
+			userRepository.deleteById(id);
 			return ResponseEntity.ok().build();
 		} else {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).build();

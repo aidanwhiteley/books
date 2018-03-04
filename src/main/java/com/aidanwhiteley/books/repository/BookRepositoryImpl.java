@@ -1,12 +1,12 @@
 package com.aidanwhiteley.books.repository;
 
-import com.aidanwhiteley.books.domain.Book;
-import com.aidanwhiteley.books.domain.Comment;
-import com.aidanwhiteley.books.repository.dtos.BooksByAuthor;
-import com.aidanwhiteley.books.repository.dtos.BooksByGenre;
-import com.aidanwhiteley.books.repository.dtos.BooksByRating;
-import com.aidanwhiteley.books.repository.dtos.BooksByReader;
-import com.mongodb.WriteResult;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.group;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.project;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.sort;
+
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,13 +16,21 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
-import org.springframework.data.mongodb.core.query.*;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.TextCriteria;
+import org.springframework.data.mongodb.core.query.TextQuery;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.data.repository.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
+import com.aidanwhiteley.books.domain.Book;
+import com.aidanwhiteley.books.domain.Comment;
+import com.aidanwhiteley.books.repository.dtos.BooksByAuthor;
+import com.aidanwhiteley.books.repository.dtos.BooksByGenre;
+import com.aidanwhiteley.books.repository.dtos.BooksByRating;
+import com.aidanwhiteley.books.repository.dtos.BooksByReader;
+import com.mongodb.client.result.UpdateResult;
 
 @Repository
 public class BookRepositoryImpl implements BookRepositoryCustomMethods {
@@ -94,12 +102,12 @@ public class BookRepositoryImpl implements BookRepositoryCustomMethods {
 
     @Override
     public Book addCommentToBook(String bookId, Comment comment) {
-        WriteResult writeResult = mongoTemplate.updateFirst(
+        UpdateResult updateResult = mongoTemplate.updateFirst(
                 Query.query(Criteria.where("id").is(bookId)),
                 new Update().push("comments", comment), Book.class);
 
-        if (writeResult.getN() != 1) {
-            LOGGER.error("Failed to add a comment to bookId {}. WriteResult: {} ", bookId, writeResult);
+        if (updateResult.getMatchedCount() != 1) {
+            LOGGER.error("Failed to add a comment to bookId {}. UpdateResult: {} ", bookId, updateResult);
             throw new RuntimeException("Failed to add a comment");
         }
         return findCommentsForBook(bookId);
@@ -108,13 +116,13 @@ public class BookRepositoryImpl implements BookRepositoryCustomMethods {
     @Override
     public Book removeCommentFromBook(String bookId, String commentId, String removerName) {
 
-        WriteResult writeResult = mongoTemplate.updateFirst(
+        UpdateResult updateResult = mongoTemplate.updateFirst(
                 Query.query(Criteria.where("id").is(bookId).and("comments.id").is(commentId)),
                 new Update().set("comments.$.comment", "").set("comments.$.deleted", true).set("comments.$.deletedBy", removerName),
                 Book.class);
 
-        if (writeResult.getN() != 1) {
-            LOGGER.error("Failed to remove commentId {} from bookId {}. WriteResult: {} ", commentId, bookId, writeResult);
+        if (updateResult.getMatchedCount() != 1) {
+            LOGGER.error("Failed to remove commentId {} from bookId {}. UpdateResult: {} ", commentId, bookId, updateResult);
             throw new RuntimeException("Failed to remove a comment");
         }
         return findCommentsForBook(bookId);

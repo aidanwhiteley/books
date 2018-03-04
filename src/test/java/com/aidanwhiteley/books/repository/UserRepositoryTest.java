@@ -43,7 +43,7 @@ public class UserRepositoryTest extends IntegrationTest {
         // Tidy up before test
         List<User> oldUsers = userRepository.findAllByAuthenticationServiceIdAndAuthProvider(SERVICE_ID, GOOGLE.toString());
         for (User user : oldUsers) {
-            userRepository.delete(user.getId());
+            userRepository.deleteById(user.getId());
         }
 
         User user = createTestUser();
@@ -52,7 +52,7 @@ public class UserRepositoryTest extends IntegrationTest {
         assertEquals(users.get(0).getRoles().size(), 0);
 
         ClientRoles clientRoles = new ClientRoles(users.get(0).getId(), false, true);
-        int updatesCount = userRepository.updateUserRoles(clientRoles);
+        long updatesCount = userRepository.updateUserRoles(clientRoles);
         assertEquals(updatesCount, 1);
         users = userRepository.findAllByAuthenticationServiceIdAndAuthProvider(SERVICE_ID, GOOGLE.toString());
         assertEquals(users.get(0).getRoles().size(), 1);

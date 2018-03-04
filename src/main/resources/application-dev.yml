@@ -6,6 +6,9 @@ spring:
 books:
   client:
     enableCORS: true
+    allowedCorsOrigin: http://localhost:9000
+    postLogonUrl: http://localhost:9000/
+    xsrfHeader: X-XSRF
 
   reload:
     development:

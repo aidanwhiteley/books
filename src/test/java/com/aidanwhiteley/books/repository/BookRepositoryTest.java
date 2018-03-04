@@ -126,7 +126,7 @@ public class BookRepositoryTest extends IntegrationTest {
         bookRepository.addCommentToBook(savedBook.getId(), comment);
         comment = new Comment(ANOTHER_COMMENT, new Owner());
         bookRepository.addCommentToBook(savedBook.getId(), comment);
-        Book updatedBook = bookRepository.findOne(savedBook.getId());
+        Book updatedBook = bookRepository.findById(savedBook.getId()).get();
         assertEquals(updatedBook.getComments().size(), 2);
 
         // Returned Book holds just the updated comments

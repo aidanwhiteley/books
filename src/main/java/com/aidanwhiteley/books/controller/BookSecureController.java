@@ -105,7 +105,8 @@ public class BookSecureController {
 
 		Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
 		if (user.isPresent()) {
-			Book currentBookState = bookRepository.findOne(book.getId());
+			Book currentBookState = bookRepository.findById(book.getId())
+					.orElseThrow(() -> new IllegalArgumentException("Didnt find book to update"));
 
 			if (currentBookState.isOwner(user.get()) || user.get().getRoles().contains(User.Role.ROLE_ADMIN)) {
 				// Have the Google book details for this book review changed (or
@@ -134,10 +135,11 @@ public class BookSecureController {
 
 		Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
 		if (user.isPresent()) {
-			Book currentBookState = bookRepository.findOne(id);
+			Book currentBookState = bookRepository.findById(id)
+					.orElseThrow(() -> new IllegalArgumentException("Couldnt find book to delete"));
 
 			if (currentBookState.isOwner(user.get()) || user.get().getRoles().contains(User.Role.ROLE_ADMIN)) {
-				bookRepository.delete(id);
+				bookRepository.deleteById(id);
 				return ResponseEntity.noContent().build();
 			} else {
 				return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
@@ -168,7 +170,8 @@ public class BookSecureController {
 		Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
 
 		if (user.isPresent()) {
-			Book currentBook = bookRepository.findOne(id);
+			Book currentBook = bookRepository.findById(id)
+					.orElseThrow(() -> new IllegalArgumentException("Unable to find book to delete comment from"));
 			Comment comment = currentBook.getComments().stream().filter(c -> c.getId().equals(commentId)).findFirst()
 					.orElse(null);
 			if (comment == null) {

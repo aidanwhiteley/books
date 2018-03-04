@@ -15,3 +15,6 @@ Or from a database which requires authentication (where the db is also books-dev
 mongo books -u user -p password --eval "db.book.find({}).limit(250).forEach(function(f){print(tojson(f, '', true))})" --quiet > books.json
 
 N.B. Make sure the files are saved in UTF-8 format or the loading code will complain.
+
+To run in the indexes manually, use
+mongo db -u user -p pw --eval "shell command from file"

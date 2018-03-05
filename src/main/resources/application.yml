@@ -6,10 +6,12 @@ spring:
       uri: mongodb://localhost:27017/books-test?safe=true&journal=true&w=majority&connectTimeoutMS=1001&wtimeoutMS=1000&serverSelectionTimeoutMS=10000
   aop:
     proxy-target-class: false
-
   devtools:
     livereload:
       enabled: false  # off as we already have live reload in the web tier project
+  jackson:
+    serialization:
+      write-dates-as-timestamps: true
 
 google:
   client:
@@ -39,12 +41,18 @@ facebook:
     
 management:
   endpoints:
+    enabled-by-default: true
     web:
       exposure:
-        include: "*"
-      cors:
-        allowed-origins: http://localhost:9000
-        allowed-methods: GET,POST
+        include: auditevents, beans, conditions, configprops, env, health, httptrace, info, logfile, loggers, metrics, mappings, scheduledtasks, sessions
+  endpoint:
+    health:
+      show-details: when_authorized
+      roles: ADMIN
+  info:
+    git:
+      mode: full
+
   
 # Whoops - TO-DO - cant set session cookie to 0 and have oauth spring functionality working  
 #server:

@@ -21,6 +21,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 	private static final String API_PREFIX = "/api";
 
+    private static final String ACTUATOR_PREFIX = "/actuator";
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
     private final JwtAuthenticationService jwtService;
@@ -45,7 +47,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	@Override
 	protected boolean shouldNotFilter(HttpServletRequest request) {
 		
-		if (request.getRequestURI().startsWith(API_PREFIX) || request.getRequestURI().startsWith(SECURE_API_PREFIX)) { 
+		if (request.getRequestURI().startsWith(API_PREFIX) || request.getRequestURI().startsWith(SECURE_API_PREFIX)
+				|| request.getRequestURI().startsWith(ACTUATOR_PREFIX)) {
 			LOGGER.debug("Including {}", request.getRequestURI());
 			return false;
 		} else {

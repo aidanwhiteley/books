@@ -125,9 +125,6 @@ public class UserController {
 	public LogoutInfo logout(HttpServletResponse response) {
 		authService.expireJwtCookie(response);
 		authService.expireXsrfCookie(response);
-
-		// There should be no http session but this cookie is being set at the
-		// moment (for some reason).
 		authService.expireJsessionIdCookie(response);
 
 		return new LogoutInfo();

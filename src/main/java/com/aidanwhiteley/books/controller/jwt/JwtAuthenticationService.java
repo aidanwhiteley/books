@@ -99,16 +99,10 @@ public class JwtAuthenticationService {
                         }
                     }
                 } else if (cookie.getName().equals(JSESSIONID_COOKIE_NAME)) {
-                    // I've no idea what framework code is creating a JSESSIONID cookie
-                    // (and presumably an actual HTTP session.
-                    // Its not needed.
-                    // To stop any chance of it being used / relied upon, the JSESSIONID
-                    // based cookie is removed.
-                    LOGGER.debug("Found an unwated JSESSIONID based cookie - not used - but not removing it");
-                    //expireJsessionIdCookie(JSESSIONID_COOKIE_NAME, response);
-                    // We don't remove the session - we'd have race conditions with
-                    // other API calls that might also try remove the session - leading
-                    // to possible NPEs.
+                    // The Spring Oauth2 code is using HTTP session to store data during the
+                    // "redirect dance" with the autentication providers.
+                    // Otherwise this application doesnt use HTTP session state.
+                    LOGGER.debug("Found a JSESSIONID based cookie");
                 }
             }
         }

@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.AuthoritiesExtractor;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices;
@@ -36,6 +37,7 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
 import org.springframework.web.filter.CompositeFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -140,6 +142,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             LOGGER.warn("*** if you are not developing locally.                                   ***");
             LOGGER.warn("****************************************************************************");
         } else {
+            // The CSRF cookie is also read and sent by by Angular - hence it being marked as not "httpOnly".
+            // The JWT token is stored in a cookie that IS httpOnly.
             http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
         }
 
@@ -147,17 +151,16 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.
                 // We dont currently use the Spring Security logout functionality as I _think_ that it is ahead of the
                 // CORS config filter meaning that a cross domain request to logoff will fail.
-                // Instead there is a custom method in the UserController class.
-
-                //logout().deleteCookies(JwtAuthenticationService.JWT_COOKIE_NAME, JwtAuthenticationService.JSESSIONID_COOKIE_NAME)
-                //   .logoutSuccessUrl(postLogonUrl).and().
+                // Instead there is a custom method in the UserController class
                 sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).
                 enableSessionUrlRewriting(false).and().
                 antMatcher("/**").authorizeRequests().
-                antMatchers("/api/**", "/login**").permitAll().
+                antMatchers("/api/**", "/login**", "/actuator/info", "/actuator/health").permitAll().
+                antMatchers("/actuator/**").hasRole("ADMIN").
                 anyRequest().authenticated().and().
                 addFilterBefore(jwtAuththenticationFilter, UsernamePasswordAuthenticationFilter.class).
-                addFilterBefore(oauth2SsoFilter(), BasicAuthenticationFilter.class);
+                addFilterBefore(oauth2SsoFilter(), BasicAuthenticationFilter.class).
+                headers().referrerPolicy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN);
         // @formatter:on
     }
 

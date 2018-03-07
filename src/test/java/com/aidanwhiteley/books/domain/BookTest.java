@@ -29,8 +29,8 @@ public class BookTest {
 
     @Test
     public void testBuildBook() {
-        Book testBook = Book.builder().author(AIDAN).genre(WHODUNNIT).entered(NOW).rating(GREAT)
-                .similarTo(LE_CARRE).summary(SOMEONE_DUNNIT).title(WHO_DID_IT).build();
+        Book testBook = Book.builder().author(AIDAN).genre(WHODUNNIT).entered(NOW).rating(GREAT).
+                summary(SOMEONE_DUNNIT).title(WHO_DID_IT).build();
 
         assertTrue(testBook.toString().contains(AIDAN));
         assertEquals(WHODUNNIT, testBook.getGenre());

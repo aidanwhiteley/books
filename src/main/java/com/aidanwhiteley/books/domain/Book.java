@@ -21,7 +21,6 @@ import java.util.List;
 import static com.aidanwhiteley.books.domain.User.Role.*;
 
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
@@ -41,6 +40,7 @@ public class Book implements Serializable {
 
     @NotNull
     @Length(min = 1, max = 100)
+    @Setter
     private String title;
 
     @NotNull
@@ -49,6 +49,7 @@ public class Book implements Serializable {
 
     @NotNull
     @Length(min = 1, max = 35)
+    @Setter
     private String genre;
 
     @NotNull
@@ -63,16 +64,15 @@ public class Book implements Serializable {
     @NotNull
     private LocalDateTime entered;
 
-    @Length(max = 200)
-    private String similarTo;
-
     private String googleBookId;
 
+    @Setter
     private Item googleBookDetails;
 
     // Not marked a @NotNull as validation is done on the
     // input object from the client and this data is
     // set on the server side after validation.
+    @Setter
     private Owner createdBy;
 
     // The following three transient fields are intended as "helpers" to enable

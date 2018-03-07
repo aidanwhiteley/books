@@ -37,7 +37,7 @@ public class UserControllerTest extends IntegrationTest {
         ResponseEntity<User> response = testRestTemplate.exchange("/secure/api/user", HttpMethod.POST, request, User.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(response.getBody().getFullName(), BookControllerTestUtils.USER_WITH_ALL_ROLES_FULL_NAME);
+        assertEquals(BookControllerTestUtils.USER_WITH_ALL_ROLES_FULL_NAME, response.getBody().getFullName());
     }
 
 }

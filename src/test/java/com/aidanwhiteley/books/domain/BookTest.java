@@ -33,10 +33,10 @@ public class BookTest {
                 .similarTo(LE_CARRE).summary(SOMEONE_DUNNIT).title(WHO_DID_IT).build();
 
         assertTrue(testBook.toString().contains(AIDAN));
-        assertEquals(testBook.getGenre(), WHODUNNIT);
+        assertEquals(WHODUNNIT, testBook.getGenre());
 
         Book testBookWithoutAllFields = Book.builder().author(AIDAN).genre(WHODUNNIT).entered(NOW).rating(GREAT).build();
-        assertEquals(testBookWithoutAllFields.getGenre(), WHODUNNIT);
+        assertEquals(WHODUNNIT, testBookWithoutAllFields.getGenre());
     }
 
     @Test

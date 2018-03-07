@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.AuthoritiesExtractor;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices;
@@ -197,13 +196,14 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         OAuth2ClientAuthenticationProcessingFilter filter = new OAuth2ClientAuthenticationProcessingFilter(path);
         filter.setAllowSessionCreation(false);
         filter.setAuthenticationSuccessHandler(new SimpleUrlAuthenticationSuccessHandler() {
+            @Override
             public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                                 Authentication authentication) throws IOException, ServletException {
 
                 OAuth2Authentication auth2 = (OAuth2Authentication) authentication;
                 User user = userService.createOrUpdateUser(auth2);
 
-                jwtAuthenticationService.setAuthenticationData(request, response, user);
+                jwtAuthenticationService.setAuthenticationData(response, user);
 
                 this.setDefaultTargetUrl(postLogonUrl);
                 super.onAuthenticationSuccess(request, response, authentication);

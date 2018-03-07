@@ -112,8 +112,8 @@ public class BookRepositoryTest extends IntegrationTest {
         // Returned book holds just the Book's comments - no other data other than the book id.
         Book updatedBook = bookRepository.addCommentToBook(savedBook.getId(), comment);
 
-        assertEquals(updatedBook.getComments().size(), 1);
-        assertEquals(updatedBook.getComments().get(0).getComment(), A_COMMENT);
+        assertEquals(1, updatedBook.getComments().size());
+        assertEquals(A_COMMENT, updatedBook.getComments().get(0).getCommentText());
     }
 
     @Test
@@ -128,16 +128,16 @@ public class BookRepositoryTest extends IntegrationTest {
         bookRepository.addCommentToBook(savedBook.getId(), comment);
         //noinspection ConstantConditions
         Book updatedBook = bookRepository.findById(savedBook.getId()).get();
-        assertEquals(updatedBook.getComments().size(), 2);
+        assertEquals(2, updatedBook.getComments().size());
 
         // Returned Book holds just the updated comments
         updatedBook = bookRepository.removeCommentFromBook(savedBook.getId(),
                 updatedBook.getComments().get(0).getId(), COMMENT_REMOVER);
 
         // There should still be two comments but the first should now be "marked" as deleted
-        assertEquals(updatedBook.getComments().size(), 2);
-        assertEquals("", updatedBook.getComments().get(0).getComment());
+        assertEquals(2, updatedBook.getComments().size());
+        assertEquals("", updatedBook.getComments().get(0).getCommentText());
         assertTrue(updatedBook.getComments().get(0).isDeleted());
-        assertEquals(updatedBook.getComments().get(0).getDeletedBy(), COMMENT_REMOVER);
+        assertEquals(COMMENT_REMOVER, updatedBook.getComments().get(0).getDeletedBy());
     }
 }

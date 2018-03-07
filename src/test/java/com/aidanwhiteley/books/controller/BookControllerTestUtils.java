@@ -81,7 +81,7 @@ public class BookControllerTestUtils {
         ResponseEntity<Book> book = testRestTemplate.exchange("/secure/api/books", HttpMethod.POST, request, Book.class);
 
         assertNotNull(book);
-        assertEquals(book.getStatusCode(), HttpStatus.CREATED);
+        assertEquals(HttpStatus.CREATED, book.getStatusCode());
         LOGGER.debug("postBookToServer posted book to server successfully");
 
         return book;

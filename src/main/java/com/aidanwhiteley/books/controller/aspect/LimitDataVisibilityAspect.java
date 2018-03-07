@@ -50,22 +50,27 @@ public class LimitDataVisibilityAspect {
 
     @Pointcut("@within(com.aidanwhiteley.books.controller.aspect.LimitDataVisibility)")
     public void isAnnotated() {
+        // Just used for point cut - no implementation
     }
 
     @Pointcut("execution(public com.aidanwhiteley.books.domain.Book com.aidanwhiteley.books..*.*(..))")
     public void returnsBook() {
+        // Just used for point cut - no implementation
     }
 
     @Pointcut("execution(public org.springframework.data.domain.Page<com.aidanwhiteley.books.domain.Book> com.aidanwhiteley.books..*.*(..))")
     public void returnsPageOfBooks() {
+        // Just used for point cut - no implementation
     }
 
     @Pointcut("isAnnotated() && returnsBook()")
     public void limitBookData() {
+        // Just used for point cut - no implementation
     }
 
     @Pointcut("isAnnotated() && returnsPageOfBooks()")
     public void limitPageBookData() {
+        // Just used for point cut - no implementation
     }
 
     @Around("limitBookData()")
@@ -99,7 +104,7 @@ public class LimitDataVisibilityAspect {
         Optional<User> user = authUtils.extractUserFromPrincipal(principal, true);
 
         if (retVal instanceof Page) {
-            LOGGER.info("About to call setPermissionsAndContentForUser for " + joinPoint.getSignature().toString());
+            LOGGER.info("About to call setPermissionsAndContentForUser for {}", joinPoint.getSignature().toString());
             User theUser = user.orElse(null);
             ((Page<Book>) retVal).getContent().forEach(s -> s.setPermissionsAndContentForUser(theUser));
         } else {
@@ -115,7 +120,7 @@ public class LimitDataVisibilityAspect {
         Object[] args = joinPoint.getArgs();
         for (Object o : args) {
             if (o instanceof Principal) {
-                LOGGER.info("Found Principal parameter for advised method of " + joinPoint.getSignature().toString());
+                LOGGER.info("Found Principal parameter for advised method of {}", joinPoint.getSignature().toString());
                 principal = (Principal) o;
             }
         }

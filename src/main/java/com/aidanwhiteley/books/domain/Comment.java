@@ -12,6 +12,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -21,7 +22,9 @@ import static com.aidanwhiteley.books.domain.User.Role.*;
 @Getter
 @EqualsAndHashCode
 @ToString
-public class Comment {
+public class Comment implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Comment.class);
 
@@ -33,7 +36,7 @@ public class Comment {
 
     @NotNull
     @Length(min = 1, max = 1000)
-    private String comment;
+    private String commentText;
 
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
@@ -54,8 +57,8 @@ public class Comment {
     public Comment() {
     }
 
-    public Comment(String comment, Owner owner) {
-        this.comment = comment;
+    public Comment(String commentText, Owner owner) {
+        this.commentText = commentText;
         this.owner = owner;
     }
 

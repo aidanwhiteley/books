@@ -54,3 +54,4 @@ Fixed bugs
 7. Why arent the "theme" font files picked up in the production build of the client project?
 8. Mobile (small) view - logon problems. Facebook not working? Not displaying logged on user details?
 9. Fix summary table and comments grid layout on small mobiles
+

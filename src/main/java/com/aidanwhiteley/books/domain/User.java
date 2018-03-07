@@ -1,5 +1,6 @@
 package com.aidanwhiteley.books.domain;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -34,9 +35,11 @@ import lombok.ToString;
 @EqualsAndHashCode
 @ToString
 @Builder
-public class User {
+public class User implements Serializable {
 
-    final private List<Role> roles = new ArrayList<>();
+    private static final long serialVersionUID = 1L;
+
+    private final List<Role> roles = new ArrayList<>();
 
     @Id
     @Setter(AccessLevel.PROTECTED)

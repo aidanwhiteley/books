@@ -33,8 +33,8 @@ public class UserRepositoryTest extends IntegrationTest {
         userRepository.insert(user);
 
         List<User> users = userRepository.findAllByAuthenticationServiceIdAndAuthProvider(SERVICE_ID, GOOGLE.toString());
-        assertEquals(users.size(), 1);
-        assertEquals(users.get(0).getFullName(), FULL_NAME);
+        assertEquals(1,users.size());
+        assertEquals(FULL_NAME, users.get(0).getFullName());
     }
 
     @Test
@@ -49,26 +49,26 @@ public class UserRepositoryTest extends IntegrationTest {
         User user = createTestUser();
         userRepository.insert(user);
         List<User> users = userRepository.findAllByAuthenticationServiceIdAndAuthProvider(SERVICE_ID, GOOGLE.toString());
-        assertEquals(users.get(0).getRoles().size(), 0);
+        assertEquals(0, users.get(0).getRoles().size());
 
         ClientRoles clientRoles = new ClientRoles(users.get(0).getId(), false, true);
         long updatesCount = userRepository.updateUserRoles(clientRoles);
-        assertEquals(updatesCount, 1);
+        assertEquals(1, updatesCount);
         users = userRepository.findAllByAuthenticationServiceIdAndAuthProvider(SERVICE_ID, GOOGLE.toString());
-        assertEquals(users.get(0).getRoles().size(), 1);
-        assertEquals(users.get(0).getRoles().get(0), ROLE_EDITOR);
+        assertEquals(1, users.get(0).getRoles().size());
+        assertEquals(ROLE_EDITOR, users.get(0).getRoles().get(0));
 
         clientRoles = new ClientRoles(users.get(0).getId(), true, true);
         userRepository.updateUserRoles(clientRoles);
         users = userRepository.findAllByAuthenticationServiceIdAndAuthProvider(SERVICE_ID, GOOGLE.toString());
-        assertEquals(users.get(0).getRoles().size(), 2);
-        assertEquals(users.get(0).getRoles().get(0), ROLE_ADMIN);
-        assertEquals(users.get(0).getRoles().get(1), ROLE_EDITOR);
+        assertEquals(2, users.get(0).getRoles().size());
+        assertEquals(ROLE_ADMIN, users.get(0).getRoles().get(0));
+        assertEquals(ROLE_EDITOR, users.get(0).getRoles().get(1));
 
         clientRoles = new ClientRoles(users.get(0).getId(), false, false);
         userRepository.updateUserRoles(clientRoles);
         users = userRepository.findAllByAuthenticationServiceIdAndAuthProvider(SERVICE_ID, GOOGLE.toString());
-        assertEquals(users.get(0).getRoles().size(), 0);
+        assertEquals(0, users.get(0).getRoles().size());
     }
 
 }

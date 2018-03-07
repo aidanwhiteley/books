@@ -29,9 +29,9 @@ public class GoogleBooksDaoTest extends IntegrationTest {
     public void findByGoogleBookId() {
         Item result = theDao.searchGoogleBooksByGoogleBookId(SPRING_FRAMEWORK_GOOGLE_BOOK_ID);
         assertNotNull(result);
-        assertEquals(result.getVolumeInfo().getTitle(), SPRING_BOOK_TITLE);
+        assertEquals(SPRING_BOOK_TITLE, result.getVolumeInfo().getTitle());
 
-        assertEquals(result.getAccessInfo().isPublicDomain(), false);
+        assertEquals(false, result.getAccessInfo().isPublicDomain());
 
         assertNotNull(result.getVolumeInfo().getImageLinks().getThumbnail());
     }

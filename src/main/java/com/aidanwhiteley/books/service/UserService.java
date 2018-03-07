@@ -97,7 +97,7 @@ public class UserService {
         }
 
         userRepository.insert(user);
-        LOGGER.info("User created in repository: " + user);
+        LOGGER.info("User created in repository: {}", user);
         return user;
     }
 
@@ -134,7 +134,7 @@ public class UserService {
         }
 
         userRepository.save(user);
-        LOGGER.info("User updated in repository: " + user);
+        LOGGER.info("User updated in repository: {}", user);
         return user;
     }
 

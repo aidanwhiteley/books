@@ -50,7 +50,7 @@ public class JwtAuthenticationService {
         this.jwtUtils = jwtUtils;
     }
 
-    public void setAuthenticationData(HttpServletRequest request, HttpServletResponse response, User user) {
+    public void setAuthenticationData(HttpServletResponse response, User user) {
 
         String token = jwtUtils.createTokenForUser(user);
 
@@ -132,7 +132,7 @@ public class JwtAuthenticationService {
         Cookie emptyCookie = new Cookie(JSESSIONID_COOKIE_NAME, "");
         emptyCookie.setMaxAge(0);
         emptyCookie.setHttpOnly(true);
-        //emptyCookie.setSecure(cookieOverHttpsOnly);
+        emptyCookie.setSecure(cookieOverHttpsOnly);
         emptyCookie.setPath(jwtCookiePath);
         response.addCookie(emptyCookie);
     }

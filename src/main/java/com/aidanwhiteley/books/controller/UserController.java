@@ -52,7 +52,7 @@ public class UserController {
 	@PreAuthorize("hasAnyRole('ROLE_EDITOR', 'ROLE_ADMIN', 'ROLE_USER')")
 	public User user(Principal principal, HttpServletResponse response) {
 
-		LOGGER.debug("Principal passed in to user method is: " + (principal == null ? null : principal.toString()));
+		LOGGER.debug("Principal passed in to user method is: {}", (principal == null ? null : principal.toString()));
 
 		Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
 		if (user.isPresent()) {

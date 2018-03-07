@@ -62,9 +62,9 @@ public class BookControllerTest extends IntegrationTest {
         Book book = testRestTemplate.getForObject(location, Book.class);
 
         // Title should be available to everyone
-        assertEquals(book.getTitle(), J_UNIT_TESTING_FOR_BEGINNERS);
+        assertEquals(J_UNIT_TESTING_FOR_BEGINNERS, book.getTitle());
         // Email should only be available to admins
-        assertEquals(book.getCreatedBy().getEmail(), "");
+        assertEquals("", book.getCreatedBy().getEmail());
     }
 
     @Test
@@ -83,9 +83,9 @@ public class BookControllerTest extends IntegrationTest {
                 .exchange(location, HttpMethod.GET, request, Book.class).getBody();
 
         // Title should be available to everyone
-        assertEquals(book.getTitle(), J_UNIT_TESTING_FOR_BEGINNERS);
+        assertEquals(J_UNIT_TESTING_FOR_BEGINNERS, book.getTitle());
         // Email should only be available to admins
-        assertEquals(book.getCreatedBy().getEmail(), BookControllerTestUtils.DUMMY_EMAIL);
+        assertEquals(BookControllerTestUtils.DUMMY_EMAIL, book.getCreatedBy().getEmail());
     }
 
     @Test
@@ -105,11 +105,11 @@ public class BookControllerTest extends IntegrationTest {
                 .exchange(location, HttpMethod.GET, request, Book.class).getBody();
 
         // Title should be available to everyone
-        assertEquals(book.getTitle(), J_UNIT_TESTING_FOR_BEGINNERS);
+        assertEquals(J_UNIT_TESTING_FOR_BEGINNERS, book.getTitle());
         // Email should only be available to admins - not editors
-        assertEquals(book.getCreatedBy().getEmail(), "");
+        assertEquals("", book.getCreatedBy().getEmail());
         // But the name of the person who created the Book should be available
-        assertEquals(book.getCreatedBy().getFullName(), BookControllerTestUtils.USER_WITH_EDITOR_ROLE_FULL_NAME);
+        assertEquals(BookControllerTestUtils.USER_WITH_EDITOR_ROLE_FULL_NAME, book.getCreatedBy().getFullName());
 
     }
 

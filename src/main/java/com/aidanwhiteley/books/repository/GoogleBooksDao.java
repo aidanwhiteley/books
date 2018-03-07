@@ -22,6 +22,8 @@ public class GoogleBooksDao {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(GoogleBooksDao.class);
 
+	public static final String UTF_8 = "UTF-8";
+
 	@Value("${books.google.books.api.searchUrl}")
 	private String booksGoogleBooksApiSearchUrl;
 
@@ -48,20 +50,20 @@ public class GoogleBooksDao {
 
 		String encodedTitle;
 		try {
-			encodedTitle = URLEncoder.encode(title, "UTF-8");
+			encodedTitle = URLEncoder.encode(title, UTF_8);
 		} catch (UnsupportedEncodingException usee) {
 			LOGGER.error("Unable to encode query string - using as is", usee);
 			encodedTitle = title;
 		}
 
-		googleBooksRestTemplate.getMessageConverters().add(0, new StringHttpMessageConverter(Charset.forName("UTF-8")));
+		googleBooksRestTemplate.getMessageConverters().add(0, new StringHttpMessageConverter(Charset.forName(UTF_8)));
 
 		return googleBooksRestTemplate.getForObject(booksGoogleBooksApiSearchUrl + encodedTitle + "&" + booksGoogleBooksApiCountryCode,
 				BookSearchResult.class);
 	}
 
 	public Item searchGoogleBooksByGoogleBookId(String id) {
-		googleBooksRestTemplate.getMessageConverters().add(0, new StringHttpMessageConverter(Charset.forName("UTF-8")));
+		googleBooksRestTemplate.getMessageConverters().add(0, new StringHttpMessageConverter(Charset.forName(UTF_8)));
 		try {
 		return googleBooksRestTemplate.getForObject(booksGoogleBooksApiGetByIdUrl + id + "/?" + booksGoogleBooksApiCountryCode , Item.class);
 		} catch (HttpStatusCodeException e){

@@ -71,7 +71,7 @@ public class BookSecureController {
 	}
 
 	@RequestMapping(value = "/books", method = POST)
-	public ResponseEntity<?> createBook(@Valid @RequestBody Book book, Principal principal, HttpServletRequest request)
+	public ResponseEntity<Book> createBook(@Valid @RequestBody Book book, Principal principal, HttpServletRequest request)
 			throws MalformedURLException, URISyntaxException {
 
 		Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
@@ -101,7 +101,7 @@ public class BookSecureController {
 	}
 
 	@RequestMapping(value = "/books", method = PUT)
-	public ResponseEntity<?> updateBook(@Valid @RequestBody Book book, Principal principal) {
+	public ResponseEntity<Book> updateBook(@Valid @RequestBody Book book, Principal principal) {
 
 		Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
 		if (user.isPresent()) {
@@ -131,7 +131,7 @@ public class BookSecureController {
 	}
 
 	@RequestMapping(value = "/books/{id}", method = DELETE)
-	public ResponseEntity<?> deleteBookById(@PathVariable("id") String id, Principal principal) {
+	public ResponseEntity<Book> deleteBookById(@PathVariable("id") String id, Principal principal) {
 
 		Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
 		if (user.isPresent()) {

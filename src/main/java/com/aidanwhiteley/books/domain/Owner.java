@@ -4,6 +4,8 @@ import lombok.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serializable;
+
 import static com.aidanwhiteley.books.domain.User.Role.*;
 
 @Getter
@@ -19,7 +21,9 @@ import static com.aidanwhiteley.books.domain.User.Role.*;
   is being used to record details of the user at the point in time Book or Comment is created - a
   trade off between accuracy at all times (and disk space) and performance.
  */
-public class Owner {
+public class Owner implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Owner.class);
 

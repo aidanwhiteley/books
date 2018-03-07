@@ -88,7 +88,9 @@ public class LimitDataVisibilityAspect {
 		Optional<User> user = authUtils.extractUserFromPrincipal(principal, true);
 
 		if (retVal instanceof Book) {
-			LOGGER.info("About to call setPermissionsAndContentForUser for {}", joinPoint.getSignature().toString());
+			if (LOGGER.isInfoEnabled()) {
+				LOGGER.info("About to call setPermissionsAndContentForUser for {}", joinPoint.getSignature());
+			}
 			((Book) retVal).setPermissionsAndContentForUser(user.orElse(null));
 		} else {
 			LOGGER.error("Unexpected return type found by aspect");
@@ -107,7 +109,9 @@ public class LimitDataVisibilityAspect {
 		Optional<User> user = authUtils.extractUserFromPrincipal(principal, true);
 
 		if (retVal instanceof Page) {
-			LOGGER.info("About to call setPermissionsAndContentForUser for {}", joinPoint.getSignature().toString());
+			if (LOGGER.isInfoEnabled()) {
+				LOGGER.info("About to call setPermissionsAndContentForUser for {}", joinPoint.getSignature());
+			}
 			User theUser = user.orElse(null);
 			((Page<Book>) retVal).getContent().forEach(s -> s.setPermissionsAndContentForUser(theUser));
 		} else {
@@ -123,7 +127,9 @@ public class LimitDataVisibilityAspect {
 		Object[] args = joinPoint.getArgs();
 		for (Object o : args) {
 			if (o instanceof Principal) {
-				LOGGER.info("Found Principal parameter for advised method of {}", joinPoint.getSignature().toString());
+				if (LOGGER.isInfoEnabled()) {
+					LOGGER.info("Found Principal parameter for advised method of {}", joinPoint.getSignature());
+				}
 				principal = (Principal) o;
 			}
 		}

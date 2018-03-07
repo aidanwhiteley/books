@@ -84,7 +84,6 @@ public class UserService {
                         authProvider(FACEBOOK).
                         build();
                 user = setDefaultAdminUser(user);
-                user.addRole(User.Role.ROLE_USER);
 
                 String url = extractFaceBookPictureUrl(userDetails);
                 if (url != null) {

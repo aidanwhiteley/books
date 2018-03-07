@@ -4,11 +4,8 @@ import com.aidanwhiteley.books.domain.Book;
 import lombok.*;
 
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode
-@ToString
 public class BooksByRating implements Comparable<BooksByRating> {
 
 	private Book.Rating rating;

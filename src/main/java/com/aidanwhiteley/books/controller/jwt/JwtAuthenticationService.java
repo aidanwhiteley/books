@@ -80,7 +80,6 @@ public class JwtAuthenticationService {
                 if (cookie.getName().equals(JWT_COOKIE_NAME)) {
                     String token = cookie.getValue();
                     if (token == null || token.trim().isEmpty()) {
-                        // expireJwtCookie(JWT_COOKIE_NAME, response);
                         LOGGER.warn("JWT cookie found but was empty - we will look to remove this later");
                     } else {
                         try {

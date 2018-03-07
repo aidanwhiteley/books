@@ -88,7 +88,7 @@ public class LimitDataVisibilityAspect {
 		Optional<User> user = authUtils.extractUserFromPrincipal(principal, true);
 
 		if (retVal instanceof Book) {
-			LOGGER.info("About to call setPermissionsAndContentForUser for " + joinPoint.getSignature().toString());
+			LOGGER.info("About to call setPermissionsAndContentForUser for {}", joinPoint.getSignature().toString());
 			((Book) retVal).setPermissionsAndContentForUser(user.orElse(null));
 		} else {
 			LOGGER.error("Unexpected return type found by aspect");

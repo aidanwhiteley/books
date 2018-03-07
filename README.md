@@ -7,6 +7,8 @@ actually be useful.
 
 So welcome to the "Cloudy Bookclub" microservice!
 
+[![Sonar Quality Gate](https://sonarcloud.io/api/project_badges/quality_gate?project=com.aidanwhiteley%3Abooks)](https://sonarcloud.io/dashboard?id=com.aidanwhiteley%3Abooks)
+
 ## Implementation
 
 The main functionality included in the microservice includes
@@ -127,7 +129,6 @@ The running application can be seen at https://cloudybookclub.com/
 Why "The Cloudy BookClub"? Well - it's gong to run in the cloud innit. And I couldnt think
 of any other domain names that weren't already taken.
 
-[![Sonar Quality Gate](https://sonarcloud.io/api/project_badges/quality_gate?project=com.aidanwhiteley%3Abooks)](https://sonarcloud.io/dashboard?id=com.aidanwhiteley%3Abooks)
 
 ## Client functionality
 ![Screen shot](https://github.com/aidanwhiteley/books-web/blob/master/app/images/cloudy-book-club-screen-grab.jpg "Book review")

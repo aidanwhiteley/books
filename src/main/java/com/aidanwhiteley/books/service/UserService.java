@@ -22,7 +22,10 @@ import com.aidanwhiteley.books.util.Oauth2AuthenticationUtils;
 @Service
 public class UserService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
+    private static final String EMAIL = "email";
+	private static final String PICTURE = "picture";
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
     @Value("${books.users.default.admin.email}")
     private String defaultAdminEmail;
@@ -57,8 +60,8 @@ public class UserService {
                         lastName((String) userDetails.get("family_name")).
                         fullName((String) userDetails.get("name")).
                         link((String) userDetails.get("link")).
-                        picture((String) userDetails.get("picture")).
-                        email((String) userDetails.get("email")).
+                        picture((String) userDetails.get(PICTURE)).
+                        email((String) userDetails.get(EMAIL)).
                         lastLogon(now).
                         firstLogon(now).
                         authProvider(GOOGLE).
@@ -75,7 +78,7 @@ public class UserService {
                         lastName((String) userDetails.get("last_name")).
                         fullName((String) userDetails.get("name")).
                         link((String) userDetails.get("link")).
-                        email((String) userDetails.get("email")).
+                        email((String) userDetails.get(EMAIL)).
                         lastLogon(LocalDateTime.now()).
                         firstLogon(LocalDateTime.now()).
                         authProvider(FACEBOOK).
@@ -109,8 +112,8 @@ public class UserService {
                 user.setLastName((String) userDetails.get("family_name"));
                 user.setFullName((String) userDetails.get("name"));
                 user.setLink((String) userDetails.get("link"));
-                user.setPicture((String) userDetails.get("picture"));
-                user.setEmail((String) userDetails.get("email"));
+                user.setPicture((String) userDetails.get(PICTURE));
+                user.setEmail((String) userDetails.get(EMAIL));
                 user.setLastLogon(LocalDateTime.now());
                 break;
             }
@@ -123,7 +126,7 @@ public class UserService {
                 if (url != null) {
                     user.setPicture(url);
                 }
-                user.setEmail((String) userDetails.get("email"));
+                user.setEmail((String) userDetails.get(EMAIL));
                 user.setLastLogon(LocalDateTime.now());
                 break;
             }
@@ -148,9 +151,9 @@ public class UserService {
     }
 
     private String extractFaceBookPictureUrl(Map<String, Object> userDetails) {
-        if (userDetails.get("picture") != null && userDetails.get("picture") instanceof LinkedHashMap) {
+        if (userDetails.get(PICTURE) != null && userDetails.get(PICTURE) instanceof LinkedHashMap) {
             @SuppressWarnings("unchecked")
-            LinkedHashMap<String, Object> picture = (LinkedHashMap<String, Object>) userDetails.get("picture");
+            LinkedHashMap<String, Object> picture = (LinkedHashMap<String, Object>) userDetails.get(PICTURE);
             if (picture.get("data") != null && picture.get("data") instanceof LinkedHashMap) {
                 @SuppressWarnings("unchecked")
                 LinkedHashMap<String, Object> data = (LinkedHashMap<String, Object>) picture.get("data");

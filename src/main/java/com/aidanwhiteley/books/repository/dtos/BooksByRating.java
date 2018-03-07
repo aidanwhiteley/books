@@ -16,8 +16,32 @@ public class BooksByRating implements Comparable<BooksByRating> {
 	 */
 	@Override
 	public int compareTo(BooksByRating other) {
-
 		return Integer.compare(rating.getRatingLevel(), other.getRating().getRatingLevel());
-
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (countOfBooks ^ (countOfBooks >>> 32));
+		result = prime * result + ((rating == null) ? 0 : rating.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		BooksByRating other = (BooksByRating) obj;
+		if (countOfBooks != other.countOfBooks)
+			return false;
+		if (rating != other.rating)
+			return false;
+		return true;
+	}
+	
 }

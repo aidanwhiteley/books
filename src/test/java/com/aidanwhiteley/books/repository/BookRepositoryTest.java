@@ -29,7 +29,6 @@ public class BookRepositoryTest extends IntegrationTest {
     public static final String J_UNIT_TESTING_FOR_BEGINNERS = "JUnit testing for beginners";
     private static final String A_GUIDE_TO_POKING_SOFTWARE = "A guide to poking software";
     private static final String COMPUTING = "Computing";
-    private static final String DESIGN_PATTERNS = "Design Patterns";
 
     private static final String A_COMMENT = "Comments can be tested";
     private static final String ANOTHER_COMMENT = "Especially when there is more than one of them";

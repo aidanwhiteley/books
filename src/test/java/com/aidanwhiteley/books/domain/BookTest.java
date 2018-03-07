@@ -14,7 +14,6 @@ public class BookTest {
     private static final String TEST_TITLE = "Test Title";
     private static final String AIDAN = "Aidan";
     private static final String WHODUNNIT = "Whodunnit";
-    private static final String LE_CARRE = "Le Carre";
     private static final String SOMEONE_DUNNIT = "Someone dunnit";
     private static final String WHO_DID_IT = "Who did it?";
     private static final Book.Rating GREAT = Book.Rating.GREAT;
@@ -45,5 +44,17 @@ public class BookTest {
         assertNotEquals(Book.Rating.POOR, Book.Rating.getRatingByString("DoesntExist"));
         assertNull(Book.Rating.getRatingByString("DoesntExist"));
         assertEquals(Book.Rating.GREAT, Book.Rating.getRatingByString("gReAt"));
+    }
+    
+    @Test
+    public void testBoilerPlateMethods() {
+    	Book book1 = Book.builder().author(AIDAN).genre(WHODUNNIT).entered(NOW).rating(GREAT).
+                summary(SOMEONE_DUNNIT).title(WHO_DID_IT).build();
+    	Book book2 = Book.builder().author(AIDAN).genre(WHODUNNIT).entered(NOW).rating(GREAT).
+                summary(SOMEONE_DUNNIT).title(WHO_DID_IT).build();
+    	
+    	assertEquals(book1.hashCode(), book2.hashCode());
+    	assertTrue(book1.equals(book2));
+    	assertEquals(book1.toString(), book2.toString());
     }
 }

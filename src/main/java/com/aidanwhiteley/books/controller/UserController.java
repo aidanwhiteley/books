@@ -82,7 +82,7 @@ public class UserController {
 
 	@RequestMapping(value = "/users/{id}", method = DELETE)
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public ResponseEntity<?> deleteUserById(@PathVariable("id") String id, Principal principal) {
+	public ResponseEntity<Object> deleteUserById(@PathVariable("id") String id, Principal principal) {
 
 		Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
 		if (user.isPresent()) {
@@ -102,7 +102,7 @@ public class UserController {
 
 	@RequestMapping(value = "/users/{id}", method = PATCH)
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public ResponseEntity<?> patchUserRolesById(@PathVariable("id") String id, @RequestBody ClientRoles clientRoles,
+	public ResponseEntity<Object> patchUserRolesById(@PathVariable("id") String id, @RequestBody ClientRoles clientRoles,
 			Principal principal) {
 
 		Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);

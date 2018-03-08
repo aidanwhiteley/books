@@ -15,8 +15,8 @@ spring:
 
 google:
   client:
-    clientId: NotInSCM
-    clientSecret: NotInSCM
+    clientId: NotInSCM1
+    clientSecret: NotInSCM1
     accessTokenUri: https://www.googleapis.com/oauth2/v3/token
     userAuthorizationUri: https://accounts.google.com/o/oauth2/auth
     tokenName: oauth_token
@@ -29,8 +29,8 @@ google:
 
 facebook:
   client:
-    clientId: NotInSCM
-    clientSecret: NotInSCM
+    clientId: NotInSCM2
+    clientSecret: NotInSCM2
     accessTokenUri: https://graph.facebook.com/oauth/access_token
     userAuthorizationUri: https://www.facebook.com/dialog/oauth
     tokenName: oauth_token

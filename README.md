@@ -7,7 +7,7 @@ actually be useful.
 
 So welcome to the "Cloudy Bookclub" microservice!
 
-[![Sonar Quality Gate](https://sonarcloud.io/api/project_badges/quality_gate?project=com.aidanwhiteley%3Abooks)](https://sonarcloud.io/dashboard?id=com.aidanwhiteley%3Abooks)
+[![Sonar Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=com.aidanwhiteley%3Abooks&metric=alert_status)](https://sonarcloud.io/dashboard?id=com.aidanwhiteley%3Abooks)
 
 ## Implementation
 

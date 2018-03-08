@@ -108,7 +108,7 @@
 				</executions>
                 <configuration>
                     <excludes>
-                        <exclude>com/aidanwhiteley/books/domain/googlebooks/**/*</exclude>
+                        <exclude>/com/aidanwhiteley/books/domain/googlebooks/**/*</exclude>
                     </excludes>
                 </configuration>
 			</plugin>

@@ -55,41 +55,11 @@ public class UserService {
 
         switch (provider) {
             case GOOGLE: {
-                user = User.builder().authenticationServiceId((String) userDetails.get("id")).
-                        firstName((String) userDetails.get("given_name")).
-                        lastName((String) userDetails.get("family_name")).
-                        fullName((String) userDetails.get("name")).
-                        link((String) userDetails.get("link")).
-                        picture((String) userDetails.get(PICTURE)).
-                        email((String) userDetails.get(EMAIL)).
-                        lastLogon(now).
-                        firstLogon(now).
-                        authProvider(GOOGLE).
-                        build();
-
-                user = setDefaultAdminUser(user);
-                user.addRole(User.Role.ROLE_USER);
+                user = createGoogleUser(userDetails, now);
                 break;
             }
             case FACEBOOK: {
-
-                user = User.builder().authenticationServiceId((String) userDetails.get("id")).
-                        firstName((String) userDetails.get("first_name")).
-                        lastName((String) userDetails.get("last_name")).
-                        fullName((String) userDetails.get("name")).
-                        link((String) userDetails.get("link")).
-                        email((String) userDetails.get(EMAIL)).
-                        lastLogon(LocalDateTime.now()).
-                        firstLogon(LocalDateTime.now()).
-                        authProvider(FACEBOOK).
-                        build();
-                user = setDefaultAdminUser(user);
-
-                String url = extractFaceBookPictureUrl(userDetails);
-                if (url != null) {
-                    user.setPicture(url);
-                }
-
+                user = createFacebookUser(userDetails);
                 break;
             }
             default: {
@@ -103,30 +73,55 @@ public class UserService {
         return user;
     }
 
+    private User createFacebookUser(Map<String, Object> userDetails) {
+        User user;
+        user = User.builder().authenticationServiceId((String) userDetails.get("id")).
+                firstName((String) userDetails.get("first_name")).
+                lastName((String) userDetails.get("last_name")).
+                fullName((String) userDetails.get("name")).
+                link((String) userDetails.get("link")).
+                email((String) userDetails.get(EMAIL)).
+                lastLogon(LocalDateTime.now()).
+                firstLogon(LocalDateTime.now()).
+                authProvider(FACEBOOK).
+                build();
+        user = setDefaultAdminUser(user);
+
+        String url = extractFaceBookPictureUrl(userDetails);
+        if (url != null) {
+            user.setPicture(url);
+        }
+        return user;
+    }
+
+    private User createGoogleUser(Map<String, Object> userDetails, LocalDateTime now) {
+        User user;
+        user = User.builder().authenticationServiceId((String) userDetails.get("id")).
+                firstName((String) userDetails.get("given_name")).
+                lastName((String) userDetails.get("family_name")).
+                fullName((String) userDetails.get("name")).
+                link((String) userDetails.get("link")).
+                picture((String) userDetails.get(PICTURE)).
+                email((String) userDetails.get(EMAIL)).
+                lastLogon(now).
+                firstLogon(now).
+                authProvider(GOOGLE).
+                build();
+
+        user = setDefaultAdminUser(user);
+        user.addRole(User.Role.ROLE_USER);
+        return user;
+    }
+
     private User updateUser(Map<String, Object> userDetails, User user, User.AuthenticationProvider provider) {
 
         switch (provider) {
             case GOOGLE: {
-                user.setFirstName((String) userDetails.get("given_name"));
-                user.setLastName((String) userDetails.get("family_name"));
-                user.setFullName((String) userDetails.get("name"));
-                user.setLink((String) userDetails.get("link"));
-                user.setPicture((String) userDetails.get(PICTURE));
-                user.setEmail((String) userDetails.get(EMAIL));
-                user.setLastLogon(LocalDateTime.now());
+                updateGoogleUser(userDetails, user);
                 break;
             }
             case FACEBOOK: {
-                user.setFirstName((String) userDetails.get("first_name"));
-                user.setLastName((String) userDetails.get("last_name"));
-                user.setFullName((String) userDetails.get("name"));
-                user.setLink((String) userDetails.get("link"));
-                String url = extractFaceBookPictureUrl(userDetails);
-                if (url != null) {
-                    user.setPicture(url);
-                }
-                user.setEmail((String) userDetails.get(EMAIL));
-                user.setLastLogon(LocalDateTime.now());
+                updateFacebookUser(userDetails, user);
                 break;
             }
             default: {
@@ -138,6 +133,29 @@ public class UserService {
         userRepository.save(user);
         LOGGER.info("User updated in repository: {}", user);
         return user;
+    }
+
+    private void updateFacebookUser(Map<String, Object> userDetails, User user) {
+        user.setFirstName((String) userDetails.get("first_name"));
+        user.setLastName((String) userDetails.get("last_name"));
+        user.setFullName((String) userDetails.get("name"));
+        user.setLink((String) userDetails.get("link"));
+        String url = extractFaceBookPictureUrl(userDetails);
+        if (url != null) {
+            user.setPicture(url);
+        }
+        user.setEmail((String) userDetails.get(EMAIL));
+        user.setLastLogon(LocalDateTime.now());
+    }
+
+    private void updateGoogleUser(Map<String, Object> userDetails, User user) {
+        user.setFirstName((String) userDetails.get("given_name"));
+        user.setLastName((String) userDetails.get("family_name"));
+        user.setFullName((String) userDetails.get("name"));
+        user.setLink((String) userDetails.get("link"));
+        user.setPicture((String) userDetails.get(PICTURE));
+        user.setEmail((String) userDetails.get(EMAIL));
+        user.setLastLogon(LocalDateTime.now());
     }
 
     private User setDefaultAdminUser(User user) {

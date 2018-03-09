@@ -1,38 +1,34 @@
 package com.aidanwhiteley.books.service;
 
-import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.FACEBOOK;
-import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.GOOGLE;
+import com.aidanwhiteley.books.domain.User;
+import com.aidanwhiteley.books.repository.UserRepository;
+import com.aidanwhiteley.books.util.Oauth2AuthenticationUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
-import org.springframework.stereotype.Service;
-
-import com.aidanwhiteley.books.domain.User;
-import com.aidanwhiteley.books.repository.UserRepository;
-import com.aidanwhiteley.books.util.Oauth2AuthenticationUtils;
+import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.FACEBOOK;
+import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.GOOGLE;
 
 @Service
 public class UserService {
 
     private static final String EMAIL = "email";
-	private static final String PICTURE = "picture";
+    private static final String PICTURE = "picture";
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
+    private final UserRepository userRepository;
+    private final Oauth2AuthenticationUtils authUtils;
     @Value("${books.users.default.admin.email}")
     private String defaultAdminEmail;
-
-    private final UserRepository userRepository;
-
-    private final Oauth2AuthenticationUtils authUtils;
 
     @Autowired
     public UserService(UserRepository userRepository, Oauth2AuthenticationUtils oauth2AuthenticationUtils) {
@@ -40,7 +36,7 @@ public class UserService {
         this.authUtils = oauth2AuthenticationUtils;
     }
 
-    public User createOrUpdateUser(OAuth2Authentication authentication) {
+    public User createOrUpdateUser(OAuth2AuthenticationToken authentication) {
 
         Map<String, Object> userDetails = authUtils.getUserDetails(authentication);
         User.AuthenticationProvider provider = authUtils.getAuthenticationProvider(authentication);
@@ -75,7 +71,7 @@ public class UserService {
 
     private User createFacebookUser(Map<String, Object> userDetails) {
         User user;
-        user = User.builder().authenticationServiceId((String) userDetails.get("id")).
+        user = User.builder().authenticationServiceId((String) userDetails.get("sub")).
                 firstName((String) userDetails.get("first_name")).
                 lastName((String) userDetails.get("last_name")).
                 fullName((String) userDetails.get("name")).
@@ -86,6 +82,7 @@ public class UserService {
                 authProvider(FACEBOOK).
                 build();
         user = setDefaultAdminUser(user);
+        user.addRole(User.Role.ROLE_USER);
 
         String url = extractFaceBookPictureUrl(userDetails);
         if (url != null) {
@@ -96,7 +93,7 @@ public class UserService {
 
     private User createGoogleUser(Map<String, Object> userDetails, LocalDateTime now) {
         User user;
-        user = User.builder().authenticationServiceId((String) userDetails.get("id")).
+        user = User.builder().authenticationServiceId((String) userDetails.get("sub")).
                 firstName((String) userDetails.get("given_name")).
                 lastName((String) userDetails.get("family_name")).
                 fullName((String) userDetails.get("name")).

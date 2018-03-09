@@ -3,9 +3,9 @@
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
     <logger name="org.springframework.web" level="WARN"/>
     <logger name="org.springframework.boot.autoconfigure.security.oauth2" level="WARN" />
-    <logger name="org.springframework.web.client" level="WARN" />
-    <logger name="com.aidanwhiteley.books.controller.BookController" level="WARN" />
-    <logger name="com.aidanwhiteley.books.controller.jwt" level="WARN" />
+    <logger name="org.springframework.security" level="INFO" />
+    <logger name="com.aidanwhiteley.books.controller.BookController" level="DEBUG" />
+    <logger name="com.aidanwhiteley.books" level="DEBUG" />
     <logger name="com.aidanwhiteley.books.controller.aspect" level="WARN" />
     <logger name="org.springframework.web.client.RestTemplate" level="WARN" />
 </configuration>

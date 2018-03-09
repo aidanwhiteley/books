@@ -13,6 +13,17 @@ spring:
     serialization:
       write-dates-as-timestamps: true
 
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 869359861983-hilkdm0cgf63nonnra132tmje5o39esk.apps.googleusercontent.com
+            client-secret: Yf6BBE1vC3offHBI65oaROhm
+          facebook:
+            client-id: 101097647371837
+            client-secret: c18ee5fdb702cae75796c7f9e91b80fa
+
 google:
   client:
     clientId: NotInSCM1

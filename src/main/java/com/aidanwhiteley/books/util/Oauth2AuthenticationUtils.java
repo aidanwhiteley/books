@@ -1,28 +1,28 @@
 package com.aidanwhiteley.books.util;
 
-import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.FACEBOOK;
-import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.GOOGLE;
-
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
+import com.aidanwhiteley.books.domain.User;
+import com.aidanwhiteley.books.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
-import org.springframework.security.oauth2.provider.OAuth2Request;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Component;
 
-import com.aidanwhiteley.books.domain.User;
-import com.aidanwhiteley.books.repository.UserRepository;
+import java.util.*;
+
+import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.FACEBOOK;
+import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.GOOGLE;
 
 @Component
 public class Oauth2AuthenticationUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Oauth2AuthenticationUtils.class);
+
+    @Autowired
+    private OAuth2AuthorizedClientService authorizedClientService;
 
     private final UserRepository userRepository;
 
@@ -37,11 +37,13 @@ public class Oauth2AuthenticationUtils {
         this.userRepository = userRepository;
     }
 
-    public Optional<User> getUserIfExists(OAuth2Authentication auth) {
+    public Optional<User> getUserIfExists(OAuth2AuthenticationToken authentication) {
 
-        String authenticationProviderId = (String) auth.getUserAuthentication().getPrincipal();
+        OAuth2AuthorizedClient authorizedClient = this.getAuthorizedClient(authentication);
+        String authenticationProviderId = authorizedClient.getPrincipalName();
+
         List<User> users = userRepository.findAllByAuthenticationServiceIdAndAuthProvider(authenticationProviderId,
-                this.getAuthenticationProvider(auth).toString());
+                this.getAuthenticationProvider(authentication).toString());
 
         User user;
         switch (users.size()) {
@@ -52,21 +54,28 @@ public class Oauth2AuthenticationUtils {
                 user = users.get(0);
                 break;
             default:
-                LOGGER.error("More than one user found for Authentication: {}", auth);
+                LOGGER.error("More than one user found for Authentication: {}", authentication);
                 throw new IllegalStateException("More that one user found for a given Authentication");
         }
 
         return Optional.ofNullable(user);
     }
 
-    @SuppressWarnings("unchecked")
-	public Map<String, Object> getUserDetails(OAuth2Authentication auth) {
-        return (LinkedHashMap<String, Object>) auth.getUserAuthentication().getDetails();
+    private OAuth2AuthorizedClient getAuthorizedClient(OAuth2AuthenticationToken authentication) {
+        return this.authorizedClientService.loadAuthorizedClient(
+                authentication.getAuthorizedClientRegistrationId(), authentication.getName());
     }
 
-    public User.AuthenticationProvider getAuthenticationProvider(OAuth2Authentication auth) {
-        OAuth2Request storedRquest = auth.getOAuth2Request();
-        String clientId = storedRquest.getClientId();
+	public Map<String, Object> getUserDetails(OAuth2AuthenticationToken auth) {
+        LinkedHashMap<String, Object> modifiableMap = new LinkedHashMap<>();
+        auth.getPrincipal().getAttributes().forEach((key, value) -> modifiableMap.put(key, value));
+        return modifiableMap;
+    }
+
+    public User.AuthenticationProvider getAuthenticationProvider(OAuth2AuthenticationToken auth) {
+
+        OAuth2AuthorizedClient authorizedClient = this.getAuthorizedClient(auth);
+        String clientId = authorizedClient.getClientRegistration().getClientId();
 
         if (clientId.equals(googleClientClientId)) {
             return GOOGLE;

@@ -1,19 +1,12 @@
 package com.aidanwhiteley.books.domain;
 
-import static com.aidanwhiteley.books.domain.User.Role.ROLE_ADMIN;
-import static com.aidanwhiteley.books.domain.User.Role.ROLE_EDITOR;
-import static com.aidanwhiteley.books.domain.User.Role.ROLE_USER;
-
-import java.io.Serializable;
-
+import lombok.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import java.io.Serializable;
+
+import static com.aidanwhiteley.books.domain.User.Role.*;
 
 @Getter
 @AllArgsConstructor
@@ -77,7 +70,8 @@ public class Owner implements Serializable {
 			this.authenticationServiceId = "";
 			this.email = "";
 			this.authProvider = null;
-		} else if (user.getHighestRole() == ROLE_ADMIN) {
+        } else //noinspection StatementWithEmptyBody
+            if (user.getHighestRole() == ROLE_ADMIN) {
 			// Return all
 		} else {
 			LOGGER.error("Unexpected user role found. This is a code logic error");

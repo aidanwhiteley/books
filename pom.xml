@@ -8,8 +8,10 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>books</name>
-	<description>Simple project to remind myself what books Ive read recently</description>
+    <name>Books Microservice</name>
+    <description>A simple project to remind myself what books Ive read recently! Also a technology sampler using the
+        latest Spring Boot, JWT, stateless in the HTTP layer etc
+    </description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>

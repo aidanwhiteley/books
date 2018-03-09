@@ -21,10 +21,10 @@ import static org.mockito.Mockito.when;
 
 public class UserServiceTest extends IntegrationTest {
 
-    public static final String NEW_USER_1 = "New User 1";
-    public static final String NEW_USER_2 = "New User 2";
-    public static final String UPDATED_USER_1 = "Updated User 1";
-    public static final String UPDATED_USER_2 = "Updated User 2";
+    private static final String NEW_USER_1 = "New User 1";
+    private static final String NEW_USER_2 = "New User 2";
+    private static final String UPDATED_USER_1 = "Updated User 1";
+    private static final String UPDATED_USER_2 = "Updated User 2";
 
     @Value("${google.client.clientId}")
     private String googleClientClientId;
@@ -36,11 +36,11 @@ public class UserServiceTest extends IntegrationTest {
     UserService userService;
 
     @Mock
-    OAuth2Authentication oauth;
+    private OAuth2Authentication oauth;
     @Mock
-    Authentication auth;
+    private Authentication auth;
     @Mock
-    OAuth2Request storedRquest;
+    private OAuth2Request storedRquest;
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -73,7 +73,7 @@ public class UserServiceTest extends IntegrationTest {
         User updatedUser = userService.createOrUpdateUser(oauth);
         assertEquals(UPDATED_USER_1, updatedUser.getFullName());
 
-        // Check that the user was updated and created again
+        // Check that the user was updated and not created again
         assertEquals(user.getId(), updatedUser.getId());
     }
 
@@ -87,7 +87,7 @@ public class UserServiceTest extends IntegrationTest {
         User updatedUser = userService.createOrUpdateUser(oauth);
         assertEquals(UPDATED_USER_2, updatedUser.getFullName());
 
-        // Check that the user was updated and created again
+        // Check that the user was updated and not created again
         assertEquals(user.getId(), updatedUser.getId());
     }
 

@@ -1,7 +1,9 @@
 package com.aidanwhiteley.books.repository.dtos;
 
 import com.aidanwhiteley.books.domain.Book;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
@@ -39,9 +41,7 @@ public class BooksByRating implements Comparable<BooksByRating> {
 		BooksByRating other = (BooksByRating) obj;
 		if (countOfBooks != other.countOfBooks)
 			return false;
-		if (rating != other.rating)
-			return false;
-		return true;
+        return rating == other.rating;
 	}
 	
 }

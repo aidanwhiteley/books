@@ -53,6 +53,13 @@ management:
     git:
       mode: full
 
+info:
+  build:
+    artifact: @project.artifactId@
+    name: @project.name@
+    description: @project.description@
+    version: @project.version@
+
   
 # Whoops - TO-DO - cant set session cookie to 0 and have oauth spring functionality working  
 #server:

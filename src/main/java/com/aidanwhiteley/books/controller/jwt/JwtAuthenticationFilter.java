@@ -17,12 +17,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private static final String SECURE_API_PREFIX = "/secure/api";
-
-	private static final String API_PREFIX = "/api";
-
-    private static final String ACTUATOR_PREFIX = "/actuator";
-
 	private static final Logger LOGGER = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
     private final JwtAuthenticationService jwtService;
@@ -40,21 +34,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (auth != null && auth.isAuthenticated()) {
             LOGGER.debug("Setting authentication into SecurityContext");
             SecurityContextHolder.getContext().setAuthentication(auth);
+        } else {
+            LOGGER.debug("Auth status was: {}", auth);
         }
         filterChain.doFilter(request, response);
-	}
-	
-	@Override
-	protected boolean shouldNotFilter(HttpServletRequest request) {
-		
-		if (request.getRequestURI().startsWith(API_PREFIX) || request.getRequestURI().startsWith(SECURE_API_PREFIX)
-				|| request.getRequestURI().startsWith(ACTUATOR_PREFIX)) {
-			LOGGER.debug("Including {}", request.getRequestURI());
-			return false;
-		} else {
-			LOGGER.debug("Excluding {}", request.getRequestURI());
-			return true;			
-		}
 	}
 
 }

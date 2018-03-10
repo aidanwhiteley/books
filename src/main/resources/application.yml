@@ -13,32 +13,21 @@ spring:
     serialization:
       write-dates-as-timestamps: true
 
-google:
-  client:
-    clientId: NotInSCM1
-    clientSecret: NotInSCM1
-    accessTokenUri: https://www.googleapis.com/oauth2/v3/token
-    userAuthorizationUri: https://accounts.google.com/o/oauth2/auth
-    tokenName: oauth_token
-    authenticationScheme: query
-    clientAuthenticationScheme: form
-    scope: profile,email
-  resource:
-    userInfoUri: https://www.googleapis.com/userinfo/v2/me
-    preferTokenInfo: false
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: NotInSCM1
+            client-secret: NotInSCM1
+          facebook:
+            client-id: NotInSCM2
+            client-secret: NotInSCM2
+        provider:
+          # Google provides all the info this app needs by default. Facebook needs configuring.
+          facebook:
+            user-info-uri: https://graph.facebook.com/me?fields=name,first_name,last_name,link,picture,email
 
-facebook:
-  client:
-    clientId: NotInSCM2
-    clientSecret: NotInSCM2
-    accessTokenUri: https://graph.facebook.com/oauth/access_token
-    userAuthorizationUri: https://www.facebook.com/dialog/oauth
-    tokenName: oauth_token
-    authenticationScheme: query
-    clientAuthenticationScheme: form
-  resource:
-    userInfoUri: https://graph.facebook.com/me?fields=name, first_name, last_name, link, picture, email
-    
 management:
   endpoints:
     enabled-by-default: true
@@ -59,15 +48,6 @@ info:
     name: @project.name@
     description: @project.description@
     version: @project.version@
-
-  
-# Whoops - TO-DO - cant set session cookie to 0 and have oauth spring functionality working  
-#server:
-#  session:
-#    cookie:
-#      max-age: 0
-#    session:
-#      timeout: 0
 
 books:
   client:

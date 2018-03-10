@@ -19,6 +19,7 @@ public class BookSecureControllerTest extends IntegrationTest {
 
     private static final String GENRE_TOO_LONG = "abcdefghjijklmnopqrstuvwxyz01234567890";
 
+
     @Autowired
     private TestRestTemplate testRestTemplate;
 
@@ -49,6 +50,7 @@ public class BookSecureControllerTest extends IntegrationTest {
         testBook.setGenre(GENRE_TOO_LONG);
         request = BookControllerTestUtils.getBookHttpEntity(testBook, user, token, xsrfToken);
         response = testRestTemplate.exchange("/secure/api/books", HttpMethod.POST, request, Book.class);
+
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
@@ -57,8 +59,20 @@ public class BookSecureControllerTest extends IntegrationTest {
 
         Book testBook = BookRepositoryTest.createTestBook();
         HttpEntity<Book> request = new HttpEntity<>(testBook);
-        ResponseEntity<Book> response = testRestTemplate.exchange("/secure/api/books", HttpMethod.POST, request, Book.class);
-        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        ResponseEntity<Book> response = testRestTemplate.exchange("/secure/api/books",
+                HttpMethod.POST,
+                request,
+                Book.class);
+
+        // Spring security will issue a 302 to redirect to the logon page.
+        // For GETs this would be automatically followed and the "logon page"
+        // responds with a 403 Forbidden.
+        // However, POSTs, PUTs etc the client shouldnt automatically follow the
+        // 302 redirect. Hence this test looks for the 302.
+        // The test is still successful as the client code is
+        // prevented (via the 302 to a logon page) from doing what is doesnt have the
+        // required permissions to do.
+        assertEquals(HttpStatus.FOUND, response.getStatusCode());
     }
 
     @Test
@@ -75,7 +89,9 @@ public class BookSecureControllerTest extends IntegrationTest {
         HttpEntity<Book> putData = BookControllerTestUtils.getBookHttpEntity(testBook, user, token);
         ResponseEntity<Book> postResponse = testRestTemplate.exchange("/secure/api/books", HttpMethod.POST, putData,
                 Book.class);
-        assertEquals(HttpStatus.FORBIDDEN, postResponse.getStatusCode());
+
+        // See comments in the tryToCreateBookWithNoPermissions test for why a 302 is expected.
+        assertEquals(HttpStatus.FOUND, postResponse.getStatusCode());
     }
 
     @Test
@@ -131,7 +147,8 @@ public class BookSecureControllerTest extends IntegrationTest {
         ResponseEntity<Book> putResponse = testRestTemplate.exchange("/secure/api/books", HttpMethod.PUT, putData,
                 Book.class);
 
-        assertEquals(HttpStatus.FORBIDDEN, putResponse.getStatusCode());
+        // See comments in the tryToCreateBookWithNoPermissions test for why a 302 is expected.
+        assertEquals(HttpStatus.FOUND, putResponse.getStatusCode());
     }
 
 }

@@ -39,9 +39,7 @@ public class BooksByRating implements Comparable<BooksByRating> {
 		if (getClass() != obj.getClass())
 			return false;
 		BooksByRating other = (BooksByRating) obj;
-		if (countOfBooks != other.countOfBooks)
-			return false;
-        return rating == other.rating;
+		return countOfBooks == other.countOfBooks && rating == other.rating;
 	}
 	
 }

@@ -112,15 +112,20 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                     anyRequest().authenticated().and().
                 addFilterBefore(jwtAuththenticationFilter, UsernamePasswordAuthenticationFilter.class).
                 oauth2Login().
-                    loginPage("http://localhost:8080/api/login").
-                    authorizationEndpoint().baseUri("http://localhost:8080/login").
-                    //and().
+                    // The logon page just returns a 403 - forbidden - as it should only be accessed by APIs.
+                    // This doesnt work well for verbs other than GET as the 302 to the 403 isnt automatically followed.
+                    loginPage("/api/login").
+                    authorizationEndpoint().baseUri("/login").
                     authorizationRequestRepository(cookieBasedAuthorizationRequestRepository()).and().
                     successHandler(new Oauth2AuthenticationSuccessHandler()).and().
                 headers().referrerPolicy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN);
         // @formatter:on
     }
 
+    /**
+     * This is where we trigger the work to store local details for the user after they have successfully
+     * authenticated with the OAuth2 authentication provider.
+     */
     public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
             @Override
             public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -134,7 +139,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             }
     }
 
-    @Bean
     public AuthorizationRequestRepository<OAuth2AuthorizationRequest> cookieBasedAuthorizationRequestRepository() {
     	// Using cookie based repository to avoid data being put into HTTP session
         return new HttpCookieOAuth2AuthorizationRequestRepository();

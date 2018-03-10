@@ -35,11 +35,6 @@ public class BookController {
         this.bookRepository = bookRepository;
         this.statsService = statsService;
     }
-    
-    @RequestMapping(value = "/login")
-    public Book login() {
-    	throw new AccessForbiddenException("Must be logged on");
-    }
 
     @GetMapping(value = "/books")
     public Page<Book> findAllByWhenEnteredDesc(Principal principal) {

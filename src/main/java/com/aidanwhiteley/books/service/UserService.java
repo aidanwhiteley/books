@@ -71,7 +71,7 @@ public class UserService {
 
     private User createFacebookUser(Map<String, Object> userDetails) {
         User user;
-        user = User.builder().authenticationServiceId((String) userDetails.get("sub")).
+        user = User.builder().authenticationServiceId((String) userDetails.get("id")).
                 firstName((String) userDetails.get("first_name")).
                 lastName((String) userDetails.get("last_name")).
                 fullName((String) userDetails.get("name")).

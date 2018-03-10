@@ -1,6 +1,6 @@
 # books
 This project started as I wanted a simple "microservice" to use when trying out frameworks
-such as Spring Cloud and AWS.
+such as Spring Cloud, Pivotal Cloud Foundy and AWS.
 
 Its developed a little further such that it is starting to provide some functionality that may 
 actually be useful.
@@ -12,12 +12,12 @@ So welcome to the "Cloudy Bookclub" microservice!
 ## Implementation
 
 The main functionality included in the microservice includes
-* based on latest Spring Boot
+* based on latest Spring Boot 2
 * Oauth2 based logon to
     * Google
     * Facebook
 * the oauth2 logon data is transmogrified into locally stored users - with associated roles - and into a JWT token - 
-making the web application almost entirely statless (which has its pros and cons!)
+making the web application entirely free of http session state (which has its pros and cons!)
 * Spring Security for role based method level authorisation
 * Mongo based persistence with the use of Spring Data MongoRepository 
     * next to no persistence code
@@ -38,11 +38,10 @@ A lot of the functionality is protected behind oauth2 authentication (via Google
 To use this, you must set up credentials (oauth2 client ids) on Google and Facebook.
 You must then pass then make the clientId and clientSecret available to the running code.
 There are "placeholders" for these in /src/main/resources/application.yml i.e. replace the existing
-"NotInSCM" (not in source code managament!) values with your own.
+"NotInSCMx" (not in source code managament!) values with your own.
 There are lots of other ways to pass in these values e.g. they can be passed as program arguments
 
---google.client.clientSecret=xxxxxxxx --google.client.clientId=yyyyyyyy --facebook.client.clientSecret=aaaaaaaa --facebook.client.clientId=bbbbbbbb
-
+--spring.security.oauth2.client.registration.google.client-id=xxxx --spring.security.oauth2.client.registration.google.client-secret=xxxx --spring.security.oauth2.client.registration.facebook.client-id=xxxx --spring.security.oauth2.client.registration.facebook.client-secret=xxxx 
 Otherwise, see the Spring documentation for more options.
 
 "Out of the box" the code runs with the "dev" Spring profile. When running in other environments you will need to decide the 
@@ -104,7 +103,7 @@ Don't use this application with CORS in production - it will leave you open to X
 
 
 ## Stateless Apps
-An lot of the time developing this microservice was spent in trying to make it entirely independant of HTTP session state  - based around using JWTs.
+An lot of the time developing this microservice was spent in making it entirely independant of HTTP session state  - based around using JWTs.
 
 This has almost worked! However, there's a problem with using Spring's OAuth2ClientContext which stores data into Session scope I believe. 
 This is a WIP investigation at the moment. It looks as though the Google/Facebook re-direct back to the microservice needs to hit the same JVM as I think that the

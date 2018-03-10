@@ -11,6 +11,4 @@ import org.springframework.test.context.junit4.SpringRunner;
 @ActiveProfiles("integration")
 public abstract class IntegrationTest {
 
-	@LocalServerPort
-	protected int randomServerPort;
 }

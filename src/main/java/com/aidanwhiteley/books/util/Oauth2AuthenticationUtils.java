@@ -6,12 +6,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestTemplate;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.FACEBOOK;
 import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.GOOGLE;
@@ -21,25 +30,26 @@ public class Oauth2AuthenticationUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Oauth2AuthenticationUtils.class);
 
-    @Autowired
-    private OAuth2AuthorizedClientService authorizedClientService;
-
     private final UserRepository userRepository;
 
-    @Value("${google.client.clientId}")
+    private final OAuth2AuthorizedClientService authorizedClientService;
+
+    @Value("${spring.security.oauth2.client.registration.google.client-id}")
     private String googleClientClientId;
 
-    @Value("${facebook.client.clientId}")
+    @Value("${spring.security.oauth2.client.registration.facebook.client-id}")
     private String facebookClientClientId;
 
     @Autowired
-    public Oauth2AuthenticationUtils(UserRepository userRepository) {
+    public Oauth2AuthenticationUtils(UserRepository userRepository, OAuth2AuthorizedClientService authorizedClientService) {
         this.userRepository = userRepository;
+        this.authorizedClientService = authorizedClientService;
     }
 
     public Optional<User> getUserIfExists(OAuth2AuthenticationToken authentication) {
 
         OAuth2AuthorizedClient authorizedClient = this.getAuthorizedClient(authentication);
+
         String authenticationProviderId = authorizedClient.getPrincipalName();
 
         List<User> users = userRepository.findAllByAuthenticationServiceIdAndAuthProvider(authenticationProviderId,
@@ -61,14 +71,9 @@ public class Oauth2AuthenticationUtils {
         return Optional.ofNullable(user);
     }
 
-    private OAuth2AuthorizedClient getAuthorizedClient(OAuth2AuthenticationToken authentication) {
-        return this.authorizedClientService.loadAuthorizedClient(
-                authentication.getAuthorizedClientRegistrationId(), authentication.getName());
-    }
-
-	public Map<String, Object> getUserDetails(OAuth2AuthenticationToken auth) {
+    public Map<String, Object> getUserDetails(OAuth2AuthenticationToken authToken) {
         LinkedHashMap<String, Object> modifiableMap = new LinkedHashMap<>();
-        auth.getPrincipal().getAttributes().forEach((key, value) -> modifiableMap.put(key, value));
+        authToken.getPrincipal().getAttributes().forEach((key, value) -> modifiableMap.put(key, value));
         return modifiableMap;
     }
 
@@ -85,6 +90,11 @@ public class Oauth2AuthenticationUtils {
             LOGGER.error("Unknown clientId specified of {} so cant determine authentication provider. Config value is {}", clientId, googleClientClientId);
             throw new IllegalArgumentException("Uknown client id specified");
         }
+    }
+
+    private OAuth2AuthorizedClient getAuthorizedClient(OAuth2AuthenticationToken authentication) {
+        return this.authorizedClientService.loadAuthorizedClient(
+                authentication.getAuthorizedClientRegistrationId(), authentication.getName());
     }
 
 }

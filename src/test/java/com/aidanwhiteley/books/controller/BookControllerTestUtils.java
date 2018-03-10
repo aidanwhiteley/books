@@ -5,6 +5,7 @@ import com.aidanwhiteley.books.controller.jwt.JwtUtils;
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.repository.BookRepositoryTest;
+import com.aidanwhiteley.books.util.IntegrationTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -89,7 +90,7 @@ public class BookControllerTestUtils {
 
     public static String getXsrfToken(TestRestTemplate testRestTemplate) {
         // First we call a GET endpoint to get a required XSRF-TOKEN cookie value
-        ResponseEntity<Book> nonExistentBook = testRestTemplate.getForEntity("http://localhost:8080/api/book/12345678", Book.class);
+        ResponseEntity<Book> nonExistentBook = testRestTemplate.getForEntity("/api/book/12345678", Book.class);
         HttpHeaders headers = nonExistentBook.getHeaders();
         String cookies = headers.getFirst(HttpHeaders.SET_COOKIE);
         String[] tokenCookies = cookies.split("XSRF-TOKEN=");

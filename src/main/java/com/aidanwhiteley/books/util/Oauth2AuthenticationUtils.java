@@ -6,16 +6,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -73,7 +67,7 @@ public class Oauth2AuthenticationUtils {
 
     public Map<String, Object> getUserDetails(OAuth2AuthenticationToken authToken) {
         LinkedHashMap<String, Object> modifiableMap = new LinkedHashMap<>();
-        authToken.getPrincipal().getAttributes().forEach((key, value) -> modifiableMap.put(key, value));
+        authToken.getPrincipal().getAttributes().forEach(modifiableMap::put);
         return modifiableMap;
     }
 

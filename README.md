@@ -42,6 +42,7 @@ There are "placeholders" for these in /src/main/resources/application.yml i.e. r
 There are lots of other ways to pass in these values e.g. they can be passed as program arguments
 
 --spring.security.oauth2.client.registration.google.client-id=xxxx --spring.security.oauth2.client.registration.google.client-secret=xxxx --spring.security.oauth2.client.registration.facebook.client-id=xxxx --spring.security.oauth2.client.registration.facebook.client-secret=xxxx 
+
 Otherwise, see the Spring documentation for more options.
 
 "Out of the box" the code runs with the "dev" Spring profile. When running in other environments you will need to decide the 
@@ -103,18 +104,18 @@ Don't use this application with CORS in production - it will leave you open to X
 
 
 ## Stateless Apps
-An lot of the time developing this microservice was spent in making it entirely independant of HTTP session state  - based around using JWTs.
+An lot of the time developing this microservice was spent in making it entirely independant of HTTP session state  - based around issuing a 
+JWT after the user has authenticated via Google / Facebook.
 
-This has almost worked! However, there's a problem with using Spring's OAuth2ClientContext which stores data into Session scope I believe. 
-This is a WIP investigation at the moment. It looks as though the Google/Facebook re-direct back to the microservice needs to hit the same JVM as I think that the
-Oauth2ClientContext is storing some state in http session.
-Currently reading https://github.com/spring-projects/spring-security-oauth/issues/661 and looking at @SessionAttribute options.
+This turned out to be suprisingly difficult - with the cause of the difficulty mainly being in the Spring Boot OAuth2 implementation 
+in Spring Boot 1.x. The Google/Facebook re-direct back to the microservice needed to hit the same session / JVM as I think that the 
+Oauth2ClientContext was storing some state in http session. 
 
-Would I do "entirely HTTP session stateless" in a real application?
-
-Almost certainly - **NO!**
-
-I doubt I'll be working with one of the 17 companies that truly require "internet scale stateless applications" anytime soon. In the meantime, I'd recommend staying religious about the size of the data in the http session, continuing to use your existing "sticky session" solution and having conversations with your requirements owner about what happens when a user's http session disappears as a node goes offline for whatever reason. 
+The current version of this application has moved to the Oauth2 functionality in Spring Security 5. While this greatly reduces the 
+"boilerplate" code needed to logon via Google or Facebook it still, by default, stores data in the HTTP session (to validate the data in the redirect back from Google / Facebook).
+However, it does allow configuration of your own AuthorizationRequestRepository meaning that it is possible to implement a cookie
+based version. So, finally, this application is completely free of any HTTP session state! Which was the point of originally starting to write this 
+microservice as I wanted to try it out on cloud implementations such as the Pivotal Cloud Foundry and AWS.
 
 ## Functionality
 

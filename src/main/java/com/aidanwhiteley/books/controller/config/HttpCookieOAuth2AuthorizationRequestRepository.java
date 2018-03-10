@@ -68,10 +68,13 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
 
         Cookie[] cookies = request.getCookies();
 
-        if (cookies != null && cookies.length > 0)
-            for (int i = 0; i < cookies.length; i++)
-                if (cookies[i].getName().equals(COOKIE_NAME))
-                    return Optional.of(cookies[i]);
+        if (cookies != null && cookies.length > 0) {
+            for (Cookie cooky : cookies) {
+                if (cooky.getName().equals(COOKIE_NAME)) {
+                    return Optional.of(cooky);
+                }
+            }
+        }
 
         return Optional.empty();
     }

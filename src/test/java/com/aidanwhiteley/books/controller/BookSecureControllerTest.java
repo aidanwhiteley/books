@@ -1,26 +1,34 @@
 package com.aidanwhiteley.books.controller;
 
+import static org.junit.Assert.*;
+
+import java.net.URI;
+import java.util.ArrayList;
+
+import org.assertj.core.util.Arrays;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
 import com.aidanwhiteley.books.controller.jwt.JwtUtils;
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.domain.User.Role;
 import com.aidanwhiteley.books.repository.BookRepositoryTest;
 import com.aidanwhiteley.books.util.IntegrationTest;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.*;
-
-import java.net.URI;
-
-import static org.junit.Assert.assertEquals;
 
 public class BookSecureControllerTest extends IntegrationTest {
 
     private static final String GENRE_TOO_LONG = "abcdefghjijklmnopqrstuvwxyz01234567890";
 
-    @Autowired
-    private TestRestTemplate testRestTemplate;
+   
+    private TestRestTemplate testRestTemplate = 
+    		new TestRestTemplate(TestRestTemplate.HttpClientOption.ENABLE_REDIRECTS);
 
     @Autowired
     private JwtUtils jwtUtils;
@@ -49,7 +57,8 @@ public class BookSecureControllerTest extends IntegrationTest {
         testBook.setGenre(GENRE_TOO_LONG);
         request = BookControllerTestUtils.getBookHttpEntity(testBook, user, token, xsrfToken);
         response = testRestTemplate.exchange("/secure/api/books", HttpMethod.POST, request, Book.class);
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        HttpStatus[] codes = new HttpStatus[] {HttpStatus.BAD_REQUEST, HttpStatus.PERMANENT_REDIRECT};
+        assertTrue(Arrays.asList(codes).contains(HttpStatus.BAD_REQUEST));
     }
 
     @Test
@@ -57,7 +66,11 @@ public class BookSecureControllerTest extends IntegrationTest {
 
         Book testBook = BookRepositoryTest.createTestBook();
         HttpEntity<Book> request = new HttpEntity<>(testBook);
-        ResponseEntity<Book> response = testRestTemplate.exchange("/secure/api/books", HttpMethod.POST, request, Book.class);
+        ResponseEntity<Book> response = testRestTemplate.exchange("http://localhost:" + 
+        		randomServerPort + "/secure/api/books", 
+        		HttpMethod.POST, 
+        		request, 
+        		Book.class);
         assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
     }
 

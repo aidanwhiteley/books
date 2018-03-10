@@ -1,6 +1,7 @@
 package com.aidanwhiteley.books.controller;
 
 import com.aidanwhiteley.books.controller.aspect.LimitDataVisibility;
+import com.aidanwhiteley.books.controller.exceptions.AccessForbiddenException;
 import com.aidanwhiteley.books.controller.exceptions.NotFoundException;
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.repository.BookRepository;
@@ -33,6 +34,11 @@ public class BookController {
     public BookController(BookRepository bookRepository, StatsService statsService) {
         this.bookRepository = bookRepository;
         this.statsService = statsService;
+    }
+    
+    @RequestMapping(value = "/login")
+    public Book login() {
+    	throw new AccessForbiddenException("Must be logged on");
     }
 
     @GetMapping(value = "/books")

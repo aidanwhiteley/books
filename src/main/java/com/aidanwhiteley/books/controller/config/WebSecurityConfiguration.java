@@ -1,10 +1,11 @@
 package com.aidanwhiteley.books.controller.config;
 
-import com.aidanwhiteley.books.controller.jwt.JwtAuthenticationFilter;
-import com.aidanwhiteley.books.controller.jwt.JwtAuthenticationService;
-import com.aidanwhiteley.books.domain.User;
-import com.aidanwhiteley.books.repository.UserRepository;
-import com.aidanwhiteley.books.service.UserService;
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,18 +20,18 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.stereotype.Component;
+import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import com.aidanwhiteley.books.controller.jwt.JwtAuthenticationFilter;
+import com.aidanwhiteley.books.controller.jwt.JwtAuthenticationService;
+import com.aidanwhiteley.books.domain.User;
+import com.aidanwhiteley.books.repository.UserRepository;
+import com.aidanwhiteley.books.service.UserService;
 
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -41,10 +42,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final JwtAuthenticationFilter jwtAuththenticationFilter;
 
     private final JwtAuthenticationService jwtAuthenticationService;
-
-    //private final OAuth2ClientContext oauth2ClientContext;
-
-    private final UserRepository userRepository;
 
     private final UserService userService;
 
@@ -57,7 +54,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Value("${books.client.postLogonUrl}")
     private String postLogonUrl;
 
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
     public WebSecurityConfiguration(JwtAuthenticationFilter jwtAuthenticationFilter, JwtAuthenticationService jwtAuthenticationService,
                                     UserRepository userRepository,
@@ -65,24 +61,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         this.jwtAuththenticationFilter = jwtAuthenticationFilter;
         this.jwtAuthenticationService = jwtAuthenticationService;
-        // Note - IntelliJ claims that there are multiple possible providers for the OAuth2ClientContext but I
-        //        cant find them! The code works - so warning suppressed.
-        //this.oauth2ClientContext = oAuth2ClientContext;
-        this.userRepository = userRepository;
         this.userService = userService;
     }
-
-//    @Bean
-//    @ConfigurationProperties("google")
-//    public ClientResources google() {
-//        return new ClientResources();
-//    }
-//
-//    @Bean
-//    @ConfigurationProperties("facebook")
-//    public ClientResources facebook() {
-//        return new ClientResources();
-//    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -131,37 +111,32 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                     antMatchers("/actuator/**").hasRole("ADMIN").
                     anyRequest().authenticated().and().
                 addFilterBefore(jwtAuththenticationFilter, UsernamePasswordAuthenticationFilter.class).
-                //addFilterBefore(oauth2SsoFilter(), BasicAuthenticationFilter.class).
-                //headers().referrerPolicy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN).and().
-                //antMatchers("/dummy/**").permitAll().and().
                 oauth2Login().
-                    authorizationEndpoint().baseUri("/login").
+                    loginPage("http://localhost:8080/api/login").
+                    authorizationEndpoint().baseUri("http://localhost:8080/login").
+                    //and().
                     authorizationRequestRepository(cookieBasedAuthorizationRequestRepository()).and().
-                    successHandler(new MyAuthenticationSuccessHandler());
-                    //defaultSuccessUrl(postLogonUrl).
-                    //failureUrl("https://thegpsblog.com");
+                    successHandler(new Oauth2AuthenticationSuccessHandler()).and().
+                headers().referrerPolicy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN);
         // @formatter:on
     }
 
-    public class MyAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
-
+    public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
             @Override
             public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                                 Authentication authentication) throws IOException, ServletException {
-
+            	
                 OAuth2AuthenticationToken auth2 = (OAuth2AuthenticationToken) authentication;
                 User user = userService.createOrUpdateUser(auth2);
-
                 jwtAuthenticationService.setAuthenticationData(response, user);
-
-                this.setDefaultTargetUrl(postLogonUrl);
+                super.setDefaultTargetUrl(postLogonUrl);
                 super.onAuthenticationSuccess(request, response, authentication);
             }
-
     }
 
     @Bean
     public AuthorizationRequestRepository<OAuth2AuthorizationRequest> cookieBasedAuthorizationRequestRepository() {
+    	// Using cookie based repository to avoid data being put into HTTP session
         return new HttpCookieOAuth2AuthorizationRequestRepository();
     }
 
@@ -172,106 +147,18 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             public void addCorsMappings(CorsRegistry registry) {
                 if (enableCORS) {
                     registry.addMapping("/api/**").allowedOrigins(allowedCorsOrigin).
-                            allowedMethods("GET").allowedHeaders("origin", "content-type", "X-CSRF-TOKEN", "Access-Control-Allow-Credentials").
-                            allowCredentials(true);
+                        allowedMethods("GET").allowedHeaders("origin", "content-type", "X-CSRF-TOKEN", "Access-Control-Allow-Credentials").
+                        allowCredentials(true);
                     registry.addMapping("/secure/api/**").allowedOrigins(allowedCorsOrigin).
-                            allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS").
-                            allowedHeaders("Origin", "Content-Type", "X-CSRF-TOKEN", "X-Requested-With", "Access-Control-Allow-Credentials").
-                            allowCredentials(true);
+                        allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS").
+                        allowedHeaders("Origin", "Content-Type", "X-CSRF-TOKEN", "X-Requested-With", "Access-Control-Allow-Credentials").
+                        allowCredentials(true);
+                    registry.addMapping("/login/**").allowedOrigins(allowedCorsOrigin).
+	                    allowedMethods("GET", "POST", "OPTIONS").
+	                    allowedHeaders("Origin", "Content-Type", "X-CSRF-TOKEN", "X-Requested-With", "Access-Control-Allow-Credentials").
+	                    allowCredentials(true);
                 }
             }
         };
     }
-
-//    private Filter oauth2SsoFilter() {
-//        CompositeFilter filter = new CompositeFilter();
-//        List<Filter> filters = new ArrayList<>();
-//        filters.add(oauth2SsoFilter(facebook(), "/login/facebook", AuthenticationProvider.FACEBOOK));
-//        filters.add(oauth2SsoFilter(google(), "/login/google", AuthenticationProvider.GOOGLE));
-//        filter.setFilters(filters);
-//        return filter;
-//    }
-
-
-//    private Filter oauth2SsoFilter(ClientResources client, String path, AuthenticationProvider provider) {
-//
-//        OAuth2ClientAuthenticationProcessingFilter filter = new OAuth2ClientAuthenticationProcessingFilter(path);
-//        filter.setAllowSessionCreation(false);
-//        filter.setAuthenticationSuccessHandler(new SimpleUrlAuthenticationSuccessHandler() {
-//            @Override
-//            public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-//                                                Authentication authentication) throws IOException, ServletException {
-//
-//                OAuth2Authentication auth2 = (OAuth2Authentication) authentication;
-//                User user = userService.createOrUpdateUser(auth2);
-//
-//                jwtAuthenticationService.setAuthenticationData(response, user);
-//
-//                this.setDefaultTargetUrl(postLogonUrl);
-//                super.onAuthenticationSuccess(request, response, authentication);
-//            }
-//
-//        });
-
-//        OAuth2RestTemplate template = new OAuth2RestTemplate(client.getClient(), oauth2ClientContext);
-//        filter.setRestTemplate(template);
-//
-//        UserInfoTokenServices tokenServices = new UserInfoTokenServices(client.getResource().getUserInfoUri(),
-//                client.getClient().getClientId());
-//        tokenServices.setRestTemplate(template);
-//        tokenServices.setAuthoritiesExtractor(new SocialAuthoritiesExtractor(provider));
-//        filter.setTokenServices(tokenServices);
-//
-//        return filter;
-//    }
-
-//    @Bean
-//    public FilterRegistrationBean<OAuth2ClientContextFilter> oauth2ClientFilterRegistration(OAuth2ClientContextFilter filter) {
-//        FilterRegistrationBean<OAuth2ClientContextFilter> registration = new FilterRegistrationBean<>();
-//        registration.setFilter(filter);
-//        registration.setOrder(-100);
-//        return registration;
-//    }
-
-//    class ClientResources {
-//
-//        @NestedConfigurationProperty
-//        private final AuthorizationCodeResourceDetails client = new AuthorizationCodeResourceDetails();
-//
-//        @NestedConfigurationProperty
-//        private final ResourceServerProperties resource = new ResourceServerProperties();
-//
-//        public AuthorizationCodeResourceDetails getClient() {
-//            return client;
-//        }
-//
-//        public ResourceServerProperties getResource() {
-//            return resource;
-//        }
-//    }
-
-//    class SocialAuthoritiesExtractor implements AuthoritiesExtractor {
-//        private final String authProvider;
-//
-//        public SocialAuthoritiesExtractor(User.AuthenticationProvider authProvider) {
-//            super();
-//            this.authProvider = authProvider.toString();
-//        }
-//
-//        @Override
-//        public List<GrantedAuthority> extractAuthorities(Map<String, Object> map) {
-//
-//            List<User> users = userRepository.findAllByAuthenticationServiceIdAndAuthProvider((String) map.get("id"),
-//                    authProvider);
-//
-//            if (users.size() == 1) {
-//                String csvRoles = users.get(0).getRoles().stream().map(Enum::toString)
-//                        .collect(Collectors.joining(","));
-//                return AuthorityUtils.commaSeparatedStringToAuthorityList(csvRoles);
-//            } else {
-//                return AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_USER");
-//            }
-//        }
-//    }
-
 }

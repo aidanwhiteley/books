@@ -23,3 +23,6 @@ books:
     secretKey: This^IsNot!A%Real*Secret
     cookieOverHttpsOnly: false
     cookieAccessedByHttpOnly: true
+
+  oauth2:
+    cookieOverHttpsOnly: false

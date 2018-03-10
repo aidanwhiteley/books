@@ -39,6 +39,12 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WebSecurityConfigurerAdapter.class);
 
+    private static final String ACCESS_CONTROL_ALLOW_CREDENTIALS = "Access-Control-Allow-Credentials";
+    private static final String X_CSRF_TOKEN = "X-CSRF-TOKEN";
+    private static final String X_REQUESTED_WITH = "X-Requested-With";
+    private static final String CONTENT_TYPE = "Content-Type";
+    private static final String ORIGIN = "Origin";
+
     private final JwtAuthenticationFilter jwtAuththenticationFilter;
 
     private final JwtAuthenticationService jwtAuthenticationService;
@@ -139,6 +145,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             }
     }
 
+    @Bean
     public AuthorizationRequestRepository<OAuth2AuthorizationRequest> cookieBasedAuthorizationRequestRepository() {
     	// Using cookie based repository to avoid data being put into HTTP session
         return new HttpCookieOAuth2AuthorizationRequestRepository();
@@ -151,15 +158,15 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             public void addCorsMappings(CorsRegistry registry) {
                 if (enableCORS) {
                     registry.addMapping("/api/**").allowedOrigins(allowedCorsOrigin).
-                        allowedMethods("GET").allowedHeaders("origin", "content-type", "X-CSRF-TOKEN", "Access-Control-Allow-Credentials").
+                        allowedMethods("GET").allowedHeaders(ORIGIN, CONTENT_TYPE, X_CSRF_TOKEN, ACCESS_CONTROL_ALLOW_CREDENTIALS).
                         allowCredentials(true);
                     registry.addMapping("/secure/api/**").allowedOrigins(allowedCorsOrigin).
                         allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS").
-                        allowedHeaders("Origin", "Content-Type", "X-CSRF-TOKEN", "X-Requested-With", "Access-Control-Allow-Credentials").
+                        allowedHeaders(ORIGIN, CONTENT_TYPE, X_CSRF_TOKEN, X_REQUESTED_WITH, ACCESS_CONTROL_ALLOW_CREDENTIALS).
                         allowCredentials(true);
                     registry.addMapping("/login/**").allowedOrigins(allowedCorsOrigin).
 	                    allowedMethods("GET", "POST", "OPTIONS").
-	                    allowedHeaders("Origin", "Content-Type", "X-CSRF-TOKEN", "X-Requested-With", "Access-Control-Allow-Credentials").
+	                    allowedHeaders(ORIGIN, CONTENT_TYPE, X_CSRF_TOKEN, X_REQUESTED_WITH, ACCESS_CONTROL_ALLOW_CREDENTIALS).
 	                    allowCredentials(true);
                 }
             }

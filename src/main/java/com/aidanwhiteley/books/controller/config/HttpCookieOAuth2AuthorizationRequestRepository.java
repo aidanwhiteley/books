@@ -1,5 +1,6 @@
 package com.aidanwhiteley.books.controller.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import org.springframework.util.SerializationUtils;
@@ -14,6 +15,9 @@ import java.util.Optional;
  * Based on https://stackoverflow.com/questions/49095383/spring-security-5-stateless-oauth2-login-how-to-implement-cookies-based-author
  */
 public class HttpCookieOAuth2AuthorizationRequestRepository implements AuthorizationRequestRepository<OAuth2AuthorizationRequest> {
+
+    @Value("${books.oauth2.cookieOverHttpsOnly}")
+    private boolean cookieOverHttpsOnly;
 
     private static final String COOKIE_NAME = "cloudy-oauth2-auth";
 
@@ -53,6 +57,8 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
             cookie.setValue("");
             cookie.setPath("/");
             cookie.setMaxAge(0);
+            cookie.setSecure(cookieOverHttpsOnly);
+            cookie.setHttpOnly(true);
             response.addCookie(cookie);
         });
     }

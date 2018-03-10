@@ -10,3 +10,6 @@ books:
 
   jwt:
     secretKey: This^IsNot!A%Real*Secret
+
+  oauth2:
+    cookieOverHttpsOnly: false

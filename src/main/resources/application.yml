@@ -86,3 +86,6 @@ books:
     cookieAccessedByHttpOnly: true
     cookiePath: /
     cookieExpirySeconds: 86400 # One day
+
+  oauth2:
+    cookieOverHttpsOnly: true

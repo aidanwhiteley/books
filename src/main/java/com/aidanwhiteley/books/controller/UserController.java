@@ -133,6 +133,7 @@ public class UserController {
 	public LogoutInfo logout(HttpServletResponse response) {
 		authService.expireJwtCookie(response);
 		authService.expireXsrfCookie(response);
+		// There shouldnt be any JSessionId cookie - but kill any that exists!
 		authService.expireJsessionIdCookie(response);
 
 		return new LogoutInfo();

@@ -72,7 +72,6 @@ public class JwtAuthentication implements Authentication {
 
     @Override
     public Object getDetails() {
-        // TODO - work out what to return here
         return null;
     }
 

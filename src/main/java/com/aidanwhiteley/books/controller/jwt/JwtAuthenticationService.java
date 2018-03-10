@@ -103,8 +103,7 @@ public class JwtAuthenticationService {
 				} else if (cookie.getName().equals(JSESSIONID_COOKIE_NAME)) {
 					// With the use of Spring Security Oauth2 and the custom
 					// HttpCookieOAuth2AuthorizationRequestRepository there
-					// should be
-					// no JSESSIONIDs beong writtem
+					// should be no JSESSIONIDs being writtem
 					LOGGER.warn("Unexpectedly found a JSESSIONID based cookie - killing it!");
 					expireJsessionIdCookie(response);
 				}

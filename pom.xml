@@ -5,7 +5,7 @@
 
 	<groupId>com.aidanwhiteley</groupId>
 	<artifactId>books</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
     <name>Books Microservice</name>
@@ -17,7 +17,7 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>2.0.0.RELEASE</version>
-		<relativePath /> <!-- lookup parent from repository -->
+		<relativePath />
 	</parent>
 
 	<properties>
@@ -35,10 +35,11 @@
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-oauth2-client</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-oauth2-jose</artifactId>
-		</dependency>
+        <!-- Compiles OK with next (oath2-jose) dependency but Spring firewall problems occur when logging on via Google -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-oauth2-jose</artifactId>
+        </dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
@@ -47,8 +48,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-mongodb</artifactId>
 		</dependency>
-
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -79,12 +78,13 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
+		<!-- Fongo not currently being used as Spring Boot 2 support is WiP -->
+		<!-- dependency>
 			<groupId>com.github.fakemongo</groupId>
 			<artifactId>fongo</artifactId>
 			<version>2.1.0</version>
 			<scope>test</scope>
-		</dependency>
+		</dependency -->
 	</dependencies>
 
 	<build>

@@ -19,7 +19,7 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
     @Value("${books.oauth2.cookieOverHttpsOnly}")
     private boolean cookieOverHttpsOnly;
 
-    private static final String COOKIE_NAME = "cloudy-oauth2-auth";
+    public static final String COOKIE_NAME = "cloudy-oauth2-auth";
 
     @Override
     public OAuth2AuthorizationRequest loadAuthorizationRequest(HttpServletRequest request) {
@@ -43,7 +43,13 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
         response.addCookie(cookie);
     }
 
+    @Override
+    public OAuth2AuthorizationRequest removeAuthorizationRequest(HttpServletRequest request) {
 
+        // Question: How to remove the cookie, because we don't have access to response object here.
+        return loadAuthorizationRequest(request);
+    }
+    
     private String fromAuthorizationRequest(OAuth2AuthorizationRequest authorizationRequest) {
 
         return Base64.getUrlEncoder().encodeToString(
@@ -61,13 +67,6 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
             cookie.setHttpOnly(true);
             response.addCookie(cookie);
         });
-    }
-
-    @Override
-    public OAuth2AuthorizationRequest removeAuthorizationRequest(HttpServletRequest request) {
-
-        // Question: How to remove the cookie, because we don't have access to response object here.
-        return loadAuthorizationRequest(request);
     }
 
     private Optional<Cookie> fetchCookie(HttpServletRequest request) {

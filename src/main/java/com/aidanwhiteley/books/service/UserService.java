@@ -25,8 +25,10 @@ public class UserService {
     private static final String PICTURE = "picture";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
+    
     private final UserRepository userRepository;
     private final Oauth2AuthenticationUtils authUtils;
+    
     @Value("${books.users.default.admin.email}")
     private String defaultAdminEmail;
 

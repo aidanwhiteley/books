@@ -35,7 +35,7 @@
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-oauth2-client</artifactId>
 		</dependency>
-        <!-- Compiles OK with next (oath2-jose) dependency but Spring firewall problems occur when logging on via Google -->
+        <!-- Compiles OK without next (oath2-jose) dependency but Spring firewall problems occur when logging on via Google -->
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-oauth2-jose</artifactId>

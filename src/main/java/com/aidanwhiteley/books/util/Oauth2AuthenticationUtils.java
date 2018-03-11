@@ -74,6 +74,10 @@ public class Oauth2AuthenticationUtils {
     public User.AuthenticationProvider getAuthenticationProvider(OAuth2AuthenticationToken auth) {
 
         OAuth2AuthorizedClient authorizedClient = this.getAuthorizedClient(auth);
+        System.out.println("authClient " + authorizedClient);
+        System.out.println("client Reg " + authorizedClient.getClientRegistration());
+        System.out.println("client id " + authorizedClient.getClientRegistration().getClientId());
+        
         String clientId = authorizedClient.getClientRegistration().getClientId();
 
         if (clientId.equals(googleClientClientId)) {

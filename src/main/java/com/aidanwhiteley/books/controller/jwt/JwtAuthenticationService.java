@@ -114,6 +114,9 @@ public class JwtAuthenticationService {
                     case HttpCookieOAuth2AuthorizationRequestRepository.COOKIE_NAME:
                         oauthCookieFound = true;
                         break;
+
+                    default:
+                        LOGGER.debug("Found cookie named {}", cookie.getName());
                 }
 			}
 		}

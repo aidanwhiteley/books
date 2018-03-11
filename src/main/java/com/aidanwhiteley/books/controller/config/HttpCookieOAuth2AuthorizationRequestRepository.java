@@ -39,6 +39,7 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
         Cookie cookie = new Cookie(COOKIE_NAME, fromAuthorizationRequest(authorizationRequest));
         cookie.setPath("/");
         cookie.setHttpOnly(true);
+        cookie.setSecure(cookieOverHttpsOnly);
         cookie.setMaxAge(-1);   // Expire when browser closed - bug in API means explicit removal not possible
         response.addCookie(cookie);
     }

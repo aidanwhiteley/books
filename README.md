@@ -104,7 +104,7 @@ Don't use this application with CORS in production - it will leave you open to X
 
 
 ## Stateless Apps
-An lot of the time developing this microservice was spent in making it entirely independant of HTTP session state  - based around issuing a 
+A lot of the time developing this microservice was spent in making it entirely independant of HTTP session state  - based around issuing a 
 JWT after the user has authenticated via Google / Facebook.
 
 This turned out to be suprisingly difficult - with the cause of the difficulty mainly being in the Spring Boot OAuth2 implementation 

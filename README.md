@@ -69,7 +69,7 @@ In particular, the application's Search functionality won't work unless you run 
 the weighted full text index across various fields of the Book collection. The rest of the application will run without 
 indexes - just more slowly as the data volumes increase!
 
-### Admin access
+## Admin access
 The code supports four access levels
 * anonymous (never logged in)
 * ROLE_USER (logged in but no more permissions than anonymous)
@@ -79,14 +79,7 @@ The code supports four access levels
 The application-<env>.yml files can be edited to automatically give a logged on user admin access 
 by specifying their email on Google / Facebook. See the books:users:default:admin:email setting.
 
-
-### To-dos
-
-The main "to do"s include
-* more exploration of HATEOAS and HAL in the JSON APIs
-* making the front end app a bit prettier!
-
-### Security
+## Security
 Lots of to and froing on this. When two of the main JWT related companies can't agree of where to store a JWT token, you know alarm bells should be ringing a little bit.
 Stormpath (who joined forces with Okta) [say](https://stormpath.com/blog/where-to-store-your-jwts-cookies-vs-html5-web-storage) use cookies.
 Auth0 [say](https://auth0.com/blog/cookies-vs-tokens-definitive-guide/) use local storage.
@@ -123,6 +116,13 @@ There is an Angular 1.x based front end that consumes the microservice that is a
 at https://github.com/aidanwhiteley
 
 The running application can be seen at https://cloudybookclub.com/
+
+
+## To-dos
+
+The main "to do"s include
+* more exploration of HATEOAS and HAL in the JSON APIs
+* making the front end app a bit prettier!
 
 ## The name
 

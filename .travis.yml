@@ -1,2 +1,4 @@
 language: java
 services: mongodb
+after_success:
+  - bash <(curl -s https://codecov.io/bash)

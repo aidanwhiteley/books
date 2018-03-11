@@ -8,8 +8,8 @@
 	<version>0.0.2-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-    <name>Books Microservice</name>
-    <description>A simple project to remind myself what books Ive read recently! Also a technology sampler using the
+	<name>Books Microservice</name>
+	<description>A simple project to remind myself what books Ive read recently! Also a technology sampler using the
         latest Spring Boot, JWT, stateless in the HTTP layer etc
     </description>
 
@@ -27,19 +27,20 @@
 	</properties>
 
 	<dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-oauth2-client</artifactId>
 		</dependency>
-        <!-- Compiles OK without next (oath2-jose) dependency but Spring firewall problems occur when logging on via Google -->
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-oauth2-jose</artifactId>
-        </dependency>
+		<!-- Compiles OK without next (oath2-jose) dependency but Spring firewall 
+			problems occur when logging on via Google -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-oauth2-jose</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
@@ -79,12 +80,8 @@
 			<scope>test</scope>
 		</dependency>
 		<!-- Fongo not currently being used as Spring Boot 2 support is WiP -->
-		<!-- dependency>
-			<groupId>com.github.fakemongo</groupId>
-			<artifactId>fongo</artifactId>
-			<version>2.1.0</version>
-			<scope>test</scope>
-		</dependency -->
+		<!-- dependency> <groupId>com.github.fakemongo</groupId> <artifactId>fongo</artifactId> 
+			<version>2.1.0</version> <scope>test</scope> </dependency -->
 	</dependencies>
 
 	<build>
@@ -93,14 +90,14 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-            <plugin>
-                <groupId>pl.project13.maven</groupId>
-                <artifactId>git-commit-id-plugin</artifactId>
-            </plugin>
+			<plugin>
+				<groupId>pl.project13.maven</groupId>
+				<artifactId>git-commit-id-plugin</artifactId>
+			</plugin>
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.7.7.201606060606</version>
+				<version>0.8.0</version>
 				<executions>
 					<execution>
 						<goals>
@@ -109,17 +106,17 @@
 					</execution>
 					<execution>
 						<id>report</id>
-						<phase>prepare-package</phase>
+						<phase>test</phase>
 						<goals>
 							<goal>report</goal>
 						</goals>
 					</execution>
 				</executions>
-                <configuration>
-                    <excludes>
-                        <exclude>/com/aidanwhiteley/books/domain/googlebooks/**/*</exclude>
-                    </excludes>
-                </configuration>
+				<configuration>
+					<excludes>
+						<exclude>/com/aidanwhiteley/books/domain/googlebooks/**/*</exclude>
+					</excludes>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

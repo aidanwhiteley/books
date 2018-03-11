@@ -39,14 +39,18 @@ public class UserServiceTest extends IntegrationTest {
     private static final String NEW_USER_2 = "New User 2";
     private static final String UPDATED_USER_1 = "Updated User 1";
     private static final String UPDATED_USER_2 = "Updated User 2";
+    
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
+    
     @Autowired
     UserRepository userRepository;
+    
     @Value("${spring.security.oauth2.client.registration.google.client-id}")
     private String googleClientClientId;
     @Value("${spring.security.oauth2.client.registration.facebook.client-id}")
     private String facebookClientClientId;
+    
     @Mock
     private OAuth2AuthenticationToken oauthToken;
     @Mock

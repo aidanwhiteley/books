@@ -74,10 +74,6 @@ public class Oauth2AuthenticationUtils {
     public User.AuthenticationProvider getAuthenticationProvider(OAuth2AuthenticationToken auth) {
 
         OAuth2AuthorizedClient authorizedClient = this.getAuthorizedClient(auth);
-        System.out.println("authClient " + authorizedClient);
-        System.out.println("client Reg " + authorizedClient.getClientRegistration());
-        System.out.println("client id " + authorizedClient.getClientRegistration().getClientId());
-        
         String clientId = authorizedClient.getClientRegistration().getClientId();
 
         if (clientId.equals(googleClientClientId)) {
@@ -85,12 +81,21 @@ public class Oauth2AuthenticationUtils {
         } else if (clientId.equals(facebookClientClientId)) {
             return FACEBOOK;
         } else {
-            LOGGER.error("Unknown clientId specified of {} so cant determine authentication provider. Config value is {}", clientId, googleClientClientId);
+            LOGGER.error("Unknown clientId specified of {} so cant determine authentication provider.", clientId);
             throw new IllegalArgumentException("Uknown client id specified");
         }
     }
 
+    public void setGoogleClientClientId(String googleClientClientId) {
+        this.googleClientClientId = googleClientClientId;
+    }
+
+    public void setFacebookClientClientId(String facebookClientClientId) {
+        this.facebookClientClientId = facebookClientClientId;
+    }
+
     private OAuth2AuthorizedClient getAuthorizedClient(OAuth2AuthenticationToken authentication) {
+
         return this.authorizedClientService.loadAuthorizedClient(
                 authentication.getAuthorizedClientRegistrationId(), authentication.getName());
     }

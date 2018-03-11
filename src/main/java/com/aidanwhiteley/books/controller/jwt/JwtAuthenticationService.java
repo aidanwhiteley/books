@@ -4,6 +4,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.aidanwhiteley.books.controller.config.HttpCookieOAuth2AuthorizationRequestRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 @Service
 public class JwtAuthenticationService {
 
-	public static final String JWT_COOKIE_NAME = "JWT";
+	public static final String JWT_COOKIE_NAME = "CLOUDY-JWT";
 	public static final String JSESSIONID_COOKIE_NAME = "JSESSIONID";
 	public static final String XSRF_HEADER_NAME = "X-XSRF-TOKEN";
 	public static final String XSRF_COOKIE_NAME = "XSRF-TOKEN";
@@ -74,44 +75,60 @@ public class JwtAuthenticationService {
 		LOGGER.debug("Running JwtAuthenticationService - readAndValidateAuthenticationData");
 
 		JwtAuthentication auth = null;
+		boolean oauthCookieFound = false;
 
 		Cookie[] cookies = request.getCookies();
 
 		if (cookies != null) {
 			for (Cookie cookie : cookies) {
 				LOGGER.debug("Found cookie named: {}", cookie.getName());
-				if (cookie.getName().equals(JWT_COOKIE_NAME)) {
-					String token = cookie.getValue();
-					if (token == null || token.trim().isEmpty()) {
-						LOGGER.warn("JWT cookie found but was empty - we will look to remove this later");
-					} else {
-						try {
-							User user = jwtUtils.getUserFromToken(token);
-							auth = new JwtAuthentication(user);
-							// If we got to here with no exceptions thrown
-							// then we can assume we have a valid token
-							auth.setAuthenticated(true);
-							LOGGER.debug("JWT found and validated - setting authentication true");
-						} catch (ExpiredJwtException eje) {
-							expireJwtCookie(response);
-							LOGGER.info("JWT expired so cookie deleted");
-						} catch (RuntimeException re) {
-							expireJwtCookie(response);
-							LOGGER.error("Error validating jwt token: {}. So cookie deleted", re.getMessage(), re);
-						}
-					}
-				} else if (cookie.getName().equals(JSESSIONID_COOKIE_NAME)) {
-					// With the use of Spring Security Oauth2 and the custom
-					// HttpCookieOAuth2AuthorizationRequestRepository there
-					// should be no JSESSIONIDs being writtem
-					LOGGER.warn("Unexpectedly found a JSESSIONID based cookie - killing it!");
-					expireJsessionIdCookie(response);
-				}
+                switch (cookie.getName()) {
+                    case JWT_COOKIE_NAME:
+                        String token = cookie.getValue();
+                        if (token == null || token.trim().isEmpty()) {
+                            LOGGER.warn("JWT cookie found but was empty - we will look to remove this later");
+                        } else {
+                            try {
+                                User user = jwtUtils.getUserFromToken(token);
+                                auth = new JwtAuthentication(user);
+                                // If we got to here with no exceptions thrown
+                                // then we can assume we have a valid token
+                                auth.setAuthenticated(true);
+                                LOGGER.debug("JWT found and validated - setting authentication true");
+                            } catch (ExpiredJwtException eje) {
+                                expireJwtCookie(response);
+                                LOGGER.info("JWT expired so cookie deleted");
+                            } catch (RuntimeException re) {
+                                expireJwtCookie(response);
+                                LOGGER.error("Error validating jwt token: {}. So cookie deleted", re.getMessage(), re);
+                            }
+                        }
+                        break;
+                    case JSESSIONID_COOKIE_NAME:
+                        // With the use of Spring Security Oauth2 and the custom
+                        // HttpCookieOAuth2AuthorizationRequestRepository there
+                        // should be no JSESSIONIDs being writtem
+                        LOGGER.warn("Unexpectedly found a JSESSIONID based cookie - killing it!");
+                        expireJsessionIdCookie(response);
+                        break;
+                    case HttpCookieOAuth2AuthorizationRequestRepository.COOKIE_NAME:
+                        oauthCookieFound = true;
+                        break;
+                }
 			}
 		}
 
+		checkForRedundantOauthCookie(auth, oauthCookieFound, response);
+
 		return auth;
 	}
+
+	private void checkForRedundantOauthCookie(JwtAuthentication auth, boolean oauthCookieFound,HttpServletResponse response) {
+        if (oauthCookieFound && auth != null && auth.isAuthenticated()) {
+            expireOauthCookie(response);
+            LOGGER.info("Expired redundant OAuth cookie");
+        }
+    }
 
 	public void expireJwtCookie(HttpServletResponse response) {
 		Cookie emptyCookie = new Cookie(JWT_COOKIE_NAME, "");
@@ -139,5 +156,14 @@ public class JwtAuthenticationService {
 		emptyCookie.setPath(jwtCookiePath);
 		response.addCookie(emptyCookie);
 	}
+
+    public void expireOauthCookie(HttpServletResponse response) {
+        Cookie emptyCookie = new Cookie(HttpCookieOAuth2AuthorizationRequestRepository.COOKIE_NAME, "");
+        emptyCookie.setMaxAge(0);
+        emptyCookie.setHttpOnly(true);
+        emptyCookie.setSecure(cookieOverHttpsOnly);
+        emptyCookie.setPath(jwtCookiePath);
+        response.addCookie(emptyCookie);
+    }
 
 }

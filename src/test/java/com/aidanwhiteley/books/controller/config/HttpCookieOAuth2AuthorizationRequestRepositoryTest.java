@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.aidanwhiteley.books.controller.config;
 
 import static org.junit.Assert.assertEquals;
@@ -13,15 +10,15 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 
 public class HttpCookieOAuth2AuthorizationRequestRepositoryTest {
-	
-	private static String TEST_CLIENT_ID = "Hello world";
-	private static String DUMMY_TEXT_NOT_TESTED = "dummy";
 
 	@Test
 	public void testSaveAndLoadCookie() {
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		MockHttpServletResponse response = new MockHttpServletResponse();
-		OAuth2AuthorizationRequest authorizationRequest = 
+		String TEST_CLIENT_ID = "Hello world";
+		String DUMMY_TEXT_NOT_TESTED = "dummy";
+
+		OAuth2AuthorizationRequest authorizationRequest =
 				OAuth2AuthorizationRequest.authorizationCode().clientId(TEST_CLIENT_ID).
 				authorizationUri(DUMMY_TEXT_NOT_TESTED).build();
 		

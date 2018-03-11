@@ -47,6 +47,12 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
     public OAuth2AuthorizationRequest removeAuthorizationRequest(HttpServletRequest request) {
 
         // Question: How to remove the cookie, because we don't have access to response object here.
+        // This seems to be a bug in the design of the AuthorizationRequestRepository interface
+        // as the default behaviour is to remove data from the HTTP session -
+        // which will be accessed via the request object. Here we
+        // want to clear out a cookie for which we need access to the response object.
+        // So, for the time being, another unrelated part of the code base clears the cookie -
+        // see the JwtAuthenticationService class for details
         return loadAuthorizationRequest(request);
     }
     
@@ -74,9 +80,9 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
         Cookie[] cookies = request.getCookies();
 
         if (cookies != null && cookies.length > 0) {
-            for (Cookie cooky : cookies) {
-                if (cooky.getName().equals(COOKIE_NAME)) {
-                    return Optional.of(cooky);
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals(COOKIE_NAME)) {
+                    return Optional.of(cookie);
                 }
             }
         }

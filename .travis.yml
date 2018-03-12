@@ -8,4 +8,4 @@ addons:
 
 script:
   # other script steps might be done before running the actual analysis
-  - sonar-scanner
+  - mvn clean verify org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar

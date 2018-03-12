@@ -45,6 +45,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     private static final String CONTENT_TYPE = "Content-Type";
     private static final String ORIGIN = "Origin";
 
+    // Fake login page - just sets a 403 / Forbidden response
+    public static final String API_LOGIN = "/api/login";
+
     private final JwtAuthenticationFilter jwtAuththenticationFilter;
 
     private final JwtAuthenticationService jwtAuthenticationService;
@@ -107,9 +110,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         // @formatter:off
         http.
-                // We dont currently use the Spring Security logout functionality as I _think_ that it is ahead of the
-                // CORS config filter meaning that a cross domain request to logoff will fail.
-                // Instead there is a custom method in the UserController class
                 sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).
                     enableSessionUrlRewriting(false).and().
                 antMatcher("/**").authorizeRequests().
@@ -118,9 +118,13 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                     anyRequest().authenticated().and().
                 addFilterBefore(jwtAuththenticationFilter, UsernamePasswordAuthenticationFilter.class).
                 oauth2Login().
-                    // The logon page just returns a 403 - forbidden - as it should only be accessed by APIs.
-                    // This doesnt work well for verbs other than GET as the 302 to the 403 isnt automatically followed.
-                    loginPage("/api/login").
+                    // The logon page referred to below just returns a 403 - forbidden - as it should only be accessed by APIs.
+                    // This doesnt work well for API calls with verbs other than GET as the 302 to the 403 isnt automatically followed
+                    // by the client. However, the end effect is still OK as an API call to (say) create a book review when the caller
+                    // doesnt have the required permission will result in no update happening and the API getting a 302 response
+                    // (meaning the call was blocked).
+                    // Having client code look for a 302 to the logon page is just not as intuitive as handling a 403.
+                    loginPage(API_LOGIN).
                     authorizationEndpoint().baseUri("/login").
                     authorizationRequestRepository(cookieBasedAuthorizationRequestRepository()).and().
                     successHandler(new Oauth2AuthenticationSuccessHandler()).and().

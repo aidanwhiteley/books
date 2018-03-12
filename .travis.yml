@@ -2,3 +2,10 @@ language: java
 services: mongodb
 after_success:
   - bash <(curl -s https://codecov.io/bash)
+addons:
+  sonarcloud:
+    organization: "aidanwhiteley-github"
+
+script:
+  # other script steps might be done before running the actual analysis
+  - sonar-scanner

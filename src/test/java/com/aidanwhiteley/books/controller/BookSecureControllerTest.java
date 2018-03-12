@@ -1,5 +1,6 @@
 package com.aidanwhiteley.books.controller;
 
+import com.aidanwhiteley.books.controller.config.WebSecurityConfiguration;
 import com.aidanwhiteley.books.controller.jwt.JwtUtils;
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.User;
@@ -14,6 +15,7 @@ import org.springframework.http.*;
 import java.net.URI;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class BookSecureControllerTest extends IntegrationTest {
 
@@ -149,6 +151,28 @@ public class BookSecureControllerTest extends IntegrationTest {
 
         // See comments in the tryToCreateBookWithNoPermissions test for why a 302 is expected.
         assertEquals(HttpStatus.FOUND, putResponse.getStatusCode());
+    }
+
+    @Test
+    public void tryUpdateActionWhenNoCsrfTokenInRequestHeaders() {
+
+        User user = BookControllerTestUtils.getTestUser();
+        String token = jwtUtils.createTokenForUser(user);
+        String xsrfToken = BookControllerTestUtils.getXsrfToken(testRestTemplate);
+
+        // Check all works OK when xsrf token is supplied
+        Book testBook = BookRepositoryTest.createTestBook();
+        HttpEntity<Book> request = BookControllerTestUtils.getBookHttpEntity(testBook, user, token, xsrfToken);
+        ResponseEntity<Book> response  = testRestTemplate.exchange("/secure/api/books", HttpMethod.POST, request, Book.class);
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+
+        // And now check the action is forbidden when no xsrf token is supplied
+        request = BookControllerTestUtils.getBookHttpEntity(testBook, user, token, null);
+        response  = testRestTemplate.exchange("/secure/api/books", HttpMethod.POST, request, Book.class);
+
+        // In actual fact, what happens is that the request is re-directed to the "logon page", A 403 would have been preferable
+        assertEquals(HttpStatus.FOUND, response.getStatusCode());
+        assertTrue(response.getHeaders().getLocation().getPath().equals(WebSecurityConfiguration.API_LOGIN));
     }
 
 }

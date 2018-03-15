@@ -79,9 +79,12 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<!-- Fongo not currently being used as Spring Boot 2 support is WiP -->
-		<!-- dependency> <groupId>com.github.fakemongo</groupId> <artifactId>fongo</artifactId> 
-			<version>2.1.0</version> <scope>test</scope> </dependency -->
+        <dependency>
+            <groupId>com.github.fakemongo</groupId>
+            <artifactId>fongo</artifactId>
+            <version>2.2.0-RC1</version>
+            <scope>test</scope>
+        </dependency>
 	</dependencies>
 
 	<build>

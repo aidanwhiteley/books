@@ -34,7 +34,7 @@ public class UserControllerTest extends IntegrationTest {
         String token = jwtUtils.createTokenForUser(user);
         String xsrfToken = BookControllerTestUtils.getXsrfToken(testRestTemplate);
         HttpEntity<Book> request = BookControllerTestUtils.getBookHttpEntity(null, user, token, xsrfToken);
-        ResponseEntity<User> response = testRestTemplate.exchange("/secure/api/user", HttpMethod.POST, request, User.class);
+        ResponseEntity<User> response = testRestTemplate.exchange("/secure/api/user", HttpMethod.GET, request, User.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(BookControllerTestUtils.USER_WITH_ALL_ROLES_FULL_NAME, response.getBody().getFullName());

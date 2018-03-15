@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 
@@ -29,6 +30,9 @@ public class BookControllerTest extends IntegrationTest {
 
     @Autowired
     private JwtUtils jwtUtils;
+
+    @Value("${books.tests.using.fongo}")
+    private boolean testsUsingFongo;
 
     @Test
     public void findBookById() {
@@ -115,6 +119,8 @@ public class BookControllerTest extends IntegrationTest {
 
     @Test
     public void findUsingFullTextSearch() {
+        org.junit.Assume.assumeTrue(!testsUsingFongo);
+
         BookControllerTestUtils.postBookToServer(jwtUtils, testRestTemplate);
 
         ResponseEntity<String> response = testRestTemplate.exchange("/api/books?search=" + BookRepositoryTest.DR_ZEUSS + "&page=0&size=10", HttpMethod.GET,
@@ -130,6 +136,8 @@ public class BookControllerTest extends IntegrationTest {
 
     @Test
     public void fullTextSearchShouldntFindStopWord() {
+        org.junit.Assume.assumeTrue(!testsUsingFongo);
+
         BookControllerTestUtils.postBookToServer(jwtUtils, testRestTemplate);
 
         // First check that we find the expected data

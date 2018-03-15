@@ -26,13 +26,10 @@ making the web application entirely free of http session state (which has its pr
 * Accessing the Google Books API with the Spring RestTemplate
 
 ### Tests
-All tests should run fine "out of the box". However, the tests expect there to be a Mongo instance running locally.
+All tests should run fine "out of the box". By default, the tests expect there to be a Mongo instance running locally. 
+There is an option to run the tests using Fongo (an in memory Mongo replacement) - change the spring.profiles.active in application.yml to "fongo".
+However, to run the project, Mongo is always required - even if tests are run against Fongo.
 
-There is an option to run the tests using Fongo (an in memory Mongo replacement) in which case no local instance of Mongo is required.
-To enable this, uncomment all the code in the /src/test/java/com/aidanwhiteley/books/repository/config/FongoConfig class.
-However, the use of Fongo is not currently the default option because
-* there are currently problems using Fongo and the version of the Mongo drivers that default with Spring Boot 2 - see https://github.com/fakemongo/fongo/issues/316
-* this project uses Mongo full text indexes across multiple fields and Fongo currently only supports this functionality on one field
 
 ### How to run
 A lot of the functionality is protected behind oauth2 authentication (via Google and Facebook). 

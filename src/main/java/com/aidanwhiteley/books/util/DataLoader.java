@@ -25,7 +25,10 @@ public class DataLoader {
     private static final String BOOKS_COLLECTION = "book";
     private static final String USERS_COLLECTION = "user";
     private static final Logger LOGGER = LoggerFactory.getLogger(DataLoader.class);
+    public static final String SEPARATOR = "**************************************************************************";
+
     private final MongoTemplate template;
+
     @Value("${books.reload.development.data}")
     private boolean reloadDevelopmentData;
 
@@ -55,7 +58,7 @@ public class DataLoader {
                 List<String> jsons;
 
                 // Clearing and loading data into books collection
-                LOGGER.info("**************************************************************************");
+                LOGGER.info(SEPARATOR);
                 LOGGER.info("Clearing books collection and loading development data for books project");
                 template.dropCollection(BOOKS_COLLECTION);
                 ClassPathResource classPathResource = new ClassPathResource("sample_data/books.data");
@@ -75,7 +78,7 @@ public class DataLoader {
                             .collect(Collectors.toList());
                 }
                 jsons.stream().map(Document::parse).forEach(i -> template.insert(i, USERS_COLLECTION));
-                LOGGER.info("**************************************************************************");
+                LOGGER.info(SEPARATOR);
             } else {
                 LOGGER.info("Development data not reloaded due to config settings");
             }
@@ -96,7 +99,7 @@ public class DataLoader {
                 List<String> jsons;
 
                 // Clearing and loading data into books collection
-                LOGGER.info("**************************************************************************");
+                LOGGER.info(SEPARATOR);
                 LOGGER.info("Loading indexes for books project");
 
                 ClassPathResource classPathResource = new ClassPathResource("indexes/books.data");
@@ -107,7 +110,7 @@ public class DataLoader {
                 jsons.stream().map(s -> new Document().append("$eval", s)).forEach(template::executeCommand);
                 LOGGER.info("Created indexes for books project");
 
-                LOGGER.info("**************************************************************************");
+                LOGGER.info(SEPARATOR);
             } else {
                 LOGGER.info("Indexes not created due to config settings");
             }

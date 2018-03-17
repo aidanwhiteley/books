@@ -12,7 +12,16 @@
 	<description>A simple project to remind myself what books Ive read recently! Also a technology sampler using the
         latest Spring Boot, JWT, stateless in the HTTP layer etc
     </description>
-
+    <developers>
+        <developer>Aidan Whiteley</developer>
+    </developers>
+    <url>https://github.com/aidanwhiteley/books</url>
+	<licenses>
+	   <license>
+	       <name>Apache 2.0</name>
+	   </license>
+	</licenses>
+	
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
@@ -122,7 +131,7 @@
 				</configuration>
 			</plugin>
 
-			<plugin>
+			<!-- plugin>
 				<groupId>org.owasp</groupId>
 				<artifactId>dependency-check-maven</artifactId>
 				<version>3.1.1</version>
@@ -133,7 +142,7 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
+			</plugin -->
 		</plugins>
 	</build>
 

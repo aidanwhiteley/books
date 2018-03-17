@@ -13,7 +13,9 @@
         latest Spring Boot, JWT, stateless in the HTTP layer etc
     </description>
     <developers>
-        <developer>Aidan Whiteley</developer>
+        <developer>
+            <name>Aidan Whiteley</name>
+        </developer> 
     </developers>
     <url>https://github.com/aidanwhiteley/books</url>
 	<licenses>

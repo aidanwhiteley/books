@@ -18,6 +18,9 @@
         </developer> 
     </developers>
     <url>https://github.com/aidanwhiteley/books</url>
+    <scm>
+        <url>https://github.com/aidanwhiteley/books</url>
+    </scm>
 	<licenses>
 	   <license>
 	       <name>Apache 2.0</name>

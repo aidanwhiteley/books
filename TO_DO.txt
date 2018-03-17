@@ -10,9 +10,7 @@ New functionality
 24. Fix oauth redirect config / code such that re-direct is over HTTPS rather than HTTP. Spring Boot issue?
     Then update config in Google and Facebook oauth to only support HTTPS redirect URLs
 29. Support "warning" modal before actually deleting Book Review / Comment entries
-30. When clicking "By Xxxxxx" search options, move cursor into serach entry box
-31. When scrolling through possible Google book matches, keep the check box ticked. User must explicitly untick.
-32. Look at "auto sizing" a smaller image for the home page when no image of right size exists on Google.
+
 
 Completed new functionality
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -41,6 +39,9 @@ Completed new functionality
 26. Add edit support within book detail display for authorised users
 27. Added extracting picture details from Facebook logon.
 28. Move findGoogleBooksByTitle to secure api - no need to expose
+30. When clicking "By Xxxxxx" search options, move cursor into serach entry box
+31. When scrolling through possible Google book matches, keep the check box ticked. User must explicitly untick.
+32. Look at "auto sizing" a smaller image for the home page when no image of right size exists on Google.
 
 Bugs
 ~~~~

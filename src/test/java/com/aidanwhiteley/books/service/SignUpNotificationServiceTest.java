@@ -26,6 +26,9 @@ public class SignUpNotificationServiceTest extends IntegrationTest{
 
     public static final String TEST_USER = "Test User";
 
+    // This value must match the value in the corresponding YAML config file
+    public static final int PORT = 3025;
+
     private GreenMail smtpServer;
 
     @Value("${books.users.registrationAdminEmail.emailContent}")
@@ -40,7 +43,7 @@ public class SignUpNotificationServiceTest extends IntegrationTest{
 
     @Before
     public void setUp() {
-        smtpServer = new GreenMail(new ServerSetup(25, null, "smtp"));
+        smtpServer = new GreenMail(new ServerSetup(PORT, null, "smtp"));
         smtpServer.start();
     }
 

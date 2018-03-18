@@ -38,6 +38,10 @@ spring:
           writetimeout: 5000
     test-connection: false
 
+server:
+  use-forward-headers: true       # Assuming that this service is running behind a proxy / gateway that terminates the SSL
+  # port:                         # If you need to set the port the service runs on
+
 management:
   endpoints:
     enabled-by-default: true

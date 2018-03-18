@@ -26,7 +26,9 @@ public class SignUpNotificationServiceTest extends IntegrationTest{
 
     public static final String TEST_USER = "Test User";
 
-    // This value must match the value in the corresponding YAML config file
+    // This value must match the value in the corresponding YAML config file.
+    // Default port 25 shifted to allow easy use on Unix environments where
+    // binding to ports less than 1024 requires root permissions.
     public static final int PORT = 3025;
 
     private GreenMail smtpServer;

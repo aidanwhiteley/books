@@ -67,7 +67,13 @@ In particular, the application's Search functionality won't work unless you run 
 the weighted full text index across various fields of the Book collection. The rest of the application will run without 
 indexes - just more slowly as the data volumes increase!
 
-## Admin access
+#### Admin emails
+There is functionality to send an email to an admin when a new user has logged on. This is intended to prompt the
+admin to give the new user the ROLE_EDITOR role (or delete the user!).
+This functionality must be enabled - see the books.users.registrationAdminEmail entries in application.yml (where 
+it is disabled by default).
+
+## Levels of access
 The code supports four access levels
 * anonymous (never logged in)
 * ROLE_USER (logged in but no more permissions than anonymous)
@@ -78,7 +84,7 @@ The application-<env>.yml files can be edited to automatically give a logged on 
 by specifying their email on Google / Facebook. See the books:users:default:admin:email setting.
 
 ## Security
-Lots of to and froing on this. When two of the main JWT related companies can't agree of where to store a JWT token, you know alarm bells should be ringing a little bit.
+Lots of to and froing on this as the two of the main JWT related companies can't seem to agree on where to store a JWT token.
 Stormpath (who joined forces with Okta) [say](https://stormpath.com/blog/where-to-store-your-jwts-cookies-vs-html5-web-storage) use cookies.
 Auth0 [say](https://auth0.com/blog/cookies-vs-tokens-definitive-guide/) use local storage.
 

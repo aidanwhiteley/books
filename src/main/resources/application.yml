@@ -28,6 +28,16 @@ spring:
           facebook:
             user-info-uri: https://graph.facebook.com/me?fields=name,first_name,last_name,link,picture,email
 
+  mail:
+    host: localhost
+    properties:
+      mail:
+        smtp:
+          connectiontimeout: 5000
+          timeout: 3000
+          writetimeout: 5000
+    test-connection: false
+
 management:
   endpoints:
     enabled-by-default: true
@@ -41,6 +51,9 @@ management:
   info:
     git:
       mode: full
+  health:
+    mail:
+      enabled: false
 
 info:
   build:
@@ -77,6 +90,13 @@ books:
         email:   # The remote email address for a user that will be automatically made an admin on first logon.
       page:
         size: 5
+    registrationAdminEmail:
+      enabled: false
+      emailTitle: "Books Service - New User Registration"
+      emailContent: "New users(s) have registered for the Books service"
+      emailFrom:
+      emailTo:
+      cron: "15 */5 * * * *"   # Cron expression for how often to look for new users and email an admin
 
   jwt:
     expiryInMilliSeconds: 86400000 # One day
@@ -93,3 +113,4 @@ books:
   tests:
     using:
       fongo: false
+

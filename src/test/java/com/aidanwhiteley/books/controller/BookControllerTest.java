@@ -20,6 +20,7 @@ import java.util.List;
 import static com.aidanwhiteley.books.repository.BookRepositoryTest.J_UNIT_TESTING_FOR_BEGINNERS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 public class BookControllerTest extends IntegrationTest {
 
@@ -119,7 +120,10 @@ public class BookControllerTest extends IntegrationTest {
 
     @Test
     public void findUsingFullTextSearch() {
-        org.junit.Assume.assumeTrue(!testsUsingFongo);
+
+        // This test doesnt run with Fongo as it uses weighted full text index
+        // against multiple fields - which is not currently supported by Fongo.
+        assumeTrue(!testsUsingFongo);
 
         BookControllerTestUtils.postBookToServer(jwtUtils, testRestTemplate);
 
@@ -136,7 +140,10 @@ public class BookControllerTest extends IntegrationTest {
 
     @Test
     public void fullTextSearchShouldntFindStopWord() {
-        org.junit.Assume.assumeTrue(!testsUsingFongo);
+
+        // This test doesnt run with Fongo as it uses weighted full text index
+        // against multiple fields - which is not currently supported by Fongo.
+        assumeTrue(!testsUsingFongo);
 
         BookControllerTestUtils.postBookToServer(jwtUtils, testRestTemplate);
 

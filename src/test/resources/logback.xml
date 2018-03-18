@@ -7,5 +7,7 @@
     <logger name="org.apache.catalina" level="WARN"/>
     <logger name="com.aidanwhiteley" level="WARN"/>
     <logger name="com.aidanwhiteley.books.controller.aspect" level="WARN" />
-    <logger name="com.aidanwhiteley.books.util.JwtAuthenticationUtils" level="WARN" />
+    <logger name="com.aidanwhiteley.books.util.MailClient" level="WARN" />
+    <logger name="com.icegreen.greenmail.smtp.SmtpManager" level="WARN" />
+    <logger name="com.aidanwhiteley.books.service.SignUpNotificationService" level="WARN"/>
 </configuration>

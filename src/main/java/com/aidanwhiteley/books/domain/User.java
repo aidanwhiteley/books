@@ -79,6 +79,8 @@ public class User implements Serializable {
     @NotNull
     private AuthenticationProvider authProvider;
 
+    private boolean adminEmailedAboutSignup = false;
+
     public boolean isFirstVisit() {
         return (firstLogon.truncatedTo(ChronoUnit.MINUTES).equals(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES)));
     }

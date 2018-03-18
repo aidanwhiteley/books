@@ -17,7 +17,11 @@ books:
   users:
     default:
       admin:
-        email: thecloudybookclub@gmail.com  # The remote email address for the user that will be automatically made an admin on first logon
+        email: exmaple@example.com  # The remote email address for the user that will be automatically made an admin on first logon
+    registrationAdminEmail:
+      enabled: false
+      emailFrom: exampleFrom@example.com
+      emailTo: exampleTo@example.com
 
   jwt:
     secretKey: This^IsNot!A%Real*Secret
@@ -26,3 +30,4 @@ books:
 
   oauth2:
     cookieOverHttpsOnly: false
+

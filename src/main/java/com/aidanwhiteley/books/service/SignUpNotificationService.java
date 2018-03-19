@@ -39,9 +39,12 @@ public class SignUpNotificationService {
     public void checkForNewUsersAndEmailAdmin() {
 
         if (registrationAdminEmailEnabled) {
+
             List<User> newUsers = findNewUsers();
 
-            if (newUsers.size() > 0) {
+            if (newUsers.isEmpty()) {
+                LOGGER.debug("No new user registration found so no emails to the admin at {}", LocalDateTime.now());
+            } else {
                 boolean emailsSent = mailClient.sendEmailsToAdminsForNewUsers(newUsers);
 
                 if (emailsSent) {
@@ -49,8 +52,6 @@ public class SignUpNotificationService {
                 }
                 LOGGER.debug("Command issued to send new user registration emails to the admin for users: {} at {}",
                         newUsers, LocalDateTime.now());
-            } else {
-                LOGGER.debug("No new user registration found so no emails to the admin at {}", LocalDateTime.now());
             }
         } else {
             LOGGER.debug("Did not send any new user registration emails to the admin at {}", LocalDateTime.now());

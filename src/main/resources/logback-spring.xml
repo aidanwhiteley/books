@@ -4,10 +4,16 @@
     <logger name="org.springframework.web" level="WARN"/>
     <logger name="org.springframework.boot.autoconfigure.security.oauth2" level="WARN" />
     <logger name="org.springframework.boot" level="WARN" />
+    <logger name="org.springframework.boot.web.embedded.tomcat" level="INFO" />
     <logger name="org.springframework.security" level="WARN" />
+    <logger name="org.springframework.jmx" level="WARN" />
+    <logger name="org.springframework.scheduling" level="WARN" />
     <logger name="com.aidanwhiteley.books.controller" level="WARN"/>
     <logger name="com.aidanwhiteley.books" level="WARN" />
     <logger name="com.aidanwhiteley.books.controller.aspect" level="WARN" />
     <logger name="org.springframework.web.client.RestTemplate" level="WARN" />
+    <logger name="org.springframework.context" level="WARN" />
+    <logger name="org.apache.catalina" level="WARN" />
+    <logger name="org.mongodb.driver" level="WARN" />
     <logger name="com.aidanwhiteley.books.service.SignUpNotificationService" level="DEBUG"/>
 </configuration>

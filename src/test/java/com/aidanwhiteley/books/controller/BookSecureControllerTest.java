@@ -1,6 +1,7 @@
 package com.aidanwhiteley.books.controller;
 
 import com.aidanwhiteley.books.controller.config.WebSecurityConfiguration;
+import com.aidanwhiteley.books.controller.jwt.JwtAuthenticationService;
 import com.aidanwhiteley.books.controller.jwt.JwtUtils;
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.User;
@@ -173,6 +174,20 @@ public class BookSecureControllerTest extends IntegrationTest {
         // In actual fact, what happens is that the request is re-directed to the "logon page", A 403 would have been preferable
         assertEquals(HttpStatus.FOUND, response.getStatusCode());
         assertTrue(response.getHeaders().getLocation().getPath().equals(WebSecurityConfiguration.API_LOGIN));
+    }
+
+    @Test
+    public void testDebugHeaders() {
+        User user = BookControllerTestUtils.getTestUser();
+        String token = jwtUtils.createTokenForUser(user);
+
+        // Re-using "book related" code to get required headers easily set up
+        Book testBook = BookRepositoryTest.createTestBook();
+        HttpEntity<Book> request = BookControllerTestUtils.getBookHttpEntity(testBook, user, token, null);
+        ResponseEntity<String> response  = testRestTemplate.exchange("/secure/api/debugheaders", HttpMethod.GET, request, String.class);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertTrue(response.getBody().contains(JwtAuthenticationService.JWT_COOKIE_NAME));
     }
 
 }

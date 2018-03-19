@@ -7,10 +7,7 @@ New functionality
 17. Create a logo image!
 22. Improve efficiency of processing for which menu item is active.
 23. Further randomise / anonomise the created field in the test data
-24. Fix oauth redirect config / code such that re-direct is over HTTPS rather than HTTP. Spring Boot issue?
-    Then update config in Google and Facebook oauth to only support HTTPS redirect URLs
 29. Support "warning" modal before actually deleting Book Review / Comment entries
-
 
 Completed new functionality
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -35,6 +32,8 @@ Completed new functionality
 22. Check for owner or admin on update / delete actions on books
 23. What books data should a non logged on user be able to search by reader. None!
 24. Move the Google Book data to 2nd tab and put comments on first tab.
+24. Fix oauth redirect config / code such that re-direct is over HTTPS rather than HTTP.
+    Then update config in Google and Facebook oauth to only support HTTPS redirect URLs
 25. Remove Google book detail display on Save of new book or go to Summary (better option)
 26. Add edit support within book detail display for authorised users
 27. Added extracting picture details from Facebook logon.
@@ -59,3 +58,8 @@ Fixed bugs
 8. Mobile (small) view - logon problems. Facebook not working? Not displaying logged on user details?
 9. Fix summary table and comments grid layout on small mobiles
 
+
+Notes
+~~~~~
+Starting local Greenmail server for development testing
+java -D"greenmail.smtp.port=3025" -jar greenmail-standalone-1.5.7.jar

@@ -9,6 +9,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.Principal;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Optional;
 
@@ -220,4 +221,18 @@ public class BookSecureController {
 		return bookRepository.countBooksByReader();
 	}
 
+	@GetMapping(value = "/debugheaders")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+	public String debugRequestHeaders(Principal principal, HttpServletRequest request) {
+
+		Enumeration<String> headers = request.getHeaderNames();
+		StringBuilder headersOut = new StringBuilder();
+		while (headers.hasMoreElements()) {
+			String headerName = headers.nextElement();
+			headersOut.append(headerName).append(": ").append(request.getHeader(headerName)).append("\r\n");
+		}
+
+		return "Scheme was: " + request.getScheme() + " servername was: " + request.getServerName() +
+				" and protocol was: " + request.getProtocol() + "\r\n\r\nheaders:\r\n" + headersOut;
+	}
 }

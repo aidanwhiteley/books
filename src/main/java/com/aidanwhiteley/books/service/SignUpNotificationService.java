@@ -40,13 +40,18 @@ public class SignUpNotificationService {
 
         if (registrationAdminEmailEnabled) {
             List<User> newUsers = findNewUsers();
-            boolean emailsSent = mailClient.sendEmailsToAdminsForNewUsers(newUsers);
 
-            if (emailsSent) {
-                newUsers.forEach(userRepository::updateUserAdminNotified);
+            if (newUsers.size() > 0) {
+                boolean emailsSent = mailClient.sendEmailsToAdminsForNewUsers(newUsers);
+
+                if (emailsSent) {
+                    newUsers.forEach(userRepository::updateUserAdminNotified);
+                }
+                LOGGER.debug("Command issued to send new user registration emails to the admin for users: {} at {}",
+                        newUsers, LocalDateTime.now());
+            } else {
+                LOGGER.debug("No new user registration found so no emails to the admin at {}", LocalDateTime.now());
             }
-            LOGGER.debug("Command issued to send new user registration emails to the admin for users: {} at {}",
-                    newUsers, LocalDateTime.now());
         } else {
             LOGGER.debug("Did not send any new user registration emails to the admin at {}", LocalDateTime.now());
         }

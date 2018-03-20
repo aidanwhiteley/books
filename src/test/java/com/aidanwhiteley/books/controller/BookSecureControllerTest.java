@@ -1,5 +1,22 @@
 package com.aidanwhiteley.books.controller;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.net.URI;
+
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
+
 import com.aidanwhiteley.books.controller.config.WebSecurityConfiguration;
 import com.aidanwhiteley.books.controller.jwt.JwtAuthenticationService;
 import com.aidanwhiteley.books.controller.jwt.JwtUtils;
@@ -8,15 +25,6 @@ import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.domain.User.Role;
 import com.aidanwhiteley.books.repository.BookRepositoryTest;
 import com.aidanwhiteley.books.util.IntegrationTest;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.*;
-
-import java.net.URI;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class BookSecureControllerTest extends IntegrationTest {
 
@@ -30,9 +38,27 @@ public class BookSecureControllerTest extends IntegrationTest {
     private JwtUtils jwtUtils;
 
     @Test
-    public void createBook() {
+    public void createAndDeleteBook() {
+    	// Create book
         ResponseEntity<Book> response = BookControllerTestUtils.postBookToServer(jwtUtils, testRestTemplate);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        
+        // Get location of created book
+        String location = response.getHeaders().getLocation().toString();
+        assertNotNull("Location of newly created book should have been provided", location);
+        String id = location.substring(location.lastIndexOf("/") + 1);
+        
+        // Get an admin user and required tokens and then delete the book
+        User user = BookControllerTestUtils.getTestUser();
+        String token = jwtUtils.createTokenForUser(user);
+        String xsrfToken = BookControllerTestUtils.getXsrfToken(testRestTemplate);
+        HttpEntity<Book> request = BookControllerTestUtils.getBookHttpEntity(null, user, token, xsrfToken);
+        response = testRestTemplate.exchange("/secure/api/books/" + id, HttpMethod.DELETE, request, Book.class);
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        
+        // Now check that the book can no longer be found
+        Book deletedBook = testRestTemplate.getForObject(location, Book.class);
+        assertEquals(null, deletedBook.getId());  
     }
 
     @Test

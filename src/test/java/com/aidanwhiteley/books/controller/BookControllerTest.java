@@ -1,26 +1,33 @@
 package com.aidanwhiteley.books.controller;
 
-import com.aidanwhiteley.books.controller.jwt.JwtUtils;
-import com.aidanwhiteley.books.domain.Book;
-import com.aidanwhiteley.books.domain.User;
-import com.aidanwhiteley.books.repository.BookRepositoryTest;
-import com.aidanwhiteley.books.util.IntegrationTest;
-import com.jayway.jsonpath.JsonPath;
+import static com.aidanwhiteley.books.repository.BookRepositoryTest.J_UNIT_TESTING_FOR_BEGINNERS;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
+
+import java.net.URI;
+import java.util.List;
+
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
-import java.net.URI;
-import java.util.List;
-
-import static com.aidanwhiteley.books.repository.BookRepositoryTest.J_UNIT_TESTING_FOR_BEGINNERS;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assume.assumeTrue;
+import com.aidanwhiteley.books.controller.jwt.JwtUtils;
+import com.aidanwhiteley.books.domain.Book;
+import com.aidanwhiteley.books.domain.User;
+import com.aidanwhiteley.books.repository.BookRepositoryTest;
+import com.aidanwhiteley.books.repository.dtos.BooksByGenre;
+import com.aidanwhiteley.books.repository.dtos.BooksByRating;
+import com.aidanwhiteley.books.util.IntegrationTest;
+import com.jayway.jsonpath.JsonPath;
 
 public class BookControllerTest extends IntegrationTest {
 
@@ -34,6 +41,9 @@ public class BookControllerTest extends IntegrationTest {
 
     @Value("${books.tests.using.fongo}")
     private boolean testsUsingFongo;
+    
+    @Value("${books.users.default.page.size}")
+    private int defaultPageSize;
 
     @Test
     public void findBookById() {
@@ -162,6 +172,41 @@ public class BookControllerTest extends IntegrationTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         books = JsonPath.read(response.getBody(), "$.content");
         assertTrue("Search unexpectedly found a book", books.size() == 0);
+    }
+    
+    @Test
+    public void findAllByWhenEnteredDesc() {
+        ResponseEntity<String> response = testRestTemplate.exchange("/api/books", HttpMethod.GET, null, String.class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        
+        // Returns a "page" of books - so look for the content of the page
+        List<Book> books = JsonPath.read(response.getBody(), "$.content");
+        LOGGER.debug("Retrieved JSON was: " + response.getBody());
+        assertTrue("Default page size of books expected", books.size() == defaultPageSize);
+    }
+    
+    @Test
+    public void findBooksByGenre() {
+        ResponseEntity<String> response = testRestTemplate.exchange("/api/books?genre=Novel", HttpMethod.GET, null, String.class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        
+        List<Book> books = JsonPath.read(response.getBody(), "$.content");
+        LOGGER.debug("Retrieved JSON was: " + response.getBody());
+        assertTrue("Expected to find novels", books.size() > 0);
+    }
+    
+    @Test
+    public void testBookDataSummaryApis() {
+    	
+    	// Summary stats
+        ResponseEntity<String> response = testRestTemplate.exchange("/api/books/stats", HttpMethod.GET, null, String.class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        int count = JsonPath.parse(response.getBody()).read("$.count", Integer.class);
+        assertTrue(count > 0);
+        List<BooksByGenre> genres = JsonPath.read(response.getBody(), "$.bookByGenre");
+        assertTrue(genres.size() > 0);
+        List<BooksByRating> ratings = JsonPath.read(response.getBody(), "$.booksByRating");
+        assertTrue(ratings.size() > 0);    	
     }
 
 }

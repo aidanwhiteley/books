@@ -8,6 +8,7 @@ New functionality
 22. Improve efficiency of processing for which menu item is active.
 23. Further randomise / anonomise the created field in the test data
 29. Support "warning" modal before actually deleting Book Review / Comment entries
+33. Change findByGenre & findByAuthor to support case insensitive (collation: { locale: 'en', strength: 2 }) searches
 
 Completed new functionality
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~

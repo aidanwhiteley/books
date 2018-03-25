@@ -64,10 +64,11 @@ public class GoogleBooksDaoAsync {
                 bodyToMono(Item.class);
 
         result.doOnNext(item -> {
+        		System.out.println("We are here");
                 LOGGER.debug("On next called for item {}", item);
                 bookRepository.addGoogleBookItemToBook(googleBookId, item);
                 LOGGER.debug("Stored Google book details into repository for book id {}", googleBookId);
-            });
+        });
 
         LOGGER.debug("Exited updateBookWithGoogleBookDetails");
     }

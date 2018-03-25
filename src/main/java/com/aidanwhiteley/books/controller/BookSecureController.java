@@ -16,6 +16,7 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import com.aidanwhiteley.books.repository.GoogleBooksDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,7 @@ import com.aidanwhiteley.books.domain.Owner;
 import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.domain.googlebooks.BookSearchResult;
 import com.aidanwhiteley.books.repository.BookRepository;
-import com.aidanwhiteley.books.repository.GoogleBooksDao;
+import com.aidanwhiteley.books.repository.GoogleBooksDaoSync;
 import com.aidanwhiteley.books.repository.dtos.BooksByReader;
 import com.aidanwhiteley.books.util.JwtAuthenticationUtils;
 
@@ -65,7 +66,7 @@ public class BookSecureController {
 
 	@Autowired
 	public BookSecureController(BookRepository bookRepository, GoogleBooksDao googleBooksDao,
-			JwtAuthenticationUtils jwtAuthenticationUtils) {
+                                JwtAuthenticationUtils jwtAuthenticationUtils) {
 		this.bookRepository = bookRepository;
 		this.googleBooksDao = googleBooksDao;
 		this.authUtils = jwtAuthenticationUtils;

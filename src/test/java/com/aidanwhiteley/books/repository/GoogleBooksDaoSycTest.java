@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.junit.Assert.*;
 
-public class GoogleBooksDaoTest extends IntegrationTest {
+public class GoogleBooksDaoSycTest extends IntegrationTest {
 
     private static final String SPRING_FRAMEWORK_GOOGLE_BOOK_ID = "oMVIzzKjJCcC";
     private static final String SPRING_BOOK_TITLE = "Professional Java Development with the Spring Framework";

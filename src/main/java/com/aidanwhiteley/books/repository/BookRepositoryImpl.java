@@ -7,6 +7,8 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.sort
 
 import java.util.List;
 
+import com.aidanwhiteley.books.domain.User;
+import com.aidanwhiteley.books.domain.googlebooks.Item;
 import com.aidanwhiteley.books.repository.exceptions.CommentsStorageException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -118,6 +120,20 @@ public class BookRepositoryImpl implements BookRepositoryCustomMethods {
             throw new CommentsStorageException("Failed to add a comment");
         }
         return findCommentsForBook(bookId);
+    }
+
+    @Override
+    public void addGoogleBookItemToBook(String bookId, Item item) {
+        Query query = new Query(Criteria.where("id").is(bookId));
+        Update update = new Update();
+        update.set("googleBookDetails", item);
+
+        UpdateResult result = mongoTemplate.updateFirst(query, update, Book.class);
+
+        if (result.getModifiedCount() != 1) {
+            LOGGER.error("Expected 1 update for googleBookDetails in a Book for bookId {} but saw {}",
+                    bookId, result.getModifiedCount());
+        }
     }
 
     @Override

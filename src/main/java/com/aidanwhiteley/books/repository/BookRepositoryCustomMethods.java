@@ -2,6 +2,7 @@ package com.aidanwhiteley.books.repository;
 
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.Comment;
+import com.aidanwhiteley.books.domain.googlebooks.Item;
 import com.aidanwhiteley.books.repository.dtos.BooksByAuthor;
 import com.aidanwhiteley.books.repository.dtos.BooksByGenre;
 import com.aidanwhiteley.books.repository.dtos.BooksByRating;
@@ -24,6 +25,8 @@ public interface BookRepositoryCustomMethods {
     Book findCommentsForBook(String bookId);
 
     Book addCommentToBook(String bookId, Comment comment);
+
+    void addGoogleBookItemToBook(String bookId, Item item);
 
     /**
      * Marks a comment as deleted. Empties the comment text and  marks comment as deleted.

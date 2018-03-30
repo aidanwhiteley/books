@@ -1,15 +1,14 @@
 package com.aidanwhiteley.books.repository;
 
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.group;
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.project;
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.sort;
-
-import java.util.List;
-
-import com.aidanwhiteley.books.domain.User;
+import com.aidanwhiteley.books.domain.Book;
+import com.aidanwhiteley.books.domain.Comment;
 import com.aidanwhiteley.books.domain.googlebooks.Item;
+import com.aidanwhiteley.books.repository.dtos.BooksByAuthor;
+import com.aidanwhiteley.books.repository.dtos.BooksByGenre;
+import com.aidanwhiteley.books.repository.dtos.BooksByRating;
+import com.aidanwhiteley.books.repository.dtos.BooksByReader;
 import com.aidanwhiteley.books.repository.exceptions.CommentsStorageException;
+import com.mongodb.client.result.UpdateResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,33 +18,24 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.TextCriteria;
-import org.springframework.data.mongodb.core.query.TextQuery;
-import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.data.mongodb.core.query.*;
 import org.springframework.data.repository.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
-import com.aidanwhiteley.books.domain.Book;
-import com.aidanwhiteley.books.domain.Comment;
-import com.aidanwhiteley.books.repository.dtos.BooksByAuthor;
-import com.aidanwhiteley.books.repository.dtos.BooksByGenre;
-import com.aidanwhiteley.books.repository.dtos.BooksByRating;
-import com.aidanwhiteley.books.repository.dtos.BooksByReader;
-import com.mongodb.client.result.UpdateResult;
+import java.util.List;
+
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 
 @Repository
 public class BookRepositoryImpl implements BookRepositoryCustomMethods {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(BookRepositoryImpl.class);
     public static final String COUNT_OF_BOOKS = "countOfBooks";
     public static final String AUTHOR = "author";
     public static final String READER = "reader";
     public static final String GENRE = "genre";
     public static final String RATING = "rating";
     public static final String COMMENTS = "comments";
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(BookRepositoryImpl.class);
     private final MongoTemplate mongoTemplate;
 
     @Autowired

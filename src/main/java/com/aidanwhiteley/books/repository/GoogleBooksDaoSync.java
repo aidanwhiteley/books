@@ -18,26 +18,9 @@ import java.net.URLEncoder;
 import java.nio.charset.Charset;
 
 @Repository
-public class GoogleBooksDaoSync implements GoogleBooksDao {
+public class GoogleBooksDaoSync extends GoogleBooksDaoBase {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(GoogleBooksDaoSync.class);
-
-	public static final String UTF_8 = "UTF-8";
-
-	@Value("${books.google.books.api.searchUrl}")
-	private String booksGoogleBooksApiSearchUrl;
-
-	@Value("${books.google.books.api.getByIdUrl}")
-	private String booksGoogleBooksApiGetByIdUrl;
-	
-	@Value("${books.google.books.api.countryCode}")
-	private String booksGoogleBooksApiCountryCode;
-
-	@Value("${books.google.books.api.connect.timeout}")
-	private int booksGoogleBooksApiConnectTimeout;
-
-	@Value("${books.google.books.api.read.timeout}")
-	private int booksGoogleBooksApiReadTimeout;
 
 	private final RestTemplate googleBooksRestTemplate;
 
@@ -46,7 +29,6 @@ public class GoogleBooksDaoSync implements GoogleBooksDao {
 	    this.googleBooksRestTemplate = buildRestTemplate(restTemplateBuilder);
     }
 
-	@Override
 	public BookSearchResult searchGoogBooksByTitle(String title) {
 
 		String encodedTitle;
@@ -63,7 +45,6 @@ public class GoogleBooksDaoSync implements GoogleBooksDao {
 				BookSearchResult.class);
 	}
 
-	@Override
 	public Item searchGoogleBooksByGoogleBookId(String id) {
 		googleBooksRestTemplate.getMessageConverters().add(0, new StringHttpMessageConverter(Charset.forName(UTF_8)));
 		try {

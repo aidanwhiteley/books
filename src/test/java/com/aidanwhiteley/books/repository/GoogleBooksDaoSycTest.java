@@ -14,7 +14,7 @@ public class GoogleBooksDaoSycTest extends IntegrationTest {
     private static final String SPRING_BOOK_TITLE = "Professional Java Development with the Spring Framework";
 
     @Autowired
-    GoogleBooksDao theDao;
+    GoogleBooksDaoSync theDao;
 
     @Test
     public void findByTitle() {

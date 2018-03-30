@@ -5,39 +5,19 @@ import com.aidanwhiteley.books.domain.googlebooks.Item;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 @Repository
-public class GoogleBooksDaoAsync {
+public class GoogleBooksDaoAsync extends GoogleBooksDaoBase {
 
     public static final String BOOKS_WEB_CLIENT = "Books WebClient";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GoogleBooksDaoAsync.class);
-
-    public static final String UTF_8 = "UTF-8";
-
-    @Value("${books.google.books.api.searchUrl}")
-    private String booksGoogleBooksApiSearchUrl;
-
-    @Value("${books.google.books.api.getByIdUrl}")
-    private String booksGoogleBooksApiGetByIdUrl;
-
-    @Value("${books.google.books.api.countryCode}")
-    private String booksGoogleBooksApiCountryCode;
-
-    @Value("${books.google.books.api.connect.timeout}")
-    private int booksGoogleBooksApiConnectTimeout;
-
-    @Value("${books.google.books.api.read.timeout}")
-    private int booksGoogleBooksApiReadTimeout;
-
 
     private final WebClient webClient;
     private final BookRepository bookRepository;
@@ -64,10 +44,10 @@ public class GoogleBooksDaoAsync {
                 bodyToMono(Item.class);
 
         result.doOnNext(item -> {
-                LOGGER.debug("On next called for item {}", item);
-                bookRepository.addGoogleBookItemToBook(googleBookId, item);
-                LOGGER.debug("Stored Google book details into repository for book id {}", googleBookId);
-            });
+            LOGGER.debug("On next called for item {}", item);
+            bookRepository.addGoogleBookItemToBook(book.getId(), item);
+            LOGGER.debug("Stored Google book details into repository for book id {}", book.getId());
+        });
 
         LOGGER.debug("Exited updateBookWithGoogleBookDetails");
     }

@@ -31,7 +31,7 @@ public class GoogleBooksDaoSycTest extends IntegrationTest {
         assertNotNull(result);
         assertEquals(SPRING_BOOK_TITLE, result.getVolumeInfo().getTitle());
 
-        assertEquals(false, result.getAccessInfo().isPublicDomain());
+        assertFalse(result.getAccessInfo().isPublicDomain());
 
         assertNotNull(result.getVolumeInfo().getImageLinks().getThumbnail());
     }

@@ -12,10 +12,13 @@ import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
+import java.util.concurrent.CountDownLatch;
+
 @Repository
 public class GoogleBooksDaoAsync extends GoogleBooksDaoBase {
 
-    public static final String BOOKS_WEB_CLIENT = "Books WebClient";
+    private static final String BOOKS_WEB_CLIENT = "Books WebClient";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GoogleBooksDaoAsync.class);
 
@@ -29,6 +32,7 @@ public class GoogleBooksDaoAsync extends GoogleBooksDaoBase {
                 .defaultHeader(HttpHeaders.USER_AGENT, BOOKS_WEB_CLIENT)
                 .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
                 .filter(logRequest())
+                .filter(logResponseStatus())
                 .build();
         this.bookRepository = bookRepository;
     }
@@ -37,39 +41,25 @@ public class GoogleBooksDaoAsync extends GoogleBooksDaoBase {
 
         LOGGER.debug("Entered updateBookWithGoogleBookDetails");
 
-        Mono<Item> result = this.webClient.
+        CountDownLatch countDownLatch = new CountDownLatch(1);
+
+        this.webClient.
                 get().
                 uri(booksGoogleBooksApiGetByIdUrl + googleBookId + "/?" + booksGoogleBooksApiCountryCode).
                 retrieve().
-                bodyToMono(Item.class);
+                bodyToMono(Item.class).
+                doAfterSuccessOrError((t1, t2) -> countDownLatch.countDown()).
+                timeout(Duration.ofSeconds(5)).
+                doOnNext(item -> bookRepository.addGoogleBookItemToBook(book.getId(), item)).
+                subscribe();
 
-        result.doOnNext(item -> {
-            LOGGER.debug("On next called for item {}", item);
-            bookRepository.addGoogleBookItemToBook(book.getId(), item);
-            LOGGER.debug("Stored Google book details into repository for book id {}", book.getId());
-        });
+        try {
+            countDownLatch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         LOGGER.debug("Exited updateBookWithGoogleBookDetails");
-    }
-
-    public void setBooksGoogleBooksApiSearchUrl(String booksGoogleBooksApiSearchUrl) {
-        this.booksGoogleBooksApiSearchUrl = booksGoogleBooksApiSearchUrl;
-    }
-
-    public void setBooksGoogleBooksApiGetByIdUrl(String booksGoogleBooksApiGetByIdUrl) {
-        this.booksGoogleBooksApiGetByIdUrl = booksGoogleBooksApiGetByIdUrl;
-    }
-
-    public void setBooksGoogleBooksApiCountryCode(String booksGoogleBooksApiCountryCode) {
-        this.booksGoogleBooksApiCountryCode = booksGoogleBooksApiCountryCode;
-    }
-
-    public void setBooksGoogleBooksApiConnectTimeout(int booksGoogleBooksApiConnectTimeout) {
-        this.booksGoogleBooksApiConnectTimeout = booksGoogleBooksApiConnectTimeout;
-    }
-
-    public void setBooksGoogleBooksApiReadTimeout(int booksGoogleBooksApiReadTimeout) {
-        this.booksGoogleBooksApiReadTimeout = booksGoogleBooksApiReadTimeout;
     }
 
     private ExchangeFilterFunction logRequest() {
@@ -81,5 +71,13 @@ public class GoogleBooksDaoAsync extends GoogleBooksDaoBase {
             }
             return next.exchange(clientRequest);
         };
+    }
+
+
+    private ExchangeFilterFunction logResponseStatus() {
+        return ExchangeFilterFunction.ofResponseProcessor(clientResponse -> {
+            LOGGER.info("Response Status {}", clientResponse.statusCode());
+            return Mono.just(clientResponse);
+        });
     }
 }

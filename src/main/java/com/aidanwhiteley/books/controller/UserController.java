@@ -137,17 +137,7 @@ public class UserController {
 	 * A data holder to pass some data / suggestions back to the client.
 	 */
 	class LogoutInfo {
-
-		private final boolean loggedOut = true;
-		private final String redirectUrl = postLogonUrl;
-
-		public boolean isLoggedOut() {
-			return loggedOut;
-		}
-
-		public String getRedirectUrl() {
-			return redirectUrl;
-		}
+		// No data now needs passing back to client - so all fields removed from this class
 	}
 
 }

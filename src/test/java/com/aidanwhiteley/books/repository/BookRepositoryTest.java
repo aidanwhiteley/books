@@ -19,9 +19,7 @@ import org.springframework.data.domain.PageRequest;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class BookRepositoryTest extends IntegrationTest {
 
@@ -64,7 +62,7 @@ public class BookRepositoryTest extends IntegrationTest {
         PageRequest pageObj = PageRequest.of(PAGE, PAGE_SIZE);
         Page<Book> books = bookRepository.findAllByAuthorOrderByEnteredDesc(pageObj, DR_ZEUSS);
         assertTrue(books.getContent().size() >= 1);
-        assertTrue(books.getContent().get(0).getAuthor().equals(DR_ZEUSS));
+        assertEquals(books.getContent().get(0).getAuthor(), DR_ZEUSS);
 
         // The book should have a system created id value.
         assertNotNull(books.getContent().get(0).getId());

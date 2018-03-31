@@ -1,12 +1,11 @@
 package com.aidanwhiteley.books.domain;
 
-import static org.junit.Assert.*;
+import com.aidanwhiteley.books.domain.User.AuthenticationProvider;
+import org.junit.Test;
 
 import java.time.LocalDateTime;
 
-import org.junit.Test;
-
-import com.aidanwhiteley.books.domain.User.AuthenticationProvider;
+import static org.junit.Assert.assertEquals;
 
 public class UserTest {
 
@@ -18,7 +17,7 @@ public class UserTest {
 		
 		assertEquals(user1.toString(), user2.toString());
 		assertEquals(user1.hashCode(), user2.hashCode());
-		assertTrue(user1.equals(user2));
+        assertEquals(user1, user2);
 	}
 
 	private User buildUser(LocalDateTime now) {

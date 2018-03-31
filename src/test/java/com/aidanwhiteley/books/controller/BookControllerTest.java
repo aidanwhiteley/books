@@ -1,25 +1,5 @@
 package com.aidanwhiteley.books.controller;
 
-import static com.aidanwhiteley.books.repository.BookRepositoryTest.J_UNIT_TESTING_FOR_BEGINNERS;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assume.assumeTrue;
-
-import java.net.URI;
-import java.util.List;
-
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-
 import com.aidanwhiteley.books.controller.jwt.JwtUtils;
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.User;
@@ -28,6 +8,21 @@ import com.aidanwhiteley.books.repository.dtos.BooksByGenre;
 import com.aidanwhiteley.books.repository.dtos.BooksByRating;
 import com.aidanwhiteley.books.util.IntegrationTest;
 import com.jayway.jsonpath.JsonPath;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.*;
+
+import java.net.URI;
+import java.util.List;
+
+import static com.aidanwhiteley.books.repository.BookRepositoryTest.J_UNIT_TESTING_FOR_BEGINNERS;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 public class BookControllerTest extends IntegrationTest {
 
@@ -88,7 +83,7 @@ public class BookControllerTest extends IntegrationTest {
         User user = BookControllerTestUtils.getTestUser();
         String token = jwtUtils.createTokenForUser(user);
         String xsrfToken = BookControllerTestUtils.getXsrfToken(testRestTemplate);
-        HttpEntity<Book> request = BookControllerTestUtils.getBookHttpEntity(testBook, user, token, xsrfToken);
+        HttpEntity<Book> request = BookControllerTestUtils.getBookHttpEntity(testBook, token, xsrfToken);
 
         ResponseEntity<Book> response = testRestTemplate
                 .exchange("/secure/api/books", HttpMethod.POST, request, Book.class);
@@ -110,7 +105,7 @@ public class BookControllerTest extends IntegrationTest {
         String token = jwtUtils.createTokenForUser(user);
         String xsrfToken = BookControllerTestUtils.getXsrfToken(testRestTemplate);
 
-        HttpEntity<Book> request = BookControllerTestUtils.getBookHttpEntity(testBook, user, token, xsrfToken);
+        HttpEntity<Book> request = BookControllerTestUtils.getBookHttpEntity(testBook, token, xsrfToken);
 
         ResponseEntity<Book> response = testRestTemplate
                 .exchange("/secure/api/books", HttpMethod.POST, request, Book.class);
@@ -171,7 +166,7 @@ public class BookControllerTest extends IntegrationTest {
                 null, String.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         books = JsonPath.read(response.getBody(), "$.content");
-        assertTrue("Search unexpectedly found a book", books.size() == 0);
+        assertEquals("Search unexpectedly found a book", 0, books.size());
     }
     
     @Test
@@ -182,7 +177,7 @@ public class BookControllerTest extends IntegrationTest {
         // Returns a "page" of books - so look for the content of the page
         List<Book> books = JsonPath.read(response.getBody(), "$.content");
         LOGGER.debug("Retrieved JSON was: " + response.getBody());
-        assertTrue("Default page size of books expected", books.size() == defaultPageSize);
+        assertEquals("Default page size of books expected", books.size(), defaultPageSize);
     }
     
     @Test

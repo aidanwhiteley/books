@@ -22,7 +22,7 @@ public class UserRepositoryTest extends IntegrationTest {
     @Autowired
     UserRepository userRepository;
 
-    public static User createTestUser() {
+    private static User createTestUser() {
         return User.builder().authenticationServiceId(SERVICE_ID).authProvider(GOOGLE).
                 fullName(FULL_NAME).adminEmailedAboutSignup(true).build();
     }

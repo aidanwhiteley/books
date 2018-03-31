@@ -5,7 +5,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @SuppressWarnings("serial")
 @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-public class IllegalArgumentException extends RuntimeException{
+class IllegalArgumentException extends RuntimeException {
+	@SuppressWarnings("unused")
 	public IllegalArgumentException(String msg) {
 		super(msg);
 	}

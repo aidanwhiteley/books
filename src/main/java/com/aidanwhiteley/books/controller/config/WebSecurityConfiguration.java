@@ -1,11 +1,10 @@
 package com.aidanwhiteley.books.controller.config;
 
-import java.io.IOException;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.aidanwhiteley.books.controller.jwt.JwtAuthenticationFilter;
+import com.aidanwhiteley.books.controller.jwt.JwtAuthenticationService;
+import com.aidanwhiteley.books.domain.User;
+import com.aidanwhiteley.books.repository.UserRepository;
+import com.aidanwhiteley.books.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,11 +26,10 @@ import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWrite
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.aidanwhiteley.books.controller.jwt.JwtAuthenticationFilter;
-import com.aidanwhiteley.books.controller.jwt.JwtAuthenticationService;
-import com.aidanwhiteley.books.domain.User;
-import com.aidanwhiteley.books.repository.UserRepository;
-import com.aidanwhiteley.books.service.UserService;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -136,7 +134,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
      * This is where we trigger the work to store local details for the user after they have successfully
      * authenticated with the OAuth2 authentication provider.
      */
-    public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+    class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
             @Override
             public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                                 Authentication authentication) throws IOException, ServletException {

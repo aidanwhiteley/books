@@ -1,25 +1,23 @@
 package com.aidanwhiteley.books.controller.jwt;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.aidanwhiteley.books.controller.config.HttpCookieOAuth2AuthorizationRequestRepository;
+import com.aidanwhiteley.books.domain.User;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.aidanwhiteley.books.domain.User;
-
-import io.jsonwebtoken.ExpiredJwtException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @Service
 public class JwtAuthenticationService {
 
 	public static final String JWT_COOKIE_NAME = "CLOUDY-JWT";
-	public static final String JSESSIONID_COOKIE_NAME = "JSESSIONID";
+	private static final String JSESSIONID_COOKIE_NAME = "JSESSIONID";
 	public static final String XSRF_HEADER_NAME = "X-XSRF-TOKEN";
 	public static final String XSRF_COOKIE_NAME = "XSRF-TOKEN";
 
@@ -160,7 +158,7 @@ public class JwtAuthenticationService {
 		response.addCookie(emptyCookie);
 	}
 
-    public void expireOauthCookie(HttpServletResponse response) {
+	private void expireOauthCookie(HttpServletResponse response) {
         Cookie emptyCookie = new Cookie(HttpCookieOAuth2AuthorizationRequestRepository.COOKIE_NAME, "");
         emptyCookie.setMaxAge(0);
         emptyCookie.setHttpOnly(true);

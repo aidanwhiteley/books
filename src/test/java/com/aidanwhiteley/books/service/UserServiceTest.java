@@ -34,7 +34,7 @@ import static org.mockito.Mockito.when;
 
 public class UserServiceTest extends IntegrationTest {
 
-    public static final String DUMMY = "dummy";
+    private static final String DUMMY = "dummy";
     private static final String NEW_USER_1 = "New User 1";
     private static final String NEW_USER_2 = "New User 2";
     private static final String UPDATED_USER_1 = "Updated User 1";

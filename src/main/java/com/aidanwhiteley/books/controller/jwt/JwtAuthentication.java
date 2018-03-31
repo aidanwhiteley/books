@@ -22,7 +22,7 @@ public class JwtAuthentication implements Authentication {
     private final String fullName;
     private final String authProvider;
     private final String authenticationServiceId;
-    private List<GrantedAuthority> grantedAuthorities = new LinkedList<>();
+    private final List<GrantedAuthority> grantedAuthorities = new LinkedList<>();
     private boolean isAuthenticated = false;
 
 
@@ -30,15 +30,6 @@ public class JwtAuthentication implements Authentication {
         this.fullName = fullName;
         this.authProvider = authProvider;
         this.authenticationServiceId = authenticationServiceId;
-    }
-
-    public JwtAuthentication(String fullName, String authProvider, String authenticationServiceId, boolean isAuthenticated,
-                             List<GrantedAuthority> grantedAuthorities) {
-        this.fullName = fullName;
-        this.authProvider = authProvider;
-        this.authenticationServiceId = authenticationServiceId;
-        this.isAuthenticated = isAuthenticated;
-        this.grantedAuthorities = grantedAuthorities;
     }
 
     public JwtAuthentication(User user) {

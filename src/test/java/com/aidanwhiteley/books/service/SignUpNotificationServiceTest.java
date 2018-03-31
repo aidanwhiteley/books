@@ -24,12 +24,12 @@ import static org.junit.Assert.assertTrue;
 
 public class SignUpNotificationServiceTest extends IntegrationTest{
 
-    public static final String TEST_USER = "Test User";
-
     // This value must match the value in the corresponding YAML config file.
     // Default port 25 shifted to allow easy use on Unix environments where
     // binding to ports less than 1024 requires root permissions.
+    @SuppressWarnings("WeakerAccess")
     public static final int PORT = 3025;
+    private static final String TEST_USER = "Test User";
 
     private GreenMail smtpServer;
 

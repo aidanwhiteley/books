@@ -1,31 +1,22 @@
 package com.aidanwhiteley.books.domain;
 
-import static com.aidanwhiteley.books.domain.User.Role.ROLE_ADMIN;
-import static com.aidanwhiteley.books.domain.User.Role.ROLE_EDITOR;
-import static com.aidanwhiteley.books.domain.User.Role.ROLE_USER;
-
-import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.util.UUID;
-
-import javax.validation.constraints.NotNull;
-
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import lombok.*;
 import org.hibernate.validator.constraints.Length;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import javax.validation.constraints.NotNull;
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.UUID;
 
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import static com.aidanwhiteley.books.domain.User.Role.*;
 
 @Setter
 @Getter
@@ -62,7 +53,7 @@ public class Comment implements Serializable {
     @Setter(AccessLevel.NONE)
     private boolean allowDelete;
 
-
+    @SuppressWarnings("WeakerAccess")
     public Comment() {
     }
 

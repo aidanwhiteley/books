@@ -1,17 +1,16 @@
 package com.aidanwhiteley.books.util;
 
-import java.security.Principal;
-import java.util.List;
-import java.util.Optional;
-
+import com.aidanwhiteley.books.controller.jwt.JwtAuthentication;
+import com.aidanwhiteley.books.domain.User;
+import com.aidanwhiteley.books.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.aidanwhiteley.books.controller.jwt.JwtAuthentication;
-import com.aidanwhiteley.books.domain.User;
-import com.aidanwhiteley.books.repository.UserRepository;
+import java.security.Principal;
+import java.util.List;
+import java.util.Optional;
 
 @Component
 public class JwtAuthenticationUtils {
@@ -52,7 +51,7 @@ public class JwtAuthenticationUtils {
         }
     }
 
-    public Optional<User> getUserIfExists(JwtAuthentication auth) {
+    private Optional<User> getUserIfExists(JwtAuthentication auth) {
 
         if (auth == null) {
             return Optional.empty();

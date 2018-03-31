@@ -1,8 +1,8 @@
 package com.aidanwhiteley.books.controller.aspect;
 
-import java.security.Principal;
-import java.util.Optional;
-
+import com.aidanwhiteley.books.domain.Book;
+import com.aidanwhiteley.books.domain.User;
+import com.aidanwhiteley.books.util.JwtAuthenticationUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -13,9 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
-import com.aidanwhiteley.books.domain.Book;
-import com.aidanwhiteley.books.domain.User;
-import com.aidanwhiteley.books.util.JwtAuthenticationUtils;
+import java.security.Principal;
+import java.util.Optional;
 
 /**
  * This aspect is responsible for limiting the data returned to a caller based
@@ -37,6 +36,7 @@ import com.aidanwhiteley.books.util.JwtAuthenticationUtils;
  * TODO - this doesnt need to be an "around" advice - it could just be an
  * "after".
  */
+@SuppressWarnings({"EmptyMethod", "unused"})
 @Aspect
 @Component
 public class LimitDataVisibilityAspect {

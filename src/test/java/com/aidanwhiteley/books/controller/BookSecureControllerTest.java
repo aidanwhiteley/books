@@ -1,22 +1,5 @@
 package com.aidanwhiteley.books.controller;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.net.URI;
-
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.HttpClientErrorException;
-
 import com.aidanwhiteley.books.controller.config.WebSecurityConfiguration;
 import com.aidanwhiteley.books.controller.jwt.JwtAuthenticationService;
 import com.aidanwhiteley.books.controller.jwt.JwtUtils;
@@ -25,6 +8,14 @@ import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.domain.User.Role;
 import com.aidanwhiteley.books.repository.BookRepositoryTest;
 import com.aidanwhiteley.books.util.IntegrationTest;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.*;
+
+import java.net.URI;
+
+import static org.junit.Assert.*;
 
 public class BookSecureControllerTest extends IntegrationTest {
 
@@ -39,26 +30,26 @@ public class BookSecureControllerTest extends IntegrationTest {
 
     @Test
     public void createAndDeleteBook() {
-    	// Create book
+        // Create book
         ResponseEntity<Book> response = BookControllerTestUtils.postBookToServer(jwtUtils, testRestTemplate);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        
+
         // Get location of created book
         String location = response.getHeaders().getLocation().toString();
         assertNotNull("Location of newly created book should have been provided", location);
         String id = location.substring(location.lastIndexOf("/") + 1);
-        
+
         // Get an admin user and required tokens and then delete the book
         User user = BookControllerTestUtils.getTestUser();
         String token = jwtUtils.createTokenForUser(user);
         String xsrfToken = BookControllerTestUtils.getXsrfToken(testRestTemplate);
-        HttpEntity<Book> request = BookControllerTestUtils.getBookHttpEntity(null, user, token, xsrfToken);
+        HttpEntity<Book> request = BookControllerTestUtils.getBookHttpEntity(null, token, xsrfToken);
         response = testRestTemplate.exchange("/secure/api/books/" + id, HttpMethod.DELETE, request, Book.class);
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
-        
+
         // Now check that the book can no longer be found
         Book deletedBook = testRestTemplate.getForObject(location, Book.class);
-        assertEquals(null, deletedBook.getId());  
+        assertNull(deletedBook.getId());
     }
 
     @Test
@@ -70,14 +61,14 @@ public class BookSecureControllerTest extends IntegrationTest {
         String token = jwtUtils.createTokenForUser(user);
         String xsrfToken = BookControllerTestUtils.getXsrfToken(testRestTemplate);
 
-        HttpEntity<Book> request = BookControllerTestUtils.getBookHttpEntity(emptyBook, user, token, xsrfToken);
+        HttpEntity<Book> request = BookControllerTestUtils.getBookHttpEntity(emptyBook, token, xsrfToken);
         ResponseEntity<Book> response = testRestTemplate.exchange("/secure/api/books", HttpMethod.POST, request, Book.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
 
         // Create a valid book and then exceed one of the max field sizes
         Book testBook = BookRepositoryTest.createTestBook();
         testBook.setGenre(GENRE_TOO_LONG);
-        request = BookControllerTestUtils.getBookHttpEntity(testBook, user, token, xsrfToken);
+        request = BookControllerTestUtils.getBookHttpEntity(testBook, token, xsrfToken);
         response = testRestTemplate.exchange("/secure/api/books", HttpMethod.POST, request, Book.class);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -115,7 +106,7 @@ public class BookSecureControllerTest extends IntegrationTest {
         user.removeRole(Role.ROLE_EDITOR);
         String token = jwtUtils.createTokenForUser(user);
 
-        HttpEntity<Book> putData = BookControllerTestUtils.getBookHttpEntity(testBook, user, token);
+        HttpEntity<Book> putData = BookControllerTestUtils.getBookHttpEntity(testBook, token);
         ResponseEntity<Book> postResponse = testRestTemplate.exchange("/secure/api/books", HttpMethod.POST, putData,
                 Book.class);
 
@@ -143,7 +134,7 @@ public class BookSecureControllerTest extends IntegrationTest {
         book.setTitle(updatedTitle);
         String token = jwtUtils.createTokenForUser(user);
         String xsrfToken = BookControllerTestUtils.getXsrfToken(testRestTemplate);
-        HttpEntity<Book> putData = BookControllerTestUtils.getBookHttpEntity(book, user, token, xsrfToken);
+        HttpEntity<Book> putData = BookControllerTestUtils.getBookHttpEntity(book, token, xsrfToken);
         ResponseEntity<Book> putResponse = testRestTemplate.exchange("/secure/api/books", HttpMethod.PUT, putData,
                 Book.class);
 
@@ -172,7 +163,7 @@ public class BookSecureControllerTest extends IntegrationTest {
         final String updatedTitle = "An updated book title";
         book.setTitle(updatedTitle);
         String token = jwtUtils.createTokenForUser(user);
-        HttpEntity<Book> putData = BookControllerTestUtils.getBookHttpEntity(book, user, token);
+        HttpEntity<Book> putData = BookControllerTestUtils.getBookHttpEntity(book, token);
         ResponseEntity<Book> putResponse = testRestTemplate.exchange("/secure/api/books", HttpMethod.PUT, putData,
                 Book.class);
 
@@ -189,17 +180,17 @@ public class BookSecureControllerTest extends IntegrationTest {
 
         // Check all works OK when xsrf token is supplied
         Book testBook = BookRepositoryTest.createTestBook();
-        HttpEntity<Book> request = BookControllerTestUtils.getBookHttpEntity(testBook, user, token, xsrfToken);
-        ResponseEntity<Book> response  = testRestTemplate.exchange("/secure/api/books", HttpMethod.POST, request, Book.class);
+        HttpEntity<Book> request = BookControllerTestUtils.getBookHttpEntity(testBook, token, xsrfToken);
+        ResponseEntity<Book> response = testRestTemplate.exchange("/secure/api/books", HttpMethod.POST, request, Book.class);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
 
         // And now check the action is forbidden when no xsrf token is supplied
-        request = BookControllerTestUtils.getBookHttpEntity(testBook, user, token, null);
-        response  = testRestTemplate.exchange("/secure/api/books", HttpMethod.POST, request, Book.class);
+        request = BookControllerTestUtils.getBookHttpEntity(testBook, token, null);
+        response = testRestTemplate.exchange("/secure/api/books", HttpMethod.POST, request, Book.class);
 
         // In actual fact, what happens is that the request is re-directed to the "logon page", A 403 would have been preferable
         assertEquals(HttpStatus.FOUND, response.getStatusCode());
-        assertTrue(response.getHeaders().getLocation().getPath().equals(WebSecurityConfiguration.API_LOGIN));
+        assertEquals(response.getHeaders().getLocation().getPath(), WebSecurityConfiguration.API_LOGIN);
     }
 
     @Test
@@ -209,8 +200,8 @@ public class BookSecureControllerTest extends IntegrationTest {
 
         // Re-using "book related" code to get required headers easily set up
         Book testBook = BookRepositoryTest.createTestBook();
-        HttpEntity<Book> request = BookControllerTestUtils.getBookHttpEntity(testBook, user, token, null);
-        ResponseEntity<String> response  = testRestTemplate.exchange("/secure/api/debugheaders", HttpMethod.GET, request, String.class);
+        HttpEntity<Book> request = BookControllerTestUtils.getBookHttpEntity(testBook, token, null);
+        ResponseEntity<String> response = testRestTemplate.exchange("/secure/api/debugheaders", HttpMethod.GET, request, String.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertTrue(response.getBody().contains(JwtAuthenticationService.JWT_COOKIE_NAME));

@@ -21,11 +21,11 @@ public class BookControllerTestUtils {
     // the Fongo / Mongo at the start of the tests
     public static final String USER_WITH_ALL_ROLES_FULL_NAME = "Joe Dimagio";
     public static final String USER_WITH_EDITOR_ROLE_FULL_NAME = "Babe Ruth";
-    public static final String USER_WITH_ALL_ROLES = "107641999401234521888";
-    public static final String USER_WITH_EDITOR_ROLE = "1632142143412347";
+    private static final String USER_WITH_ALL_ROLES = "107641999401234521888";
+    private static final String USER_WITH_EDITOR_ROLE = "1632142143412347";
     public static final String DUMMY_EMAIL = "joe.dimagio@gmail.com";
-    public static final User.AuthenticationProvider PROVIDER_ALL_ROLES_USER = User.AuthenticationProvider.GOOGLE;
-    public static final User.AuthenticationProvider PROVIDER_EDITOR_USER = User.AuthenticationProvider.FACEBOOK;
+    private static final User.AuthenticationProvider PROVIDER_ALL_ROLES_USER = User.AuthenticationProvider.GOOGLE;
+    private static final User.AuthenticationProvider PROVIDER_EDITOR_USER = User.AuthenticationProvider.FACEBOOK;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BookControllerTestUtils.class);
 
@@ -55,7 +55,7 @@ public class BookControllerTestUtils {
         return user;
     }
 
-    public static HttpEntity<Book> getBookHttpEntity(Book testBook, User user, String jwtToken, String xsrfToken) {
+    public static HttpEntity<Book> getBookHttpEntity(Book testBook, String jwtToken, String xsrfToken) {
         HttpHeaders requestHeaders = new HttpHeaders();
         requestHeaders.add("Cookie", JwtAuthenticationService.JWT_COOKIE_NAME + "=" + jwtToken);
         if (xsrfToken != null && (!xsrfToken.trim().isEmpty())) {
@@ -66,8 +66,8 @@ public class BookControllerTestUtils {
         return new HttpEntity<>(testBook, requestHeaders);
     }
 
-    public static HttpEntity<Book> getBookHttpEntity(Book testBook, User user, String jwtToken) {
-        return getBookHttpEntity(testBook, user, jwtToken, null);
+    public static HttpEntity<Book> getBookHttpEntity(Book testBook, String jwtToken) {
+        return getBookHttpEntity(testBook, jwtToken, null);
     }
 
     public static ResponseEntity<Book> postBookToServer(JwtUtils jwtUtils, TestRestTemplate testRestTemplate) {
@@ -77,7 +77,7 @@ public class BookControllerTestUtils {
         User user = getTestUser();
 
         String token = jwtUtils.createTokenForUser(user);
-        HttpEntity<Book> request = getBookHttpEntity(testBook, user, token, xsrfToken);
+        HttpEntity<Book> request = getBookHttpEntity(testBook, token, xsrfToken);
         ResponseEntity<Book> book = testRestTemplate.exchange("/secure/api/books", HttpMethod.POST, request, Book.class);
 
         assertNotNull(book);

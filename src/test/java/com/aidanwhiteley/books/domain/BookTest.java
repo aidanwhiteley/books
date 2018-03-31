@@ -54,7 +54,7 @@ public class BookTest {
                 summary(SOMEONE_DUNNIT).title(WHO_DID_IT).build();
     	
     	assertEquals(book1.hashCode(), book2.hashCode());
-    	assertTrue(book1.equals(book2));
+        assertEquals(book1, book2);
     	assertEquals(book1.toString(), book2.toString());
     }
 }

@@ -4,6 +4,7 @@ import lombok.*;
 
 import java.io.Serializable;
 
+@SuppressWarnings("WeakerAccess")
 @Getter
 @Setter
 @NoArgsConstructor

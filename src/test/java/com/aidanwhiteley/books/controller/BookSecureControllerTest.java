@@ -190,7 +190,7 @@ public class BookSecureControllerTest extends IntegrationTest {
 
         // In actual fact, what happens is that the request is re-directed to the "logon page", A 403 would have been preferable
         assertEquals(HttpStatus.FOUND, response.getStatusCode());
-        assertEquals(response.getHeaders().getLocation().getPath(), WebSecurityConfiguration.API_LOGIN);
+        assertEquals(WebSecurityConfiguration.API_LOGIN, response.getHeaders().getLocation().getPath());
     }
 
     @Test

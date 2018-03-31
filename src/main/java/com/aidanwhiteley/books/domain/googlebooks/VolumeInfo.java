@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("WeakerAccess")
 @Getter
 @Setter
 @NoArgsConstructor

@@ -29,13 +29,15 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 @Repository
 public class BookRepositoryImpl implements BookRepositoryCustomMethods {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(BookRepositoryImpl.class);
+
     private static final String COUNT_OF_BOOKS = "countOfBooks";
     private static final String AUTHOR = "author";
     private static final String READER = "reader";
     private static final String GENRE = "genre";
     private static final String RATING = "rating";
     private static final String COMMENTS = "comments";
-    private static final Logger LOGGER = LoggerFactory.getLogger(BookRepositoryImpl.class);
+
     private final MongoTemplate mongoTemplate;
 
     @Autowired

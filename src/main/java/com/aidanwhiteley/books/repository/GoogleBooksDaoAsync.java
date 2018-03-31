@@ -18,9 +18,9 @@ import java.util.concurrent.CountDownLatch;
 @Repository
 public class GoogleBooksDaoAsync extends GoogleBooksDaoBase {
 
-    private static final String BOOKS_WEB_CLIENT = "Books WebClient";
-
     private static final Logger LOGGER = LoggerFactory.getLogger(GoogleBooksDaoAsync.class);
+
+    private static final String BOOKS_WEB_CLIENT = "Books WebClient";
 
     private final WebClient webClient;
     private final BookRepository bookRepository;
@@ -55,8 +55,8 @@ public class GoogleBooksDaoAsync extends GoogleBooksDaoBase {
 
         try {
             countDownLatch.await();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        } catch (InterruptedException ie) {
+            LOGGER.error("InterruptedException while waiting for countDownLatch", ie);
         }
 
         LOGGER.debug("Exited updateBookWithGoogleBookDetails");

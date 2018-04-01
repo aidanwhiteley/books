@@ -108,7 +108,7 @@ books:
 
   jwt:
     expiryInMilliSeconds: 86400000 # One day
-    secretKey:
+    secretKey:                     # Specify your secret key here
     issuer: "CloudyBookClub"
     cookieOverHttpsOnly: true
     cookieAccessedByHttpOnly: true

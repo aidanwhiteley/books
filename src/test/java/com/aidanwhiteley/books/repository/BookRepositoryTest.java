@@ -54,7 +54,7 @@ public class BookRepositoryTest extends IntegrationTest {
 
     @After
     public void tearDown() {
-        bookRepository.deleteAll();
+        //bookRepository.deleteAll();
     }
 
     @Test

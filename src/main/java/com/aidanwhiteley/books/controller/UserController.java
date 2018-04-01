@@ -135,9 +135,13 @@ public class UserController {
 
 	/**
 	 * A data holder to pass some data / suggestions back to the client.
+     *
+     * No data now needs passing back to client - so all fields removed from this class. Candidate for removal
 	 */
 	class LogoutInfo {
-		// No data now needs passing back to client - so all fields removed from this class
+		LogoutInfo() {
+		    LOGGER.debug("Created LogoutInfo");
+        }
 	}
 
 }

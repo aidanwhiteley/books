@@ -57,6 +57,7 @@ public class GoogleBooksDaoAsync extends GoogleBooksDaoBase {
             countDownLatch.await();
         } catch (InterruptedException ie) {
             LOGGER.error("InterruptedException while waiting for countDownLatch", ie);
+            throw new IllegalStateException("InterruptedException while waiting for countDownLatch");
         }
 
         LOGGER.debug("Exited updateBookWithGoogleBookDetails");

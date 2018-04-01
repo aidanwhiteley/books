@@ -52,17 +52,12 @@ public class BookRepositoryTest extends IntegrationTest {
         bookRepository.insert(createTestBook());
     }
 
-    @After
-    public void tearDown() {
-        //bookRepository.deleteAll();
-    }
-
     @Test
     public void findByAuthor() {
         PageRequest pageObj = PageRequest.of(PAGE, PAGE_SIZE);
         Page<Book> books = bookRepository.findAllByAuthorOrderByEnteredDesc(pageObj, DR_ZEUSS);
         assertTrue(books.getContent().size() >= 1);
-        assertEquals(books.getContent().get(0).getAuthor(), DR_ZEUSS);
+        assertEquals(DR_ZEUSS, books.getContent().get(0).getAuthor());
 
         // The book should have a system created id value.
         assertNotNull(books.getContent().get(0).getId());

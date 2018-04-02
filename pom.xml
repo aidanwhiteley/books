@@ -10,7 +10,7 @@
 
 	<name>Books Microservice</name>
 	<description>A simple project to remind myself what books Ive read recently! Also a technology sampler using the
-        latest Spring Boot, JWT, stateless in the HTTP layer etc
+        latest Spring Boot, JWT, stateless in the HTTP layer, Mongo and a little reactive (e.g. WebClient) etc
     </description>
 	<developers>
 		<developer>
@@ -40,31 +40,7 @@
 		<java.version>1.8</java.version>
 	</properties>
 
-	<profiles>
-		<profile>
-			<id>loadtest</id>
-			<dependencies>
-				<dependency>
-					<groupId>io.gatling.highcharts</groupId>
-					<artifactId>gatling-charts-highcharts</artifactId>
-					<version>2.1.7</version>
-					<scope>test</scope>
-				</dependency>
-			</dependencies>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>io.gatling</groupId>
-						<artifactId>gatling-maven-plugin</artifactId>
-						<version>2.1.7</version>
-						<configuration>
-							<simulationClass>com.aidanwhiteley.books.loadtest.StressTestSimulation1</simulationClass>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
+
 
 	<dependencies>
 		<dependency>
@@ -127,7 +103,7 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 			<exclusions>
-			    <!--  Two JSONObjects on the classpath -->
+				<!-- Two JSONObjects on the classpath -->
 				<exclusion>
 					<groupId>com.vaadin.external.google</groupId>
 					<artifactId>android-json</artifactId>
@@ -152,6 +128,13 @@
 			<version>5.2.0</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>io.gatling.highcharts</groupId>
+			<artifactId>gatling-charts-highcharts</artifactId>
+			<version>2.3.1</version>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -187,6 +170,11 @@
 						<exclude>/com/aidanwhiteley/books/domain/googlebooks/**/*</exclude>
 					</excludes>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>io.gatling</groupId>
+				<artifactId>gatling-maven-plugin</artifactId>
+				<version>2.2.4</version>
 			</plugin>
 
 			<!-- plugin> <groupId>org.owasp</groupId> <artifactId>dependency-check-maven</artifactId> 

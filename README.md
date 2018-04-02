@@ -31,10 +31,10 @@ There is an option to run the tests using Fongo (an in memory Mongo replacement)
 However, to run the project, Mongo is always required - even if tests are run against Fongo.
 
 #### Stress Test
-To examine how the WebClient code is behaving there is a Spring profile set up that runs a basic Gatling load test.
+To examine how the WebClient code is behaving there is a maven plugin set up that runs a basic Gatling load test.
 Run the command:
 
-mvn -P loadtest gatling:execute
+mvn gatling:test
 
 The (Scala) source code of this test in at test/scala/com/aidanwhiteley/books/loadtest/StressTestSimulation1.scala
 

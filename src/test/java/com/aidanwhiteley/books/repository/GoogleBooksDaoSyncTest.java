@@ -58,6 +58,8 @@ public class GoogleBooksDaoSyncTest extends IntegrationTest {
 
     @Test
     public void confirmFindbyBookTimesOut() {
+
+        // TODO - suppress logging for this expected exception and then change to the @Test(expected=xxx) syntax
         try {
             theDao.searchGoogleBooksByGoogleBookId(SLOW_RESPOND_STUB_BOOK_ID);
             fail("There should have been a timeout on accessing stubbed http service");

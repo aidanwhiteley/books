@@ -23,20 +23,20 @@ making the web application entirely free of http session state (which has its pr
 * Mongo based persistence with the use of Spring Data MongoRepository 
     * next to no persistence code
     * except for some Mongo aggregation queries added to the Repository implementation
-* Accessing the Google Books API with the Spring RestTemplate
+* Accessing the Google Books API with the Spring RestTemplate and, a work in progress, the reactive Spring WebClient
 
 ### Tests
 All tests should run fine "out of the box". By default, the tests expect there to be a Mongo instance running locally. 
 There is an option to run the tests using Fongo (an in memory Mongo replacement) - change the spring.profiles.active in application.yml to "fongo".
 However, to run the project, Mongo is always required - even if tests are run against Fongo.
 
-### Stress Test
+#### Stress Test
 To examine how the WebClient code is behaving there is a Spring profile set up that runs a basic Gatling load test.
 Run the command:
 
 mvn -P loadtest gatling:execute
 
-The (scala) source code of this test in at /test/scala/com/aidanwhiteley/books/loadtest/StressTestSimulation1.scala
+The (Scala) source code of this test in at test/scala/com/aidanwhiteley/books/loadtest/StressTestSimulation1.scala
 
 This is currently a "work in progress" and needs uplifting to the latest version of Gatling.
 

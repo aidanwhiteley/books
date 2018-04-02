@@ -1,0 +1,2606 @@
+{
+ "kind": "books#volumes",
+ "totalItems": 1681,
+ "items": [
+  {
+   "kind": "books#volume",
+   "id": "6oHuKQe3TjQC",
+   "etag": "dvpvHgECf6E",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/6oHuKQe3TjQC",
+   "volumeInfo": {
+    "title": "Design Patterns",
+    "subtitle": "Elements of Reusable Object-Oriented Software (Adobe Reader)",
+    "authors": [
+     "Erich Gamma",
+     "Richard Helm",
+     "Ralph Johnson",
+     "John Vlissides"
+    ],
+    "publisher": "Pearson Education",
+    "publishedDate": "1994-10-31",
+    "description": "Capturing a wealth of experience about the design of object-oriented software, four top-notch designers present a catalog of simple and succinct solutions to commonly occurring design problems. Previously undocumented, these 23 patterns allow designers to create more flexible, elegant, and ultimately reusable designs without having to rediscover the design solutions themselves. The authors begin by describing what patterns are and how they can help you design object-oriented software. They then go on to systematically name, explain, evaluate, and catalog recurring designs in object-oriented systems. With Design Patterns as your guide, you will learn how these important patterns fit into the software development process, and how you can leverage them to solve your own design problems most efficiently. Each pattern describes the circumstances in which it is applicable, when it can be applied in view of other design constraints, and the consequences and trade-offs of using the pattern within a larger design. All patterns are compiled from real systems and are based on real-world examples. Each pattern also includes code that demonstrates how it may be implemented in object-oriented programming languages like C++ or Smalltalk.",
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_10",
+      "identifier": "0321700694"
+     },
+     {
+      "type": "ISBN_13",
+      "identifier": "9780321700698"
+     }
+    ],
+    "readingModes": {
+     "text": true,
+     "image": true
+    },
+    "printType": "BOOK",
+    "categories": [
+     "Computers"
+    ],
+    "averageRating": 4.0,
+    "ratingsCount": 12,
+    "maturityRating": "NOT_MATURE",
+    "allowAnonLogging": true,
+    "contentVersion": "1.5.3.0.preview.3",
+    "panelizationSummary": {
+     "containsEpubBubbles": false,
+     "containsImageBubbles": false
+    },
+    "imageLinks": {
+     "smallThumbnail": "http://books.google.com/books/content?id=6oHuKQe3TjQC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+     "thumbnail": "http://books.google.com/books/content?id=6oHuKQe3TjQC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    },
+    "language": "en",
+    "previewLink": "http://books.google.co.uk/books?id=6oHuKQe3TjQC&printsec=frontcover&dq=Design+Patterns&hl=&cd=1&source=gbs_api",
+    "infoLink": "https://play.google.com/store/books/details?id=6oHuKQe3TjQC&source=gbs_api",
+    "canonicalVolumeLink": "https://market.android.com/details?id=book-6oHuKQe3TjQC"
+   },
+   "saleInfo": {
+    "country": "GB",
+    "saleability": "FOR_SALE",
+    "isEbook": true,
+    "listPrice": {
+     "amount": 34.99,
+     "currencyCode": "GBP"
+    },
+    "retailPrice": {
+     "amount": 27.71,
+     "currencyCode": "GBP"
+    },
+    "buyLink": "https://play.google.com/store/books/details?id=6oHuKQe3TjQC&rdid=book-6oHuKQe3TjQC&rdot=1&source=gbs_api",
+    "offers": [
+     {
+      "finskyOfferType": 1,
+      "listPrice": {
+       "amountInMicros": 3.499E7,
+       "currencyCode": "GBP"
+      },
+      "retailPrice": {
+       "amountInMicros": 2.771E7,
+       "currencyCode": "GBP"
+      },
+      "giftable": true
+     }
+    ]
+   },
+   "accessInfo": {
+    "country": "GB",
+    "viewability": "PARTIAL",
+    "embeddable": true,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED_FOR_ACCESSIBILITY",
+    "epub": {
+     "isAvailable": false
+    },
+    "pdf": {
+     "isAvailable": false
+    },
+    "webReaderLink": "http://play.google.com/books/reader?id=6oHuKQe3TjQC&hl=&printsec=frontcover&source=gbs_api",
+    "accessViewStatus": "SAMPLE",
+    "quoteSharingAllowed": false
+   },
+   "searchInfo": {
+    "textSnippet": "With Design Patterns as your guide, you will learn how these important patterns fit into the software development process, and how you can leverage them to solve your own design problems most efficiently."
+   }
+  },
+  {
+   "kind": "books#volume",
+   "id": "84Whswqz4rAC",
+   "etag": "vDUSe8mp8iE",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/84Whswqz4rAC",
+   "volumeInfo": {
+    "title": "Design Patterns Explained",
+    "subtitle": "A New Perspective on Object-Oriented Design",
+    "authors": [
+     "Alan Shalloway",
+     "James R. Trott"
+    ],
+    "publisher": "Pearson Education",
+    "publishedDate": "2004-10-12",
+    "description": "\"One of the great things about the book is the way the authors explain concepts very simply using analogies rather than programming examples–this has been very inspiring for a product I'm working on: an audio-only introduction to OOP and software development.\" –Bruce Eckel \"...I would expect that readers with a basic understanding of object-oriented programming and design would find this book useful, before approaching design patterns completely. Design Patterns Explained complements the existing design patterns texts and may perform a very useful role, fitting between introductory texts such as UML Distilled and the more advanced patterns books.\" –James Noble Leverage the quality and productivity benefits of patterns–without the complexity! Design Patterns Explained, Second Edition is the field's simplest, clearest, most practical introduction to patterns. Using dozens of updated Java examples, it shows programmers and architects exactly how to use patterns to design, develop, and deliver software far more effectively. You'll start with a complete overview of the fundamental principles of patterns, and the role of object-oriented analysis and design in contemporary software development. Then, using easy-to-understand sample code, Alan Shalloway and James Trott illuminate dozens of today's most useful patterns: their underlying concepts, advantages, tradeoffs, implementation techniques, and pitfalls to avoid. Many patterns are accompanied by UML diagrams. Building on their best-selling First Edition, Shalloway and Trott have thoroughly updated this book to reflect new software design trends, patterns, and implementation techniques. Reflecting extensive reader feedback, they have deepened and clarified coverage throughout, and reorganized content for even greater ease of understanding. New and revamped coverage in this edition includes Better ways to start \"thinking in patterns\" How design patterns can facilitate agile development using eXtreme Programming and other methods How to use commonality and variability analysis to design application architectures The key role of testing into a patterns-driven development process How to use factories to instantiate and manage objects more effectively The Object-Pool Pattern–a new pattern not identified by the \"Gang of Four\" New study/practice questions at the end of every chapter Gentle yet thorough, this book assumes no patterns experience whatsoever. It's the ideal \"first book\" on patterns, and a perfect complement to Gamma's classic Design Patterns. If you're a programmer or architect who wants the clearest possible understanding of design patterns–or if you've struggled to make them work for you–read this book.",
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_10",
+      "identifier": "0321630041"
+     },
+     {
+      "type": "ISBN_13",
+      "identifier": "9780321630049"
+     }
+    ],
+    "readingModes": {
+     "text": true,
+     "image": true
+    },
+    "pageCount": 480,
+    "printType": "BOOK",
+    "categories": [
+     "Computers"
+    ],
+    "averageRating": 4.5,
+    "ratingsCount": 2,
+    "maturityRating": "NOT_MATURE",
+    "allowAnonLogging": true,
+    "contentVersion": "1.5.3.0.preview.3",
+    "panelizationSummary": {
+     "containsEpubBubbles": false,
+     "containsImageBubbles": false
+    },
+    "imageLinks": {
+     "smallThumbnail": "http://books.google.com/books/content?id=84Whswqz4rAC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+     "thumbnail": "http://books.google.com/books/content?id=84Whswqz4rAC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    },
+    "language": "en",
+    "previewLink": "http://books.google.co.uk/books?id=84Whswqz4rAC&printsec=frontcover&dq=Design+Patterns&hl=&cd=2&source=gbs_api",
+    "infoLink": "https://play.google.com/store/books/details?id=84Whswqz4rAC&source=gbs_api",
+    "canonicalVolumeLink": "https://market.android.com/details?id=book-84Whswqz4rAC"
+   },
+   "saleInfo": {
+    "country": "GB",
+    "saleability": "FOR_SALE",
+    "isEbook": true,
+    "listPrice": {
+     "amount": 34.99,
+     "currencyCode": "GBP"
+    },
+    "retailPrice": {
+     "amount": 23.84,
+     "currencyCode": "GBP"
+    },
+    "buyLink": "https://play.google.com/store/books/details?id=84Whswqz4rAC&rdid=book-84Whswqz4rAC&rdot=1&source=gbs_api",
+    "offers": [
+     {
+      "finskyOfferType": 1,
+      "listPrice": {
+       "amountInMicros": 3.499E7,
+       "currencyCode": "GBP"
+      },
+      "retailPrice": {
+       "amountInMicros": 2.384E7,
+       "currencyCode": "GBP"
+      },
+      "giftable": true
+     }
+    ]
+   },
+   "accessInfo": {
+    "country": "GB",
+    "viewability": "PARTIAL",
+    "embeddable": true,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED_FOR_ACCESSIBILITY",
+    "epub": {
+     "isAvailable": false
+    },
+    "pdf": {
+     "isAvailable": false
+    },
+    "webReaderLink": "http://play.google.com/books/reader?id=84Whswqz4rAC&hl=&printsec=frontcover&source=gbs_api",
+    "accessViewStatus": "SAMPLE",
+    "quoteSharingAllowed": false
+   },
+   "searchInfo": {
+    "textSnippet": "If you&#39;re a programmer or architect who wants the clearest possible understanding of design patterns–or if you&#39;ve struggled to make them work for you–read this book."
+   }
+  },
+  {
+   "kind": "books#volume",
+   "id": "C3NjONZuoAMC",
+   "etag": "MqU3mqp7Ei0",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/C3NjONZuoAMC",
+   "volumeInfo": {
+    "title": "Learning PHP Design Patterns",
+    "authors": [
+     "William Sanders"
+    ],
+    "publisher": "\"O'Reilly Media, Inc.\"",
+    "publishedDate": "2013",
+    "description": "Provides information on building applications using object-oriented design patterns in PHP code.",
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_13",
+      "identifier": "9781449344917"
+     },
+     {
+      "type": "ISBN_10",
+      "identifier": "1449344917"
+     }
+    ],
+    "readingModes": {
+     "text": false,
+     "image": true
+    },
+    "pageCount": 339,
+    "printType": "BOOK",
+    "categories": [
+     "Computers"
+    ],
+    "averageRating": 1.0,
+    "ratingsCount": 1,
+    "maturityRating": "NOT_MATURE",
+    "allowAnonLogging": false,
+    "contentVersion": "preview-1.0.0",
+    "imageLinks": {
+     "smallThumbnail": "http://books.google.com/books/content?id=C3NjONZuoAMC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+     "thumbnail": "http://books.google.com/books/content?id=C3NjONZuoAMC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    },
+    "language": "en",
+    "previewLink": "http://books.google.co.uk/books?id=C3NjONZuoAMC&printsec=frontcover&dq=Design+Patterns&hl=&cd=3&source=gbs_api",
+    "infoLink": "http://books.google.co.uk/books?id=C3NjONZuoAMC&dq=Design+Patterns&hl=&source=gbs_api",
+    "canonicalVolumeLink": "https://books.google.com/books/about/Learning_PHP_Design_Patterns.html?hl=&id=C3NjONZuoAMC"
+   },
+   "saleInfo": {
+    "country": "GB",
+    "saleability": "NOT_FOR_SALE",
+    "isEbook": false
+   },
+   "accessInfo": {
+    "country": "GB",
+    "viewability": "PARTIAL",
+    "embeddable": true,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED",
+    "epub": {
+     "isAvailable": false
+    },
+    "pdf": {
+     "isAvailable": false
+    },
+    "webReaderLink": "http://play.google.com/books/reader?id=C3NjONZuoAMC&hl=&printsec=frontcover&source=gbs_api",
+    "accessViewStatus": "SAMPLE",
+    "quoteSharingAllowed": false
+   },
+   "searchInfo": {
+    "textSnippet": "Provides information on building applications using object-oriented design patterns in PHP code."
+   }
+  },
+  {
+   "kind": "books#volume",
+   "id": "GGpXN9SMELMC",
+   "etag": "KPOKCkp5Vxw",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/GGpXN9SMELMC",
+   "volumeInfo": {
+    "title": "Head First Design Patterns",
+    "authors": [
+     "Eric Freeman",
+     "Elisabeth Freeman",
+     "Kathy Sierra",
+     "Bert Bates"
+    ],
+    "publisher": "\"O'Reilly Media, Inc.\"",
+    "publishedDate": "2004-10-25",
+    "description": "Provides design patterns to help with software development using the Java programming language.",
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_13",
+      "identifier": "9780596007126"
+     },
+     {
+      "type": "ISBN_10",
+      "identifier": "0596007124"
+     }
+    ],
+    "readingModes": {
+     "text": false,
+     "image": true
+    },
+    "pageCount": 638,
+    "printType": "BOOK",
+    "categories": [
+     "Computers"
+    ],
+    "averageRating": 4.5,
+    "ratingsCount": 21,
+    "maturityRating": "NOT_MATURE",
+    "allowAnonLogging": true,
+    "contentVersion": "0.4.0.0.preview.1",
+    "imageLinks": {
+     "smallThumbnail": "http://books.google.com/books/content?id=GGpXN9SMELMC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+     "thumbnail": "http://books.google.com/books/content?id=GGpXN9SMELMC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    },
+    "language": "en",
+    "previewLink": "http://books.google.co.uk/books?id=GGpXN9SMELMC&printsec=frontcover&dq=Design+Patterns&hl=&cd=4&source=gbs_api",
+    "infoLink": "http://books.google.co.uk/books?id=GGpXN9SMELMC&dq=Design+Patterns&hl=&source=gbs_api",
+    "canonicalVolumeLink": "https://books.google.com/books/about/Head_First_Design_Patterns.html?hl=&id=GGpXN9SMELMC"
+   },
+   "saleInfo": {
+    "country": "GB",
+    "saleability": "NOT_FOR_SALE",
+    "isEbook": false
+   },
+   "accessInfo": {
+    "country": "GB",
+    "viewability": "PARTIAL",
+    "embeddable": true,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED",
+    "epub": {
+     "isAvailable": false
+    },
+    "pdf": {
+     "isAvailable": true
+    },
+    "webReaderLink": "http://play.google.com/books/reader?id=GGpXN9SMELMC&hl=&printsec=frontcover&source=gbs_api",
+    "accessViewStatus": "SAMPLE",
+    "quoteSharingAllowed": false
+   },
+   "searchInfo": {
+    "textSnippet": "Provides design patterns to help with software development using the Java programming language."
+   }
+  },
+  {
+   "kind": "books#volume",
+   "id": "uq9PCwAAQBAJ",
+   "etag": "v0n4/LXF6nE",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/uq9PCwAAQBAJ",
+   "volumeInfo": {
+    "title": "Java Design Patterns",
+    "authors": [
+     "Vaskaran Sarcar"
+    ],
+    "publisher": "Apress",
+    "publishedDate": "2015-12-31",
+    "description": "Learn how to implement design patterns in Java: each pattern in Java Design Patterns is a complete implementation and the output is generated using Eclipse, making the code accessible to all. The examples are chosen so you will be able to absorb the core concepts easily and quickly. This book presents the topic of design patterns in Java in such a way that anyone can grasp the idea. By giving easy to follow examples, you will understand the concepts with increasing depth. The examples presented are straightforward and the topic is presented in a concise manner. Key features of the book: Each of the 23 patterns is described with straightforward Java code. There is no need to know advanced concepts of Java to use this book. Each of the concepts is connected with a real world example and a computer world example. The book uses Eclipse IDE to generate the output because it is the most popular IDE in this field. This is a practitioner's book on design patterns in Java. Design patterns are a popular topic in software development. A design pattern is a common, well-described solution to a common software problem. There is a lot of written material available on design patterns, but scattered and not in one single reference source. Also, many of these examples are unnecessarily big and complex.",
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_13",
+      "identifier": "9781484218020"
+     },
+     {
+      "type": "ISBN_10",
+      "identifier": "1484218027"
+     }
+    ],
+    "readingModes": {
+     "text": true,
+     "image": true
+    },
+    "pageCount": 171,
+    "printType": "BOOK",
+    "categories": [
+     "Computers"
+    ],
+    "maturityRating": "NOT_MATURE",
+    "allowAnonLogging": true,
+    "contentVersion": "1.6.5.0.preview.3",
+    "panelizationSummary": {
+     "containsEpubBubbles": false,
+     "containsImageBubbles": false
+    },
+    "imageLinks": {
+     "smallThumbnail": "http://books.google.com/books/content?id=uq9PCwAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+     "thumbnail": "http://books.google.com/books/content?id=uq9PCwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    },
+    "language": "en",
+    "previewLink": "http://books.google.co.uk/books?id=uq9PCwAAQBAJ&printsec=frontcover&dq=Design+Patterns&hl=&cd=5&source=gbs_api",
+    "infoLink": "https://play.google.com/store/books/details?id=uq9PCwAAQBAJ&source=gbs_api",
+    "canonicalVolumeLink": "https://market.android.com/details?id=book-uq9PCwAAQBAJ"
+   },
+   "saleInfo": {
+    "country": "GB",
+    "saleability": "FOR_SALE",
+    "isEbook": true,
+    "listPrice": {
+     "amount": 24.99,
+     "currencyCode": "GBP"
+    },
+    "retailPrice": {
+     "amount": 16.24,
+     "currencyCode": "GBP"
+    },
+    "buyLink": "https://play.google.com/store/books/details?id=uq9PCwAAQBAJ&rdid=book-uq9PCwAAQBAJ&rdot=1&source=gbs_api",
+    "offers": [
+     {
+      "finskyOfferType": 1,
+      "listPrice": {
+       "amountInMicros": 2.499E7,
+       "currencyCode": "GBP"
+      },
+      "retailPrice": {
+       "amountInMicros": 1.624E7,
+       "currencyCode": "GBP"
+      },
+      "giftable": true
+     }
+    ]
+   },
+   "accessInfo": {
+    "country": "GB",
+    "viewability": "PARTIAL",
+    "embeddable": true,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED",
+    "epub": {
+     "isAvailable": true,
+     "acsTokenLink": "http://books.google.co.uk/books/download/Java_Design_Patterns-sample-epub.acsm?id=uq9PCwAAQBAJ&format=epub&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+    },
+    "pdf": {
+     "isAvailable": true,
+     "acsTokenLink": "http://books.google.co.uk/books/download/Java_Design_Patterns-sample-pdf.acsm?id=uq9PCwAAQBAJ&format=pdf&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+    },
+    "webReaderLink": "http://play.google.com/books/reader?id=uq9PCwAAQBAJ&hl=&printsec=frontcover&source=gbs_api",
+    "accessViewStatus": "SAMPLE",
+    "quoteSharingAllowed": false
+   },
+   "searchInfo": {
+    "textSnippet": "The book uses Eclipse IDE to generate the output because it is the most popular IDE in this field. This is a practitioner&#39;s book on design patterns in Java. Design patterns are a popular topic in software development."
+   }
+  },
+  {
+   "kind": "books#volume",
+   "id": "f7s8MsAHoucC",
+   "etag": "/DBsu7nXV8c",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/f7s8MsAHoucC",
+   "volumeInfo": {
+    "title": "Design Patterns",
+    "authors": [
+     "Christopher G. Lasater"
+    ],
+    "publisher": "Wordware Publishing, Inc.",
+    "publishedDate": "2010-10-25",
+    "description": "Design Patterns demonstrates how software developers can improve the performance, maintainability, portability, and scalability of their code through the use of the Gang of Four design patterns. After a discussion of patterns methodology, reasons for using design patterns, the book delves into each of the 23 patterns. Each pattern section gives a detailed description of the pattern, refactored from either Boolean logic or simpler, less-maintainable code that you might encounter in the real world, and shows readers how to use the pattern in their code. The text walks readers through making the move from current code to the pattern, lists the benefits of using the pattern, and shows how the pattern performs after the refactoring effort, with a goal throughout of providing practical implementations.",
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_13",
+      "identifier": "9781449633820"
+     },
+     {
+      "type": "ISBN_10",
+      "identifier": "144963382X"
+     }
+    ],
+    "readingModes": {
+     "text": true,
+     "image": true
+    },
+    "pageCount": 286,
+    "printType": "BOOK",
+    "categories": [
+     "Computers"
+    ],
+    "maturityRating": "NOT_MATURE",
+    "allowAnonLogging": true,
+    "contentVersion": "0.6.2.0.preview.3",
+    "imageLinks": {
+     "smallThumbnail": "http://books.google.com/books/content?id=f7s8MsAHoucC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+     "thumbnail": "http://books.google.com/books/content?id=f7s8MsAHoucC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    },
+    "language": "en",
+    "previewLink": "http://books.google.co.uk/books?id=f7s8MsAHoucC&printsec=frontcover&dq=Design+Patterns&hl=&cd=6&source=gbs_api",
+    "infoLink": "http://books.google.co.uk/books?id=f7s8MsAHoucC&dq=Design+Patterns&hl=&source=gbs_api",
+    "canonicalVolumeLink": "https://books.google.com/books/about/Design_Patterns.html?hl=&id=f7s8MsAHoucC"
+   },
+   "saleInfo": {
+    "country": "GB",
+    "saleability": "NOT_FOR_SALE",
+    "isEbook": false
+   },
+   "accessInfo": {
+    "country": "GB",
+    "viewability": "PARTIAL",
+    "embeddable": true,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED",
+    "epub": {
+     "isAvailable": true,
+     "acsTokenLink": "http://books.google.co.uk/books/download/Design_Patterns-sample-epub.acsm?id=f7s8MsAHoucC&format=epub&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+    },
+    "pdf": {
+     "isAvailable": true,
+     "acsTokenLink": "http://books.google.co.uk/books/download/Design_Patterns-sample-pdf.acsm?id=f7s8MsAHoucC&format=pdf&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+    },
+    "webReaderLink": "http://play.google.com/books/reader?id=f7s8MsAHoucC&hl=&printsec=frontcover&source=gbs_api",
+    "accessViewStatus": "SAMPLE",
+    "quoteSharingAllowed": false
+   },
+   "searchInfo": {
+    "textSnippet": "The text walks readers through making the move from current code to the pattern, lists the benefits of using the pattern, and shows how the pattern performs after the refactoring effort, with a goal throughout of providing practical ..."
+   }
+  },
+  {
+   "kind": "books#volume",
+   "id": "JYPEgK-1bZoC",
+   "etag": "JTwfT8kM2qc",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/JYPEgK-1bZoC",
+   "volumeInfo": {
+    "title": "Learning JavaScript Design Patterns",
+    "authors": [
+     "Addy Osmani"
+    ],
+    "publisher": "\"O'Reilly Media, Inc.\"",
+    "publishedDate": "2012-08-20",
+    "description": "An introduction to writing code with JavaScript using classical and modern design patterns, including modules, observers, facades, and mediators.",
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_13",
+      "identifier": "9781449331818"
+     },
+     {
+      "type": "ISBN_10",
+      "identifier": "1449331815"
+     }
+    ],
+    "readingModes": {
+     "text": false,
+     "image": true
+    },
+    "pageCount": 235,
+    "printType": "BOOK",
+    "categories": [
+     "COMPUTERS"
+    ],
+    "maturityRating": "NOT_MATURE",
+    "allowAnonLogging": false,
+    "contentVersion": "0.4.0.0.preview.1",
+    "imageLinks": {
+     "smallThumbnail": "http://books.google.com/books/content?id=JYPEgK-1bZoC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+     "thumbnail": "http://books.google.com/books/content?id=JYPEgK-1bZoC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    },
+    "language": "en",
+    "previewLink": "http://books.google.co.uk/books?id=JYPEgK-1bZoC&printsec=frontcover&dq=Design+Patterns&hl=&cd=7&source=gbs_api",
+    "infoLink": "http://books.google.co.uk/books?id=JYPEgK-1bZoC&dq=Design+Patterns&hl=&source=gbs_api",
+    "canonicalVolumeLink": "https://books.google.com/books/about/Learning_JavaScript_Design_Patterns.html?hl=&id=JYPEgK-1bZoC"
+   },
+   "saleInfo": {
+    "country": "GB",
+    "saleability": "NOT_FOR_SALE",
+    "isEbook": false
+   },
+   "accessInfo": {
+    "country": "GB",
+    "viewability": "PARTIAL",
+    "embeddable": true,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED",
+    "epub": {
+     "isAvailable": false
+    },
+    "pdf": {
+     "isAvailable": false
+    },
+    "webReaderLink": "http://play.google.com/books/reader?id=JYPEgK-1bZoC&hl=&printsec=frontcover&source=gbs_api",
+    "accessViewStatus": "SAMPLE",
+    "quoteSharingAllowed": false
+   },
+   "searchInfo": {
+    "textSnippet": "An introduction to writing code with JavaScript using classical and modern design patterns, including modules, observers, facades, and mediators."
+   }
+  },
+  {
+   "kind": "books#volume",
+   "id": "yl4nCgAAQBAJ",
+   "etag": "lJhIUtdLwdY",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/yl4nCgAAQBAJ",
+   "volumeInfo": {
+    "title": "Advanced ActionScript 3",
+    "subtitle": "Design Patterns",
+    "authors": [
+     "Ben Smith"
+    ],
+    "publisher": "Apress",
+    "publishedDate": "2014-12-30",
+    "description": "Advanced ActionScript 3 is a fresh look and new approach to utilizing valuable, structural techniques and methods that are commonly used in the field of rich interactive application development. With each method broken down into different strategized explanations, you'll find the approach most suitable for you. Whether it is an example you can utilize as-is, or one you can start with and develop further, you will have a glossary of definitions and organizational concepts at your fingertips. Object-oriented programming (OOP) and design patterns are not new to the field, but can often be overlooked in their value. They are, at times, not only overwhelming to learn, but difficult to put into practice. However, they are useful because they create a structure that can be broken down, rebuilt, and reused. This edition has been fully updated to reflect modern coding standards and practices. Provides the building blocks required for the implementation of OOP Addresses problems and concerns regarding OOP Offers solutions on how to approach and utilize OOP",
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_13",
+      "identifier": "9781484206713"
+     },
+     {
+      "type": "ISBN_10",
+      "identifier": "1484206711"
+     }
+    ],
+    "readingModes": {
+     "text": true,
+     "image": true
+    },
+    "pageCount": 408,
+    "printType": "BOOK",
+    "categories": [
+     "Computers"
+    ],
+    "maturityRating": "NOT_MATURE",
+    "allowAnonLogging": false,
+    "contentVersion": "0.4.3.0.preview.3",
+    "panelizationSummary": {
+     "containsEpubBubbles": false,
+     "containsImageBubbles": false
+    },
+    "imageLinks": {
+     "smallThumbnail": "http://books.google.com/books/content?id=yl4nCgAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+     "thumbnail": "http://books.google.com/books/content?id=yl4nCgAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    },
+    "language": "en",
+    "previewLink": "http://books.google.co.uk/books?id=yl4nCgAAQBAJ&printsec=frontcover&dq=Design+Patterns&hl=&cd=8&source=gbs_api",
+    "infoLink": "https://play.google.com/store/books/details?id=yl4nCgAAQBAJ&source=gbs_api",
+    "canonicalVolumeLink": "https://market.android.com/details?id=book-yl4nCgAAQBAJ"
+   },
+   "saleInfo": {
+    "country": "GB",
+    "saleability": "FOR_SALE",
+    "isEbook": true,
+    "listPrice": {
+     "amount": 25.99,
+     "currencyCode": "GBP"
+    },
+    "retailPrice": {
+     "amount": 16.89,
+     "currencyCode": "GBP"
+    },
+    "buyLink": "https://play.google.com/store/books/details?id=yl4nCgAAQBAJ&rdid=book-yl4nCgAAQBAJ&rdot=1&source=gbs_api",
+    "offers": [
+     {
+      "finskyOfferType": 1,
+      "listPrice": {
+       "amountInMicros": 2.599E7,
+       "currencyCode": "GBP"
+      },
+      "retailPrice": {
+       "amountInMicros": 1.689E7,
+       "currencyCode": "GBP"
+      },
+      "giftable": true
+     }
+    ]
+   },
+   "accessInfo": {
+    "country": "GB",
+    "viewability": "PARTIAL",
+    "embeddable": true,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED",
+    "epub": {
+     "isAvailable": true,
+     "acsTokenLink": "http://books.google.co.uk/books/download/Advanced_ActionScript_3-sample-epub.acsm?id=yl4nCgAAQBAJ&format=epub&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+    },
+    "pdf": {
+     "isAvailable": true,
+     "acsTokenLink": "http://books.google.co.uk/books/download/Advanced_ActionScript_3-sample-pdf.acsm?id=yl4nCgAAQBAJ&format=pdf&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+    },
+    "webReaderLink": "http://play.google.com/books/reader?id=yl4nCgAAQBAJ&hl=&printsec=frontcover&source=gbs_api",
+    "accessViewStatus": "SAMPLE",
+    "quoteSharingAllowed": false
+   },
+   "searchInfo": {
+    "textSnippet": "However, they are useful because they create a structure that can be broken down, rebuilt, and reused. This edition has been fully updated to reflect modern coding standards and practices."
+   }
+  },
+  {
+   "kind": "books#volume",
+   "id": "SrJRu8T69FcC",
+   "etag": "04kYczeeR3w",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/SrJRu8T69FcC",
+   "volumeInfo": {
+    "title": "Java Design Patterns",
+    "subtitle": "A Tutorial",
+    "authors": [
+     "James William Cooper"
+    ],
+    "publisher": "Addison-Wesley Professional",
+    "publishedDate": "2000",
+    "description": "Java developers know that design patterns offer powerful productivity benefits but few books have been specific enough to address their programming challenges. With \"Java Design Patterns\", there's finally a hands-on guide focused specifically on real-world Java development. The book covers three main categories of design patterns--creational, structural, and behavioral--and the example programs and useful variations can be found on the accompanying CD-ROM.",
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_10",
+      "identifier": "0201485397"
+     },
+     {
+      "type": "ISBN_13",
+      "identifier": "9780201485394"
+     }
+    ],
+    "readingModes": {
+     "text": false,
+     "image": true
+    },
+    "pageCount": 329,
+    "printType": "BOOK",
+    "categories": [
+     "Computers"
+    ],
+    "averageRating": 3.5,
+    "ratingsCount": 6,
+    "maturityRating": "NOT_MATURE",
+    "allowAnonLogging": false,
+    "contentVersion": "preview-1.0.0",
+    "imageLinks": {
+     "smallThumbnail": "http://books.google.com/books/content?id=SrJRu8T69FcC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+     "thumbnail": "http://books.google.com/books/content?id=SrJRu8T69FcC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    },
+    "language": "en",
+    "previewLink": "http://books.google.co.uk/books?id=SrJRu8T69FcC&printsec=frontcover&dq=Design+Patterns&hl=&cd=9&source=gbs_api",
+    "infoLink": "http://books.google.co.uk/books?id=SrJRu8T69FcC&dq=Design+Patterns&hl=&source=gbs_api",
+    "canonicalVolumeLink": "https://books.google.com/books/about/Java_Design_Patterns.html?hl=&id=SrJRu8T69FcC"
+   },
+   "saleInfo": {
+    "country": "GB",
+    "saleability": "NOT_FOR_SALE",
+    "isEbook": false
+   },
+   "accessInfo": {
+    "country": "GB",
+    "viewability": "PARTIAL",
+    "embeddable": true,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED_FOR_ACCESSIBILITY",
+    "epub": {
+     "isAvailable": false
+    },
+    "pdf": {
+     "isAvailable": false
+    },
+    "webReaderLink": "http://play.google.com/books/reader?id=SrJRu8T69FcC&hl=&printsec=frontcover&source=gbs_api",
+    "accessViewStatus": "SAMPLE",
+    "quoteSharingAllowed": false
+   },
+   "searchInfo": {
+    "textSnippet": "The book covers three main categories of design patterns--creational, structural, and behavioral--and the example programs and useful variations can be found on the accompanying CD-ROM."
+   }
+  },
+  {
+   "kind": "books#volume",
+   "id": "uLU9k-mKvzoC",
+   "etag": "otYFnwrUoWo",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/uLU9k-mKvzoC",
+   "volumeInfo": {
+    "title": "Design Patterns For Dummies",
+    "authors": [
+     "Steve Holzner"
+    ],
+    "publisher": "John Wiley & Sons",
+    "publishedDate": "2006-07-28",
+    "description": "There's a pattern here, and here's how to use it! Find out how the 23 leading design patterns can save you time and trouble Ever feel as if you've solved this programming problem before? You -- or someone -- probably did, and that's why there's a design pattern to help this time around. This book shows you how (and when) to use the famous patterns developed by the \"Gang of Four,\" plus some new ones, all designed to make your programming life easier. Discover how to: * Simplify the programming process with design patterns * Make the most of the Decorator, Factory, and Adapter patterns * Identify which pattern applies * Reduce the amount of code needed for a task * Create your own patterns",
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_10",
+      "identifier": "0470046961"
+     },
+     {
+      "type": "ISBN_13",
+      "identifier": "9780470046968"
+     }
+    ],
+    "readingModes": {
+     "text": false,
+     "image": true
+    },
+    "pageCount": 308,
+    "printType": "BOOK",
+    "categories": [
+     "Computers"
+    ],
+    "averageRating": 4.5,
+    "ratingsCount": 4,
+    "maturityRating": "NOT_MATURE",
+    "allowAnonLogging": true,
+    "contentVersion": "4.1.1.0.preview.1",
+    "panelizationSummary": {
+     "containsEpubBubbles": false,
+     "containsImageBubbles": false
+    },
+    "imageLinks": {
+     "smallThumbnail": "http://books.google.com/books/content?id=uLU9k-mKvzoC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+     "thumbnail": "http://books.google.com/books/content?id=uLU9k-mKvzoC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    },
+    "language": "en",
+    "previewLink": "http://books.google.co.uk/books?id=uLU9k-mKvzoC&printsec=frontcover&dq=Design+Patterns&hl=&cd=10&source=gbs_api",
+    "infoLink": "http://books.google.co.uk/books?id=uLU9k-mKvzoC&dq=Design+Patterns&hl=&source=gbs_api",
+    "canonicalVolumeLink": "https://books.google.com/books/about/Design_Patterns_For_Dummies.html?hl=&id=uLU9k-mKvzoC"
+   },
+   "saleInfo": {
+    "country": "GB",
+    "saleability": "NOT_FOR_SALE",
+    "isEbook": false
+   },
+   "accessInfo": {
+    "country": "GB",
+    "viewability": "PARTIAL",
+    "embeddable": true,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED",
+    "epub": {
+     "isAvailable": false
+    },
+    "pdf": {
+     "isAvailable": true,
+     "acsTokenLink": "http://books.google.co.uk/books/download/Design_Patterns_For_Dummies-sample-pdf.acsm?id=uLU9k-mKvzoC&format=pdf&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+    },
+    "webReaderLink": "http://play.google.com/books/reader?id=uLU9k-mKvzoC&hl=&printsec=frontcover&source=gbs_api",
+    "accessViewStatus": "SAMPLE",
+    "quoteSharingAllowed": false
+   },
+   "searchInfo": {
+    "textSnippet": "This book shows you how (and when) to use the famous patterns developed by the &quot;Gang of Four,&quot; plus some new ones, all designed to make your programming life easier."
+   }
+  },
+  {
+   "kind": "books#volume",
+   "id": "pD2XMZLGUAYC",
+   "etag": "YZ9bsu1NE0A",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/pD2XMZLGUAYC",
+   "volumeInfo": {
+    "title": "C# 3.0 Design Patterns",
+    "subtitle": "Use the Power of C# 3.0 to Solve Real-World Problems",
+    "authors": [
+     "Judith Bishop"
+    ],
+    "publisher": "\"O'Reilly Media, Inc.\"",
+    "publishedDate": "2007-12-10",
+    "description": "If you want to speed up the development of your .NET applications, you're ready for C# design patterns -- elegant, accepted and proven ways to tackle common programming problems. This practical guide offers you a clear introduction to the classic object-oriented design patterns, and explains how to use the latest features of C# 3.0 to code them. C# Design Patterns draws on new C# 3.0 language and .NET 3.5 framework features to implement the 23 foundational patterns known to working developers. You get plenty of case studies that reveal how each pattern is used in practice, and an insightful comparison of patterns and where they would be best used or combined. This well-organized and illustrated book includes: An explanation of design patterns and why they're used, with tables and guidelines to help you choose one pattern over another Illustrated coverage of each classic Creational, Structural, and Behavioral design pattern, including its representation in UML and the roles of its various players C# 3.0 features introduced by example and summarized in sidebars for easy reference Examples of each pattern at work in a real .NET 3.5 program available for download from O'Reilly and the author's companion web site Quizzes and exercises to test your understanding of the material. With C# 3.0 Design Patterns, you learn to make code correct, extensible and efficient to save time up front and eliminate problems later. If your business relies on efficient application development and quality code, you need C# Design Patterns.",
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_10",
+      "identifier": "0596551444"
+     },
+     {
+      "type": "ISBN_13",
+      "identifier": "9780596551445"
+     }
+    ],
+    "readingModes": {
+     "text": true,
+     "image": true
+    },
+    "pageCount": 318,
+    "printType": "BOOK",
+    "categories": [
+     "Computers"
+    ],
+    "averageRating": 3.5,
+    "ratingsCount": 10,
+    "maturityRating": "NOT_MATURE",
+    "allowAnonLogging": true,
+    "contentVersion": "1.5.4.0.preview.3",
+    "panelizationSummary": {
+     "containsEpubBubbles": false,
+     "containsImageBubbles": false
+    },
+    "imageLinks": {
+     "smallThumbnail": "http://books.google.com/books/content?id=pD2XMZLGUAYC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+     "thumbnail": "http://books.google.com/books/content?id=pD2XMZLGUAYC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    },
+    "language": "en",
+    "previewLink": "http://books.google.co.uk/books?id=pD2XMZLGUAYC&printsec=frontcover&dq=Design+Patterns&hl=&cd=11&source=gbs_api",
+    "infoLink": "https://play.google.com/store/books/details?id=pD2XMZLGUAYC&source=gbs_api",
+    "canonicalVolumeLink": "https://market.android.com/details?id=book-pD2XMZLGUAYC"
+   },
+   "saleInfo": {
+    "country": "GB",
+    "saleability": "FOR_SALE",
+    "isEbook": true,
+    "listPrice": {
+     "amount": 25.8,
+     "currencyCode": "GBP"
+    },
+    "retailPrice": {
+     "amount": 16.77,
+     "currencyCode": "GBP"
+    },
+    "buyLink": "https://play.google.com/store/books/details?id=pD2XMZLGUAYC&rdid=book-pD2XMZLGUAYC&rdot=1&source=gbs_api",
+    "offers": [
+     {
+      "finskyOfferType": 1,
+      "listPrice": {
+       "amountInMicros": 2.58E7,
+       "currencyCode": "GBP"
+      },
+      "retailPrice": {
+       "amountInMicros": 1.677E7,
+       "currencyCode": "GBP"
+      },
+      "giftable": true
+     }
+    ]
+   },
+   "accessInfo": {
+    "country": "GB",
+    "viewability": "PARTIAL",
+    "embeddable": true,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED",
+    "epub": {
+     "isAvailable": true
+    },
+    "pdf": {
+     "isAvailable": true
+    },
+    "webReaderLink": "http://play.google.com/books/reader?id=pD2XMZLGUAYC&hl=&printsec=frontcover&source=gbs_api",
+    "accessViewStatus": "SAMPLE",
+    "quoteSharingAllowed": false
+   },
+   "searchInfo": {
+    "textSnippet": "This practical guide offers you a clear introduction to the classic object-oriented design patterns, and explains how to use the latest features of C# 3.0 to code them."
+   }
+  },
+  {
+   "kind": "books#volume",
+   "id": "S5ebGvuLJqQC",
+   "etag": "lE+5rVbX4tA",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/S5ebGvuLJqQC",
+   "volumeInfo": {
+    "title": "Design Patterns in Java",
+    "authors": [
+     "Steven John Metsker",
+     "William C. Wake"
+    ],
+    "publisher": "Addison-Wesley Professional",
+    "publishedDate": "2006-04-18",
+    "description": "Design Patterns in Java™ gives you the hands-on practice and deep insight you need to fully leverage the significant power of design patterns in any Java software project. The perfect complement to the classic Design Patterns, this learn-by-doing workbook applies the latest Java features and best practices to all of the original 23 patterns identified in that groundbreaking text. Drawing on their extensive experience as Java instructors and programmers, Steve Metsker and Bill Wake illuminate each pattern with real Java programs, clear UML diagrams, and compelling exercises. You'll move quickly from theory to application–learning how to improve new code and refactor existing code for simplicity, manageability, and performance. Coverage includes Using Adapter to provide consistent interfaces to clients Using Facade to simplify the use of reusable toolkits Understanding the role of Bridge in Java database connectivity The Observer pattern, Model-View-Controller, and GUI behavior Java Remote Method Invocation (RMI) and the Proxy pattern Streamlining designs using the Chain of Responsibility pattern Using patterns to go beyond Java's built-in constructor features Implementing Undo capabilities with Memento Using the State pattern to manage state more cleanly and simply Optimizing existing codebases with extension patterns Providing thread-safe iteration with the Iterator pattern Using Visitor to define new operations without changing hierarchy classes If you're a Java programmer wanting to save time while writing better code, this book's techniques, tips, and clear explanations and examples will help you harness the power of patterns to improve every program you write, design, or maintain. All source code is available for download at http://www.oozinoz.com.",
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_10",
+      "identifier": "0321629949"
+     },
+     {
+      "type": "ISBN_13",
+      "identifier": "9780321629944"
+     }
+    ],
+    "readingModes": {
+     "text": true,
+     "image": true
+    },
+    "pageCount": 480,
+    "printType": "BOOK",
+    "categories": [
+     "Computers"
+    ],
+    "averageRating": 2.5,
+    "ratingsCount": 4,
+    "maturityRating": "NOT_MATURE",
+    "allowAnonLogging": true,
+    "contentVersion": "2.7.6.0.preview.3",
+    "panelizationSummary": {
+     "containsEpubBubbles": false,
+     "containsImageBubbles": false
+    },
+    "imageLinks": {
+     "smallThumbnail": "http://books.google.com/books/content?id=S5ebGvuLJqQC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+     "thumbnail": "http://books.google.com/books/content?id=S5ebGvuLJqQC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    },
+    "language": "en",
+    "previewLink": "http://books.google.co.uk/books?id=S5ebGvuLJqQC&printsec=frontcover&dq=Design+Patterns&hl=&cd=12&source=gbs_api",
+    "infoLink": "https://play.google.com/store/books/details?id=S5ebGvuLJqQC&source=gbs_api",
+    "canonicalVolumeLink": "https://market.android.com/details?id=book-S5ebGvuLJqQC"
+   },
+   "saleInfo": {
+    "country": "GB",
+    "saleability": "FOR_SALE",
+    "isEbook": true,
+    "listPrice": {
+     "amount": 41.99,
+     "currencyCode": "GBP"
+    },
+    "retailPrice": {
+     "amount": 29.09,
+     "currencyCode": "GBP"
+    },
+    "buyLink": "https://play.google.com/store/books/details?id=S5ebGvuLJqQC&rdid=book-S5ebGvuLJqQC&rdot=1&source=gbs_api",
+    "offers": [
+     {
+      "finskyOfferType": 1,
+      "listPrice": {
+       "amountInMicros": 4.199E7,
+       "currencyCode": "GBP"
+      },
+      "retailPrice": {
+       "amountInMicros": 2.909E7,
+       "currencyCode": "GBP"
+      },
+      "giftable": true
+     }
+    ]
+   },
+   "accessInfo": {
+    "country": "GB",
+    "viewability": "PARTIAL",
+    "embeddable": true,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED_FOR_ACCESSIBILITY",
+    "epub": {
+     "isAvailable": false
+    },
+    "pdf": {
+     "isAvailable": false
+    },
+    "webReaderLink": "http://play.google.com/books/reader?id=S5ebGvuLJqQC&hl=&printsec=frontcover&source=gbs_api",
+    "accessViewStatus": "SAMPLE",
+    "quoteSharingAllowed": false
+   },
+   "searchInfo": {
+    "textSnippet": "Coverage includes Using Adapter to provide consistent interfaces to clients Using Facade to simplify the use of reusable toolkits Understanding the role of Bridge in Java database connectivity The Observer pattern, Model-View-Controller, ..."
+   }
+  },
+  {
+   "kind": "books#volume",
+   "id": "FqfKFl4Bm7UC",
+   "etag": "jBG3D7phkCY",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/FqfKFl4Bm7UC",
+   "volumeInfo": {
+    "title": "Software Architecture Design Patterns in Java",
+    "authors": [
+     "Partha Kuchana"
+    ],
+    "publisher": "CRC Press",
+    "publishedDate": "2004-04-27",
+    "description": "Software engineering and computer science students need a resource that explains how to apply design patterns at the enterprise level, allowing them to design and implement systems of high stability and quality. Software Architecture Design Patterns in Java is a detailed explanation of how to apply design patterns and develop software architectures. It provides in-depth examples in Java, and guides students by detailing when, why, and how to use specific patterns. This textbook presents 42 design patterns, including 23 GoF patterns. Categories include: Basic, Creational, Collectional, Structural, Behavioral, and Concurrency, with multiple examples for each. The discussion of each pattern includes an example implemented in Java. The source code for all examples is found on a companion Web site. The author explains the content so that it is easy to understand, and each pattern discussion includes Practice Questions to aid instructors. The textbook concludes with a case study that pulls several patterns together to demonstrate how patterns are not applied in isolation, but collaborate within domains to solve complicated problems.",
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_10",
+      "identifier": "0203496213"
+     },
+     {
+      "type": "ISBN_13",
+      "identifier": "9780203496213"
+     }
+    ],
+    "readingModes": {
+     "text": true,
+     "image": true
+    },
+    "pageCount": 520,
+    "printType": "BOOK",
+    "categories": [
+     "Computers"
+    ],
+    "averageRating": 4.0,
+    "ratingsCount": 1,
+    "maturityRating": "NOT_MATURE",
+    "allowAnonLogging": false,
+    "contentVersion": "0.1.3.0.preview.3",
+    "panelizationSummary": {
+     "containsEpubBubbles": false,
+     "containsImageBubbles": false
+    },
+    "imageLinks": {
+     "smallThumbnail": "http://books.google.com/books/content?id=FqfKFl4Bm7UC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+     "thumbnail": "http://books.google.com/books/content?id=FqfKFl4Bm7UC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    },
+    "language": "en",
+    "previewLink": "http://books.google.co.uk/books?id=FqfKFl4Bm7UC&printsec=frontcover&dq=Design+Patterns&hl=&cd=13&source=gbs_api",
+    "infoLink": "https://play.google.com/store/books/details?id=FqfKFl4Bm7UC&source=gbs_api",
+    "canonicalVolumeLink": "https://market.android.com/details?id=book-FqfKFl4Bm7UC"
+   },
+   "saleInfo": {
+    "country": "GB",
+    "saleability": "FOR_SALE",
+    "isEbook": true,
+    "listPrice": {
+     "amount": 41.99,
+     "currencyCode": "GBP"
+    },
+    "retailPrice": {
+     "amount": 31.19,
+     "currencyCode": "GBP"
+    },
+    "buyLink": "https://play.google.com/store/books/details?id=FqfKFl4Bm7UC&rdid=book-FqfKFl4Bm7UC&rdot=1&source=gbs_api",
+    "offers": [
+     {
+      "finskyOfferType": 1,
+      "listPrice": {
+       "amountInMicros": 4.199E7,
+       "currencyCode": "GBP"
+      },
+      "retailPrice": {
+       "amountInMicros": 3.119E7,
+       "currencyCode": "GBP"
+      },
+      "giftable": true
+     }
+    ]
+   },
+   "accessInfo": {
+    "country": "GB",
+    "viewability": "PARTIAL",
+    "embeddable": true,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED",
+    "epub": {
+     "isAvailable": true,
+     "acsTokenLink": "http://books.google.co.uk/books/download/Software_Architecture_Design_Patterns_in-sample-epub.acsm?id=FqfKFl4Bm7UC&format=epub&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+    },
+    "pdf": {
+     "isAvailable": true,
+     "acsTokenLink": "http://books.google.co.uk/books/download/Software_Architecture_Design_Patterns_in-sample-pdf.acsm?id=FqfKFl4Bm7UC&format=pdf&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+    },
+    "webReaderLink": "http://play.google.com/books/reader?id=FqfKFl4Bm7UC&hl=&printsec=frontcover&source=gbs_api",
+    "accessViewStatus": "SAMPLE",
+    "quoteSharingAllowed": false
+   },
+   "searchInfo": {
+    "textSnippet": "Software Architecture Design Patterns in Java is a detailed explanation of how to apply design patterns and develop software architectures."
+   }
+  },
+  {
+   "kind": "books#volume",
+   "id": "OrJb_dTva5cC",
+   "etag": "X/Zm4DOFWpQ",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/OrJb_dTva5cC",
+   "volumeInfo": {
+    "title": "OSS Design Patterns",
+    "subtitle": "A Pattern Approach to the Design of Telecommunications Management Systems",
+    "authors": [
+     "Colin Ashford",
+     "Pierre Gauthier"
+    ],
+    "publisher": "Springer Science & Business Media",
+    "publishedDate": "2009-07-24",
+    "description": "The management of telecommunications networks and services is one of the most challenging of software endeavors—partly because of the size and the distributed nature of networks; partly because of the convergence of communications techno- gies; but mainly because of sheer complexity and diversity of networks and services. The TM Forum s Solutions Frameworks (NGOSS) help address these challenges by providing a framework for the development of management applications—those software applications that provide the building blocks for management solutions. The members of the TM Forum have elaborated many parts of NGOSS to make it practical—including in the area of information modeling, process analysis, and c- tract de?nition. This book further elaborates NGOSS by examining the challenging area of interface design. One of the costs of deploying a new service is the cost of integrating all the necessary applications into an effective software solution to manage the service. This cost has been dubbed the “integration tax” and can turn out to be ?ve times the capital cost of procuring the management software in the ?rst place. From their long experience of the design and standardization of management applications, the authors have extracted a core set of design patterns for the dev- opment of effective and consistent interfaces to management applications. Adopting these patterns across the industry could reduce the learning curve for software - velopers and allow service providers and systems integrators to rapidly and reliably deploy management solutions and thereby markedly reduce the integration tax.",
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_13",
+      "identifier": "9783642013966"
+     },
+     {
+      "type": "ISBN_10",
+      "identifier": "3642013961"
+     }
+    ],
+    "readingModes": {
+     "text": true,
+     "image": true
+    },
+    "pageCount": 151,
+    "printType": "BOOK",
+    "categories": [
+     "Computers"
+    ],
+    "maturityRating": "NOT_MATURE",
+    "allowAnonLogging": false,
+    "contentVersion": "0.0.2.0.preview.3",
+    "panelizationSummary": {
+     "containsEpubBubbles": false,
+     "containsImageBubbles": false
+    },
+    "imageLinks": {
+     "smallThumbnail": "http://books.google.com/books/content?id=OrJb_dTva5cC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+     "thumbnail": "http://books.google.com/books/content?id=OrJb_dTva5cC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    },
+    "language": "en",
+    "previewLink": "http://books.google.co.uk/books?id=OrJb_dTva5cC&printsec=frontcover&dq=Design+Patterns&hl=&cd=14&source=gbs_api",
+    "infoLink": "https://play.google.com/store/books/details?id=OrJb_dTva5cC&source=gbs_api",
+    "canonicalVolumeLink": "https://market.android.com/details?id=book-OrJb_dTva5cC"
+   },
+   "saleInfo": {
+    "country": "GB",
+    "saleability": "FOR_SALE_AND_RENTAL",
+    "isEbook": true,
+    "listPrice": {
+     "amount": 58.99,
+     "currencyCode": "GBP"
+    },
+    "retailPrice": {
+     "amount": 38.89,
+     "currencyCode": "GBP"
+    },
+    "buyLink": "https://play.google.com/store/books/details?id=OrJb_dTva5cC&rdid=book-OrJb_dTva5cC&rdot=1&source=gbs_api",
+    "offers": [
+     {
+      "finskyOfferType": 1,
+      "listPrice": {
+       "amountInMicros": 5.899E7,
+       "currencyCode": "GBP"
+      },
+      "retailPrice": {
+       "amountInMicros": 3.889E7,
+       "currencyCode": "GBP"
+      },
+      "giftable": true
+     },
+     {
+      "finskyOfferType": 3,
+      "listPrice": {
+       "amountInMicros": 2.065E7,
+       "currencyCode": "GBP"
+      },
+      "retailPrice": {
+       "amountInMicros": 1.858E7,
+       "currencyCode": "GBP"
+      },
+      "rentalDuration": {
+       "unit": "DAY",
+       "count": 90.0
+      }
+     }
+    ]
+   },
+   "accessInfo": {
+    "country": "GB",
+    "viewability": "PARTIAL",
+    "embeddable": true,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED_FOR_ACCESSIBILITY",
+    "epub": {
+     "isAvailable": true,
+     "acsTokenLink": "http://books.google.co.uk/books/download/OSS_Design_Patterns-sample-epub.acsm?id=OrJb_dTva5cC&format=epub&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+    },
+    "pdf": {
+     "isAvailable": true,
+     "acsTokenLink": "http://books.google.co.uk/books/download/OSS_Design_Patterns-sample-pdf.acsm?id=OrJb_dTva5cC&format=pdf&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+    },
+    "webReaderLink": "http://play.google.com/books/reader?id=OrJb_dTva5cC&hl=&printsec=frontcover&source=gbs_api",
+    "accessViewStatus": "SAMPLE",
+    "quoteSharingAllowed": false
+   },
+   "searchInfo": {
+    "textSnippet": "Rather than proposing yet another technology-specific interface specification and information model, this book makes the case for an agreement across the OSS community on a core set of technology-neutral OSS Design Patterns."
+   }
+  },
+  {
+   "kind": "books#volume",
+   "id": "PGONVgi4jH8C",
+   "etag": "WN5CUekDI3E",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/PGONVgi4jH8C",
+   "volumeInfo": {
+    "title": "Design Patterns — Simply",
+    "authors": [
+     "Alexandr Shvets"
+    ],
+    "publisher": "Alexandr Shvets",
+    "readingModes": {
+     "text": false,
+     "image": true
+    },
+    "printType": "BOOK",
+    "maturityRating": "NOT_MATURE",
+    "allowAnonLogging": false,
+    "contentVersion": "1.2.1.0.preview.1",
+    "imageLinks": {
+     "smallThumbnail": "http://books.google.com/books/content?id=PGONVgi4jH8C&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+     "thumbnail": "http://books.google.com/books/content?id=PGONVgi4jH8C&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    },
+    "language": "en",
+    "previewLink": "http://books.google.co.uk/books?id=PGONVgi4jH8C&printsec=frontcover&dq=Design+Patterns&hl=&cd=15&source=gbs_api",
+    "infoLink": "http://books.google.co.uk/books?id=PGONVgi4jH8C&dq=Design+Patterns&hl=&source=gbs_api",
+    "canonicalVolumeLink": "https://books.google.com/books/about/Design_Patterns_Simply.html?hl=&id=PGONVgi4jH8C"
+   },
+   "saleInfo": {
+    "country": "GB",
+    "saleability": "NOT_FOR_SALE",
+    "isEbook": false
+   },
+   "accessInfo": {
+    "country": "GB",
+    "viewability": "PARTIAL",
+    "embeddable": true,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED",
+    "epub": {
+     "isAvailable": false
+    },
+    "pdf": {
+     "isAvailable": false
+    },
+    "webReaderLink": "http://play.google.com/books/reader?id=PGONVgi4jH8C&hl=&printsec=frontcover&source=gbs_api",
+    "accessViewStatus": "SAMPLE",
+    "quoteSharingAllowed": false
+   }
+  },
+  {
+   "kind": "books#volume",
+   "id": "3Ra-GJlYj30C",
+   "etag": "MP2tkOpIvs4",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/3Ra-GJlYj30C",
+   "volumeInfo": {
+    "title": "Design Patterns Java Workbook",
+    "authors": [
+     "Steven John Metsker"
+    ],
+    "publisher": "Addison-Wesley Professional",
+    "publishedDate": "2002",
+    "description": "This workbook approach deepens understanding, builds confidence, and strengthens readers' skills. It covers all five categories of design pattern intent: interfaces, responsibility, construction, operations, and extensions.",
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_10",
+      "identifier": "0201743973"
+     },
+     {
+      "type": "ISBN_13",
+      "identifier": "9780201743975"
+     }
+    ],
+    "readingModes": {
+     "text": false,
+     "image": true
+    },
+    "pageCount": 475,
+    "printType": "BOOK",
+    "categories": [
+     "Computers"
+    ],
+    "averageRating": 5.0,
+    "ratingsCount": 1,
+    "maturityRating": "NOT_MATURE",
+    "allowAnonLogging": false,
+    "contentVersion": "0.2.0.0.preview.1",
+    "imageLinks": {
+     "smallThumbnail": "http://books.google.com/books/content?id=3Ra-GJlYj30C&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+     "thumbnail": "http://books.google.com/books/content?id=3Ra-GJlYj30C&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    },
+    "language": "en",
+    "previewLink": "http://books.google.co.uk/books?id=3Ra-GJlYj30C&printsec=frontcover&dq=Design+Patterns&hl=&cd=16&source=gbs_api",
+    "infoLink": "http://books.google.co.uk/books?id=3Ra-GJlYj30C&dq=Design+Patterns&hl=&source=gbs_api",
+    "canonicalVolumeLink": "https://books.google.com/books/about/Design_Patterns_Java_Workbook.html?hl=&id=3Ra-GJlYj30C"
+   },
+   "saleInfo": {
+    "country": "GB",
+    "saleability": "NOT_FOR_SALE",
+    "isEbook": false
+   },
+   "accessInfo": {
+    "country": "GB",
+    "viewability": "PARTIAL",
+    "embeddable": true,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED_FOR_ACCESSIBILITY",
+    "epub": {
+     "isAvailable": false
+    },
+    "pdf": {
+     "isAvailable": false
+    },
+    "webReaderLink": "http://play.google.com/books/reader?id=3Ra-GJlYj30C&hl=&printsec=frontcover&source=gbs_api",
+    "accessViewStatus": "SAMPLE",
+    "quoteSharingAllowed": false
+   },
+   "searchInfo": {
+    "textSnippet": "This workbook approach deepens understanding, builds confidence, and strengthens readers&#39; skills."
+   }
+  },
+  {
+   "kind": "books#volume",
+   "id": "QWOWqHANWoAC",
+   "etag": "l9hyIjuPR5k",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/QWOWqHANWoAC",
+   "volumeInfo": {
+    "title": "Design Patterns in Ruby (Adobe Reader)",
+    "authors": [
+     "Russ Olsen"
+    ],
+    "publisher": "Pearson Education",
+    "publishedDate": "2007-12-10",
+    "description": "Praise for Design Patterns in Ruby \" Design Patterns in Ruby documents smart ways to resolve many problems that Ruby developers commonly encounter. Russ Olsen has done a great job of selecting classic patterns and augmenting these with newer patterns that have special relevance for Ruby. He clearly explains each idea, making a wealth of experience available to Ruby developers for their own daily work.\" —Steve Metsker, Managing Consultant with Dominion Digital, Inc. \"This book provides a great demonstration of the key 'Gang of Four' design patterns without resorting to overly technical explanations. Written in a precise, yet almost informal style, this book covers enough ground that even those without prior exposure to design patterns will soon feel confident applying them using Ruby. Olsen has done a great job to make a book about a classically 'dry' subject into such an engaging and even occasionally humorous read.\" —Peter Cooper \"This book renewed my interest in understanding patterns after a decade of good intentions. Russ picked the most useful patterns for Ruby and introduced them in a straightforward and logical manner, going beyond the GoF's patterns. This book has improved my use of Ruby, and encouraged me to blow off the dust covering the GoF book.\" —Mike Stok \" Design Patterns in Ruby is a great way for programmers from statically typed objectoriented languages to learn how design patterns appear in a more dynamic, flexible language like Ruby.\" —Rob Sanheim, Ruby Ninja, Relevance Most design pattern books are based on C++ and Java. But Ruby is different—and the language's unique qualities make design patterns easier to implement and use. In this book, Russ Olsen demonstrates how to combine Ruby's power and elegance with patterns, and write more sophisticated, effective software with far fewer lines of code. After reviewing the history, concepts, and goals of design patterns, Olsen offers a quick tour of the Ruby language—enough to allow any experienced software developer to immediately utilize patterns with Ruby. The book especially calls attention to Ruby features that simplify the use of patterns, including dynamic typing, code closures, and \"mixins\" for easier code reuse. Fourteen of the classic \"Gang of Four\" patterns are considered from the Ruby point of view, explaining what problems each pattern solves, discussing whether traditional implementations make sense in the Ruby environment, and introducing Ruby-specific improvements. You'll discover opportunities to implement patterns in just one or two lines of code, instead of the endlessly repeated boilerplate that conventional languages often require. Design Patterns in Ruby also identifies innovative new patterns that have emerged from the Ruby community. These include ways to create custom objects with metaprogramming, as well as the ambitious Rails-based \"Convention Over Configuration\" pattern, designed to help integrate entire applications and frameworks. Engaging, practical, and accessible, Design Patterns in Ruby will help you build better software while making your Ruby programming experience more rewarding.",
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_10",
+      "identifier": "0132702509"
+     },
+     {
+      "type": "ISBN_13",
+      "identifier": "9780132702508"
+     }
+    ],
+    "readingModes": {
+     "text": true,
+     "image": true
+    },
+    "pageCount": 384,
+    "printType": "BOOK",
+    "categories": [
+     "Computers"
+    ],
+    "averageRating": 5.0,
+    "ratingsCount": 2,
+    "maturityRating": "NOT_MATURE",
+    "allowAnonLogging": true,
+    "contentVersion": "1.5.3.0.preview.3",
+    "panelizationSummary": {
+     "containsEpubBubbles": false,
+     "containsImageBubbles": false
+    },
+    "imageLinks": {
+     "smallThumbnail": "http://books.google.com/books/content?id=QWOWqHANWoAC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+     "thumbnail": "http://books.google.com/books/content?id=QWOWqHANWoAC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    },
+    "language": "en",
+    "previewLink": "http://books.google.co.uk/books?id=QWOWqHANWoAC&printsec=frontcover&dq=Design+Patterns&hl=&cd=17&source=gbs_api",
+    "infoLink": "https://play.google.com/store/books/details?id=QWOWqHANWoAC&source=gbs_api",
+    "canonicalVolumeLink": "https://market.android.com/details?id=book-QWOWqHANWoAC"
+   },
+   "saleInfo": {
+    "country": "GB",
+    "saleability": "FOR_SALE",
+    "isEbook": true,
+    "listPrice": {
+     "amount": 34.0,
+     "currencyCode": "GBP"
+    },
+    "retailPrice": {
+     "amount": 23.1,
+     "currencyCode": "GBP"
+    },
+    "buyLink": "https://play.google.com/store/books/details?id=QWOWqHANWoAC&rdid=book-QWOWqHANWoAC&rdot=1&source=gbs_api",
+    "offers": [
+     {
+      "finskyOfferType": 1,
+      "listPrice": {
+       "amountInMicros": 3.4E7,
+       "currencyCode": "GBP"
+      },
+      "retailPrice": {
+       "amountInMicros": 2.31E7,
+       "currencyCode": "GBP"
+      },
+      "giftable": true
+     }
+    ]
+   },
+   "accessInfo": {
+    "country": "GB",
+    "viewability": "PARTIAL",
+    "embeddable": true,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED_FOR_ACCESSIBILITY",
+    "epub": {
+     "isAvailable": false
+    },
+    "pdf": {
+     "isAvailable": false
+    },
+    "webReaderLink": "http://play.google.com/books/reader?id=QWOWqHANWoAC&hl=&printsec=frontcover&source=gbs_api",
+    "accessViewStatus": "SAMPLE",
+    "quoteSharingAllowed": false
+   },
+   "searchInfo": {
+    "textSnippet": "In this book, Russ Olsen demonstrates how to combine Ruby&#39;s power and elegance with patterns, and write more sophisticated, effective software with far fewer lines of code."
+   }
+  },
+  {
+   "kind": "books#volume",
+   "id": "TLhvRJTKDssC",
+   "etag": "2H8a86ekk9c",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/TLhvRJTKDssC",
+   "volumeInfo": {
+    "title": "Visual Basic Design Patterns",
+    "subtitle": "VB 6.0 and VB.NET",
+    "authors": [
+     "James William Cooper"
+    ],
+    "publisher": "Addison-Wesley Professional",
+    "publishedDate": "2002",
+    "description": "This is a practical tutorial to writing Visual Basic (VB6 and VB.NET) programs using some of the most common design patterns. This book also provides a convenient way for VB6 programmers to migrate to VB.NET and use its more powerful object-oriented features. Organized as a series of short chapters that each describe a design pattern, Visual Basic Design Patterns provides one or more complete working visual examples of programs using that pattern, along with UML diagrams illustrating how the classes interact. Each example is a visual program that students can run and study on the companion CD making the pattern as concrete as possible.",
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_13",
+      "identifier": "9780201702651"
+     },
+     {
+      "type": "ISBN_10",
+      "identifier": "0201702657"
+     }
+    ],
+    "readingModes": {
+     "text": false,
+     "image": true
+    },
+    "pageCount": 484,
+    "printType": "BOOK",
+    "categories": [
+     "Computers"
+    ],
+    "averageRating": 4.0,
+    "ratingsCount": 1,
+    "maturityRating": "NOT_MATURE",
+    "allowAnonLogging": false,
+    "contentVersion": "preview-1.0.0",
+    "imageLinks": {
+     "smallThumbnail": "http://books.google.com/books/content?id=TLhvRJTKDssC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+     "thumbnail": "http://books.google.com/books/content?id=TLhvRJTKDssC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    },
+    "language": "en",
+    "previewLink": "http://books.google.co.uk/books?id=TLhvRJTKDssC&printsec=frontcover&dq=Design+Patterns&hl=&cd=18&source=gbs_api",
+    "infoLink": "http://books.google.co.uk/books?id=TLhvRJTKDssC&dq=Design+Patterns&hl=&source=gbs_api",
+    "canonicalVolumeLink": "https://books.google.com/books/about/Visual_Basic_Design_Patterns.html?hl=&id=TLhvRJTKDssC"
+   },
+   "saleInfo": {
+    "country": "GB",
+    "saleability": "NOT_FOR_SALE",
+    "isEbook": false
+   },
+   "accessInfo": {
+    "country": "GB",
+    "viewability": "PARTIAL",
+    "embeddable": true,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED_FOR_ACCESSIBILITY",
+    "epub": {
+     "isAvailable": false
+    },
+    "pdf": {
+     "isAvailable": false
+    },
+    "webReaderLink": "http://play.google.com/books/reader?id=TLhvRJTKDssC&hl=&printsec=frontcover&source=gbs_api",
+    "accessViewStatus": "SAMPLE",
+    "quoteSharingAllowed": false
+   },
+   "searchInfo": {
+    "textSnippet": "This is a practical tutorial to writing Visual Basic (VB6 and VB.NET) programs using some of the most common design patterns."
+   }
+  },
+  {
+   "kind": "books#volume",
+   "id": "x-7_W0P9KGsC",
+   "etag": "5wuGuLNnK8A",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/x-7_W0P9KGsC",
+   "volumeInfo": {
+    "title": "J2EE Design Patterns",
+    "subtitle": "Patterns in the Real World",
+    "authors": [
+     "William Crawford",
+     "Jonathan Kaplan"
+    ],
+    "publisher": "\"O'Reilly Media, Inc.\"",
+    "publishedDate": "2003-09-24",
+    "description": "Architects of buildings and architects of software have more in common than most people think. Both professions require attention to detail, and both practitioners will see their work collapse around them if they make too many mistakes. It's impossible to imagine a world in which buildings get built without blueprints, but it's still common for software applications to be designed and built without blueprints, or in this case, design patterns.A software design pattern can be identified as \"a recurring solution to a recurring problem.\" Using design patterns for software development makes sense in the same way that architectural design patterns make sense--if it works well in one place, why not use it in another? But developers have had enough of books that simply catalog design patterns without extending into new areas, and books that are so theoretical that you can't actually do anything better after reading them than you could before you started.Crawford and Kaplan's J2EE Design Patterns approaches the subject in a unique, highly practical and pragmatic way. Rather than simply present another catalog of design patterns, the authors broaden the scope by discussing ways to choose design patterns when building an enterprise application from scratch, looking closely at the real world tradeoffs that Java developers must weigh when architecting their applications. Then they go on to show how to apply the patterns when writing realworld software. They also extend design patterns into areas not covered in other books, presenting original patterns for data modeling, transaction / process modeling, and interoperability.J2EE Design Patterns offers extensive coverage of the five problem areas enterprise developers face: Maintenance (Extensibility) Performance (System Scalability) Data Modeling (Business Object Modeling) Transactions (process Modeling) Messaging (Interoperability) And with its careful balance between theory and practice, J2EE Design Patterns will give developers new to the Java enterprise development arena a solid understanding of how to approach a wide variety of architectural and procedural problems, and will give experienced J2EE pros an opportunity to extend and improve on their existing experience.",
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_10",
+      "identifier": "1449378889"
+     },
+     {
+      "type": "ISBN_13",
+      "identifier": "9781449378882"
+     }
+    ],
+    "readingModes": {
+     "text": true,
+     "image": true
+    },
+    "pageCount": 370,
+    "printType": "BOOK",
+    "categories": [
+     "Computers"
+    ],
+    "averageRating": 4.0,
+    "ratingsCount": 3,
+    "maturityRating": "NOT_MATURE",
+    "allowAnonLogging": true,
+    "contentVersion": "1.3.2.0.preview.3",
+    "panelizationSummary": {
+     "containsEpubBubbles": false,
+     "containsImageBubbles": false
+    },
+    "imageLinks": {
+     "smallThumbnail": "http://books.google.com/books/content?id=x-7_W0P9KGsC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+     "thumbnail": "http://books.google.com/books/content?id=x-7_W0P9KGsC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    },
+    "language": "en",
+    "previewLink": "http://books.google.co.uk/books?id=x-7_W0P9KGsC&printsec=frontcover&dq=Design+Patterns&hl=&cd=19&source=gbs_api",
+    "infoLink": "https://play.google.com/store/books/details?id=x-7_W0P9KGsC&source=gbs_api",
+    "canonicalVolumeLink": "https://market.android.com/details?id=book-x-7_W0P9KGsC"
+   },
+   "saleInfo": {
+    "country": "GB",
+    "saleability": "FOR_SALE",
+    "isEbook": true,
+    "listPrice": {
+     "amount": 31.8,
+     "currencyCode": "GBP"
+    },
+    "retailPrice": {
+     "amount": 20.67,
+     "currencyCode": "GBP"
+    },
+    "buyLink": "https://play.google.com/store/books/details?id=x-7_W0P9KGsC&rdid=book-x-7_W0P9KGsC&rdot=1&source=gbs_api",
+    "offers": [
+     {
+      "finskyOfferType": 1,
+      "listPrice": {
+       "amountInMicros": 3.18E7,
+       "currencyCode": "GBP"
+      },
+      "retailPrice": {
+       "amountInMicros": 2.067E7,
+       "currencyCode": "GBP"
+      },
+      "giftable": true
+     }
+    ]
+   },
+   "accessInfo": {
+    "country": "GB",
+    "viewability": "PARTIAL",
+    "embeddable": true,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED",
+    "epub": {
+     "isAvailable": true
+    },
+    "pdf": {
+     "isAvailable": true
+    },
+    "webReaderLink": "http://play.google.com/books/reader?id=x-7_W0P9KGsC&hl=&printsec=frontcover&source=gbs_api",
+    "accessViewStatus": "SAMPLE",
+    "quoteSharingAllowed": false
+   },
+   "searchInfo": {
+    "textSnippet": "But developers have had enough of books that simply catalog design patterns without extending into new areas, and books that are so theoretical that you can&#39;t actually do anything better after reading them than you could before you started ..."
+   }
+  },
+  {
+   "kind": "books#volume",
+   "id": "vy1Zj1OOUUwC",
+   "etag": "fZmHQTfgaDM",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/vy1Zj1OOUUwC",
+   "volumeInfo": {
+    "title": "Design Patterns in Communications Software",
+    "authors": [
+     "Linda Rising"
+    ],
+    "publisher": "Cambridge University Press",
+    "publishedDate": "2001-07-23",
+    "description": "This is the definitive compendium of design patterns in communication software, gathered together by Linda Rising, Ph.D., a recognized leader in the field. Contributors include James O. Coplien, Douglas C. Schmidt, Robert Hanmer, Greg Utas, Just van den Broecke, Don Olson, Carlos O'Ryan, Christopher D. Gill, and other experts from the patterns community. This is the ideal reference for engineers and other professionals working in the field of communications software development.",
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_10",
+      "identifier": "0521790409"
+     },
+     {
+      "type": "ISBN_13",
+      "identifier": "9780521790406"
+     }
+    ],
+    "readingModes": {
+     "text": false,
+     "image": true
+    },
+    "pageCount": 548,
+    "printType": "BOOK",
+    "categories": [
+     "Computers"
+    ],
+    "averageRating": 4.0,
+    "ratingsCount": 1,
+    "maturityRating": "NOT_MATURE",
+    "allowAnonLogging": false,
+    "contentVersion": "0.0.1.0.preview.1",
+    "imageLinks": {
+     "smallThumbnail": "http://books.google.com/books/content?id=vy1Zj1OOUUwC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+     "thumbnail": "http://books.google.com/books/content?id=vy1Zj1OOUUwC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    },
+    "language": "en",
+    "previewLink": "http://books.google.co.uk/books?id=vy1Zj1OOUUwC&printsec=frontcover&dq=Design+Patterns&hl=&cd=20&source=gbs_api",
+    "infoLink": "http://books.google.co.uk/books?id=vy1Zj1OOUUwC&dq=Design+Patterns&hl=&source=gbs_api",
+    "canonicalVolumeLink": "https://books.google.com/books/about/Design_Patterns_in_Communications_Softwa.html?hl=&id=vy1Zj1OOUUwC"
+   },
+   "saleInfo": {
+    "country": "GB",
+    "saleability": "NOT_FOR_SALE",
+    "isEbook": false
+   },
+   "accessInfo": {
+    "country": "GB",
+    "viewability": "PARTIAL",
+    "embeddable": true,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED",
+    "epub": {
+     "isAvailable": false
+    },
+    "pdf": {
+     "isAvailable": false
+    },
+    "webReaderLink": "http://play.google.com/books/reader?id=vy1Zj1OOUUwC&hl=&printsec=frontcover&source=gbs_api",
+    "accessViewStatus": "SAMPLE",
+    "quoteSharingAllowed": false
+   },
+   "searchInfo": {
+    "textSnippet": "This is the definitive compendium of design patterns in communication software, gathered together by Linda Rising, Ph.D., a recognized leader in the field."
+   }
+  },
+  {
+   "kind": "books#volume",
+   "id": "lgk0Q7pMmLYC",
+   "etag": "sgBXXunkmTc",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/lgk0Q7pMmLYC",
+   "volumeInfo": {
+    "title": "ActionScript 3.0 Design Patterns",
+    "subtitle": "Object Oriented Programming Techniques",
+    "authors": [
+     "William Sanders",
+     "Chandima Cumaranatunge"
+    ],
+    "publisher": "\"O'Reilly Media, Inc.\"",
+    "publishedDate": "2007-07-16",
+    "description": "Now that ActionScript is reengineered from top to bottom as a true object-oriented programming (OOP) language, reusable design patterns are an ideal way to solve common problems in Flash and Flex applications. If you're an experienced Flash or Flex developer ready to tackle sophisticated programming techniques with ActionScript 3.0, this hands-on introduction to design patterns is the book you need. ActionScript 3.0 Design Patterns takes you step by step through the process, first by explaining how design patterns provide a clear road map for structuring code that actually makes OOP languages easier to learn and use. You then learn about various types of design patterns and construct small abstract examples before trying your hand at building full-fledged working applications outlined in the book. Topics in ActionScript 3.0 Design Patterns include: Key features of ActionScript 3.0 and why it became an OOP language OOP characteristics, such as classes, abstraction, inheritance, and polymorphism The benefits of using design patterns Creational patterns, including Factory and Singleton patterns Structural patterns, including Decorator, Adapter, and Composite patterns Behavioral patterns, including Command, Observer, Strategy, and State patterns Multiple design patterns, including Model-View-Controller and Symmetric Proxy designs During the course of the book, you'll work with examples of increasing complexity, such as an e-business application with service options that users can select, an interface for selecting a class of products and individual products in each class, an action game application, a video record and playback application, and many more. Whether you're coming to Flash and Flex from Java or C++, or have experience with ActionScript 2.0, ActionScript 3.0 Design Patterns will have you constructing truly elegant solutions for your Flash and Flex applications in no time.",
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_13",
+      "identifier": "9780596554842"
+     },
+     {
+      "type": "ISBN_10",
+      "identifier": "0596554842"
+     }
+    ],
+    "readingModes": {
+     "text": true,
+     "image": true
+    },
+    "pageCount": 544,
+    "printType": "BOOK",
+    "categories": [
+     "Computers"
+    ],
+    "averageRating": 4.0,
+    "ratingsCount": 5,
+    "maturityRating": "NOT_MATURE",
+    "allowAnonLogging": true,
+    "contentVersion": "1.5.4.0.preview.3",
+    "panelizationSummary": {
+     "containsEpubBubbles": false,
+     "containsImageBubbles": false
+    },
+    "imageLinks": {
+     "smallThumbnail": "http://books.google.com/books/content?id=lgk0Q7pMmLYC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+     "thumbnail": "http://books.google.com/books/content?id=lgk0Q7pMmLYC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    },
+    "language": "en",
+    "previewLink": "http://books.google.co.uk/books?id=lgk0Q7pMmLYC&printsec=frontcover&dq=Design+Patterns&hl=&cd=21&source=gbs_api",
+    "infoLink": "https://play.google.com/store/books/details?id=lgk0Q7pMmLYC&source=gbs_api",
+    "canonicalVolumeLink": "https://market.android.com/details?id=book-lgk0Q7pMmLYC"
+   },
+   "saleInfo": {
+    "country": "GB",
+    "saleability": "FOR_SALE",
+    "isEbook": true,
+    "listPrice": {
+     "amount": 28.79,
+     "currencyCode": "GBP"
+    },
+    "retailPrice": {
+     "amount": 18.71,
+     "currencyCode": "GBP"
+    },
+    "buyLink": "https://play.google.com/store/books/details?id=lgk0Q7pMmLYC&rdid=book-lgk0Q7pMmLYC&rdot=1&source=gbs_api",
+    "offers": [
+     {
+      "finskyOfferType": 1,
+      "listPrice": {
+       "amountInMicros": 2.879E7,
+       "currencyCode": "GBP"
+      },
+      "retailPrice": {
+       "amountInMicros": 1.871E7,
+       "currencyCode": "GBP"
+      },
+      "giftable": true
+     }
+    ]
+   },
+   "accessInfo": {
+    "country": "GB",
+    "viewability": "PARTIAL",
+    "embeddable": true,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED",
+    "epub": {
+     "isAvailable": true
+    },
+    "pdf": {
+     "isAvailable": true
+    },
+    "webReaderLink": "http://play.google.com/books/reader?id=lgk0Q7pMmLYC&hl=&printsec=frontcover&source=gbs_api",
+    "accessViewStatus": "SAMPLE",
+    "quoteSharingAllowed": false
+   },
+   "searchInfo": {
+    "textSnippet": "Topics in ActionScript 3.0 Design Patterns include: Key features of ActionScript 3.0 and why it became an OOP language OOP characteristics, such as classes, abstraction, inheritance, and polymorphism The benefits of using design patterns ..."
+   }
+  },
+  {
+   "kind": "books#volume",
+   "id": "bZdYuD_zo-sC",
+   "etag": "qM/UzfiRUVY",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/bZdYuD_zo-sC",
+   "volumeInfo": {
+    "title": "Visual Basic Design Patterns",
+    "authors": [
+     "Mark Grand",
+     "Brad Merrill"
+    ],
+    "publisher": "John Wiley & Sons",
+    "publishedDate": "2005-07-29",
+    "description": "Design Patterns are a type of pattern used in the initial design phase of an object-oriented development project Documents 46 Visual Basic .NET design patterns, including 20 that have never before been published Features case studies that demonstrate how to use design patterns effectively in the real world-and even explains where not to use design patterns Companion Web site includes all code and UML models from the book as well as links to appropriate software downloads",
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_13",
+      "identifier": "9780471749073"
+     },
+     {
+      "type": "ISBN_10",
+      "identifier": "0471749079"
+     }
+    ],
+    "readingModes": {
+     "text": false,
+     "image": true
+    },
+    "pageCount": 564,
+    "printType": "BOOK",
+    "categories": [
+     "Computers"
+    ],
+    "maturityRating": "NOT_MATURE",
+    "allowAnonLogging": false,
+    "contentVersion": "preview-1.0.0",
+    "panelizationSummary": {
+     "containsEpubBubbles": false,
+     "containsImageBubbles": false
+    },
+    "imageLinks": {
+     "smallThumbnail": "http://books.google.com/books/content?id=bZdYuD_zo-sC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+     "thumbnail": "http://books.google.com/books/content?id=bZdYuD_zo-sC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    },
+    "language": "en",
+    "previewLink": "http://books.google.co.uk/books?id=bZdYuD_zo-sC&printsec=frontcover&dq=Design+Patterns&hl=&cd=22&source=gbs_api",
+    "infoLink": "http://books.google.co.uk/books?id=bZdYuD_zo-sC&dq=Design+Patterns&hl=&source=gbs_api",
+    "canonicalVolumeLink": "https://books.google.com/books/about/Visual_Basic_Design_Patterns.html?hl=&id=bZdYuD_zo-sC"
+   },
+   "saleInfo": {
+    "country": "GB",
+    "saleability": "NOT_FOR_SALE",
+    "isEbook": false
+   },
+   "accessInfo": {
+    "country": "GB",
+    "viewability": "PARTIAL",
+    "embeddable": true,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED",
+    "epub": {
+     "isAvailable": false
+    },
+    "pdf": {
+     "isAvailable": true,
+     "acsTokenLink": "http://books.google.co.uk/books/download/Visual_Basic_Design_Patterns-sample-pdf.acsm?id=bZdYuD_zo-sC&format=pdf&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+    },
+    "webReaderLink": "http://play.google.com/books/reader?id=bZdYuD_zo-sC&hl=&printsec=frontcover&source=gbs_api",
+    "accessViewStatus": "SAMPLE",
+    "quoteSharingAllowed": false
+   },
+   "searchInfo": {
+    "textSnippet": "This book covers some of the best-known design patterns in Visual Basic and introduces more than two dozen additional ones."
+   }
+  },
+  {
+   "kind": "books#volume",
+   "id": "161KDAAAQBAJ",
+   "etag": "wcE/BGRT5Rs",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/161KDAAAQBAJ",
+   "volumeInfo": {
+    "title": "Learning Python Design Patterns",
+    "authors": [
+     "Chetan Giridhar"
+    ],
+    "publisher": "Packt Publishing Ltd",
+    "publishedDate": "2016-02-15",
+    "description": "Leverage the power of Python design patterns to solve real-world problems in software architecture and design About This Book Understand the structural, creational, and behavioral Python design patterns Get to know the context and application of design patterns to solve real-world problems in software architecture, design, and application development Get practical exposure through sample implementations in Python v3.5 for the design patterns featured Who This Book Is For This book is for Software architects and Python application developers who are passionate about software design. It will be very useful to engineers with beginner level proficiency in Python and who love to work with Python 3.5 What You Will Learn Enhance your skills to create better software architecture Understand proven solutions to commonly occurring design issues Explore the design principles that form the basis of software design, such as loose coupling, the Hollywood principle and the Open Close principle among others Delve into the object-oriented programming concepts and find out how they are used in software applications Develop an understanding of Creational Design Patterns and the different object creation methods that help you solve issues in software development Use Structural Design Patterns and find out how objects and classes interact to build larger applications Focus on the interaction between objects with the command and observer patterns Improve the productivity and code base of your application using Python design patterns In Detail With the increasing focus on optimized software architecture and design it is important that software architects think about optimizations in object creation, code structure, and interaction between objects at the architecture or design level. This makes sure that the cost of software maintenance is low and code can be easily reused or is adaptable to change. The key to this is reusability and low maintenance in design patterns. Building on the success of the previous edition, Learning Python Design Patterns, Second Edition will help you implement real-world scenarios with Python's latest release, Python v3.5. We start by introducing design patterns from the Python perspective. As you progress through the book, you will learn about Singleton patterns, Factory patterns, and Facade patterns in detail. After this, we'll look at how to control object access with proxy patterns. It also covers observer patterns, command patterns, and compound patterns. By the end of the book, you will have enhanced your professional abilities in software architecture, design, and development. Style and approach This is an easy-to-follow guide to design patterns with hands-on examples of real-world scenarios and their implementation in Python v3.5. Each topic is explained and placed in context, and for the more inquisitive, there are more details on the concepts used.",
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_13",
+      "identifier": "9781785887376"
+     },
+     {
+      "type": "ISBN_10",
+      "identifier": "1785887378"
+     }
+    ],
+    "readingModes": {
+     "text": true,
+     "image": true
+    },
+    "pageCount": 164,
+    "printType": "BOOK",
+    "categories": [
+     "Computers"
+    ],
+    "maturityRating": "NOT_MATURE",
+    "allowAnonLogging": true,
+    "contentVersion": "2.2.2.0.preview.3",
+    "panelizationSummary": {
+     "containsEpubBubbles": false,
+     "containsImageBubbles": false
+    },
+    "imageLinks": {
+     "smallThumbnail": "http://books.google.com/books/content?id=161KDAAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+     "thumbnail": "http://books.google.com/books/content?id=161KDAAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    },
+    "language": "en",
+    "previewLink": "http://books.google.co.uk/books?id=161KDAAAQBAJ&printsec=frontcover&dq=Design+Patterns&hl=&cd=23&source=gbs_api",
+    "infoLink": "https://play.google.com/store/books/details?id=161KDAAAQBAJ&source=gbs_api",
+    "canonicalVolumeLink": "https://market.android.com/details?id=book-161KDAAAQBAJ"
+   },
+   "saleInfo": {
+    "country": "GB",
+    "saleability": "FOR_SALE",
+    "isEbook": true,
+    "listPrice": {
+     "amount": 25.19,
+     "currencyCode": "GBP"
+    },
+    "retailPrice": {
+     "amount": 16.37,
+     "currencyCode": "GBP"
+    },
+    "buyLink": "https://play.google.com/store/books/details?id=161KDAAAQBAJ&rdid=book-161KDAAAQBAJ&rdot=1&source=gbs_api",
+    "offers": [
+     {
+      "finskyOfferType": 1,
+      "listPrice": {
+       "amountInMicros": 2.519E7,
+       "currencyCode": "GBP"
+      },
+      "retailPrice": {
+       "amountInMicros": 1.637E7,
+       "currencyCode": "GBP"
+      },
+      "giftable": true
+     }
+    ]
+   },
+   "accessInfo": {
+    "country": "GB",
+    "viewability": "PARTIAL",
+    "embeddable": true,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED",
+    "epub": {
+     "isAvailable": true
+    },
+    "pdf": {
+     "isAvailable": true
+    },
+    "webReaderLink": "http://play.google.com/books/reader?id=161KDAAAQBAJ&hl=&printsec=frontcover&source=gbs_api",
+    "accessViewStatus": "SAMPLE",
+    "quoteSharingAllowed": false
+   },
+   "searchInfo": {
+    "textSnippet": "Leverage the power of Python design patterns to solve real-world problems in software architecture and design About This Book Understand the structural, creational, and behavioral Python design patterns Get to know the context and ..."
+   }
+  },
+  {
+   "kind": "books#volume",
+   "id": "WTZqecc9olUC",
+   "etag": "Pg8hoGLbK+g",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/WTZqecc9olUC",
+   "volumeInfo": {
+    "title": "JavaScript Patterns",
+    "subtitle": "Build Better Applications with Coding and Design Patterns",
+    "authors": [
+     "Stoyan Stefanov"
+    ],
+    "publisher": "\"O'Reilly Media, Inc.\"",
+    "publishedDate": "2010-09-09",
+    "description": "What's the best approach for developing an application with JavaScript? This book helps you answer that question with numerous JavaScript coding patterns and best practices. If you're an experienced developer looking to solve problems related to objects, functions, inheritance, and other language-specific categories, the abstractions and code templates in this guide are ideal—whether you're using JavaScript to write a client-side, server-side, or desktop application. Written by JavaScript expert Stoyan Stefanov—Senior Yahoo! Technical and architect of YSlow 2.0, the web page performance optimization tool—JavaScript Patterns includes practical advice for implementing each pattern discussed, along with several hands-on examples. You'll also learn about anti-patterns: common programming approaches that cause more problems than they solve. Explore useful habits for writing high-quality JavaScript code, such as avoiding globals, using single var declarations, and more Learn why literal notation patterns are simpler alternatives to constructor functions Discover different ways to define a function in JavaScript Create objects that go beyond the basic patterns of using object literals and constructor functions Learn the options available for code reuse and inheritance in JavaScript Study sample JavaScript approaches to common design patterns such as Singleton, Factory, Decorator, and more Examine patterns that apply specifically to the client-side browser environment",
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_13",
+      "identifier": "9781449396947"
+     },
+     {
+      "type": "ISBN_10",
+      "identifier": "1449396941"
+     }
+    ],
+    "readingModes": {
+     "text": true,
+     "image": true
+    },
+    "pageCount": 236,
+    "printType": "BOOK",
+    "categories": [
+     "Computers"
+    ],
+    "averageRating": 4.5,
+    "ratingsCount": 4,
+    "maturityRating": "NOT_MATURE",
+    "allowAnonLogging": true,
+    "contentVersion": "1.5.3.0.preview.3",
+    "panelizationSummary": {
+     "containsEpubBubbles": false,
+     "containsImageBubbles": false
+    },
+    "imageLinks": {
+     "smallThumbnail": "http://books.google.com/books/content?id=WTZqecc9olUC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+     "thumbnail": "http://books.google.com/books/content?id=WTZqecc9olUC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    },
+    "language": "en",
+    "previewLink": "http://books.google.co.uk/books?id=WTZqecc9olUC&printsec=frontcover&dq=Design+Patterns&hl=&cd=24&source=gbs_api",
+    "infoLink": "https://play.google.com/store/books/details?id=WTZqecc9olUC&source=gbs_api",
+    "canonicalVolumeLink": "https://market.android.com/details?id=book-WTZqecc9olUC"
+   },
+   "saleInfo": {
+    "country": "GB",
+    "saleability": "FOR_SALE",
+    "isEbook": true,
+    "listPrice": {
+     "amount": 19.19,
+     "currencyCode": "GBP"
+    },
+    "retailPrice": {
+     "amount": 12.47,
+     "currencyCode": "GBP"
+    },
+    "buyLink": "https://play.google.com/store/books/details?id=WTZqecc9olUC&rdid=book-WTZqecc9olUC&rdot=1&source=gbs_api",
+    "offers": [
+     {
+      "finskyOfferType": 1,
+      "listPrice": {
+       "amountInMicros": 1.919E7,
+       "currencyCode": "GBP"
+      },
+      "retailPrice": {
+       "amountInMicros": 1.247E7,
+       "currencyCode": "GBP"
+      },
+      "giftable": true
+     }
+    ]
+   },
+   "accessInfo": {
+    "country": "GB",
+    "viewability": "PARTIAL",
+    "embeddable": true,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED",
+    "epub": {
+     "isAvailable": true
+    },
+    "pdf": {
+     "isAvailable": true
+    },
+    "webReaderLink": "http://play.google.com/books/reader?id=WTZqecc9olUC&hl=&printsec=frontcover&source=gbs_api",
+    "accessViewStatus": "SAMPLE",
+    "quoteSharingAllowed": false
+   },
+   "searchInfo": {
+    "textSnippet": "What&#39;s the best approach for developing an application with JavaScript? This book helps you answer that question with numerous JavaScript coding patterns and best practices."
+   }
+  },
+  {
+   "kind": "books#volume",
+   "id": "136rPmt-K5UC",
+   "etag": "5h15xWPuWyM",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/136rPmt-K5UC",
+   "volumeInfo": {
+    "title": "Design Patterns for Flexible Manufacturing",
+    "authors": [
+     "Dennis Brandl"
+    ],
+    "publisher": "ISA",
+    "publishedDate": "2006",
+    "description": "This handy resource defines an effective set of design patterns and rules you should know when applying the widely used ISA-88 industry standards to batch manufacturing (called the S88 design pattern) and continuous and discrete manufacturing (called the NS88 design pattern for non-stop production). The author, who is the chair of the ISA-SP88 committee, developed these patterns and subsequent rules while applying the batch series in several projects. This book clearly identifies what elements are defined in the batch series and what elements make up the S88 and NS88 design patterns for flexible manufacturing. The book defines design patterns for control system programming, providing patterns for the organization of programmable logic controller (PLC), digital control system (DCS), and other control system application code. Whether you are in a batch, continuous, or discrete manufacturing environment, these design patterns can be applied to a wide range of production systems, making systems easier to design and implement.",
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_10",
+      "identifier": "1556179987"
+     },
+     {
+      "type": "ISBN_13",
+      "identifier": "9781556179983"
+     }
+    ],
+    "readingModes": {
+     "text": false,
+     "image": true
+    },
+    "pageCount": 205,
+    "printType": "BOOK",
+    "categories": [
+     "Technology & Engineering"
+    ],
+    "maturityRating": "NOT_MATURE",
+    "allowAnonLogging": false,
+    "contentVersion": "0.1.1.0.preview.1",
+    "imageLinks": {
+     "smallThumbnail": "http://books.google.com/books/content?id=136rPmt-K5UC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+     "thumbnail": "http://books.google.com/books/content?id=136rPmt-K5UC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    },
+    "language": "en",
+    "previewLink": "http://books.google.co.uk/books?id=136rPmt-K5UC&printsec=frontcover&dq=Design+Patterns&hl=&cd=25&source=gbs_api",
+    "infoLink": "http://books.google.co.uk/books?id=136rPmt-K5UC&dq=Design+Patterns&hl=&source=gbs_api",
+    "canonicalVolumeLink": "https://books.google.com/books/about/Design_Patterns_for_Flexible_Manufacturi.html?hl=&id=136rPmt-K5UC"
+   },
+   "saleInfo": {
+    "country": "GB",
+    "saleability": "NOT_FOR_SALE",
+    "isEbook": false
+   },
+   "accessInfo": {
+    "country": "GB",
+    "viewability": "PARTIAL",
+    "embeddable": true,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED",
+    "epub": {
+     "isAvailable": false
+    },
+    "pdf": {
+     "isAvailable": false
+    },
+    "webReaderLink": "http://play.google.com/books/reader?id=136rPmt-K5UC&hl=&printsec=frontcover&source=gbs_api",
+    "accessViewStatus": "SAMPLE",
+    "quoteSharingAllowed": false
+   },
+   "searchInfo": {
+    "textSnippet": "This book clearly identifies what elements are defined in the batch series and what elements make up the S88 and NS88 design patterns for flexible manufacturing."
+   }
+  },
+  {
+   "kind": "books#volume",
+   "id": "SfejUKakxVoC",
+   "etag": "b4WeWvFL6ZE",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/SfejUKakxVoC",
+   "volumeInfo": {
+    "title": "Cocoa Design Patterns",
+    "authors": [
+     "Erik Buck",
+     "Donald Yacktman"
+    ],
+    "publisher": "Pearson Education",
+    "publishedDate": "2009-09-01",
+    "description": "“Next time some kid shows up at my door asking for a code review, this is the book that I am going to throw at him.” –Aaron Hillegass, founder of Big Nerd Ranch, Inc., and author of Cocoa Programming for Mac OS X Unlocking the Secrets of Cocoa and Its Object-Oriented Frameworks Mac and iPhone developers are often overwhelmed by the breadth and sophistication of the Cocoa frameworks. Although Cocoa is indeed huge, once you understand the object-oriented patterns it uses, you’ll find it remarkably elegant, consistent, and simple. Cocoa Design Patterns begins with the mother of all patterns: the Model-View-Controller (MVC) pattern, which is central to all Mac and iPhone development. Encouraged, and in some cases enforced by Apple’s tools, it’s important to have a firm grasp of MVC right from the start. The book’s midsection is a catalog of the essential design patterns you’ll encounter in Cocoa, including Fundamental patterns, such as enumerators, accessors, and two-stage creation Patterns that empower, such as singleton, delegates, and the responder chain Patterns that hide complexity, including bundles, class clusters, proxies and forwarding, and controllers And that’s not all of them! Cocoa Design Patterns painstakingly isolates 28 design patterns, accompanied with real-world examples and sample code you can apply to your applications today. The book wraps up with coverage of Core Data models, AppKit views, and a chapter on Bindings and Controllers. Cocoa Design Patterns clearly defines the problems each pattern solves with a foundation in Objective-C and the Cocoa frameworks and can be used by any Mac or iPhone developer.",
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_10",
+      "identifier": "0321591208"
+     },
+     {
+      "type": "ISBN_13",
+      "identifier": "9780321591203"
+     }
+    ],
+    "readingModes": {
+     "text": true,
+     "image": true
+    },
+    "pageCount": 456,
+    "printType": "BOOK",
+    "categories": [
+     "Computers"
+    ],
+    "averageRating": 5.0,
+    "ratingsCount": 1,
+    "maturityRating": "NOT_MATURE",
+    "allowAnonLogging": true,
+    "contentVersion": "1.6.4.0.preview.3",
+    "panelizationSummary": {
+     "containsEpubBubbles": false,
+     "containsImageBubbles": false
+    },
+    "imageLinks": {
+     "smallThumbnail": "http://books.google.com/books/content?id=SfejUKakxVoC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+     "thumbnail": "http://books.google.com/books/content?id=SfejUKakxVoC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    },
+    "language": "en",
+    "previewLink": "http://books.google.co.uk/books?id=SfejUKakxVoC&printsec=frontcover&dq=Design+Patterns&hl=&cd=26&source=gbs_api",
+    "infoLink": "https://play.google.com/store/books/details?id=SfejUKakxVoC&source=gbs_api",
+    "canonicalVolumeLink": "https://market.android.com/details?id=book-SfejUKakxVoC"
+   },
+   "saleInfo": {
+    "country": "GB",
+    "saleability": "FOR_SALE",
+    "isEbook": true,
+    "listPrice": {
+     "amount": 32.99,
+     "currencyCode": "GBP"
+    },
+    "retailPrice": {
+     "amount": 21.44,
+     "currencyCode": "GBP"
+    },
+    "buyLink": "https://play.google.com/store/books/details?id=SfejUKakxVoC&rdid=book-SfejUKakxVoC&rdot=1&source=gbs_api",
+    "offers": [
+     {
+      "finskyOfferType": 1,
+      "listPrice": {
+       "amountInMicros": 3.299E7,
+       "currencyCode": "GBP"
+      },
+      "retailPrice": {
+       "amountInMicros": 2.144E7,
+       "currencyCode": "GBP"
+      },
+      "giftable": true
+     }
+    ]
+   },
+   "accessInfo": {
+    "country": "GB",
+    "viewability": "PARTIAL",
+    "embeddable": true,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED_FOR_ACCESSIBILITY",
+    "epub": {
+     "isAvailable": false
+    },
+    "pdf": {
+     "isAvailable": false
+    },
+    "webReaderLink": "http://play.google.com/books/reader?id=SfejUKakxVoC&hl=&printsec=frontcover&source=gbs_api",
+    "accessViewStatus": "SAMPLE",
+    "quoteSharingAllowed": false
+   },
+   "searchInfo": {
+    "textSnippet": "“Next time some kid shows up at my door asking for a code review, this is the book that I am going to throw at him.” –Aaron Hillegass, founder of Big Nerd Ranch, Inc., and author of Cocoa Programming for Mac OS X Unlocking the Secrets ..."
+   }
+  },
+  {
+   "kind": "books#volume",
+   "id": "qbG8BAAAQBAJ",
+   "etag": "9ewSn46kZsk",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/qbG8BAAAQBAJ",
+   "volumeInfo": {
+    "title": "Scala Design Patterns",
+    "subtitle": "Patterns for Practical Reuse and Design",
+    "authors": [
+     "John Hunt"
+    ],
+    "publisher": "Springer Science & Business Media",
+    "publishedDate": "2013-11-24",
+    "description": "Scala is a new and exciting programming language that is a hybrid between object oriented languages such as Java and functional languages such as Haskell. As such it has its own programming idioms and development styles. Scala Design Patterns looks at how code reuse can be successfully achieved in Scala. A major aspect of this is the reinterpretation of the original Gang of Four design patterns in terms of Scala and its language structures (that is the use of Traits, Classes, Objects and Functions). It includes an exploration of functional design patterns and considers how these can be interpreted in Scala's uniquely hybrid style. A key aspect of the book is the many code examples that accompany each design pattern, allowing the reader to understand not just the design pattern but also to explore powerful and flexible Scala language features. Including numerous source code examples, this book will be of value to professionals and practitioners working in the field of software engineering.",
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_13",
+      "identifier": "9783319021928"
+     },
+     {
+      "type": "ISBN_10",
+      "identifier": "3319021923"
+     }
+    ],
+    "readingModes": {
+     "text": true,
+     "image": true
+    },
+    "pageCount": 327,
+    "printType": "BOOK",
+    "categories": [
+     "Computers"
+    ],
+    "maturityRating": "NOT_MATURE",
+    "allowAnonLogging": false,
+    "contentVersion": "0.8.6.0.preview.3",
+    "panelizationSummary": {
+     "containsEpubBubbles": false,
+     "containsImageBubbles": false
+    },
+    "imageLinks": {
+     "smallThumbnail": "http://books.google.com/books/content?id=qbG8BAAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+     "thumbnail": "http://books.google.com/books/content?id=qbG8BAAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    },
+    "language": "en",
+    "previewLink": "http://books.google.co.uk/books?id=qbG8BAAAQBAJ&printsec=frontcover&dq=Design+Patterns&hl=&cd=27&source=gbs_api",
+    "infoLink": "https://play.google.com/store/books/details?id=qbG8BAAAQBAJ&source=gbs_api",
+    "canonicalVolumeLink": "https://market.android.com/details?id=book-qbG8BAAAQBAJ"
+   },
+   "saleInfo": {
+    "country": "GB",
+    "saleability": "FOR_SALE_AND_RENTAL",
+    "isEbook": true,
+    "listPrice": {
+     "amount": 75.5,
+     "currencyCode": "GBP"
+    },
+    "retailPrice": {
+     "amount": 50.45,
+     "currencyCode": "GBP"
+    },
+    "buyLink": "https://play.google.com/store/books/details?id=qbG8BAAAQBAJ&rdid=book-qbG8BAAAQBAJ&rdot=1&source=gbs_api",
+    "offers": [
+     {
+      "finskyOfferType": 1,
+      "listPrice": {
+       "amountInMicros": 7.55E7,
+       "currencyCode": "GBP"
+      },
+      "retailPrice": {
+       "amountInMicros": 5.045E7,
+       "currencyCode": "GBP"
+      },
+      "giftable": true
+     },
+     {
+      "finskyOfferType": 3,
+      "listPrice": {
+       "amountInMicros": 2.642E7,
+       "currencyCode": "GBP"
+      },
+      "retailPrice": {
+       "amountInMicros": 2.378E7,
+       "currencyCode": "GBP"
+      },
+      "rentalDuration": {
+       "unit": "DAY",
+       "count": 90.0
+      }
+     }
+    ]
+   },
+   "accessInfo": {
+    "country": "GB",
+    "viewability": "PARTIAL",
+    "embeddable": true,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED_FOR_ACCESSIBILITY",
+    "epub": {
+     "isAvailable": true,
+     "acsTokenLink": "http://books.google.co.uk/books/download/Scala_Design_Patterns-sample-epub.acsm?id=qbG8BAAAQBAJ&format=epub&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+    },
+    "pdf": {
+     "isAvailable": true,
+     "acsTokenLink": "http://books.google.co.uk/books/download/Scala_Design_Patterns-sample-pdf.acsm?id=qbG8BAAAQBAJ&format=pdf&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+    },
+    "webReaderLink": "http://play.google.com/books/reader?id=qbG8BAAAQBAJ&hl=&printsec=frontcover&source=gbs_api",
+    "accessViewStatus": "SAMPLE",
+    "quoteSharingAllowed": false
+   },
+   "searchInfo": {
+    "textSnippet": "A major aspect of this is the reinterpretation of the original Gang of Four design patterns in terms of Scala and its language structures (that is the use of Traits, Classes, Objects and Functions)."
+   }
+  },
+  {
+   "kind": "books#volume",
+   "id": "7szMDQAAQBAJ",
+   "etag": "3jpO8B58IAM",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/7szMDQAAQBAJ",
+   "volumeInfo": {
+    "title": "Design Patterns in PHP and Laravel",
+    "authors": [
+     "Kelt Dockins"
+    ],
+    "publisher": "Apress",
+    "publishedDate": "2016-12-27",
+    "description": "Learn each of the original gang of four design patterns, and how they are relevant to modern PHP and Laravel development. Written by a working developer who uses these patterns every day, you will easily be able to implement each pattern into your workflow and improve your development. Each pattern is covered with full examples of how it can be used. Too often design patterns are explained using tricky concepts, when in fact they are easy to use and can enrich your everyday development. Design Patterns in PHP and Laravel aims to break down tricky concepts into humorous and easy-to-recall details, so that you can begin using design patterns easily in your everyday work with PHP and Laravel. This book teaches you design patterns in PHP and Laravel using real-world examples and plenty of humor. What You Will Learn Use the original gang of four design patterns in your PHP and Laravel development How each pattern should be used Solve problems when using the patterns Remember each pattern using mnemonics Who This Book Is For People using Laravel and PHP to do their job and want to improve their understanding of design patterns.",
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_13",
+      "identifier": "9781484224519"
+     },
+     {
+      "type": "ISBN_10",
+      "identifier": "1484224515"
+     }
+    ],
+    "readingModes": {
+     "text": true,
+     "image": true
+    },
+    "pageCount": 238,
+    "printType": "BOOK",
+    "categories": [
+     "Computers"
+    ],
+    "maturityRating": "NOT_MATURE",
+    "allowAnonLogging": true,
+    "contentVersion": "1.1.1.0.preview.3",
+    "panelizationSummary": {
+     "containsEpubBubbles": false,
+     "containsImageBubbles": false
+    },
+    "imageLinks": {
+     "smallThumbnail": "http://books.google.com/books/content?id=7szMDQAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+     "thumbnail": "http://books.google.com/books/content?id=7szMDQAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    },
+    "language": "en",
+    "previewLink": "http://books.google.co.uk/books?id=7szMDQAAQBAJ&printsec=frontcover&dq=Design+Patterns&hl=&cd=28&source=gbs_api",
+    "infoLink": "https://play.google.com/store/books/details?id=7szMDQAAQBAJ&source=gbs_api",
+    "canonicalVolumeLink": "https://market.android.com/details?id=book-7szMDQAAQBAJ"
+   },
+   "saleInfo": {
+    "country": "GB",
+    "saleability": "FOR_SALE",
+    "isEbook": true,
+    "listPrice": {
+     "amount": 29.99,
+     "currencyCode": "GBP"
+    },
+    "retailPrice": {
+     "amount": 19.49,
+     "currencyCode": "GBP"
+    },
+    "buyLink": "https://play.google.com/store/books/details?id=7szMDQAAQBAJ&rdid=book-7szMDQAAQBAJ&rdot=1&source=gbs_api",
+    "offers": [
+     {
+      "finskyOfferType": 1,
+      "listPrice": {
+       "amountInMicros": 2.999E7,
+       "currencyCode": "GBP"
+      },
+      "retailPrice": {
+       "amountInMicros": 1.949E7,
+       "currencyCode": "GBP"
+      },
+      "giftable": true
+     }
+    ]
+   },
+   "accessInfo": {
+    "country": "GB",
+    "viewability": "PARTIAL",
+    "embeddable": true,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED",
+    "epub": {
+     "isAvailable": true,
+     "acsTokenLink": "http://books.google.co.uk/books/download/Design_Patterns_in_PHP_and_Laravel-sample-epub.acsm?id=7szMDQAAQBAJ&format=epub&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+    },
+    "pdf": {
+     "isAvailable": true,
+     "acsTokenLink": "http://books.google.co.uk/books/download/Design_Patterns_in_PHP_and_Laravel-sample-pdf.acsm?id=7szMDQAAQBAJ&format=pdf&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+    },
+    "webReaderLink": "http://play.google.com/books/reader?id=7szMDQAAQBAJ&hl=&printsec=frontcover&source=gbs_api",
+    "accessViewStatus": "SAMPLE",
+    "quoteSharingAllowed": false
+   },
+   "searchInfo": {
+    "textSnippet": "This book teaches you design patterns in PHP and Laravel using real-world examples and plenty of humor."
+   }
+  },
+  {
+   "kind": "books#volume",
+   "id": "DT7INNE3ui8C",
+   "etag": "JVKDIbKNLDE",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/DT7INNE3ui8C",
+   "volumeInfo": {
+    "title": "Advanced ActionScript with Design Patterns",
+    "authors": [
+     "Joey Lott",
+     "Danny Patterson"
+    ],
+    "publisher": "Adobe Press",
+    "publishedDate": "2007",
+    "description": "Today's ActionScript-based applications require increasingly sophisticated architectures and code. This book aids intermediate and advanced ActionScript developers in learning how to plan and build applications more effectively. You'll learn how to apply design patterns as solutions to common programming scenarios. Beyond a reference, Advanced ActionScript with Design Patterns is a practical guide complete with sample mini-applications illustrating each design pattern. Table of Contents: Part I - Successful Projects 1. How to Design Applications 2. Programming to Interfaces Part II - Patterns 3. MVC 4. Singleton 5. Factory (Abstract Factory and Factory Method) 6. Proxy 7. Iterator 8. Composite 9. Decorator 10. Command 11. Memento 12. State Part III - Advanced ActionScript Topics 13. Working with Events 14. Sending and Loading Data 15. E4X (XML) 16. Regular Expressions",
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_13",
+      "identifier": "9780132701372"
+     },
+     {
+      "type": "ISBN_10",
+      "identifier": "0132701375"
+     }
+    ],
+    "readingModes": {
+     "text": true,
+     "image": true
+    },
+    "pageCount": 350,
+    "printType": "BOOK",
+    "categories": [
+     "Computers"
+    ],
+    "averageRating": 4.0,
+    "ratingsCount": 6,
+    "maturityRating": "NOT_MATURE",
+    "allowAnonLogging": true,
+    "contentVersion": "0.0.1.0.preview.3",
+    "imageLinks": {
+     "smallThumbnail": "http://books.google.com/books/content?id=DT7INNE3ui8C&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+     "thumbnail": "http://books.google.com/books/content?id=DT7INNE3ui8C&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    },
+    "language": "en",
+    "previewLink": "http://books.google.co.uk/books?id=DT7INNE3ui8C&printsec=frontcover&dq=Design+Patterns&hl=&cd=29&source=gbs_api",
+    "infoLink": "http://books.google.co.uk/books?id=DT7INNE3ui8C&dq=Design+Patterns&hl=&source=gbs_api",
+    "canonicalVolumeLink": "https://books.google.com/books/about/Advanced_ActionScript_with_Design_Patter.html?hl=&id=DT7INNE3ui8C"
+   },
+   "saleInfo": {
+    "country": "GB",
+    "saleability": "NOT_FOR_SALE",
+    "isEbook": false
+   },
+   "accessInfo": {
+    "country": "GB",
+    "viewability": "PARTIAL",
+    "embeddable": true,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED_FOR_ACCESSIBILITY",
+    "epub": {
+     "isAvailable": false
+    },
+    "pdf": {
+     "isAvailable": false
+    },
+    "webReaderLink": "http://play.google.com/books/reader?id=DT7INNE3ui8C&hl=&printsec=frontcover&source=gbs_api",
+    "accessViewStatus": "SAMPLE",
+    "quoteSharingAllowed": false
+   },
+   "searchInfo": {
+    "textSnippet": "Today&#39;s ActionScript-based applications require increasingly sophisticated architectures and code. This book aids intermediate and advanced ActionScript developers in learning how to plan and build applications more effectively."
+   }
+  },
+  {
+   "kind": "books#volume",
+   "id": "hV_LyQwG0zAC",
+   "etag": "JHqnEmkSr1k",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/hV_LyQwG0zAC",
+   "volumeInfo": {
+    "title": "PHP Architect's Guide to PHP Design Patterns",
+    "authors": [
+     "Jason E. Sweat"
+    ],
+    "publisher": "Marco Tabini & Associates, Inc.",
+    "publishedDate": "2005",
+    "description": "Design patterns are comprehensive, well-tested solutions to common problems that developers everywhere encounter each day. Although designed for solving general programming issues, some of them have been successfully adapted to the specific needs of Web development.php architect's Guide to PHP Design Patterns is the first comprehensive guide to the application of design patterns to the PHP development language. Designed to satisfy the need of enterprise-strength development, you will find this book an excellent way to learn about design patterns and an irreplaceable reference for your day-to-day programming.With coverage of more than 16 different types of patterns, including Model-View-Controller, Iterator, MockObject, Register, Proxy, ActiveRecord, DataMapper and many, many others, this book is the ideal resource for your enterprise development with PHP 4 and PHP 5.* Includes over 16 design patterns* Each pattern is discussed in detail with practical code applications* Covers both PHP 4 and PHP 5* Provides a thorough test-driven approach to design patterns* Code is available online",
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_13",
+      "identifier": "9780973589825"
+     },
+     {
+      "type": "ISBN_10",
+      "identifier": "0973589825"
+     }
+    ],
+    "readingModes": {
+     "text": true,
+     "image": true
+    },
+    "pageCount": 340,
+    "printType": "BOOK",
+    "categories": [
+     "Computers"
+    ],
+    "averageRating": 4.0,
+    "ratingsCount": 6,
+    "maturityRating": "NOT_MATURE",
+    "allowAnonLogging": false,
+    "contentVersion": "preview-1.0.0",
+    "imageLinks": {
+     "smallThumbnail": "http://books.google.com/books/content?id=hV_LyQwG0zAC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+     "thumbnail": "http://books.google.com/books/content?id=hV_LyQwG0zAC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    },
+    "language": "en",
+    "previewLink": "http://books.google.co.uk/books?id=hV_LyQwG0zAC&printsec=frontcover&dq=Design+Patterns&hl=&cd=30&source=gbs_api",
+    "infoLink": "http://books.google.co.uk/books?id=hV_LyQwG0zAC&dq=Design+Patterns&hl=&source=gbs_api",
+    "canonicalVolumeLink": "https://books.google.com/books/about/PHP_Architect_s_Guide_to_PHP_Design_Patt.html?hl=&id=hV_LyQwG0zAC"
+   },
+   "saleInfo": {
+    "country": "GB",
+    "saleability": "NOT_FOR_SALE",
+    "isEbook": false
+   },
+   "accessInfo": {
+    "country": "GB",
+    "viewability": "PARTIAL",
+    "embeddable": true,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED",
+    "epub": {
+     "isAvailable": true,
+     "acsTokenLink": "http://books.google.co.uk/books/download/PHP_Architect_s_Guide_to_PHP_Design_Patt-sample-epub.acsm?id=hV_LyQwG0zAC&format=epub&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+    },
+    "pdf": {
+     "isAvailable": false
+    },
+    "webReaderLink": "http://play.google.com/books/reader?id=hV_LyQwG0zAC&hl=&printsec=frontcover&source=gbs_api",
+    "accessViewStatus": "SAMPLE",
+    "quoteSharingAllowed": false
+   },
+   "searchInfo": {
+    "textSnippet": "Designed to satisfy the need of enterprise-strength development, you will find this book an excellent way to learn about design patterns and an irreplaceable reference for your day-to-day programming.With coverage of more than 16 different ..."
+   }
+  }
+ ]
+}

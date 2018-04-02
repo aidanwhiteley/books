@@ -1,0 +1,84 @@
+{
+  "kind": "books#volume",
+  "id": "oMVIzzKjJCcC",
+  "etag": "ej4KuKfYQfA",
+  "selfLink": "https://www.googleapis.com/books/v1/volumes/oMVIzzKjJCcC",
+  "volumeInfo": {
+    "title": "Professional Java Development with the Spring Framework",
+    "authors": [
+      "Rod Johnson",
+      "Jürgen Höller",
+      "Alef Arendsen",
+      "Thomas Risberg",
+      "Colin Sampaleanu"
+    ],
+    "publisher": "John Wiley & Sons",
+    "publishedDate": "2007-08-27",
+    "description": "The Spring Framework is a major open source application development framework that makes Java/J2EE(TM) development easier and more productive. This book shows you not only what Spring can do but why, explaining its functionality and motivation to help you use all parts of the framework to develop successful applications.\u003cbr\u003e \u003cbr\u003e You will be guided through all the Spring features and see how they form a coherent whole. In turn, this will help you understand the rationale for Spring's approach, when to use Spring, and how to follow best practices. All this is illustrated with a complete sample application. When you finish the book, you will be well equipped to use Spring effectively in everything from simple Web applications to complex enterprise applications.\u003cbr\u003e \u003cbr\u003e What you will learn from this book\u003cbr\u003e * The core Inversion of Control container and the concept of Dependency Injection\u003cbr\u003e * Spring's Aspect Oriented Programming (AOP) framework and why AOP is important in J2EE development\u003cbr\u003e * How to use Spring's programmatic and declarative transaction management services effectively\u003cbr\u003e * Ways to access data using Spring's JDBC functionality, iBATIS SQL Maps, Hibernate, and other O/R mapping frameworks\u003cbr\u003e * Spring services for accessing and implementing EJBs\u003cbr\u003e * Spring's remoting framework\u003cbr\u003e \u003cbr\u003e Who this book is for\u003cbr\u003e \u003cbr\u003e This book is for Java/J2EE architects and developers who want to gain a deeper knowledge of the Spring Framework and use it effectively.\u003cbr\u003e \u003cbr\u003e Wrox Professional guides are planned and written by working programmers to meet the real-world needs of programmers, developers, and IT professionals. Focused and relevant, they address the issues technology professionals face every day. They provide examples, practical solutions, and expert education in new technologies, all designed to help programmers do a better job.",
+    "industryIdentifiers": [
+      {
+        "type": "ISBN_10",
+        "identifier": "0471748943"
+      },
+      {
+        "type": "ISBN_13",
+        "identifier": "9780471748946"
+      }
+    ],
+    "readingModes": {
+      "text": false,
+      "image": true
+    },
+    "pageCount": 676,
+    "printedPageCount": 675,
+    "dimensions": {
+      "height": "24.00 cm"
+    },
+    "printType": "BOOK",
+    "categories": [
+      "Computers / Programming Languages / Java",
+      "Computers / Programming / General"
+    ],
+    "averageRating": 4.0,
+    "ratingsCount": 1,
+    "maturityRating": "NOT_MATURE",
+    "allowAnonLogging": true,
+    "contentVersion": "0.2.0.0.preview.1",
+    "panelizationSummary": {
+      "containsEpubBubbles": false,
+      "containsImageBubbles": false
+    },
+    "imageLinks": {
+      "smallThumbnail": "http://books.google.com/books/content?id=oMVIzzKjJCcC&printsec=frontcover&img=1&zoom=5&edge=curl&imgtk=AFLRE73wzyr74jX0lNIN6cB8qtFB_L4v7frGDigRWdtMEhqHMP63dnveDWhhvmwYXBF4WEFNbBm4aAJ-3E535pZwgVpCgtUprQcdYpZVHAaCSjq_bIU_BavZ7g_lJZVhHJ0huTQBoTWh&source=gbs_api",
+      "thumbnail": "http://books.google.com/books/content?id=oMVIzzKjJCcC&printsec=frontcover&img=1&zoom=1&edge=curl&imgtk=AFLRE73CvFtKKYJFt96vpe6fk8v2KjF0mqOEV6Vd70ZxlwzBCbLK3ptWaSbBwV6LYJiSZhZkLFr0xgt6qT54NznaJ9mA7n4cmCnE7Js6HEiNo_cSTErtKIMuVJLFLpRilgYKE66AE4eX&source=gbs_api",
+      "small": "http://books.google.com/books/content?id=oMVIzzKjJCcC&printsec=frontcover&img=1&zoom=2&edge=curl&imgtk=AFLRE73NESMc6ipJaeskLc1-AxSKn0WnKZUkJawdmyVGRykQGYW1FloY4cfQxWMJyhaNPi__1LrbyergMQNenqXV6gQbKkujIPHCX1kSyD6uu54iE1nry9AKfdiS7cL8HAnq8BCKlDwP&source=gbs_api",
+      "medium": "http://books.google.com/books/content?id=oMVIzzKjJCcC&printsec=frontcover&img=1&zoom=3&edge=curl&imgtk=AFLRE70ZHSMYhoByvocLkIVFZ0deS5mv9-uoOoCw2OICHWdZftX5lPlxJE0lLZSrbZLn65MRXhnbPrS_mBPVz1iZqDLEj3E5JstVeWb0526gw-TebirN-N78ziRu8jYDgJMvRu0oGOe0&source=gbs_api"
+    },
+    "language": "en",
+    "previewLink": "http://books.google.co.uk/books?id=oMVIzzKjJCcC&hl=&source=gbs_api",
+    "infoLink": "https://play.google.com/store/books/details?id=oMVIzzKjJCcC&source=gbs_api",
+    "canonicalVolumeLink": "https://market.android.com/details?id=book-oMVIzzKjJCcC"
+  },
+  "saleInfo": {
+    "country": "GB",
+    "saleability": "NOT_FOR_SALE",
+    "isEbook": false
+  },
+  "accessInfo": {
+    "country": "GB",
+    "viewability": "PARTIAL",
+    "embeddable": true,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED",
+    "epub": {
+      "isAvailable": false
+    },
+    "pdf": {
+      "isAvailable": true,
+      "acsTokenLink": "http://books.google.co.uk/books/download/Professional_Java_Development_with_the_S-sample-pdf.acsm?id=oMVIzzKjJCcC&format=pdf&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+    },
+    "webReaderLink": "http://play.google.com/books/reader?id=oMVIzzKjJCcC&hl=&printsec=frontcover&source=gbs_api",
+    "accessViewStatus": "SAMPLE",
+    "quoteSharingAllowed": false
+  }
+}

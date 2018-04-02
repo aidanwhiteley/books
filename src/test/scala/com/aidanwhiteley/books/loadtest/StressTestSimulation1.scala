@@ -6,7 +6,7 @@ import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 import io.gatling.jdbc.Predef._
  
-class AsyncNonBlockingSimulation1 extends Simulation {
+class StressTestSimulation1 extends Simulation {
 
     val rampUpTimeSecs = 20
     val testTimeSecs   = 120
@@ -32,9 +32,9 @@ class AsyncNonBlockingSimulation1 extends Simulation {
         .during(testTimeSecs) {
       exec(
         http(requestName)
-          .get("/async")
+          .get("/api/books/?page=0&size=5")
           .headers(http_headers)
-          .check(status.is(200), regex(""""status":true""") )
+          .check(status.is(200), regex(""""numberOfElements":5""") )
       )
       .pause(minWaitMs, maxWaitMs)
     }

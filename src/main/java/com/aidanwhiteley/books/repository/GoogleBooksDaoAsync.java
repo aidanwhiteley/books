@@ -25,7 +25,6 @@ public class GoogleBooksDaoAsync extends GoogleBooksDaoBase {
     private final WebClient webClient;
     private final BookRepository bookRepository;
 
-
     @Autowired
     public GoogleBooksDaoAsync(BookRepository bookRepository) {
         this.webClient = WebClient.builder()
@@ -74,7 +73,6 @@ public class GoogleBooksDaoAsync extends GoogleBooksDaoBase {
             return next.exchange(clientRequest);
         };
     }
-
 
     private ExchangeFilterFunction logResponseStatus() {
         return ExchangeFilterFunction.ofResponseProcessor(clientResponse -> {

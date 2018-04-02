@@ -4,7 +4,6 @@ import com.aidanwhiteley.books.domain.googlebooks.BookSearchResult;
 import com.aidanwhiteley.books.domain.googlebooks.Item;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.stereotype.Repository;
@@ -12,6 +11,7 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import javax.annotation.PostConstruct;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
@@ -21,10 +21,13 @@ public class GoogleBooksDaoSync extends GoogleBooksDaoBase {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GoogleBooksDaoSync.class);
 
-    private final RestTemplate googleBooksRestTemplate;
+    private RestTemplate googleBooksRestTemplate;
 
-    @Autowired
-    public GoogleBooksDaoSync(RestTemplateBuilder restTemplateBuilder) {
+    @PostConstruct
+    public void init() {
+        // Using a PostConstruct as we need the bean initialised to be able to
+        // access the configurable connect and read timeouts
+        RestTemplateBuilder restTemplateBuilder = new RestTemplateBuilder();
         this.googleBooksRestTemplate = buildRestTemplate(restTemplateBuilder);
     }
 
@@ -59,8 +62,8 @@ public class GoogleBooksDaoSync extends GoogleBooksDaoBase {
     }
 
     private RestTemplate buildRestTemplate(RestTemplateBuilder builder) {
-        builder.setConnectTimeout(booksGoogleBooksApiConnectTimeout);
-        builder.setReadTimeout(booksGoogleBooksApiReadTimeout);
-        return builder.build();
+
+        return builder.setConnectTimeout(booksGoogleBooksApiConnectTimeout).
+                setReadTimeout(booksGoogleBooksApiReadTimeout).build();
     }
 }

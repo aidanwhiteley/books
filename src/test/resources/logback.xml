@@ -11,4 +11,5 @@
     <logger name="com.icegreen.greenmail.smtp.SmtpManager" level="WARN" />
     <logger name="com.aidanwhiteley.books.service.SignUpNotificationService" level="WARN"/>
     <logger name="com.aidanwhiteley.books.repository.GoogleBooksDaoAsync" level="DEBUG"/>
+    <logger name="io.github.azagniotov.stubby4j" level="WARN"/>
 </configuration>

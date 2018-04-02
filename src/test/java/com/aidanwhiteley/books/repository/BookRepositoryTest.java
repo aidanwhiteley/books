@@ -9,7 +9,6 @@ import com.aidanwhiteley.books.repository.dtos.BooksByGenre;
 import com.aidanwhiteley.books.repository.dtos.BooksByRating;
 import com.aidanwhiteley.books.repository.dtos.BooksByReader;
 import com.aidanwhiteley.books.util.IntegrationTest;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;

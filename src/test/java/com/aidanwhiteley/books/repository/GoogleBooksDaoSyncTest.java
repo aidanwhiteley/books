@@ -1,9 +1,11 @@
 package com.aidanwhiteley.books.repository;
 
-import com.aidanwhiteley.books.domain.googlebooks.BookSearchResult;
-import com.aidanwhiteley.books.domain.googlebooks.Item;
-import com.aidanwhiteley.books.util.IntegrationTest;
-import com.aidanwhiteley.books.util.Stubby4JUtil;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -13,7 +15,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.ResourceAccessException;
 
-import static org.junit.Assert.*;
+import com.aidanwhiteley.books.domain.googlebooks.BookSearchResult;
+import com.aidanwhiteley.books.domain.googlebooks.Item;
+import com.aidanwhiteley.books.util.IntegrationTest;
+import com.aidanwhiteley.books.util.Stubby4JUtil;
+
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.LoggerContext;
 
 @ActiveProfiles("test")
 public class GoogleBooksDaoSyncTest extends IntegrationTest {
@@ -58,14 +66,19 @@ public class GoogleBooksDaoSyncTest extends IntegrationTest {
 
     @Test
     public void confirmFindbyBookTimesOut() {
+    	
+    	// Turn off unwanted logging for read timeout
+        LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+        context.getLogger(GoogleBooksDaoSync.class).setLevel(Level.valueOf("OFF"));
 
-        // TODO - suppress logging for this expected exception and then change to the @Test(expected=xxx) syntax
         try {
             theDao.searchGoogleBooksByGoogleBookId(SLOW_RESPOND_STUB_BOOK_ID);
             fail("There should have been a timeout on accessing stubbed http service");
         } catch (ResourceAccessException rae) {
             LOGGER.debug("Expected exception caught");
         }
+        
+        context.getLogger(GoogleBooksDaoSync.class).setLevel(Level.valueOf("ON"));
     }
 
 }

@@ -34,7 +34,7 @@ public class GoogleBookDaoAsyncTest extends IntegrationTest {
     }
 
     @Test
-    public void testBookUpdatedWithGoogleBookDetails() {
+    public void testBookUpdatedWithGoogleBookDetails() throws Exception {
         Book book = BookRepositoryTest.createTestBook();
         Book savedBook = bookRepository.insert(book);
         assertNull(savedBook.getGoogleBookDetails());
@@ -43,6 +43,9 @@ public class GoogleBookDaoAsyncTest extends IntegrationTest {
         //async.setBooksGoogleBooksApiCountryCode("country=GB");
         async.updateBookWithGoogleBookDetails(savedBook, SPRING_FRAMEWORK_GOOGLE_BOOK_ID);
 
+        // TODO - remove thread sleep from test - maybe make called method return a CompleteableFuture
+        Thread.sleep(1000);
+        
         Book updatedBook = bookRepository.
                 findById(savedBook.getId()).orElseThrow(() -> new IllegalStateException("Expected book not found"));
         assertNotNull(updatedBook.getGoogleBookDetails(),

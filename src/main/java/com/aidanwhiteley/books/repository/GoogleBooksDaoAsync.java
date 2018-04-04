@@ -1,19 +1,22 @@
 package com.aidanwhiteley.books.repository;
 
-import com.aidanwhiteley.books.domain.Book;
-import com.aidanwhiteley.books.domain.googlebooks.Item;
+import java.time.Duration;
+import java.util.concurrent.CountDownLatch;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
-import java.time.Duration;
-import java.util.concurrent.CountDownLatch;
+import com.aidanwhiteley.books.domain.Book;
+import com.aidanwhiteley.books.domain.googlebooks.Item;
+
+import reactor.core.publisher.Mono;
 
 @Repository
 public class GoogleBooksDaoAsync extends GoogleBooksDaoBase {
@@ -36,6 +39,7 @@ public class GoogleBooksDaoAsync extends GoogleBooksDaoBase {
         this.bookRepository = bookRepository;
     }
 
+    @Async("threadPoolExecutor")
     public void updateBookWithGoogleBookDetails(Book book, String googleBookId) {
 
         LOGGER.debug("Entered updateBookWithGoogleBookDetails");
@@ -51,9 +55,12 @@ public class GoogleBooksDaoAsync extends GoogleBooksDaoBase {
                 timeout(Duration.ofSeconds(5)).
                 doOnNext(item -> bookRepository.addGoogleBookItemToBook(book.getId(), item)).
                 subscribe();
-
+        LOGGER.debug("WebClient call to Google Books API initiated");
+        
         try {
+        	LOGGER.debug("Awaiting completion of Google Books API API call");
             countDownLatch.await();
+            LOGGER.debug("Completion of Google Books API API call - await finished");
         } catch (InterruptedException ie) {
             LOGGER.error("InterruptedException while waiting for countDownLatch", ie);
             Thread.currentThread().interrupt();

@@ -13,7 +13,7 @@ import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 @ActiveProfiles("test")
-public class GoogleBookDaoAsyncTest extends IntegrationTest {
+public class GoogleBookDaoAsyncNonBlockingTest extends IntegrationTest {
 
     private static final String SPRING_FRAMEWORK_GOOGLE_BOOK_ID = "oMVIzzKjJCcC";
 
@@ -21,7 +21,7 @@ public class GoogleBookDaoAsyncTest extends IntegrationTest {
     BookRepository bookRepository;
 
     @Autowired
-    GoogleBooksDaoAsync async;
+    GoogleBooksDaoAsyncNonBlocking async;
 
     @BeforeClass
     public static void setUpStubby() throws Exception {
@@ -44,7 +44,7 @@ public class GoogleBookDaoAsyncTest extends IntegrationTest {
         async.updateBookWithGoogleBookDetails(savedBook, SPRING_FRAMEWORK_GOOGLE_BOOK_ID);
 
         // TODO - remove thread sleep from test - maybe make called method return a CompleteableFuture
-        Thread.sleep(1000);
+        Thread.sleep(2000);
         
         Book updatedBook = bookRepository.
                 findById(savedBook.getId()).orElseThrow(() -> new IllegalStateException("Expected book not found"));

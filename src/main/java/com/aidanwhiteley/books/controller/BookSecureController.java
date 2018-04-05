@@ -8,7 +8,7 @@ import com.aidanwhiteley.books.domain.Owner;
 import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.domain.googlebooks.BookSearchResult;
 import com.aidanwhiteley.books.repository.BookRepository;
-import com.aidanwhiteley.books.repository.GoogleBooksDaoAsync;
+import com.aidanwhiteley.books.repository.GoogleBooksDaoAsyncNonBlocking;
 import com.aidanwhiteley.books.repository.GoogleBooksDaoSync;
 import com.aidanwhiteley.books.repository.dtos.BooksByReader;
 import com.aidanwhiteley.books.util.JwtAuthenticationUtils;
@@ -49,7 +49,7 @@ public class BookSecureController {
 
 	private final GoogleBooksDaoSync googleBooksDaoSync;
 
-	private final GoogleBooksDaoAsync googleBooksDaoAsync;
+	private final GoogleBooksDaoAsyncNonBlocking googleBooksDaoAsyncNonBlocking;
 
 	private final JwtAuthenticationUtils authUtils;
 
@@ -58,10 +58,10 @@ public class BookSecureController {
 
 	@Autowired
 	public BookSecureController(BookRepository bookRepository, GoogleBooksDaoSync googleBooksDaoSync,
-			GoogleBooksDaoAsync googleBooksDaoAsync, JwtAuthenticationUtils jwtAuthenticationUtils) {
+                                GoogleBooksDaoAsyncNonBlocking googleBooksDaoAsyncNonBlocking, JwtAuthenticationUtils jwtAuthenticationUtils) {
 		this.bookRepository = bookRepository;
 		this.googleBooksDaoSync = googleBooksDaoSync;
-		this.googleBooksDaoAsync = googleBooksDaoAsync;
+		this.googleBooksDaoAsyncNonBlocking = googleBooksDaoAsyncNonBlocking;
 		this.authUtils = jwtAuthenticationUtils;
 	}
 
@@ -88,7 +88,7 @@ public class BookSecureController {
 			// If there were Google Book details specified, call an async method to 
 			// go and get the full details from Google and then update the Mongo document for the book
 			if (book.getGoogleBookId() != null && book.getGoogleBookId().length() > 0) {
-				googleBooksDaoAsync.updateBookWithGoogleBookDetails(insertedBook, book.getGoogleBookId());
+				googleBooksDaoAsyncNonBlocking.updateBookWithGoogleBookDetails(insertedBook, book.getGoogleBookId());
 			}
 
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")

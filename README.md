@@ -9,7 +9,7 @@ So welcome to the "Cloudy Bookclub" microservice!
 
 [![Build Status](https://travis-ci.org/aidanwhiteley/books.svg?branch=master)](https://travis-ci.org/aidanwhiteley/books) [![Sonar Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=com.aidanwhiteley%3Abooks&metric=alert_status)](https://sonarcloud.io/dashboard?id=com.aidanwhiteley%3Abooks)
 [![codecov](https://codecov.io/gh/aidanwhiteley/books/branch/master/graph/badge.svg)](https://codecov.io/gh/aidanwhiteley/books)
-[![Website](https://img.shields.io/website-up-down-green-red/https/cloudybookclub.com.svg?label=TheCloudyBookClub)]
+[![Website](https://img.shields.io/website-up-down-green-red/https/cloudybookclub.com.svg)](https://cloudybookclub.com)
 
 
 ## Implementation

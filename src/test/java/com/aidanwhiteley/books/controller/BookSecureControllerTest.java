@@ -17,6 +17,7 @@ import java.net.URI;
 
 import static org.junit.Assert.*;
 
+@SuppressWarnings("ConstantConditions")
 public class BookSecureControllerTest extends IntegrationTest {
 
     private static final String GENRE_TOO_LONG = "abcdefghjijklmnopqrstuvwxyz01234567890";

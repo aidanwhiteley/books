@@ -23,23 +23,4 @@ public abstract class GoogleBooksDaoBase {
     @Value("${books.google.books.api.read.timeout}")
     protected int booksGoogleBooksApiReadTimeout;
 
-    public void setBooksGoogleBooksApiSearchUrl(String booksGoogleBooksApiSearchUrl) {
-        this.booksGoogleBooksApiSearchUrl = booksGoogleBooksApiSearchUrl;
-    }
-
-    public void setBooksGoogleBooksApiGetByIdUrl(String booksGoogleBooksApiGetByIdUrl) {
-        this.booksGoogleBooksApiGetByIdUrl = booksGoogleBooksApiGetByIdUrl;
-    }
-
-    public void setBooksGoogleBooksApiCountryCode(String booksGoogleBooksApiCountryCode) {
-        this.booksGoogleBooksApiCountryCode = booksGoogleBooksApiCountryCode;
-    }
-
-    public void setBooksGoogleBooksApiConnectTimeout(int booksGoogleBooksApiConnectTimeout) {
-        this.booksGoogleBooksApiConnectTimeout = booksGoogleBooksApiConnectTimeout;
-    }
-
-    public void setBooksGoogleBooksApiReadTimeout(int booksGoogleBooksApiReadTimeout) {
-        this.booksGoogleBooksApiReadTimeout = booksGoogleBooksApiReadTimeout;
-    }
 }

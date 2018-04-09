@@ -122,3 +122,13 @@ books:
     using:
       fongo: false
 
+  thread:
+    pool1:
+      coresize: 2
+      maxsize: 4
+      queue:
+        capacity: 50
+      thread:
+        prefix: GoogleBooksLookup-
+
+

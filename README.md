@@ -148,11 +148,3 @@ of any other domain names that weren't already taken.
 ## Client functionality
 ![Screen shot](https://github.com/aidanwhiteley/books-web/blob/master/app/images/cloudy-book-club-screen-grab.jpg "Book review")
 
-# Runtime dependencies
-And finally here's a pictorial representation of the runtime dependencies of the code base generated using
-
-https://github.com/ferstl/depgraph-maven-plugin
-
-mvn depgraph:graph -DshowVersions=true -Dscope=runtime -DshowGroupIds=true
-
-![Screen shot](https://github.com/aidanwhiteley/books-web/blob/master/app/images/dependency-graph.png "Dependency Graph")

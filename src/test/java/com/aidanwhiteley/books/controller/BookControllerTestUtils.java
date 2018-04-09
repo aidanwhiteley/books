@@ -99,7 +99,7 @@ public class BookControllerTestUtils {
 		ResponseEntity<Book> nonExistentBook = testRestTemplate.getForEntity("/api/book/12345678", Book.class);
 		HttpHeaders headers = nonExistentBook.getHeaders();
 		String cookies = headers.getFirst(HttpHeaders.SET_COOKIE);
-		String[] tokenCookies = cookies.split("XSRF-TOKEN=");
+		String[] tokenCookies = cookies != null ? cookies.split("XSRF-TOKEN=") : new String[0];
 		String tokenCookie = tokenCookies[1];
 		return tokenCookie.split(";")[0];
 	}

@@ -8,7 +8,7 @@ import com.aidanwhiteley.books.domain.Owner;
 import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.domain.googlebooks.BookSearchResult;
 import com.aidanwhiteley.books.repository.BookRepository;
-import com.aidanwhiteley.books.repository.GoogleBooksDaoAsyncNonBlocking;
+import com.aidanwhiteley.books.repository.GoogleBooksDaoAsync;
 import com.aidanwhiteley.books.repository.GoogleBooksDaoSync;
 import com.aidanwhiteley.books.repository.dtos.BooksByReader;
 import com.aidanwhiteley.books.util.JwtAuthenticationUtils;
@@ -43,200 +43,190 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
 @PreAuthorize("hasAnyRole('ROLE_EDITOR', 'ROLE_ADMIN')")
 public class BookSecureController {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(BookSecureController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BookSecureController.class);
 
-	private final BookRepository bookRepository;
+    private final BookRepository bookRepository;
 
-	private final GoogleBooksDaoSync googleBooksDaoSync;
+    private final GoogleBooksDaoSync googleBooksDaoSync;
 
-	private final GoogleBooksDaoAsyncNonBlocking googleBooksDaoAsyncNonBlocking;
+    private final GoogleBooksDaoAsync googleBooksDaoAsync;
 
-	private final JwtAuthenticationUtils authUtils;
+    private final JwtAuthenticationUtils authUtils;
 
-	@Value("${books.users.default.page.size}")
-	private int defaultPageSize;
+    @Value("${books.users.default.page.size}")
+    private int defaultPageSize;
 
-	@Autowired
-	public BookSecureController(BookRepository bookRepository, GoogleBooksDaoSync googleBooksDaoSync,
-                                GoogleBooksDaoAsyncNonBlocking googleBooksDaoAsyncNonBlocking, JwtAuthenticationUtils jwtAuthenticationUtils) {
-		this.bookRepository = bookRepository;
-		this.googleBooksDaoSync = googleBooksDaoSync;
-		this.googleBooksDaoAsyncNonBlocking = googleBooksDaoAsyncNonBlocking;
-		this.authUtils = jwtAuthenticationUtils;
-	}
+    @Autowired
+    public BookSecureController(BookRepository bookRepository, GoogleBooksDaoSync googleBooksDaoSync,
+                                GoogleBooksDaoAsync googleBooksDaoAsync, JwtAuthenticationUtils jwtAuthenticationUtils) {
+        this.bookRepository = bookRepository;
+        this.googleBooksDaoSync = googleBooksDaoSync;
+        this.googleBooksDaoAsync = googleBooksDaoAsync;
+        this.authUtils = jwtAuthenticationUtils;
+    }
 
-	@RequestMapping(value = "/books", method = POST)
-	public ResponseEntity<Book> createBook(@Valid @RequestBody Book book, Principal principal,
-			HttpServletRequest request) throws MalformedURLException, URISyntaxException {
+    @RequestMapping(value = "/books", method = POST)
+    public ResponseEntity<Book> createBook(@Valid @RequestBody Book book, Principal principal,
+                                           HttpServletRequest request) throws MalformedURLException, URISyntaxException {
 
-		LOGGER.debug("createBook in BookSecureController called");
-		
-		Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
-		if (user.isPresent()) {
-			book.setCreatedBy(new Owner(user.get()));
+        LOGGER.debug("createBook in BookSecureController called");
 
-			// Get the Google book details for this book
-			// TODO - move this out to a message queue driven async
-			// implementation.
-			// if (book.getGoogleBookId() != null &&
-			// book.getGoogleBookId().length() > 0) {
-			// book.setGoogleBookDetails(googleBooksDaoSync.searchGoogleBooksByGoogleBookId(book.getGoogleBookId()));
-			// }
+        Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
+        if (user.isPresent()) {
+            book.setCreatedBy(new Owner(user.get()));
 
-			Book insertedBook = bookRepository.insert(book);
-			
-			// If there were Google Book details specified, call an async method to 
-			// go and get the full details from Google and then update the Mongo document for the book
-			if (book.getGoogleBookId() != null && book.getGoogleBookId().length() > 0) {
-				googleBooksDaoAsyncNonBlocking.updateBookWithGoogleBookDetails(insertedBook, book.getGoogleBookId());
-			}
+            Book insertedBook = bookRepository.insert(book);
 
-			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-					.buildAndExpand(insertedBook.getId()).toUri();
+            // If there were Google Book details specified, call an async method to
+            // go and get the full details from Google and then update the Mongo document for the book
+            if (book.getGoogleBookId() != null && book.getGoogleBookId().length() > 0) {
+                googleBooksDaoAsync.updateBookWithGoogleBookDetails(insertedBook, book.getGoogleBookId());
+            }
 
-			// Basic GET of book details are not on a secure API
-			location = new URI(location.toURL().toString().replaceAll("/secure", ""));
-			LOGGER.debug("createBook existed. New Book createdd in store - accessible at {}", location);
-			return ResponseEntity.created(location).build();
-		} else {
-			LOGGER.error("Couldnt create a book as user to own book not found! Principal: {}", principal);
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-		}
-	}
+            URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                    .buildAndExpand(insertedBook.getId()).toUri();
 
-	@RequestMapping(value = "/books", method = PUT)
-	public ResponseEntity<Book> updateBook(@Valid @RequestBody Book book, Principal principal) {
+            // Basic GET of book details are not on a secure API
+            location = new URI(location.toURL().toString().replaceAll("/secure", ""));
+            LOGGER.debug("createBook existed. New Book createdd in store - accessible at {}", location);
+            return ResponseEntity.created(location).build();
+        } else {
+            LOGGER.error("Couldnt create a book as user to own book not found! Principal: {}", principal);
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+    }
 
-		Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
-		if (user.isPresent()) {
-			Book currentBookState = bookRepository.findById(book.getId())
-					.orElseThrow(() -> new IllegalArgumentException("Didnt find book to update"));
+    @RequestMapping(value = "/books", method = PUT)
+    public ResponseEntity<Book> updateBook(@Valid @RequestBody Book book, Principal principal) {
 
-			if (currentBookState.isOwner(user.get()) || user.get().getRoles().contains(User.Role.ROLE_ADMIN)) {
-				// Have the Google book details for this book review changed (or
-				// been removed)
-				// TODO - move this out to a message queue driven async
-				// implementation.
-				if (book.getGoogleBookId() != null && !book.getGoogleBookId().isEmpty()
-						&& (!book.getGoogleBookId().equals(currentBookState.getGoogleBookId()))) {
-					book.setGoogleBookDetails(
-							googleBooksDaoSync.searchGoogleBooksByGoogleBookId(book.getGoogleBookId()));
-				} else if (book.getGoogleBookId() == null || book.getGoogleBookId().isEmpty()) {
-					book.setGoogleBookDetails(null);
-				}
+        Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
+        if (user.isPresent()) {
+            Book currentBookState = bookRepository.findById(book.getId())
+                    .orElseThrow(() -> new IllegalArgumentException("Didnt find book to update"));
 
-				bookRepository.save(book);
-				return ResponseEntity.noContent().build();
-			} else {
-				return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-			}
-		} else {
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-		}
-	}
+            if (currentBookState.isOwner(user.get()) || user.get().getRoles().contains(User.Role.ROLE_ADMIN)) {
+                // Have the Google book details for this book review changed (or
+                // been removed)
+                if (book.getGoogleBookId() != null && !book.getGoogleBookId().isEmpty()
+                        && (!book.getGoogleBookId().equals(currentBookState.getGoogleBookId()))) {
+                    // Retrieve and update Google Book details asynchronously
+                    googleBooksDaoSync.searchGoogleBooksByGoogleBookId(book.getGoogleBookId());
+                } else if (book.getGoogleBookId() == null || book.getGoogleBookId().isEmpty()) {
+                    book.setGoogleBookDetails(null);
+                }
 
-	@RequestMapping(value = "/books/{id}", method = DELETE)
-	public ResponseEntity<Book> deleteBookById(@PathVariable("id") String id, Principal principal) {
+                bookRepository.save(book);
+                return ResponseEntity.noContent().build();
+            } else {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+    }
 
-		Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
-		if (user.isPresent()) {
-			Book currentBookState = bookRepository.findById(id)
-					.orElseThrow(() -> new IllegalArgumentException("Couldnt find book to delete"));
+    @RequestMapping(value = "/books/{id}", method = DELETE)
+    public ResponseEntity<Book> deleteBookById(@PathVariable("id") String id, Principal principal) {
 
-			if (currentBookState.isOwner(user.get()) || user.get().getRoles().contains(User.Role.ROLE_ADMIN)) {
-				bookRepository.deleteById(id);
-				return ResponseEntity.noContent().build();
-			} else {
-				return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-			}
-		} else {
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-		}
-	}
+        Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
+        if (user.isPresent()) {
+            Book currentBookState = bookRepository.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("Couldnt find book to delete"));
 
-	@RequestMapping(value = "/books/{id}/comments", method = POST)
-	public Book addCommentToBook(@PathVariable("id") String id, @Valid @RequestBody Comment comment,
-			Principal principal) {
+            if (currentBookState.isOwner(user.get()) || user.get().getRoles().contains(User.Role.ROLE_ADMIN)) {
+                bookRepository.deleteById(id);
+                return ResponseEntity.noContent().build();
+            } else {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+    }
 
-		Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
-		if (user.isPresent()) {
-			comment.setOwner(new Owner(user.get()));
+    @RequestMapping(value = "/books/{id}/comments", method = POST)
+    public Book addCommentToBook(@PathVariable("id") String id, @Valid @RequestBody Comment comment,
+                                 Principal principal) {
 
-			return bookRepository.addCommentToBook(id, comment);
-		} else {
-			return null;
-		}
-	}
+        Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
+        if (user.isPresent()) {
+            comment.setOwner(new Owner(user.get()));
 
-	@RequestMapping(value = "/books/{id}/comments/{commentId}", method = DELETE)
-	public Book removeCommentFromBook(@PathVariable("id") String id, @PathVariable("commentId") String commentId,
-			Principal principal) {
+            return bookRepository.addCommentToBook(id, comment);
+        } else {
+            return null;
+        }
+    }
 
-		Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
+    @RequestMapping(value = "/books/{id}/comments/{commentId}", method = DELETE)
+    public Book removeCommentFromBook(@PathVariable("id") String id, @PathVariable("commentId") String commentId,
+                                      Principal principal) {
 
-		if (user.isPresent()) {
-			Book currentBook = bookRepository.findById(id)
-					.orElseThrow(() -> new IllegalArgumentException("Unable to find book to delete comment from"));
-			Comment comment = currentBook.getComments().stream().filter(c -> c.getId().equals(commentId)).findFirst()
-					.orElse(null);
-			if (comment == null) {
-				throw new IllegalArgumentException("Unknown commentId supplied");
-			}
+        Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
 
-			if (comment.isOwner(user.get()) || user.get().getRoles().contains(User.Role.ROLE_ADMIN)) {
-				return bookRepository.removeCommentFromBook(id, commentId, user.get().getFullName());
-			} else {
-				throw new AccessForbiddenException("Not owner of comment or admin");
-			}
-		} else {
-			return null;
-		}
-	}
+        if (user.isPresent()) {
+            Book currentBook = bookRepository.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("Unable to find book to delete comment from"));
+            Comment comment = currentBook.getComments().stream().filter(c -> c.getId().equals(commentId)).findFirst()
+                    .orElse(null);
+            if (comment == null) {
+                throw new IllegalArgumentException("Unknown commentId supplied");
+            }
 
-	@GetMapping(value = "/books", params = { "reader" })
-	public Page<Book> findByReader(@RequestParam("reader") String reader, Principal principal) {
-		return findByReader(reader, 0, defaultPageSize, principal);
-	}
+            if (comment.isOwner(user.get()) || user.get().getRoles().contains(User.Role.ROLE_ADMIN)) {
+                return bookRepository.removeCommentFromBook(id, commentId, user.get().getFullName());
+            } else {
+                throw new AccessForbiddenException("Not owner of comment or admin");
+            }
+        } else {
+            return null;
+        }
+    }
 
-	/**
-	 * This method is secured so that it cant be called to try and find out who
-	 * has been reviewing books if you are not an authorised user i.e. with at
-	 * least ROLE_EDITOR
-	 */
-	@GetMapping(value = "/books", params = { "reader", "page", "size" })
-	public Page<Book> findByReader(@RequestParam("reader") String reader, @RequestParam(value = "page") int page,
-			@RequestParam(value = "size") int size, Principal principal) {
+    @GetMapping(value = "/books", params = {"reader"})
+    public Page<Book> findByReader(@RequestParam("reader") String reader, Principal principal) {
+        return findByReader(reader, 0, defaultPageSize, principal);
+    }
 
-		if (null == reader || reader.trim().isEmpty()) {
-			throw new IllegalArgumentException("Reader parameter cannot be empty");
-		}
+    /**
+     * This method is secured so that it cant be called to try and find out who
+     * has been reviewing books if you are not an authorised user i.e. with at
+     * least ROLE_EDITOR
+     */
+    @GetMapping(value = "/books", params = {"reader", "page", "size"})
+    public Page<Book> findByReader(@RequestParam("reader") String reader, @RequestParam(value = "page") int page,
+                                   @RequestParam(value = "size") int size, Principal principal) {
 
-		PageRequest pageObj = PageRequest.of(page, size, new Sort(Sort.Direction.DESC, "entered"));
-		return bookRepository.findByReaderOrderByEnteredDesc(pageObj, reader);
-	}
+        if (null == reader || reader.trim().isEmpty()) {
+            throw new IllegalArgumentException("Reader parameter cannot be empty");
+        }
 
-	@GetMapping(value = "/googlebooks", params = "title")
-	public BookSearchResult findGoogleBooksByTitle(@RequestParam("title") String title) {
-		return googleBooksDaoSync.searchGoogBooksByTitle(title);
-	}
+        PageRequest pageObj = PageRequest.of(page, size, new Sort(Sort.Direction.DESC, "entered"));
+        return bookRepository.findByReaderOrderByEnteredDesc(pageObj, reader);
+    }
 
-	@RequestMapping(value = "/books/readers", method = GET)
-	public List<BooksByReader> findBookReaders() {
-		return bookRepository.countBooksByReader();
-	}
+    @GetMapping(value = "/googlebooks", params = "title")
+    public BookSearchResult findGoogleBooksByTitle(@RequestParam("title") String title) {
+        return googleBooksDaoSync.searchGoogBooksByTitle(title);
+    }
 
-	@GetMapping(value = "/debugheaders")
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public String debugRequestHeaders(Principal principal, HttpServletRequest request) {
+    @RequestMapping(value = "/books/readers", method = GET)
+    public List<BooksByReader> findBookReaders() {
+        return bookRepository.countBooksByReader();
+    }
 
-		Enumeration<String> headers = request.getHeaderNames();
-		StringBuilder headersOut = new StringBuilder();
-		while (headers.hasMoreElements()) {
-			String headerName = headers.nextElement();
-			headersOut.append(headerName).append(": ").append(request.getHeader(headerName)).append("\r\n");
-		}
+    @GetMapping(value = "/debugheaders")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public String debugRequestHeaders(Principal principal, HttpServletRequest request) {
 
-		return "Scheme was: " + request.getScheme() + " servername was: " + request.getServerName()
-				+ " and protocol was: " + request.getProtocol() + "\r\n\r\nheaders:\r\n" + headersOut;
-	}
+        Enumeration<String> headers = request.getHeaderNames();
+        StringBuilder headersOut = new StringBuilder();
+        while (headers.hasMoreElements()) {
+            String headerName = headers.nextElement();
+            headersOut.append(headerName).append(": ").append(request.getHeader(headerName)).append("\r\n");
+        }
+
+        return "Scheme was: " + request.getScheme() + " servername was: " + request.getServerName()
+                + " and protocol was: " + request.getProtocol() + "\r\n\r\nheaders:\r\n" + headersOut;
+    }
 }

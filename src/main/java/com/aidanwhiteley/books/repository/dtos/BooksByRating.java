@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
+
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,7 +19,7 @@ public class BooksByRating implements Comparable<BooksByRating> {
 	 * We want these sorted from best to worst.
 	 */
 	@Override
-	public int compareTo(BooksByRating other) {
+	public int compareTo(@NotNull BooksByRating other) {
 		return Integer.compare(rating.getRatingLevel(), other.getRating().getRatingLevel());
 	}
 

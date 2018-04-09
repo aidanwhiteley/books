@@ -12,7 +12,7 @@ import org.springframework.test.context.ActiveProfiles;
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-@ActiveProfiles("test")
+@ActiveProfiles({"test", "fongo"})
 public class GoogleBookDaoAsyncTest extends IntegrationTest {
 
     private static final String SPRING_FRAMEWORK_GOOGLE_BOOK_ID = "oMVIzzKjJCcC";

@@ -14,15 +14,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.env.Environment;
 import org.springframework.http.*;
 
 import java.net.URI;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.aidanwhiteley.books.repository.BookRepositoryTest.J_UNIT_TESTING_FOR_BEGINNERS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assume.assumeTrue;
 
 @SuppressWarnings("ConstantConditions")
 public class BookControllerTest extends IntegrationTest {
@@ -35,9 +36,9 @@ public class BookControllerTest extends IntegrationTest {
     @Autowired
     private JwtUtils jwtUtils;
 
-    @Value("${books.tests.using.fongo}")
-    private boolean testsUsingFongo;
-    
+    @Autowired
+    private Environment environment;
+
     @Value("${books.users.default.page.size}")
     private int defaultPageSize;
 
@@ -129,7 +130,10 @@ public class BookControllerTest extends IntegrationTest {
 
         // This test doesnt run with Fongo as it uses weighted full text index
         // against multiple fields - which is not currently supported by Fongo.
-        assumeTrue(!testsUsingFongo);
+        if (Arrays.asList(this.environment.getActiveProfiles()).contains("fongo")) {
+            LOGGER.warn("Test skipped - Fongo doesnt yet support weighted full text indexes on multiple fields");
+            return;
+        }
 
         BookControllerTestUtils.postBookToServer(jwtUtils, testRestTemplate);
 
@@ -149,7 +153,10 @@ public class BookControllerTest extends IntegrationTest {
 
         // This test doesnt run with Fongo as it uses weighted full text index
         // against multiple fields - which is not currently supported by Fongo.
-        assumeTrue(!testsUsingFongo);
+        if (Arrays.asList(this.environment.getActiveProfiles()).contains("fongo")) {
+            LOGGER.warn("Test skipped - Fongo doesnt yet support weighted full text indexes on multiple fields");
+            return;
+        }
 
         BookControllerTestUtils.postBookToServer(jwtUtils, testRestTemplate);
 
@@ -169,32 +176,32 @@ public class BookControllerTest extends IntegrationTest {
         books = JsonPath.read(response.getBody(), "$.content");
         assertEquals("Search unexpectedly found a book", 0, books.size());
     }
-    
+
     @Test
     public void findAllByWhenEnteredDesc() {
         ResponseEntity<String> response = testRestTemplate.exchange("/api/books", HttpMethod.GET, null, String.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        
+
         // Returns a "page" of books - so look for the content of the page
         List<Book> books = JsonPath.read(response.getBody(), "$.content");
         LOGGER.debug("Retrieved JSON was: " + response.getBody());
         assertEquals("Default page size of books expected", books.size(), defaultPageSize);
     }
-    
+
     @Test
     public void findBooksByGenre() {
         ResponseEntity<String> response = testRestTemplate.exchange("/api/books?genre=Novel", HttpMethod.GET, null, String.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        
+
         List<Book> books = JsonPath.read(response.getBody(), "$.content");
         LOGGER.debug("Retrieved JSON was: " + response.getBody());
         assertTrue("Expected to find novels", books.size() > 0);
     }
-    
+
     @Test
     public void testBookDataSummaryApis() {
-    	
-    	// Summary stats
+
+        // Summary stats
         ResponseEntity<String> response = testRestTemplate.exchange("/api/books/stats", HttpMethod.GET, null, String.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         int count = JsonPath.parse(response.getBody()).read("$.count", Integer.class);
@@ -202,7 +209,7 @@ public class BookControllerTest extends IntegrationTest {
         List<BooksByGenre> genres = JsonPath.read(response.getBody(), "$.bookByGenre");
         assertTrue(genres.size() > 0);
         List<BooksByRating> ratings = JsonPath.read(response.getBody(), "$.booksByRating");
-        assertTrue(ratings.size() > 0);    	
+        assertTrue(ratings.size() > 0);
     }
 
 }

@@ -4,6 +4,7 @@ import com.aidanwhiteley.books.controller.config.WebSecurityConfiguration;
 import com.aidanwhiteley.books.controller.jwt.JwtAuthenticationService;
 import com.aidanwhiteley.books.controller.jwt.JwtUtils;
 import com.aidanwhiteley.books.domain.Book;
+import com.aidanwhiteley.books.domain.Comment;
 import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.domain.User.Role;
 import com.aidanwhiteley.books.repository.BookRepositoryTest;
@@ -192,6 +193,46 @@ public class BookSecureControllerTest extends IntegrationTest {
         // In actual fact, what happens is that the request is re-directed to the "logon page", A 403 would have been preferable
         assertEquals(HttpStatus.FOUND, response.getStatusCode());
         assertEquals(WebSecurityConfiguration.API_LOGIN, response.getHeaders().getLocation().getPath());
+    }
+
+    @Test
+    public void addAndRemoveCommentFromBook() {
+        // Create Book
+        ResponseEntity<Book> response = BookControllerTestUtils.postBookToServer(jwtUtils, testRestTemplate);
+
+        // Get the location of the book POSTed to the server
+        HttpHeaders headers = response.getHeaders();
+        URI uri = headers.getLocation();
+
+        // Now go and get the Book
+        User user = BookControllerTestUtils.getTestUser();
+        Book book = testRestTemplate.getForEntity(uri, Book.class).getBody();
+        assertEquals(book.getTitle(), BookRepositoryTest.createTestBook().getTitle());
+        String bookId = book.getId();
+
+        // Now create a comment
+        final String commentText = "A sample comment";
+        Comment newComment = new Comment();
+        newComment.setCommentText(commentText);
+
+        String token = jwtUtils.createTokenForUser(user);
+        String xsrfToken = BookControllerTestUtils.getXsrfToken(testRestTemplate);
+        HttpEntity<Comment> postData = BookControllerTestUtils.getBookHttpEntityForComment(newComment, token, xsrfToken);
+        ResponseEntity<Book> postResponse = testRestTemplate.exchange("/secure/api/books/" + bookId + "/comments", HttpMethod.POST, postData,
+                Book.class);
+
+        assertEquals(HttpStatus.OK, postResponse.getStatusCode());
+        assertEquals(1, postResponse.getBody().getComments().size());
+        assertEquals(commentText,postResponse.getBody().getComments().get(0).getCommentText());
+
+        // Now remove the comment (the reuse of the postData is OK as we just need the headers - not the body)
+        String commentId = postResponse.getBody().getComments().get(0).getId();
+        ResponseEntity<Book> deleteResponse = testRestTemplate.exchange("/secure/api/books/" + bookId + "/comments/" + commentId, HttpMethod.DELETE, postData,
+                Book.class);
+        assertEquals(HttpStatus.OK, deleteResponse.getStatusCode());
+        assertEquals(1, deleteResponse.getBody().getComments().size());
+        assertTrue(deleteResponse.getBody().getComments().get(0).getDeletedBy().contains(user.getFullName()));
+        assertTrue(deleteResponse.getBody().getComments().get(0).isDeleted());
     }
 
     @Test

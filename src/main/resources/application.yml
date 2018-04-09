@@ -118,10 +118,6 @@ books:
   oauth2:
     cookieOverHttpsOnly: true
 
-  tests:
-    using:
-      fongo: false
-
   thread:
     pool1:
       coresize: 2

@@ -2,6 +2,8 @@ spring:
   data:
     mongodb:
       uri: mongodb://localhost:27017/books-fongo?safe=true&journal=true&w=majority&connectTimeoutMS=1001&wtimeoutMS=1000&serverSelectionTimeoutMS=10000
+  mail:
+    port: 3025    # Must match the value specified in the SignUpNotificationServiceTest. Set hight to avoid problems on Unix envs
 
 books:
   client:
@@ -29,7 +31,3 @@ books:
 
   oauth2:
     cookieOverHttpsOnly: false
-
-  tests:
-    using:
-      fongo: true

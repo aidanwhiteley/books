@@ -69,8 +69,8 @@ public class Comment implements Serializable {
     }
 
     public boolean isOwner(User user) {
-        return (user.getAuthenticationServiceId().equals(this.owner.getAuthenticationServiceId()) && user.getAuthProvider() == this.owner.getAuthProvider()
-        );
+        return (user.getAuthenticationServiceId().equals(this.owner.getAuthenticationServiceId()) &&
+                user.getAuthProvider() == this.owner.getAuthProvider());
     }
 
     public void setPermissionsAndContentForUser(User user) {

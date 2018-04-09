@@ -22,7 +22,7 @@ import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.GOOGLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class SignUpNotificationServiceTest extends IntegrationTest{
+public class SignUpNotificationServiceTest extends IntegrationTest {
 
     // This value must match the value in the corresponding YAML config file.
     // Default port 25 shifted to allow easy use on Unix environments where
@@ -35,7 +35,6 @@ public class SignUpNotificationServiceTest extends IntegrationTest{
 
     @Value("${books.users.registrationAdminEmail.emailContent}")
     private String registrationAdminEmailContent;
-
 
     @Autowired
     UserRepository userRepository;

@@ -8,9 +8,9 @@
     <logger name="com.aidanwhiteley" level="WARN"/>
     <logger name="com.aidanwhiteley.books.controller.aspect" level="WARN" />
     <logger name="com.aidanwhiteley.books.util.MailClient" level="WARN" />
-    <logger name="com.icegreen.greenmail.smtp.SmtpManager" level="WARN" />
+    <logger name="com.icegreen.greenmail" level="WARN" />
     <logger name="com.aidanwhiteley.books.service.SignUpNotificationService" level="WARN"/>
-    <logger name="com.aidanwhiteley.books.repository.GoogleBooksDaoAsync" level="DEBUG"/>
+    <logger name="com.aidanwhiteley.books.repository.GoogleBooksDaoAsync" level="WARN"/>
     <logger name="io.github.azagniotov.stubby4j" level="WARN"/>
     <logger name="io.github.azagniotov.stubby4j.stubs.StubMatcher" level="OFF"/>
 </configuration>

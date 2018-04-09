@@ -30,15 +30,35 @@ public class UserControllerTest extends IntegrationTest {
 
     @Test
     public void getUserDetailsWithAuthentication() {
-        User user = BookControllerTestUtils.getTestUser();
-        String token = jwtUtils.createTokenForUser(user);
-        String xsrfToken = BookControllerTestUtils.getXsrfToken(testRestTemplate);
-        HttpEntity<Book> request = BookControllerTestUtils.getBookHttpEntity(null, token, xsrfToken);
-        ResponseEntity<User> response = testRestTemplate.exchange("/secure/api/user", HttpMethod.GET, request, User.class);
+        ResponseEntity<User> response = getUserDetails();
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         //noinspection ConstantConditions
         assertEquals(BookControllerTestUtils.USER_WITH_ALL_ROLES_FULL_NAME, response.getBody().getFullName());
     }
+    
+    @Test
+    public void testLogout() {
+        ResponseEntity<User> response = getUserDetails();
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        
+		User user = BookControllerTestUtils.getTestUser();
+        String token = jwtUtils.createTokenForUser(user);
+        String xsrfToken = BookControllerTestUtils.getXsrfToken(testRestTemplate);
+        HttpEntity<Book> request = BookControllerTestUtils.getBookHttpEntity(null, token, xsrfToken);
+        ResponseEntity<User> logoutResponse = testRestTemplate.exchange("/secure/api/logout", HttpMethod.POST, request, User.class);
+        assertEquals(HttpStatus.OK, logoutResponse.getStatusCode());
+        
+        // TODO - check that the cookies have been cleared down
+    }
+    
+	private ResponseEntity<User> getUserDetails() {
+		User user = BookControllerTestUtils.getTestUser();
+        String token = jwtUtils.createTokenForUser(user);
+        String xsrfToken = BookControllerTestUtils.getXsrfToken(testRestTemplate);
+        HttpEntity<Book> request = BookControllerTestUtils.getBookHttpEntity(null, token, xsrfToken);
+        ResponseEntity<User> response = testRestTemplate.exchange("/secure/api/user", HttpMethod.GET, request, User.class);
+		return response;
+	}
 
 }

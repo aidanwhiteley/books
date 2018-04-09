@@ -124,24 +124,11 @@ public class UserController {
 	 * filters when we want to be able to call logout when CORS is enabled.
 	 */
 	@RequestMapping(value = "/logout", method = POST)
-	public LogoutInfo logout(HttpServletResponse response) {
+	public void logout(HttpServletResponse response) {
 		authService.expireJwtCookie(response);
 		authService.expireXsrfCookie(response);
 		// There shouldnt be any JSessionId cookie - but kill any that exists!
 		authService.expireJsessionIdCookie(response);
-
-		return new LogoutInfo();
-	}
-
-	/**
-	 * A data holder to pass some data / suggestions back to the client.
-     *
-     * No data now needs passing back to client - so all fields removed from this class. Candidate for removal
-	 */
-	class LogoutInfo {
-		LogoutInfo() {
-		    LOGGER.debug("Created LogoutInfo");
-        }
 	}
 
 }

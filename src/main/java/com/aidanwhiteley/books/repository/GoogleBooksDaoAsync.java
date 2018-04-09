@@ -69,10 +69,9 @@ public class GoogleBooksDaoAsync extends GoogleBooksDaoBase {
             Item item = monoItem.block(Duration.ofSeconds(booksGoogleBooksApiReadTimeout));
             LOGGER.debug("Block completed");
 
-            if (null != item) {
-                bookRepository.addGoogleBookItemToBook(book.getId(), item);
-                LOGGER.debug("Google Books details added to Mongo for {}", book.getId());
-            }
+            bookRepository.addGoogleBookItemToBook(book.getId(), item);
+            LOGGER.debug("Google Books details added to Mongo for {}", book.getId());
+
         } catch (RuntimeException re) {
             LOGGER.error("Error retrieving or storing Google Book details for {}", googleBookId, re);
         }

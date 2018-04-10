@@ -9,12 +9,16 @@ import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.domain.User.Role;
 import com.aidanwhiteley.books.repository.BookRepositoryTest;
 import com.aidanwhiteley.books.util.IntegrationTest;
+import com.jayway.jsonpath.JsonPath;
+
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.data.domain.Page;
 import org.springframework.http.*;
 
 import java.net.URI;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -233,6 +237,19 @@ public class BookSecureControllerTest extends IntegrationTest {
         assertEquals(1, deleteResponse.getBody().getComments().size());
         assertTrue(deleteResponse.getBody().getComments().get(0).getDeletedBy().contains(user.getFullName()));
         assertTrue(deleteResponse.getBody().getComments().get(0).isDeleted());
+    }
+    
+    @Test
+    public void findBooksByReader() {
+		User user = BookControllerTestUtils.getTestUser();
+        String token = jwtUtils.createTokenForUser(user);
+        String xsrfToken = BookControllerTestUtils.getXsrfToken(testRestTemplate);
+        HttpEntity<Book> request = BookControllerTestUtils.getBookHttpEntity(null, token, xsrfToken);
+        
+        final String testReader = "Fred Bloggs";
+        ResponseEntity<String> response = testRestTemplate.exchange("/secure/api/books?reader=" + testReader, HttpMethod.GET, request, String.class);   
+        List<Book> books = JsonPath.read(response.getBody(), "$.content");
+        assertTrue(books.size() > 0);
     }
 
     @Test

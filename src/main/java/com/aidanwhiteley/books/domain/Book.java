@@ -9,8 +9,7 @@ import lombok.*;
 import org.hibernate.validator.constraints.Length;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
+import org.springframework.data.annotation.*;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -72,8 +71,25 @@ public class Book implements Serializable {
     // Not marked a @NotNull as validation is done on the
     // input object from the client and this data is
     // set on the server side after validation.
+    //@Setter
+    //private Owner createdBy;
+
+    @CreatedBy
     @Setter
     private Owner createdBy;
+
+    @CreatedDate
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    private LocalDateTime createdDateTime;
+
+    @LastModifiedBy
+    private Owner lastModifiedBy;
+
+    @CreatedDate
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    private LocalDateTime lastModifiedDateTime;
 
     // The following three transient fields are intended as "helpers" to enable
     // the client side to create links to functionality that will pass the server side

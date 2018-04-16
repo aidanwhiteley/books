@@ -73,7 +73,6 @@ public class BookSecureController {
 
         Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
         if (user.isPresent()) {
-            book.setCreatedBy(new Owner(user.get()));
 
             Book insertedBook = bookRepository.insert(book);
 

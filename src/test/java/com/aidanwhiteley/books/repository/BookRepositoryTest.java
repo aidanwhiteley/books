@@ -42,7 +42,6 @@ public class BookRepositoryTest extends IntegrationTest {
                 .summary(A_GUIDE_TO_POKING_SOFTWARE).genre(COMPUTING)
                 .author(DR_ZEUSS).rating(Book.Rating.POOR)
                 .entered(LocalDateTime.of(2016, 11, 20, 0, 0))
-                .createdBy(new Owner(BookControllerTestUtils.getTestUser()))
                 .build();
     }
 

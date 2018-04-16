@@ -68,14 +68,7 @@ public class Book implements Serializable {
     @Setter
     private Item googleBookDetails;
 
-    // Not marked a @NotNull as validation is done on the
-    // input object from the client and this data is
-    // set on the server side after validation.
-    //@Setter
-    //private Owner createdBy;
-
     @CreatedBy
-    @Setter
     private Owner createdBy;
 
     @CreatedDate
@@ -86,7 +79,7 @@ public class Book implements Serializable {
     @LastModifiedBy
     private Owner lastModifiedBy;
 
-    @CreatedDate
+    @LastModifiedDate
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime lastModifiedDateTime;

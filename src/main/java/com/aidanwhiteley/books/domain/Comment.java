@@ -19,6 +19,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -26,15 +27,11 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
 import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.Data;
 import lombok.Setter;
-import lombok.ToString;
 
-@Setter
-@Getter
-@EqualsAndHashCode
-@ToString
+@Data
+@Document
 public class Comment implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -77,9 +74,8 @@ public class Comment implements Serializable {
 	private String deletedBy;
 
 	// The following transient field is intended as a "helper" to enable the
-	// client
-	// side to create links to functionality that will pass the server side
-	// method level security.
+	// client side to create links to functionality that will pass the server
+	// side method level security.
 	@Transient
 	@Setter(AccessLevel.NONE)
 	private boolean allowDelete;

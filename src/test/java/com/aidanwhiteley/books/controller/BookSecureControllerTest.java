@@ -10,11 +10,9 @@ import com.aidanwhiteley.books.domain.User.Role;
 import com.aidanwhiteley.books.repository.BookRepositoryTest;
 import com.aidanwhiteley.books.util.IntegrationTest;
 import com.jayway.jsonpath.JsonPath;
-
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.data.domain.Page;
 import org.springframework.http.*;
 
 import java.net.URI;

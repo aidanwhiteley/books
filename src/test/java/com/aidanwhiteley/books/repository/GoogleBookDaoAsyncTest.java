@@ -27,7 +27,7 @@ public class GoogleBookDaoAsyncTest extends IntegrationTest {
     GoogleBooksDaoAsync async;
 
     @Test
-    public void testBookUpdatedWithGoogleBookDetails() throws Exception {
+    public void testBookUpdatedWithGoogleBookDetails() {
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Wiremock Mappings: " + WireMock.listAllStubMappings().getMappings());

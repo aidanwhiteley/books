@@ -1,6 +1,5 @@
 package com.aidanwhiteley.books.repository;
 
-import com.aidanwhiteley.books.controller.BookControllerTestUtils;
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.Comment;
 import com.aidanwhiteley.books.domain.Owner;

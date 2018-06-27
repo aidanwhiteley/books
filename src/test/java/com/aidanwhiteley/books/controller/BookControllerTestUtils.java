@@ -106,12 +106,11 @@ public class BookControllerTestUtils {
 	}
 
 	public static String getXsrfToken(TestRestTemplate testRestTemplate) {
-		// First we call a GET endpoint to get a required XSRF-TOKEN cookie
-		// value
+		// First we call a GET endpoint to get a required XSRF-TOKEN cookie value
 		ResponseEntity<Book> nonExistentBook = testRestTemplate.getForEntity("/api/book/12345678", Book.class);
 		HttpHeaders headers = nonExistentBook.getHeaders();
 		String cookies = headers.getFirst(HttpHeaders.SET_COOKIE);
-		String[] tokenCookies = cookies != null ? cookies.split("XSRF-TOKEN=") : new String[0];
+		String[] tokenCookies = cookies.split("XSRF-TOKEN=");
 		String tokenCookie = tokenCookies[1];
 		return tokenCookie.split(";")[0];
 	}

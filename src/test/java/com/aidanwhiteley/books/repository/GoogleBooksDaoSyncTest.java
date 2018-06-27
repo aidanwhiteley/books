@@ -6,13 +6,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.ResourceAccessException;
@@ -20,7 +17,6 @@ import org.springframework.web.client.ResourceAccessException;
 import com.aidanwhiteley.books.domain.googlebooks.BookSearchResult;
 import com.aidanwhiteley.books.domain.googlebooks.Item;
 import com.aidanwhiteley.books.util.IntegrationTest;
-import com.aidanwhiteley.books.util.Stubby4JUtil;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;

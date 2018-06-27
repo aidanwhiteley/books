@@ -32,6 +32,9 @@ All tests should run fine "out of the box". By default, the tests expect there t
 There is an option to run the tests using Fongo (an in memory Mongo replacement) - change the spring.profiles.active in application.yml to "fongo".
 However, to run the project, Mongo is always required - even if tests are run against Fongo.
 
+Some of the integration tests make use of WireMock (a replacement for Stubby4J due to SnakeYaml version conflicts with Spring Boot). 
+See the /src/test/resources/mappings and __files directories for the configuraion details.
+
 #### Stress Test
 To examine how the WebClient code is behaving there is a maven plugin set up that runs a basic Gatling load test.
 Run the command:

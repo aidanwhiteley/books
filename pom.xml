@@ -30,17 +30,16 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.0.1.RELEASE</version>
-		<relativePath />
+		<version>2.0.3.RELEASE</version>
+        <relativePath /> <!-- lookup parent from repository -->
 	</parent>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
+        <spring-cloud-contract.version>2.0.0.RELEASE</spring-cloud-contract.version>
 	</properties>
-
-
 
 	<dependencies>
 		<dependency>
@@ -122,20 +121,33 @@
 			<version>1.5.7</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>io.github.azagniotov</groupId>
-			<artifactId>stubby4j</artifactId>
-			<version>5.2.0</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>io.gatling.highcharts</groupId>
-			<artifactId>gatling-charts-highcharts</artifactId>
-			<version>2.3.1</version>
-			<scope>test</scope>
-		</dependency>
 
-	</dependencies>
+
+        <!--<dependency>-->
+            <!--<groupId>com.github.tomakehurst</groupId>-->
+            <!--<artifactId>wiremock</artifactId>-->
+            <!--<version>2.18.0</version>-->
+            <!--<scope>test</scope>-->
+        <!--</dependency>-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-contract-wiremock</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-contract-dependencies</artifactId>
+                <version>${spring-cloud-contract.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
 	<build>
 		<plugins>

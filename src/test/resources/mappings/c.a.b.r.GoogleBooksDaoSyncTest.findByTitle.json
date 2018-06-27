@@ -1,0 +1,13 @@
+{
+  "request" : {
+    "url" : "/books/v1/volumes?maxResults=30&q=Design+Patterns&country=GB",
+    "method" : "GET"
+  },
+  "response" : {
+    "status" : 200,
+    "bodyFileName" : "retrieveMultipleBooksFromGoogleBookApi1.json",
+    "headers" : {
+      "Content-Type" : "application/json"
+    }
+  }
+}

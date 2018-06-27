@@ -1,1 +1,0 @@
-java -jar stubby4j-5.2.0.jar -w 1000 -d stubs.yaml

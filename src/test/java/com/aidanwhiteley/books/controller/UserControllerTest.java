@@ -27,7 +27,7 @@ public class UserControllerTest extends IntegrationTest {
     @Test
     public void getUserDetailsNoAuthentication() {
         ResponseEntity<User> response = testRestTemplate.getForEntity("/secure/api/user", User.class);
-        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals(302, response.getStatusCode().value());
     }
 
     @Test

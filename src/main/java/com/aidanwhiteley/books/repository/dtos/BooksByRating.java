@@ -2,12 +2,14 @@ package com.aidanwhiteley.books.repository.dtos;
 
 import com.aidanwhiteley.books.domain.Book;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
 public class BooksByRating implements Comparable<BooksByRating> {
 
     private Book.Rating rating;

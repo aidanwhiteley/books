@@ -35,8 +35,6 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Optional;
 
-import static org.springframework.web.bind.annotation.RequestMethod.*;
-
 @LimitDataVisibility
 @RestController
 @RequestMapping("/secure/api")
@@ -65,7 +63,7 @@ public class BookSecureController {
         this.authUtils = jwtAuthenticationUtils;
     }
 
-    @RequestMapping(value = "/books", method = POST)
+    @PostMapping(value = "/books")
     public ResponseEntity<Book> createBook(@Valid @RequestBody Book book, Principal principal,
                                            HttpServletRequest request) throws MalformedURLException, URISyntaxException {
 
@@ -95,7 +93,7 @@ public class BookSecureController {
         }
     }
 
-    @RequestMapping(value = "/books", method = PUT)
+    @PutMapping(value = "/books")
     public ResponseEntity<Book> updateBook(@Valid @RequestBody Book book, Principal principal) {
 
         Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
@@ -124,7 +122,7 @@ public class BookSecureController {
         }
     }
 
-    @RequestMapping(value = "/books/{id}", method = DELETE)
+    @DeleteMapping(value = "/books/{id}")
     public ResponseEntity<Book> deleteBookById(@PathVariable("id") String id, Principal principal) {
 
         Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
@@ -143,7 +141,7 @@ public class BookSecureController {
         }
     }
 
-    @RequestMapping(value = "/books/{id}/comments", method = POST)
+    @PostMapping(value = "/books/{id}/comments")
     public Book addCommentToBook(@PathVariable("id") String id, @Valid @RequestBody Comment comment,
                                  Principal principal) {
 
@@ -157,7 +155,7 @@ public class BookSecureController {
         }
     }
 
-    @RequestMapping(value = "/books/{id}/comments/{commentId}", method = DELETE)
+    @DeleteMapping(value = "/books/{id}/comments/{commentId}")
     public Book removeCommentFromBook(@PathVariable("id") String id, @PathVariable("commentId") String commentId,
                                       Principal principal) {
 
@@ -209,7 +207,7 @@ public class BookSecureController {
         return googleBooksDaoSync.searchGoogBooksByTitle(title);
     }
 
-    @RequestMapping(value = "/books/readers", method = GET)
+    @GetMapping(value = "/books/readers")
     public List<BooksByReader> findBookReaders() {
         return bookRepository.countBooksByReader();
     }

@@ -13,17 +13,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
-
-import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @RestController
 @RequestMapping("/secure/api")
@@ -48,7 +43,7 @@ public class UserController {
 		this.authService = jwtAuthenticationService;
 	}
 
-	@RequestMapping(value = "/user", method = GET)
+	@GetMapping(value = "/user")
 	public User user(Principal principal, HttpServletResponse response) {
 
 		if (LOGGER.isDebugEnabled()) {
@@ -68,13 +63,13 @@ public class UserController {
 		}
 	}
 
-	@RequestMapping(value = "/users", method = GET)
+	@GetMapping(value = "/users")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public List<User> users(Principal principal) {
 		return userRepository.findAll();
 	}
 
-	@RequestMapping(value = "/users/{id}", method = DELETE)
+	@DeleteMapping(value = "/users/{id}")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<Object> deleteUserById(@PathVariable("id") String id, Principal principal) {
 
@@ -94,7 +89,7 @@ public class UserController {
 		}
 	}
 
-	@RequestMapping(value = "/users/{id}", method = PATCH)
+	@PatchMapping(value = "/users/{id}")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<Object> patchUserRolesById(@PathVariable("id") String id, @RequestBody ClientRoles clientRoles,
 			Principal principal) {
@@ -123,7 +118,7 @@ public class UserController {
 	 * simple and there are complexities with the ordering of Spring Security
 	 * filters when we want to be able to call logout when CORS is enabled.
 	 */
-	@RequestMapping(value = "/logout", method = POST)
+	@PostMapping(value = "/logout")
 	public void logout(HttpServletResponse response) {
 		authService.expireJwtCookie(response);
 		authService.expireXsrfCookie(response);

@@ -35,7 +35,7 @@ import java.io.IOException;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(WebSecurityConfigurerAdapter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(WebSecurityConfiguration.class);
 
     private static final String ACCESS_CONTROL_ALLOW_CREDENTIALS = "Access-Control-Allow-Credentials";
     private static final String X_CSRF_TOKEN = "X-CSRF-TOKEN";

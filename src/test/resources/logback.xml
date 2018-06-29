@@ -11,6 +11,15 @@
     <logger name="com.icegreen.greenmail" level="WARN" />
     <logger name="com.aidanwhiteley.books.service.SignUpNotificationService" level="WARN"/>
     <logger name="com.aidanwhiteley.books.repository.GoogleBooksDaoAsync" level="WARN"/>
-    <logger name="io.github.azagniotov.stubby4j" level="WARN"/>
-    <logger name="io.github.azagniotov.stubby4j.stubs.StubMatcher" level="OFF"/>
+    <logger name="com.aidanwhiteley.books.repository.GoogleBookDaoAsyncTest" level="WARN"/>
+    <logger name="wiremock.org.eclipse.jetty" level="WARN" />
+
+    <!-- WireMock is a bit "noisy" on the logging front! -->
+    <logger name="com.github.tomakehurst.wiremock" level="WARN" />
+    <logger name="WireMock" level="WARN"/>
+    <logger name="/" level="WARN"/>
+    <!-- for wiremock standard jar -->
+    <logger name="org.eclipse.jetty.util.thread.QueuedThreadPool" level="WARN" />
+    <!-- for wiremock standalone shaded jar -->
+    <logger name="wiremock.org.eclipse.jetty.util.thread.QueuedThreadPool" level="ERROR" />
 </configuration>

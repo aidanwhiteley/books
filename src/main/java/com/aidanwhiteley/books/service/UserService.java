@@ -167,10 +167,10 @@ public class UserService {
     }
 
     private String extractFaceBookPictureUrl(Map<String, Object> userDetails) {
-        if (userDetails.get(PICTURE) != null && userDetails.get(PICTURE) instanceof LinkedHashMap) {
+        if (userDetails.get(PICTURE) instanceof LinkedHashMap) {
             @SuppressWarnings("unchecked")
             LinkedHashMap<String, Object> picture = (LinkedHashMap<String, Object>) userDetails.get(PICTURE);
-            if (picture.get("data") != null && picture.get("data") instanceof LinkedHashMap) {
+            if (picture.get("data") instanceof LinkedHashMap) {
                 @SuppressWarnings("unchecked")
                 LinkedHashMap<String, Object> data = (LinkedHashMap<String, Object>) picture.get("data");
                 return (String) data.get("url");

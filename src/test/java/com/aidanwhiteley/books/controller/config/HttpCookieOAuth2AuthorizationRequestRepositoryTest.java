@@ -1,5 +1,6 @@
 package com.aidanwhiteley.books.controller.config;
 
+import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 
 import javax.servlet.http.Cookie;
@@ -38,5 +39,24 @@ public class HttpCookieOAuth2AuthorizationRequestRepositoryTest {
 		
 		assertEquals(TEST_CLIENT_ID, clientId);
 	}
+
+	@Test
+	public void testNoAuthClearsCookie() {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
+        HttpCookieOAuth2AuthorizationRequestRepository repo =
+                new HttpCookieOAuth2AuthorizationRequestRepository();
+
+        Cookie cookie = new Cookie(HttpCookieOAuth2AuthorizationRequestRepository.COOKIE_NAME, "dummy");
+        request.setCookies(cookie);
+        repo.saveAuthorizationRequest(null, request, response);
+
+        Cookie[] cookies = response.getCookies();
+        assertEquals(1, cookies.length);
+        assertEquals(0, cookies[0].getMaxAge());
+        assertTrue(cookies[0].getValue().isEmpty());
+
+    }
 
 }

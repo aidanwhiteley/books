@@ -1,20 +1,18 @@
 package com.aidanwhiteley.books.controller;
 
-import static org.junit.Assert.assertEquals;
-
+import com.aidanwhiteley.books.controller.jwt.JwtUtils;
+import com.aidanwhiteley.books.domain.Book;
+import com.aidanwhiteley.books.domain.User;
+import com.aidanwhiteley.books.util.IntegrationTest;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import com.aidanwhiteley.books.controller.jwt.JwtUtils;
-import com.aidanwhiteley.books.domain.Book;
-import com.aidanwhiteley.books.domain.User;
-import com.aidanwhiteley.books.util.IntegrationTest;
+import static org.junit.Assert.assertEquals;
 
 public class UserControllerTest extends IntegrationTest {
 
@@ -27,7 +25,7 @@ public class UserControllerTest extends IntegrationTest {
     @Test
     public void getUserDetailsNoAuthentication() {
         ResponseEntity<User> response = testRestTemplate.getForEntity("/secure/api/user", User.class);
-        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals(302, response.getStatusCode().value());
     }
 
     @Test
@@ -82,8 +80,7 @@ public class UserControllerTest extends IntegrationTest {
         String token = jwtUtils.createTokenForUser(user);
         String xsrfToken = BookControllerTestUtils.getXsrfToken(testRestTemplate);
         HttpEntity<Book> request = BookControllerTestUtils.getBookHttpEntity(null, token, xsrfToken);
-        ResponseEntity<User> response = testRestTemplate.exchange("/secure/api/user", HttpMethod.GET, request, User.class);
-		return response;
+        return testRestTemplate.exchange("/secure/api/user", HttpMethod.GET, request, User.class);
 	}
 
 }

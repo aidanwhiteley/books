@@ -32,7 +32,7 @@ class StressTestSimulation1 extends Simulation {
         .during(testTimeSecs) {
       exec(
         http(requestName)
-          .get("/api/books/?page=0&size=5")
+          .get("/api/books/?page=0&size=15")
           .headers(http_headers)
           .check(status.is(200), regex(""""numberOfElements":5""") )
       )

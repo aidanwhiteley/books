@@ -1,7 +1,7 @@
 package com.aidanwhiteley.books.repository;
 
+import com.aidanwhiteley.books.domain.Auditable;
 import com.aidanwhiteley.books.domain.Book;
-import com.aidanwhiteley.books.domain.Comment;
 import com.aidanwhiteley.books.domain.googlebooks.Item;
 import com.aidanwhiteley.books.repository.dtos.BooksByAuthor;
 import com.aidanwhiteley.books.repository.dtos.BooksByGenre;
@@ -24,7 +24,7 @@ public interface BookRepositoryCustomMethods {
 
     Book findCommentsForBook(String bookId);
 
-    Book addCommentToBook(String bookId, Comment comment);
+    Book addCommentToBook(String bookId, Auditable comment);
 
     void addGoogleBookItemToBook(String bookId, Item item);
 

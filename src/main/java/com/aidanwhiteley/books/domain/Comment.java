@@ -13,11 +13,7 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -32,7 +28,7 @@ import lombok.Setter;
 
 @Data
 @Document
-public class Comment implements Serializable {
+public class Comment extends Auditable implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -52,22 +48,6 @@ public class Comment implements Serializable {
 	@JsonSerialize(using = LocalDateTimeSerializer.class)
 	@NotNull
 	private LocalDateTime entered = LocalDateTime.now();
-
-	@CreatedBy
-	private Owner createdBy;
-
-	@CreatedDate
-	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
-	@JsonSerialize(using = LocalDateTimeSerializer.class)
-	private LocalDateTime createdDateTime;
-
-	@LastModifiedBy
-	private Owner lastModifiedBy;
-
-	@LastModifiedDate
-	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
-	@JsonSerialize(using = LocalDateTimeSerializer.class)
-	private LocalDateTime lastModifiedDateTime;
 
 	private boolean deleted = false;
 

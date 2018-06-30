@@ -44,7 +44,7 @@ import lombok.ToString;
 @ToString
 @Builder
 @Document
-public class Book implements Serializable {
+public class Book extends Auditable implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -87,22 +87,6 @@ public class Book implements Serializable {
 	@Setter
 	private Item googleBookDetails;
 
-	@CreatedBy
-	private Owner createdBy;
-
-	@CreatedDate
-	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
-	@JsonSerialize(using = LocalDateTimeSerializer.class)
-	private LocalDateTime createdDateTime;
-
-	@LastModifiedBy
-	private Owner lastModifiedBy;
-
-	@LastModifiedDate
-	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
-	@JsonSerialize(using = LocalDateTimeSerializer.class)
-	private LocalDateTime lastModifiedDateTime;
-
 	// The following three transient fields are intended as "helpers" to enable
 	// the client side to create links to functionality that will pass the
 	// server side
@@ -144,17 +128,17 @@ public class Book implements Serializable {
 
 		this.comments.forEach(c -> c.setPermissionsAndContentForUser(user));
 
-		if (this.createdBy != null) {
-			this.createdBy.setPermissionsAndContentForUser(user);
+		if (this.getCreatedBy() != null) {
+			this.getCreatedBy().setPermissionsAndContentForUser(user);
 		}
 	}
 
 	public boolean isOwner(User user) {
 		// noinspection SimplifiableIfStatement
-		if (user == null || this.createdBy == null) {
+		if (user == null || this.getCreatedBy() == null) {
 			return false;
 		} else {
-			return (user.getAuthenticationServiceId().equals(this.createdBy.getAuthenticationServiceId())
+			return (user.getAuthenticationServiceId().equals(this.getCreatedBy().getAuthenticationServiceId())
 					&& user.getAuthProvider() == this.getCreatedBy().getAuthProvider());
 		}
 	}

@@ -24,10 +24,12 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
 import lombok.AccessLevel;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Setter;
 
 @Data
 @Document
+@EqualsAndHashCode(callSuper = false)
 public class Comment extends Auditable implements Serializable {
 
 	private static final long serialVersionUID = 1L;

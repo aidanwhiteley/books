@@ -4,6 +4,7 @@ import com.aidanwhiteley.books.domain.googlebooks.BookSearchResult;
 import com.aidanwhiteley.books.domain.googlebooks.Item;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.stereotype.Repository;
@@ -17,11 +18,18 @@ import java.net.URLEncoder;
 import java.nio.charset.Charset;
 
 @Repository
-public class GoogleBooksDaoSync extends GoogleBooksDaoBase {
+public class GoogleBooksDaoSync {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GoogleBooksDaoSync.class);
 
     private RestTemplate googleBooksRestTemplate;
+
+    private GoogleBooksApiConfig googleBooksApiConfig;
+
+    @Autowired
+    public GoogleBooksDaoSync(GoogleBooksApiConfig googleBooksApiConfig) {
+        this.googleBooksApiConfig = googleBooksApiConfig;
+    }
 
     @PostConstruct
     public void init() {
@@ -35,22 +43,26 @@ public class GoogleBooksDaoSync extends GoogleBooksDaoBase {
 
         String encodedTitle;
         try {
-            encodedTitle = URLEncoder.encode(title, UTF_8);
+            encodedTitle = URLEncoder.encode(title, GoogleBooksApiConfig.UTF_8);
         } catch (UnsupportedEncodingException usee) {
             LOGGER.error("Unable to encode query string - using as is", usee);
             encodedTitle = title;
         }
 
-        googleBooksRestTemplate.getMessageConverters().add(0, new StringHttpMessageConverter(Charset.forName(UTF_8)));
+        googleBooksRestTemplate.getMessageConverters().add(0,
+                new StringHttpMessageConverter(Charset.forName(GoogleBooksApiConfig.UTF_8)));
 
-        return googleBooksRestTemplate.getForObject(booksGoogleBooksApiSearchUrl + encodedTitle + "&" + booksGoogleBooksApiCountryCode,
+        return googleBooksRestTemplate.getForObject(googleBooksApiConfig.getSearchUrl() + encodedTitle + "&" +
+                        googleBooksApiConfig.getCountryCode(),
                 BookSearchResult.class);
     }
 
     public Item searchGoogleBooksByGoogleBookId(String id) {
-        googleBooksRestTemplate.getMessageConverters().add(0, new StringHttpMessageConverter(Charset.forName(UTF_8)));
+
+        googleBooksRestTemplate.getMessageConverters().add(0, new StringHttpMessageConverter(Charset.forName(GoogleBooksApiConfig.UTF_8)));
         try {
-            return googleBooksRestTemplate.getForObject(booksGoogleBooksApiGetByIdUrl + id + "/?" + booksGoogleBooksApiCountryCode, Item.class);
+            return googleBooksRestTemplate.getForObject(googleBooksApiConfig.getGetByIdUrl()+ id + "/?" +
+                    googleBooksApiConfig.getCountryCode(), Item.class);
         } catch (HttpStatusCodeException e) {
             String errorpayload = e.getResponseBodyAsString();
             LOGGER.error("Error calling Google Books API: " + errorpayload, e);
@@ -63,7 +75,7 @@ public class GoogleBooksDaoSync extends GoogleBooksDaoBase {
 
     private RestTemplate buildRestTemplate(RestTemplateBuilder builder) {
 
-        return builder.setConnectTimeout(booksGoogleBooksApiConnectTimeout).
-                setReadTimeout(booksGoogleBooksApiReadTimeout).build();
+        return builder.setConnectTimeout(googleBooksApiConfig.getConnectTimeout()).
+                setReadTimeout(googleBooksApiConfig.getReadTimeout()).build();
     }
 }

@@ -16,7 +16,7 @@ import reactor.core.publisher.Mono;
 import java.time.Duration;
 
 @Repository
-public class GoogleBooksDaoAsync extends GoogleBooksDaoBase {
+public class GoogleBooksDaoAsync extends GoogleBooksApiConfig {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GoogleBooksDaoAsync.class);
 
@@ -24,9 +24,10 @@ public class GoogleBooksDaoAsync extends GoogleBooksDaoBase {
 
     private final WebClient webClient;
     private final BookRepository bookRepository;
+    private final GoogleBooksApiConfig googleBooksApiConfig;
 
     @Autowired
-    public GoogleBooksDaoAsync(BookRepository bookRepository) {
+    public GoogleBooksDaoAsync(BookRepository bookRepository, GoogleBooksApiConfig googleBooksApiConfig) {
         this.webClient = WebClient.builder()
                 .defaultHeader(HttpHeaders.USER_AGENT, BOOKS_WEB_CLIENT)
                 .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
@@ -34,6 +35,7 @@ public class GoogleBooksDaoAsync extends GoogleBooksDaoBase {
                 .filter(logResponseStatus())
                 .build();
         this.bookRepository = bookRepository;
+        this.googleBooksApiConfig = googleBooksApiConfig;
     }
 
     /**
@@ -61,12 +63,12 @@ public class GoogleBooksDaoAsync extends GoogleBooksDaoBase {
         try {
             Mono<Item> monoItem = this.webClient.
                     get().
-                    uri(booksGoogleBooksApiGetByIdUrl + googleBookId + "/?" + booksGoogleBooksApiCountryCode).
+                    uri(googleBooksApiConfig.getGetByIdUrl() + googleBookId + "/?" + googleBooksApiConfig.getCountryCode()).
                     retrieve().
                     bodyToMono(Item.class);
             LOGGER.debug("Mono created");
 
-            Item item = monoItem.block(Duration.ofSeconds(booksGoogleBooksApiReadTimeout));
+            Item item = monoItem.block(Duration.ofSeconds(googleBooksApiConfig.getReadTimeout()));
             LOGGER.debug("Block completed");
 
             bookRepository.addGoogleBookItemToBook(book.getId(), item);

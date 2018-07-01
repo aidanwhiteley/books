@@ -27,6 +27,7 @@ public class BookAuditor implements AuditorAware<Owner> {
         this.userRepository = userRepository;
     }
 
+    @SuppressWarnings("NullableProblems")
     @Override
     public Optional<Owner> getCurrentAuditor() {
 

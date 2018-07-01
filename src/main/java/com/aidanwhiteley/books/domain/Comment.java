@@ -27,6 +27,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
 
+@SuppressWarnings("DefaultAnnotationParam")
 @Data
 @Document
 @EqualsAndHashCode(callSuper = false)

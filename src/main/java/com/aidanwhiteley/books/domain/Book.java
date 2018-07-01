@@ -33,6 +33,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+@SuppressWarnings("DefaultAnnotationParam")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor

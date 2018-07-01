@@ -1,7 +1,7 @@
 package com.aidanwhiteley.books.repository;
 
-import com.aidanwhiteley.books.domain.Auditable;
 import com.aidanwhiteley.books.domain.Book;
+import com.aidanwhiteley.books.domain.Comment;
 import com.aidanwhiteley.books.domain.googlebooks.Item;
 import com.aidanwhiteley.books.repository.dtos.BooksByAuthor;
 import com.aidanwhiteley.books.repository.dtos.BooksByGenre;
@@ -102,7 +102,7 @@ public class BookRepositoryImpl implements BookRepositoryCustomMethods {
     }
 
     @Override
-    public Book addCommentToBook(String bookId, Auditable comment) {
+    public Book addCommentToBook(String bookId, Comment comment) {
         UpdateResult updateResult = mongoTemplate.updateFirst(
                 Query.query(Criteria.where("id").is(bookId)),
                 new Update().push(COMMENTS, comment), Book.class);

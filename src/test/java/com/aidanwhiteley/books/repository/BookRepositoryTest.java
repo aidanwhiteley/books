@@ -1,6 +1,5 @@
 package com.aidanwhiteley.books.repository;
 
-import com.aidanwhiteley.books.domain.Auditable;
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.Comment;
 import com.aidanwhiteley.books.domain.Owner;
@@ -96,7 +95,7 @@ public class BookRepositoryTest extends IntegrationTest {
 
         Book savedBook = bookRepository.insert(book);
 
-        Auditable comment = new Comment(A_COMMENT, new Owner());
+        Comment comment = new Comment(A_COMMENT, new Owner());
 
         // Returned book holds just the Book's comments - no other data other than the book id.
         Book updatedBook = bookRepository.addCommentToBook(savedBook.getId(), comment);
@@ -111,7 +110,7 @@ public class BookRepositoryTest extends IntegrationTest {
         // Set up a couple of comments
         Book book = createTestBook();
         Book savedBook = bookRepository.insert(book);
-        Auditable comment = new Comment(A_COMMENT, new Owner());
+        Comment comment = new Comment(A_COMMENT, new Owner());
         bookRepository.addCommentToBook(savedBook.getId(), comment);
         comment = new Comment(ANOTHER_COMMENT, new Owner());
         bookRepository.addCommentToBook(savedBook.getId(), comment);

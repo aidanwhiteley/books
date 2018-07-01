@@ -12,7 +12,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class UserControllerTest extends IntegrationTest {
 
@@ -65,6 +65,7 @@ public class UserControllerTest extends IntegrationTest {
         HttpEntity<Book> request = BookControllerTestUtils.getBookHttpEntity(null, token, xsrfToken);
         
         // Shouldnt be able to delete own userid!
+        assertNotNull(user);
         ResponseEntity<User> userDeleteResponse = testRestTemplate.exchange("/secure/api/users/" + user.getId(), HttpMethod.DELETE, request, User.class);
         assertEquals(HttpStatus.CONFLICT, userDeleteResponse.getStatusCode());
         

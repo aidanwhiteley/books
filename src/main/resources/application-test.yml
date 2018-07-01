@@ -22,10 +22,8 @@ books:
         searchUrl: http://localhost:${wiremock.server.port}/books/v1/volumes?maxResults=30&q=
         getByIdUrl: http://localhost:${wiremock.server.port}/books/v1/volumes/
         countryCode: country=GB
-        connect:
-          timeout: 500
-        read:
-          timeout: 750
+        connectTimeout: 500
+        readTimeout: 750
 
   reload:
     development:

@@ -1,25 +1,20 @@
 package com.aidanwhiteley.books.controller;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-import java.time.LocalDateTime;
-
-import com.aidanwhiteley.books.domain.Comment;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-
 import com.aidanwhiteley.books.controller.jwt.JwtAuthenticationService;
 import com.aidanwhiteley.books.controller.jwt.JwtUtils;
 import com.aidanwhiteley.books.domain.Book;
+import com.aidanwhiteley.books.domain.Comment;
 import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.repository.BookRepositoryTest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.*;
+
+import java.time.LocalDateTime;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class BookControllerTestUtils {
 
@@ -110,6 +105,7 @@ public class BookControllerTestUtils {
 		ResponseEntity<Book> nonExistentBook = testRestTemplate.getForEntity("/api/book/12345678", Book.class);
 		HttpHeaders headers = nonExistentBook.getHeaders();
 		String cookies = headers.getFirst(HttpHeaders.SET_COOKIE);
+		assertNotNull(cookies);
 		String[] tokenCookies = cookies.split("XSRF-TOKEN=");
 		String tokenCookie = tokenCookies[1];
 		return tokenCookie.split(";")[0];

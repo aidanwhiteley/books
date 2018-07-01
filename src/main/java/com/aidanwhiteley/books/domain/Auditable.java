@@ -12,12 +12,10 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
-public class Auditable {
+class Auditable {
 
 	@CreatedBy
 	private Owner createdBy;
-	
-
 
 	@CreatedDate
 	@JsonDeserialize(using = LocalDateTimeDeserializer.class)

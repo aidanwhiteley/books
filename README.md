@@ -11,7 +11,6 @@ So welcome to the "Cloudy Bookclub" microservice!
 [![Sonar Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=com.aidanwhiteley%3Abooks&metric=alert_status)](https://sonarcloud.io/dashboard?id=com.aidanwhiteley%3Abooks)
 [![codecov](https://codecov.io/gh/aidanwhiteley/books/branch/master/graph/badge.svg)](https://codecov.io/gh/aidanwhiteley/books)
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Faidanwhiteley%2Fbooks.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Faidanwhiteley%2Fbooks?ref=badge_shield)
-[![Known Vulnerabilities](https://snyk.io/test/github/aidanwhiteley/books/badge.svg)](https://snyk.io/test/github/aidanwhiteley/books)
 
 
 ## Implementation

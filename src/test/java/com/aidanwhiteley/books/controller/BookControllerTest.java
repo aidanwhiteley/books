@@ -221,12 +221,12 @@ public class BookControllerTest extends IntegrationTest {
         List<Book> booksByRating = JsonPath.read(response.getBody(), "$.content");
         LOGGER.debug("Retrieved JSON was: " + response.getBody());
         assertTrue("Expected to find novels", booksByRating.size() > 0);
-        assertEquals("Expected to find a page of 2 novels", booksByRating.size(), 2);
+        assertEquals("Expected to find a page of 2 novels",2, booksByRating.size());
 
         // Test defaults
         response = testRestTemplate.exchange("/api/books/?rating=GOOD", HttpMethod.GET, null, String.class);
         booksByRating = JsonPath.read(response.getBody(), "$.content");
-        assertEquals("Expected to find default page size of novels", booksByRating.size(), defaultPageSize);
+        assertEquals("Expected to find default page size of novels", defaultPageSize, booksByRating.size());
     }
 
     @Test

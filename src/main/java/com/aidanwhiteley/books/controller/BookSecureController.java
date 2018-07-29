@@ -64,8 +64,7 @@ public class BookSecureController {
     }
 
     @PostMapping(value = "/books")
-    public ResponseEntity<Book> createBook(@Valid @RequestBody Book book, Principal principal,
-                                           HttpServletRequest request) throws MalformedURLException, URISyntaxException {
+    public ResponseEntity<Book> createBook(@Valid @RequestBody Book book, Principal principal) throws MalformedURLException, URISyntaxException {
 
         LOGGER.debug("createBook in BookSecureController called");
 

@@ -16,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.Assert.*;
 
@@ -114,8 +115,15 @@ public class BookRepositoryTest extends IntegrationTest {
         bookRepository.addCommentToBook(savedBook.getId(), comment);
         comment = new Comment(ANOTHER_COMMENT, new Owner());
         bookRepository.addCommentToBook(savedBook.getId(), comment);
-        //noinspection ConstantConditions
-        Book updatedBook = bookRepository.findById(savedBook.getId()).get();
+
+        Optional<Book> oBook = bookRepository.findById(savedBook.getId());
+        Book updatedBook = null;
+        if (oBook.isPresent()) {
+            //noinspection OptionalGetWithoutIsPresent
+            updatedBook = bookRepository.findById(savedBook.getId()).get();
+        } else {
+            fail("Optional not expected to be empty");
+        }
         assertEquals(2, updatedBook.getComments().size());
 
         // Returned Book holds just the updated comments

@@ -83,7 +83,7 @@ public class UserService {
                 firstLogon(LocalDateTime.now()).
                 authProvider(FACEBOOK).
                 build();
-        user = setDefaultAdminUser(user);
+        setDefaultAdminUser(user);
         user.addRole(User.Role.ROLE_USER);
 
         String url = extractFaceBookPictureUrl(userDetails);
@@ -107,7 +107,7 @@ public class UserService {
                 authProvider(GOOGLE).
                 build();
 
-        user = setDefaultAdminUser(user);
+        setDefaultAdminUser(user);
         user.addRole(User.Role.ROLE_USER);
         return user;
     }
@@ -157,13 +157,11 @@ public class UserService {
         user.setLastLogon(LocalDateTime.now());
     }
 
-    private User setDefaultAdminUser(User user) {
+    private void setDefaultAdminUser(User user) {
         if (defaultAdminEmail != null && defaultAdminEmail.equals(user.getEmail())) {
             user.addRole(User.Role.ROLE_EDITOR);
             user.addRole(User.Role.ROLE_ADMIN);
         }
-
-        return user;
     }
 
     private String extractFaceBookPictureUrl(Map<String, Object> userDetails) {

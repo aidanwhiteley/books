@@ -21,10 +21,10 @@ class Auditable {
 	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
 	@JsonSerialize(using = LocalDateTimeSerializer.class)
 	private LocalDateTime createdDateTime;
-	
+
 	@LastModifiedBy
 	private Owner lastModifiedBy;
-	
+
 	@LastModifiedDate
 	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
 	@JsonSerialize(using = LocalDateTimeSerializer.class)
@@ -33,7 +33,7 @@ class Auditable {
 	public Auditable() {
 		super();
 	}
-	
+
 	public Owner getCreatedBy() {
 		return createdBy;
 	}

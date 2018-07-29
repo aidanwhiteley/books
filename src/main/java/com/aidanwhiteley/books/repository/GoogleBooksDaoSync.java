@@ -24,7 +24,7 @@ public class GoogleBooksDaoSync {
 
     private RestTemplate googleBooksRestTemplate;
 
-    private GoogleBooksApiConfig googleBooksApiConfig;
+    private final GoogleBooksApiConfig googleBooksApiConfig;
 
     @Autowired
     public GoogleBooksDaoSync(GoogleBooksApiConfig googleBooksApiConfig) {

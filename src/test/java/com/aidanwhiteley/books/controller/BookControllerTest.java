@@ -29,6 +29,7 @@ import static org.junit.Assert.assertTrue;
 public class BookControllerTest extends IntegrationTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BookControllerTest.class);
+    public static final String ERROR_MESSAGE_FOR_INVALID_RATING = "Supplied rating parameter not recognised";
 
     @Autowired
     private TestRestTemplate testRestTemplate;
@@ -210,6 +211,33 @@ public class BookControllerTest extends IntegrationTest {
         assertTrue(genres.size() > 0);
         List<BooksByRating> ratings = JsonPath.read(response.getBody(), "$.booksByRating");
         assertTrue(ratings.size() > 0);
+    }
+
+    @Test
+    public void findBookByRating() {
+        ResponseEntity<String> response = testRestTemplate.exchange("/api/books/?rating=GOOD&page=1&size=2", HttpMethod.GET, null, String.class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        List<Book> booksByRating = JsonPath.read(response.getBody(), "$.content");
+        LOGGER.debug("Retrieved JSON was: " + response.getBody());
+        assertTrue("Expected to find novels", booksByRating.size() > 0);
+        assertEquals("Expected to find a page of 2 novels", booksByRating.size(), 2);
+
+        // Test defaults
+        response = testRestTemplate.exchange("/api/books/?rating=GOOD", HttpMethod.GET, null, String.class);
+        booksByRating = JsonPath.read(response.getBody(), "$.content");
+        assertEquals("Expected to find default page size of novels", booksByRating.size(), defaultPageSize);
+    }
+
+    @Test
+    public void findBookByRatingPreConditions() {
+        ResponseEntity<String> response = testRestTemplate.exchange("/api/books/?rating=invalid=1&size=2", HttpMethod.GET, null, String.class);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+
+        String bodyContent = response.getBody();
+        LOGGER.debug("Retrieved JSON was: " + bodyContent);
+        assertTrue("Expected to find a specified error message",
+                bodyContent.contains(ERROR_MESSAGE_FOR_INVALID_RATING));
     }
 
 }

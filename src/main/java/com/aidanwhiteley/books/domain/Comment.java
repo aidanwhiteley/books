@@ -31,7 +31,7 @@ import lombok.Setter;
 @Data
 @Document
 @EqualsAndHashCode(callSuper = false)
-public class Comment extends Auditable implements Serializable {
+public class Comment implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

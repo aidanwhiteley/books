@@ -8,12 +8,12 @@ import io.gatling.jdbc.Predef._
  
 class StressTestSimulation1 extends Simulation {
 
-    val rampUpTimeSecs = 20
-    val testTimeSecs   = 120
-    val noOfUsers      = 10 
+    val rampUpTimeSecs = 5
+    val testTimeSecs   = 20
+    val noOfUsers      = 2
     val minWaitMs      = 1000 milliseconds
     val maxWaitMs      = 3000 milliseconds
-    val baseName     = "async-non-blocking"
+    val baseName     = "books-load-test"
     val requestName  = baseName + "-request"
     val scenarioName = baseName + "-scenario"
 
@@ -32,9 +32,10 @@ class StressTestSimulation1 extends Simulation {
         .during(testTimeSecs) {
       exec(
         http(requestName)
-          .get("/api/books/?page=0&size=15")
+          .get("/api/books/?page=0&size=5")
           .headers(http_headers)
-          .check(status.is(200), regex(""""numberOfElements":5""") )
+          .check(status.is(200))
+          .check(jsonPath("$.content").exists)
       )
       .pause(minWaitMs, maxWaitMs)
     }

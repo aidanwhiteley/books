@@ -10,8 +10,8 @@ So welcome to the "Cloudy Bookclub" microservice!
 [![Build Status](https://travis-ci.org/aidanwhiteley/books.svg?branch=master)](https://travis-ci.org/aidanwhiteley/books) 
 [![Sonar Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=com.aidanwhiteley%3Abooks&metric=alert_status)](https://sonarcloud.io/dashboard?id=com.aidanwhiteley%3Abooks)
 [![codecov](https://codecov.io/gh/aidanwhiteley/books/branch/master/graph/badge.svg)](https://codecov.io/gh/aidanwhiteley/books)
+[![BCH compliance](https://bettercodehub.com/edge/badge/aidanwhiteley/books?branch=master)](https://bettercodehub.com/)
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Faidanwhiteley%2Fbooks.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Faidanwhiteley%2Fbooks?ref=badge_shield)
-
 
 ## Implementation
 
@@ -34,17 +34,18 @@ There is an option to run the tests using Fongo (an in memory Mongo replacement)
 However, to run the project, Mongo is always required - even if tests are run against Fongo.
 
 Some of the integration tests make use of WireMock (a replacement for Stubby4J due to SnakeYaml version conflicts with Spring Boot). 
-See the /src/test/resources/mappings and __files directories for the configuraion details.
+See the /src/test/resources/mappings and __files directories for the configuration details.
 
 #### Stress Test
 To examine how the WebClient code is behaving there is a maven plugin set up that runs a basic Gatling load test.
-Run the command:
+AFter starting the Spring Boot application run the command:
 
 mvn gatling:test
 
 The (Scala) source code of this test in at test/scala/com/aidanwhiteley/books/loadtest/StressTestSimulation1.scala
 
-This is currently a "work in progress" and needs uplifting to the latest version of Gatling.
+This is currently a "work in progress" - the eventual aim being to compare the resource utilisation of the GoogleBooksDaoSync
+and GoogleBooksDaoAsync implementations.
 
 ### How to run
 A lot of the functionality is protected behind oauth2 authentication (via Google and Facebook). 

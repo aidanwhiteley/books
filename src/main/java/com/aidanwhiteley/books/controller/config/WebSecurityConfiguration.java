@@ -42,9 +42,12 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     private static final String X_REQUESTED_WITH = "X-Requested-With";
     private static final String CONTENT_TYPE = "Content-Type";
     private static final String ORIGIN = "Origin";
-    private static final String SWAGGER_DOCS_PATH = "/v2/api-docs";
-    private static final String SWAGGER_UI_URL = "/swagger-ui.html";
-    private static final String SWAGGER_WEBJARS_PATH = "/webjars/springfox-swagger-ui/**";
+    private static final String[] SWAGGER_AUTH_WHITELIST = {
+            "/swagger-resources/**",
+            "/swagger-ui.html",
+            "/v2/api-docs",
+            "/webjars/**"
+    };
 
     // Fake login page - just sets a 403 / Forbidden response
     public static final String API_LOGIN = "/api/login";
@@ -114,8 +117,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).
                     enableSessionUrlRewriting(false).and().
                 antMatcher("/**").authorizeRequests().
-                    antMatchers("/api/**", "/login**", "/actuator/info", "/actuator/health",
-                            SWAGGER_DOCS_PATH, SWAGGER_UI_URL, SWAGGER_WEBJARS_PATH).permitAll().
+                    antMatchers("/api/**", "/login**", "/actuator/info", "/actuator/health").permitAll().
+                    antMatchers(SWAGGER_AUTH_WHITELIST).permitAll().
                     antMatchers("/actuator/**").hasRole("ADMIN").
                     anyRequest().authenticated().and().
                 addFilterBefore(jwtAuththenticationFilter, UsernamePasswordAuthenticationFilter.class).

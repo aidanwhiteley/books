@@ -13,6 +13,8 @@ So welcome to the "Cloudy Bookclub" microservice!
 [![BCH compliance](https://bettercodehub.com/edge/badge/aidanwhiteley/books?branch=master)](https://bettercodehub.com/)
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Faidanwhiteley%2Fbooks.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Faidanwhiteley%2Fbooks?ref=badge_shield)
 
+[![swagger-api validator-badge]({YOUR_URL/api_spec.yaml}task-list-api-swagger-definition.yaml)](./api_spec.yaml)
+
 ## Implementation
 
 The main functionality included in the microservice includes

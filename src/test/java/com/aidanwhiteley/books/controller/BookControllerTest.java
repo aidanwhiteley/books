@@ -29,7 +29,7 @@ import static org.junit.Assert.assertTrue;
 public class BookControllerTest extends IntegrationTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BookControllerTest.class);
-    public static final String ERROR_MESSAGE_FOR_INVALID_RATING = "Supplied rating parameter not recognised";
+    private static final String ERROR_MESSAGE_FOR_INVALID_RATING = "Supplied rating parameter not recognised";
 
     @Autowired
     private TestRestTemplate testRestTemplate;

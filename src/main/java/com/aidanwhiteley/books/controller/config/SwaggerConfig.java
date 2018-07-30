@@ -15,22 +15,26 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Configuration
 @EnableSwagger2
 public class SwaggerConfig {
+
+    private static final String API_DESCRIPTION = "API documentation for the public read only part of the REST API exposed by the Books application.";
+
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.aidanwhiteley.books.controller"))
                 .paths(PathSelectors.ant("/api/books/**"))
-                .build().
+                .build()
+                .enableUrlTemplating(true).
                 apiInfo(apiInfo());
     }
     
     private ApiInfo apiInfo() {
         return new ApiInfo(
-          "Books public REST API", 
-          "API documentation for the read only public REST API exposed by the Books application.", 
+          "Books application public REST API",
+                API_DESCRIPTION,
           "V 0.2",
-          "https://cloudybookclub.com/#/privacy", 
+          "https://cloudybookclub.com/#/privacy",
           new Contact("Aidan Whiteley", "https://cloudybookclub.com/", "cloudybookclub@gmail.com"), 
           "Apache 2.0 License", 
           "https://www.apache.org/licenses/LICENSE-2.0", 

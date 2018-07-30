@@ -10,10 +10,8 @@ So welcome to the "Cloudy Bookclub" microservice!
 [![Build Status](https://travis-ci.org/aidanwhiteley/books.svg?branch=master)](https://travis-ci.org/aidanwhiteley/books) 
 [![Sonar Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=com.aidanwhiteley%3Abooks&metric=alert_status)](https://sonarcloud.io/dashboard?id=com.aidanwhiteley%3Abooks)
 [![codecov](https://codecov.io/gh/aidanwhiteley/books/branch/master/graph/badge.svg)](https://codecov.io/gh/aidanwhiteley/books)
-[![BCH compliance](https://bettercodehub.com/edge/badge/aidanwhiteley/books?branch=master)](https://bettercodehub.com/)
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Faidanwhiteley%2Fbooks.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Faidanwhiteley%2Fbooks?ref=badge_shield)
 
-[![swagger-api validator-badge]({YOUR_URL/api_spec.yaml}task-list-api-swagger-definition.yaml)](./api_spec.yaml)
 
 ## Implementation
 
@@ -71,6 +69,10 @@ creation of a Mongo database and the two required collections (dependant on the 
 ### How to build
 This project makes use of the excellent Lombok project. So to build in your favourite IDE, if necessary
 head on over to [Lombok](https://projectlombok.org/) and click the appropriate "Install" link (tested with IntelliJ and Eclipse).
+
+### Swagger API documentation
+The public read only part of the application's REST API is automatically documented using the [Springfox](http://springfox.github.io/springfox/)
+tool to auto create Swagger JSON. It can be explored using the Swagger UI available [here](https://cloudybookclub.com/swagger-ui.html#/book-controller).
 
 ### Sample data
 There is some sample data provided to make initial understanding of the functionality a bit easier.

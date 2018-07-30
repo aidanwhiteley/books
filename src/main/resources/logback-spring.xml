@@ -18,4 +18,5 @@
     <logger name="org.mongodb.driver" level="WARN" />
     <logger name="com.aidanwhiteley.books.service.SignUpNotificationService" level="WARN"/>
     <logger name="com.aidanwhiteley.books.repository.GoogleBooksDaoAsync" level="WARN"/>
+    <logger name="springfox.documentation" level="WARN"/>
 </configuration>

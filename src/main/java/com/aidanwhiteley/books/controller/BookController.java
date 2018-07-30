@@ -37,16 +37,16 @@ public class BookController {
     }
 
     @GetMapping(value = "/books")
-    public Page<Book> findAllByWhenEnteredDesc(@ApiIgnore Principal principal) {
-        return findAllByWhenEnteredDesc(0, defaultPageSize, principal);
+    public Page<Book> findAllByCreatedDateTimeDesc(@ApiIgnore Principal principal) {
+        return findAllByCreatedDateTimeDesc(0, defaultPageSize, principal);
     }
 
     @GetMapping(value = "/books", params = {"page", "size"})
-    public Page<Book> findAllByWhenEnteredDesc(@RequestParam(value = "page") int page,
-                                               @RequestParam(value = "size") int size, @ApiIgnore Principal principal) {
+    public Page<Book> findAllByCreatedDateTimeDesc(@RequestParam(value = "page") int page,
+                                                   @RequestParam(value = "size") int size, @ApiIgnore Principal principal) {
 
         PageRequest pageObj = PageRequest.of(page, size);
-        return bookRepository.findAllByOrderByEnteredDesc(pageObj);
+        return bookRepository.findAllByOrderByCreatedDateTimeDesc(pageObj);
     }
 
     @GetMapping(value = "/books/{id}")
@@ -67,7 +67,7 @@ public class BookController {
             throw new IllegalArgumentException("Author parameter cannot be empty");
         }
         PageRequest pageObj = PageRequest.of(page, size);
-        return bookRepository.findAllByAuthorOrderByEnteredDesc(pageObj, author);
+        return bookRepository.findAllByAuthorOrderByCreatedDateTimeDesc(pageObj, author);
     }
 
     @GetMapping(value = "/books", params = {"search"})
@@ -100,7 +100,7 @@ public class BookController {
             throw new IllegalArgumentException("Genre parameter cannot be empty");
         }
         PageRequest pageObj = PageRequest.of(page, size);
-        return bookRepository.findAllByGenreOrderByEnteredDesc(pageObj, genre);
+        return bookRepository.findAllByGenreOrderByCreatedDateTimeDesc(pageObj, genre);
     }
 
     @GetMapping(value = "/books/stats")
@@ -137,7 +137,7 @@ public class BookController {
         }
 
         PageRequest pageObj = PageRequest.of(page, size);
-        return bookRepository.findByRatingOrderByEnteredDesc(pageObj, aRating);
+        return bookRepository.findByRatingOrderByCreatedDateTimeDesc(pageObj, aRating);
     }
 
 }

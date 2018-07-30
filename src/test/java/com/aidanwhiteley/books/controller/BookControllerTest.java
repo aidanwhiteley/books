@@ -179,7 +179,7 @@ public class BookControllerTest extends IntegrationTest {
     }
 
     @Test
-    public void findAllByWhenEnteredDesc() {
+    public void findAllByWhenCreatedDateTimeDesc() {
         ResponseEntity<String> response = testRestTemplate.exchange("/api/books", HttpMethod.GET, null, String.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
 

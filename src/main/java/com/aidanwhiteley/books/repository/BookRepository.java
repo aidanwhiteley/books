@@ -8,15 +8,15 @@ import org.springframework.data.mongodb.repository.Query;
 
 public interface BookRepository extends MongoRepository<Book, String>, BookRepositoryCustomMethods {
 
-    Page<Book> findAllByAuthorOrderByEnteredDesc(Pageable page, String author);
+    Page<Book> findAllByAuthorOrderByCreatedDateTimeDesc(Pageable page, String author);
 
-    Page<Book> findAllByGenreOrderByEnteredDesc(Pageable page, String genre);
+    Page<Book> findAllByGenreOrderByCreatedDateTimeDesc(Pageable page, String genre);
 
-    Page<Book> findAllByOrderByEnteredDesc(Pageable page);
+    Page<Book> findAllByOrderByCreatedDateTimeDesc(Pageable page);
 
-    Page<Book> findByRatingOrderByEnteredDesc(Pageable page, Book.Rating rating);
+    Page<Book> findByRatingOrderByCreatedDateTimeDesc(Pageable page, Book.Rating rating);
 
     @Query("{ 'createdBy.fullName' : ?0 }")
-    Page<Book> findByReaderOrderByEnteredDesc(Pageable page, String reader);
+    Page<Book> findByReaderOrderByCreatedDateTimeDesc(Pageable page, String reader);
 
 }

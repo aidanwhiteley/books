@@ -198,7 +198,7 @@ public class BookSecureController {
         }
 
         PageRequest pageObj = PageRequest.of(page, size, new Sort(Sort.Direction.DESC, "entered"));
-        return bookRepository.findByReaderOrderByEnteredDesc(pageObj, reader);
+        return bookRepository.findByReaderOrderByCreatedDateTimeDesc(pageObj, reader);
     }
 
     @GetMapping(value = "/googlebooks", params = "title")

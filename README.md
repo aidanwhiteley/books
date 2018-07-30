@@ -116,10 +116,10 @@ doesn't currently work. So only use this application with CORS configured (i.e. 
 Don't use this application with CORS in production - it will leave you open to XSRF based attacks.
 
 ## Swagger API documentation
-![](https://online.swagger.io/validator?url=https://cloudybookclub.com/v2/api-docs)
+![https://cloudybookclub.com/v2/api-docs](https://online.swagger.io/validator?url=https://cloudybookclub.com/v2/api-docs)
 
 The public read only part of the application's REST API is automatically documented using the [Springfox](http://springfox.github.io/springfox/)
-tool to auto create Swagger JSON. It can be explored using the Swagger UI available [here](https://cloudybookclub.com/swagger-ui.html#/book-controller).
+tool to auto create Swagger 2 JSON. The API can be explored and tested using the Swagger UI available [here](https://cloudybookclub.com/swagger-ui.html#/book-controller).
 
 ## Stateless Apps
 A lot of the time developing this microservice was spent in making it entirely independant of HTTP session state  - based around issuing a 

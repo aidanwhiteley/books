@@ -55,11 +55,14 @@ public class SignUpNotificationServiceTest extends IntegrationTest {
 
     @Test
     public void testNewRegistrationIsVisible() {
+
         SignUpNotificationService service = new SignUpNotificationService(userRepository, mailClient);
+        int currentNewUsers = service.findNewUsers().size();
+
         User newUser = insertTestUser();
 
         List<User> newUsers = service.findNewUsers();
-        assertEquals(1, newUsers.size());
+        assertEquals(currentNewUsers + 1, newUsers.size());
 
         // Tidy up
         userRepository.delete(newUser);
@@ -68,17 +71,18 @@ public class SignUpNotificationServiceTest extends IntegrationTest {
     @Test
     public void testNewRegistrationEmailedToAdmin() throws IOException, MessagingException {
         SignUpNotificationService service = new SignUpNotificationService(userRepository, mailClient);
+        int currentNewUsers = service.findNewUsers().size();
         service.setRegistrationAdminEmailEnabled(true);
         User newUser = insertTestUser();
 
         List<User> newUsers = service.findNewUsers();
-        assertEquals(1, newUsers.size());
+        assertEquals(currentNewUsers + 1, newUsers.size());
 
         service.checkForNewUsersAndEmailAdmin();
         assertEmailNotificationReceived();
 
         newUsers = service.findNewUsers();
-        assertEquals(0, newUsers.size());
+        assertEquals(currentNewUsers, newUsers.size());
 
         // Tidy up
         userRepository.delete(newUser);

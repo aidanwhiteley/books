@@ -70,10 +70,6 @@ creation of a Mongo database and the two required collections (dependant on the 
 This project makes use of the excellent Lombok project. So to build in your favourite IDE, if necessary
 head on over to [Lombok](https://projectlombok.org/) and click the appropriate "Install" link (tested with IntelliJ and Eclipse).
 
-### Swagger API documentation
-The public read only part of the application's REST API is automatically documented using the [Springfox](http://springfox.github.io/springfox/)
-tool to auto create Swagger JSON. It can be explored using the Swagger UI available [here](https://cloudybookclub.com/swagger-ui.html#/book-controller).
-
 ### Sample data
 There is some sample data provided to make initial understanding of the functionality a bit easier.
 It is is the /src/main/resources/sample_data. See the #README.txt in that directory.
@@ -119,6 +115,11 @@ This works well (or seems to!) when the API and the HTML is on the same domain. 
 doesn't currently work. So only use this application with CORS configured (i.e. with no "front proxy") in development.
 Don't use this application with CORS in production - it will leave you open to XSRF based attacks.
 
+## Swagger API documentation
+![](https://online.swagger.io/validator?url=https://cloudybookclub.com/v2/api-docs)
+
+The public read only part of the application's REST API is automatically documented using the [Springfox](http://springfox.github.io/springfox/)
+tool to auto create Swagger JSON. It can be explored using the Swagger UI available [here](https://cloudybookclub.com/swagger-ui.html#/book-controller).
 
 ## Stateless Apps
 A lot of the time developing this microservice was spent in making it entirely independant of HTTP session state  - based around issuing a 

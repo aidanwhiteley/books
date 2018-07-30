@@ -82,7 +82,7 @@ public class SignUpNotificationServiceTest extends IntegrationTest {
         assertEmailNotificationReceived();
 
         newUsers = service.findNewUsers();
-        assertEquals(currentNewUsers, newUsers.size());
+        assertEquals(0, newUsers.size());
 
         // Tidy up
         userRepository.delete(newUser);

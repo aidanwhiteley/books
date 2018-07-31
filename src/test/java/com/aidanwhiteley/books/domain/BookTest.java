@@ -28,13 +28,13 @@ public class BookTest {
 
     @Test
     public void testBuildBook() {
-        Book testBook = Book.builder().author(AIDAN).genre(WHODUNNIT).entered(NOW).rating(GREAT).
+        Book testBook = Book.builder().author(AIDAN).genre(WHODUNNIT).createdDateTime(NOW).rating(GREAT).
                 summary(SOMEONE_DUNNIT).title(WHO_DID_IT).build();
 
         assertTrue(testBook.toString().contains(AIDAN));
         assertEquals(WHODUNNIT, testBook.getGenre());
 
-        Book testBookWithoutAllFields = Book.builder().author(AIDAN).genre(WHODUNNIT).entered(NOW).rating(GREAT).build();
+        Book testBookWithoutAllFields = Book.builder().author(AIDAN).genre(WHODUNNIT).createdDateTime(NOW).rating(GREAT).build();
         assertEquals(WHODUNNIT, testBookWithoutAllFields.getGenre());
     }
 
@@ -48,9 +48,9 @@ public class BookTest {
     
     @Test
     public void testBoilerPlateMethods() {
-    	Book book1 = Book.builder().author(AIDAN).genre(WHODUNNIT).entered(NOW).rating(GREAT).
+    	Book book1 = Book.builder().author(AIDAN).genre(WHODUNNIT).createdDateTime(NOW).rating(GREAT).
                 summary(SOMEONE_DUNNIT).title(WHO_DID_IT).build();
-    	Book book2 = Book.builder().author(AIDAN).genre(WHODUNNIT).entered(NOW).rating(GREAT).
+    	Book book2 = Book.builder().author(AIDAN).genre(WHODUNNIT).createdDateTime(NOW).rating(GREAT).
                 summary(SOMEONE_DUNNIT).title(WHO_DID_IT).build();
     	
     	assertEquals(book1.hashCode(), book2.hashCode());

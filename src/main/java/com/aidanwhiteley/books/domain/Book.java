@@ -19,10 +19,6 @@ import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.aidanwhiteley.books.domain.googlebooks.Item;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -73,11 +69,6 @@ public class Book extends Auditable implements Serializable {
 	@NotNull
 	private Rating rating;
 
-	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
-	@JsonSerialize(using = LocalDateTimeSerializer.class)
-	@NotNull
-	private LocalDateTime entered;
-
 	private String googleBookId;
 
 	@Setter
@@ -98,6 +89,21 @@ public class Book extends Auditable implements Serializable {
 	@Transient
 	@Setter(AccessLevel.NONE)
 	private boolean allowComment;
+	
+	@Builder
+	// See https://reinhard.codes/2015/09/16/lomboks-builder-annotation-and-inheritance/ for why this seems necessary
+	private Book(Owner createdBy, LocalDateTime createdDateTime, Owner lastModifiedBy, LocalDateTime lastModifiedDateTime,
+			String id, String title, String author, String genre, String summary, Rating rating, String googleBookId, Item googleBookDetails) {
+		super(createdBy, createdDateTime, lastModifiedBy, lastModifiedDateTime);
+		this.id = id;
+		this.title = title;
+		this.author = author;
+		this.genre = genre;
+		this.summary = summary;
+		this.rating = rating;
+		this.googleBookId = googleBookId;
+		this.googleBookDetails = googleBookDetails;
+	}
 
 	public void setPermissionsAndContentForUser(User user) {
 		this.allowComment = false;

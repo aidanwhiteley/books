@@ -12,6 +12,11 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
+@AllArgsConstructor
+@NoArgsConstructor
 class Auditable {
 
 	@CreatedBy
@@ -29,10 +34,6 @@ class Auditable {
 	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
 	@JsonSerialize(using = LocalDateTimeSerializer.class)
 	private LocalDateTime lastModifiedDateTime;
-
-	public Auditable() {
-		super();
-	}
 
 	public Owner getCreatedBy() {
 		return createdBy;

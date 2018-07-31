@@ -41,7 +41,7 @@ public class BookRepositoryTest extends IntegrationTest {
         return Book.builder().title(J_UNIT_TESTING_FOR_BEGINNERS)
                 .summary(A_GUIDE_TO_POKING_SOFTWARE).genre(COMPUTING)
                 .author(DR_ZEUSS).rating(Book.Rating.POOR)
-                .entered(LocalDateTime.of(2016, 11, 20, 0, 0))
+                .createdDateTime(LocalDateTime.of(2016, 11, 20, 0, 0))
                 .build();
     }
 

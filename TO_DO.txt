@@ -64,3 +64,43 @@ Notes
 ~~~~~
 Starting local Greenmail server for development testing
 java -D"greenmail.smtp.port=3025" -jar greenmail-standalone-1.5.7.jar
+
+
+Changes to Mongo DB books collection structure due to using Spring Mongo auditing
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+1. Find documents with an "entered" field but no createdDateTime
+    1a. Create a createdDateTime field using the value from "entered"
+
+2. Find documents without a lastModifiedBy field
+    2a. Create a lastModifiedBy field using the value from "createdBy"
+
+3. Find documents without a lastModifiedDateTime field
+    3a. Create a lastModifiedDateTime field using the value from "entered"
+
+4. When Mongo queries all updated to look at createdDateTime rather than entered
+    4a. Remove the "entered" field
+
+function addCreatedTsField(){
+    db.book.find({createdDateTime: null}).forEach(function(doc){
+         db.book.update({_id:doc._id}, {$set:{"createdDateTime":doc.entered}});
+    });
+}
+addCreatedTsField();
+
+function addLastModByField(){
+    db.book.find({lastModifiedBy: null}).forEach(function(doc){
+         db.book.update({_id:doc._id}, {$set:{"lastModifiedBy":doc.createdBy}});
+    });
+}
+addLastModByField();
+
+function addLastModTsField(){
+    db.book.find({lastModifiedDateTime: null}).forEach(function(doc){
+         db.book.update({_id:doc._id}, {$set:{"lastModifiedDateTime":doc.entered}});
+    });
+}
+addLastModTsField();
+
+
+db.book.updateMany({}, {$unset: {entered: ""}});

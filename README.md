@@ -2,7 +2,7 @@
 This project started as I wanted a simple "microservice" to use when trying out frameworks
 such as Spring Cloud, Pivotal Cloud Foundy and AWS.
 
-Its developed a little further such that it is starting to provide some functionality that may 
+It has developed a little further such that it is starting to provide some functionality that may 
 actually be useful.
 
 So welcome to the "Cloudy Bookclub" microservice!
@@ -16,8 +16,8 @@ So welcome to the "Cloudy Bookclub" microservice!
 ## Implementation
 
 The main functionality included in the microservice includes
-* based on latest Spring Boot 2
-* Oauth2 based logon to
+* being based on latest Spring Boot 2
+* Oauth2 based logon using
     * Google
     * Facebook
 * the oauth2 logon data is transmogrified into locally stored users - with associated roles - and into a JWT token - 
@@ -37,8 +37,8 @@ Some of the integration tests make use of WireMock (a replacement for Stubby4J d
 See the /src/test/resources/mappings and __files directories for the configuration details.
 
 #### Stress Test
-To examine how the WebClient code is behaving there is a maven plugin set up that runs a basic Gatling load test.
-AFter starting the Spring Boot application run the command:
+To examine how the WebClient code is behaving there is a Maven plugin configured that runs a basic Gatling load test.
+After starting the Spring Boot application run the command:
 
 mvn gatling:test
 
@@ -54,9 +54,9 @@ You must then pass then make the clientId and clientSecret available to the runn
 There are "placeholders" for these in /src/main/resources/application.yml i.e. replace the existing
 "NotInSCMx" (not in source code managament!) values with your own.
 There are lots of other ways to pass in these values e.g. they can be passed as program arguments
-
+~~~~
 --spring.security.oauth2.client.registration.google.client-id=xxxx --spring.security.oauth2.client.registration.google.client-secret=xxxx --spring.security.oauth2.client.registration.facebook.client-id=xxxx --spring.security.oauth2.client.registration.facebook.client-secret=xxxx 
-
+~~~~
 Otherwise, see the Spring documentation for more options.
 
 "Out of the box" the code runs with the "dev" Spring profile. When running in other environments you will need to decide the 
@@ -93,7 +93,7 @@ it is disabled by default).
 The code supports four access levels
 * anonymous (never logged in)
 * ROLE_USER (logged in but no more permissions than anonymous)
-* ROLE_EDITOR (logged in and have been given permission to create & read book reviews)
+* ROLE_EDITOR (logged in with permission to create book reviews and comment on other people's book reviews)
 * ROLE_ADMIN (logged in with full admin access)
 
 The application-<env>.yml files can be edited to automatically give a logged on user admin access 

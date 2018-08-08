@@ -87,7 +87,7 @@ public class DataLoader {
 
     /**
      * Created indexes on collections. Does not run when Fongo profile is active as
-     * Fongo doesnt full text indexes that cover multiple fields.
+     * Fongo doesnt support full text indexes that cover multiple fields.
      */
     @Bean
     @Profile({"dev"})

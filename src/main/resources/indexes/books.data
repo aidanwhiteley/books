@@ -1,4 +1,4 @@
-db.book.createIndex({entered: -1})
+db.book.createIndex({createdDateTime: -1})
 db.book.createIndex({rating: -1})
 db.book.createIndex({genre: 1})
 db.book.createIndex({author: 1})

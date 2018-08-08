@@ -50,7 +50,7 @@ and GoogleBooksDaoAsync implementations.
 ### How to run
 A lot of the functionality is protected behind oauth2 authentication (via Google and Facebook). 
 To use this, you must set up credentials (oauth2 client ids) on Google and Facebook.
-You must then pass then make the clientId and clientSecret available to the running code.
+You must then make the clientId and clientSecret available to the running code.
 There are "placeholders" for these in /src/main/resources/application.yml i.e. replace the existing
 "NotInSCMx" (not in source code managament!) values with your own.
 There are lots of other ways to pass in these values e.g. they can be passed as program arguments

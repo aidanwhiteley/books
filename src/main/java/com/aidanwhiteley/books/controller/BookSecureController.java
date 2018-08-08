@@ -197,7 +197,7 @@ public class BookSecureController {
             throw new IllegalArgumentException("Reader parameter cannot be empty");
         }
 
-        PageRequest pageObj = PageRequest.of(page, size, new Sort(Sort.Direction.DESC, "entered"));
+        PageRequest pageObj = PageRequest.of(page, size, new Sort(Sort.Direction.DESC, "createdDateTime"));
         return bookRepository.findByReaderOrderByCreatedDateTimeDesc(pageObj, reader);
     }
 

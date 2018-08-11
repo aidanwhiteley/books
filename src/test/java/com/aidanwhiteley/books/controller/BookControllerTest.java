@@ -232,7 +232,7 @@ public class BookControllerTest extends IntegrationTest {
     @Test
     public void findBookByRatingPreConditions() {
         ResponseEntity<String> response = testRestTemplate.exchange("/api/books/?rating=invalid=1&size=2", HttpMethod.GET, null, String.class);
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
 
         String bodyContent = response.getBody();
         LOGGER.debug("Retrieved JSON was: " + bodyContent);

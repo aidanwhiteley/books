@@ -96,6 +96,9 @@ books:
         email:   # The remote email address for a user that will be automatically made an admin on first logon.
       page:
         size: 5
+    max:
+      page:
+        size: 100
     registrationAdminEmail:
       enabled: false
       emailTitle: "Books Service - New User Registration"

@@ -104,6 +104,12 @@
 			<artifactId>springfox-swagger-ui-rfc6570</artifactId>
 			<version>1.0.0</version>
 		</dependency>
+		<dependency>
+			<!-- jsoup HTML parser library @ https://jsoup.org/ -->
+			<groupId>org.jsoup</groupId>
+			<artifactId>jsoup</artifactId>
+			<version>1.11.3</version>
+		</dependency>
 
 		<!-- Test dependencies -->
 		<dependency>

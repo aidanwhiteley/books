@@ -30,6 +30,9 @@ public class BookController {
     @Value("${books.users.default.page.size}")
     private int defaultPageSize;
 
+    @Value("${books.users.max.page.size}")
+    private int maxPageSize;
+
     @Autowired
     public BookController(BookRepository bookRepository, StatsService statsService) {
         this.bookRepository = bookRepository;
@@ -49,6 +52,12 @@ public class BookController {
         return bookRepository.findAllByOrderByCreatedDateTimeDesc(pageObj);
     }
 
+    @GetMapping(value = "/exception")
+    public Page<Book> exceptionTrial() {
+
+        throw new RuntimeException(("Here is a test"));
+    }
+
     @GetMapping(value = "/books/{id}")
     public Book findBookById(@PathVariable("id") String id, @ApiIgnore Principal principal) {
         return bookRepository.findById(id).orElseThrow(() -> new NotFoundException("Book id " + id + " not found"));
@@ -66,6 +75,11 @@ public class BookController {
         if (null == author || author.trim().isEmpty()) {
             throw new IllegalArgumentException("Author parameter cannot be empty");
         }
+
+        if (size > maxPageSize) {
+            throw new IllegalArgumentException(String.format("Cannot request a page of data containing more that %s elements", maxPageSize));
+        }
+
         PageRequest pageObj = PageRequest.of(page, size);
         return bookRepository.findAllByAuthorOrderByCreatedDateTimeDesc(pageObj, author);
     }
@@ -81,6 +95,10 @@ public class BookController {
 
         if (null == search || search.trim().isEmpty()) {
             throw new IllegalArgumentException("Search query string cannot be empty");
+        }
+
+        if (size > maxPageSize) {
+            throw new IllegalArgumentException(String.format("Cannot request a page of data containing more that %s elements", maxPageSize));
         }
 
         PageRequest pageObj = PageRequest.of(page, size);
@@ -99,6 +117,11 @@ public class BookController {
         if (null == genre || genre.trim().isEmpty()) {
             throw new IllegalArgumentException("Genre parameter cannot be empty");
         }
+
+        if (size > maxPageSize) {
+            throw new IllegalArgumentException(String.format("Cannot request a page of data containing more that %s elements", maxPageSize));
+        }
+
         PageRequest pageObj = PageRequest.of(page, size);
         return bookRepository.findAllByGenreOrderByCreatedDateTimeDesc(pageObj, genre);
     }
@@ -134,6 +157,10 @@ public class BookController {
         Book.Rating aRating = Book.Rating.getRatingByString(rating);
         if (null == aRating) {
             throw new IllegalArgumentException("Supplied rating parameter not recognised");
+        }
+
+        if (size > maxPageSize) {
+            throw new IllegalArgumentException(String.format("Cannot request a page of data containing more that %s elements", maxPageSize));
         }
 
         PageRequest pageObj = PageRequest.of(page, size);

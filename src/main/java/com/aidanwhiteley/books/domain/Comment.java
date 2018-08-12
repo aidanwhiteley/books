@@ -3,6 +3,7 @@ package com.aidanwhiteley.books.domain;
 import static com.aidanwhiteley.books.domain.User.Role.ROLE_ADMIN;
 import static com.aidanwhiteley.books.domain.User.Role.ROLE_EDITOR;
 import static com.aidanwhiteley.books.domain.User.Role.ROLE_USER;
+import static org.hibernate.validator.constraints.SafeHtml.WhiteListType.NONE;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -11,6 +12,7 @@ import java.util.UUID;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.SafeHtml;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.annotation.Id;
@@ -45,6 +47,7 @@ public class Comment implements Serializable {
 
 	@NotNull
 	@Length(min = 1, max = 1000)
+	@SafeHtml(whitelistType=NONE)
 	private String commentText;
 
 	@JsonDeserialize(using = LocalDateTimeDeserializer.class)

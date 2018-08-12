@@ -54,6 +54,9 @@ public class BookSecureController {
     @Value("${books.users.default.page.size}")
     private int defaultPageSize;
 
+    @Value("${books.users.max.page.size}")
+    private int maxPageSize;
+
     @Autowired
     public BookSecureController(BookRepository bookRepository, GoogleBooksDaoSync googleBooksDaoSync,
                                 GoogleBooksDaoAsync googleBooksDaoAsync, JwtAuthenticationUtils jwtAuthenticationUtils) {
@@ -195,6 +198,10 @@ public class BookSecureController {
 
         if (null == reader || reader.trim().isEmpty()) {
             throw new IllegalArgumentException("Reader parameter cannot be empty");
+        }
+
+        if (size > maxPageSize) {
+            throw new IllegalArgumentException(String.format("Cannot request a page of data containing more that %s elements", maxPageSize));
         }
 
         PageRequest pageObj = PageRequest.of(page, size, new Sort(Sort.Direction.DESC, "createdDateTime"));

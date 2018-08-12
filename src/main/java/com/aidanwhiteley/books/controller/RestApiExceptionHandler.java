@@ -28,7 +28,7 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
     public static final String MESSAGE_UNEXPECTED_EXCEPTION = "Sorry - an unexpected problem happended - please try later";
     public static final String SAFE_HTML_EXCEPTION_STRING = "SafeHtml";
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(RestApiExceptionHandler.class);
+    private static final Logger API_LOGGER = LoggerFactory.getLogger(RestApiExceptionHandler.class);
 
     @ExceptionHandler({AccessDeniedException.class, AccessForbiddenException.class})
     @ResponseStatus(FORBIDDEN)
@@ -60,24 +60,18 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
                 request.getDescription(false));
     }
 
-//    @Override
-//    protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
-//        System.out.println("Exception was: " + ex.toString());
-//        return null;
-//    }
-
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
 
         if (ex.getMessage().contains(SAFE_HTML_EXCEPTION_STRING)) {
-            return new ResponseEntity<Object>(
+            return new ResponseEntity<>(
                     new ApiExceptionData(UNSUPPORTED_MEDIA_TYPE.value(),
                             UNSUPPORTED_MEDIA_TYPE.getReasonPhrase(),
                             MESSAGE_ILLEGAL_ARGUMENT + " : " + (ex.getBindingResult() != null ? ex.getBindingResult().toString() : ex.getMessage()),
                             request.getDescription(false)),
                     new HttpHeaders(), UNSUPPORTED_MEDIA_TYPE);
         } else {
-            return new ResponseEntity<Object>(
+            return new ResponseEntity<>(
                     new ApiExceptionData(BAD_REQUEST.value(),
                             BAD_REQUEST.getReasonPhrase(),
                             MESSAGE_ILLEGAL_ARGUMENT + " : " + (ex.getBindingResult() != null ? ex.getBindingResult().toString() : ex.getMessage()),
@@ -97,7 +91,7 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
     @ResponseStatus(INTERNAL_SERVER_ERROR)
     public ApiExceptionData handleDefaultExceptions(Exception ex, WebRequest request) {
 
-        LOGGER.error("An unhandled exception was caught, logged and HTTP status 500 returned to the client.", ex);
+        API_LOGGER.error("An unhandled exception was caught, logged and HTTP status 500 returned to the client.", ex);
 
         return new ApiExceptionData(INTERNAL_SERVER_ERROR.value(),
                 INTERNAL_SERVER_ERROR.getReasonPhrase(),

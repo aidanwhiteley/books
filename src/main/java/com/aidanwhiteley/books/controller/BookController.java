@@ -23,7 +23,9 @@ import java.util.List;
 @RequestMapping("/api")
 public class BookController {
 
-    private final BookRepository bookRepository;
+    private static final String PAGE_REQUEST_TOO_BIG_MESSAGE = "Cannot request a page of data containing more that %s elements";
+
+	private final BookRepository bookRepository;
 
     private final StatsService statsService;
 
@@ -52,12 +54,6 @@ public class BookController {
         return bookRepository.findAllByOrderByCreatedDateTimeDesc(pageObj);
     }
 
-    @GetMapping(value = "/exception")
-    public Page<Book> exceptionTrial() {
-
-        throw new RuntimeException(("Here is a test"));
-    }
-
     @GetMapping(value = "/books/{id}")
     public Book findBookById(@PathVariable("id") String id, @ApiIgnore Principal principal) {
         return bookRepository.findById(id).orElseThrow(() -> new NotFoundException("Book id " + id + " not found"));
@@ -77,7 +73,7 @@ public class BookController {
         }
 
         if (size > maxPageSize) {
-            throw new IllegalArgumentException(String.format("Cannot request a page of data containing more that %s elements", maxPageSize));
+            throw new IllegalArgumentException(String.format(PAGE_REQUEST_TOO_BIG_MESSAGE, maxPageSize));
         }
 
         PageRequest pageObj = PageRequest.of(page, size);
@@ -98,7 +94,7 @@ public class BookController {
         }
 
         if (size > maxPageSize) {
-            throw new IllegalArgumentException(String.format("Cannot request a page of data containing more that %s elements", maxPageSize));
+            throw new IllegalArgumentException(String.format(PAGE_REQUEST_TOO_BIG_MESSAGE, maxPageSize));
         }
 
         PageRequest pageObj = PageRequest.of(page, size);
@@ -119,7 +115,7 @@ public class BookController {
         }
 
         if (size > maxPageSize) {
-            throw new IllegalArgumentException(String.format("Cannot request a page of data containing more that %s elements", maxPageSize));
+            throw new IllegalArgumentException(String.format(PAGE_REQUEST_TOO_BIG_MESSAGE, maxPageSize));
         }
 
         PageRequest pageObj = PageRequest.of(page, size);
@@ -160,7 +156,7 @@ public class BookController {
         }
 
         if (size > maxPageSize) {
-            throw new IllegalArgumentException(String.format("Cannot request a page of data containing more that %s elements", maxPageSize));
+            throw new IllegalArgumentException(String.format(PAGE_REQUEST_TOO_BIG_MESSAGE, maxPageSize));
         }
 
         PageRequest pageObj = PageRequest.of(page, size);

@@ -98,4 +98,10 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
                 MESSAGE_UNEXPECTED_EXCEPTION + " : " + ex.getLocalizedMessage(),
                 request.getDescription(false));
     }
+
+    @Override
+    protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        System.out.println("Ex: " + ex);
+        return null;
+    }
 }

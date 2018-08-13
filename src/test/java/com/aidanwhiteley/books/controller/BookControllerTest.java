@@ -21,6 +21,7 @@ import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.aidanwhiteley.books.controller.BookController.PAGE_REQUEST_TOO_BIG_MESSAGE;
 import static com.aidanwhiteley.books.repository.BookRepositoryTest.J_UNIT_TESTING_FOR_BEGINNERS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -42,6 +43,9 @@ public class BookControllerTest extends IntegrationTest {
 
     @Value("${books.users.default.page.size}")
     private int defaultPageSize;
+
+    @Value("${books.users.max.page.size}")
+    private int maxPageSize;
 
     @Test
     public void findBookById() {
@@ -238,6 +242,48 @@ public class BookControllerTest extends IntegrationTest {
         LOGGER.debug("Retrieved JSON was: " + bodyContent);
         assertTrue("Expected to find a specified error message",
                 bodyContent.contains(ERROR_MESSAGE_FOR_INVALID_RATING));
+    }
+
+    @Test
+    public void askForTooManyDataItems() {
+        final int tooBig = maxPageSize + 1;
+
+        ResponseEntity<String> response = testRestTemplate.exchange("/api/books/?author=someone&page=0&size=" + tooBig, HttpMethod.GET, null, String.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertTrue(response.toString().contains(String.format(PAGE_REQUEST_TOO_BIG_MESSAGE, maxPageSize)));
+
+        response = testRestTemplate.exchange("/api/books/?search=something&page=0&size=" + tooBig, HttpMethod.GET, null, String.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertTrue(response.toString().contains(String.format(PAGE_REQUEST_TOO_BIG_MESSAGE, maxPageSize)));
+
+        response = testRestTemplate.exchange("/api/books/?genre=somegenre&page=0&size=" + tooBig, HttpMethod.GET, null, String.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertTrue(response.toString().contains(String.format(PAGE_REQUEST_TOO_BIG_MESSAGE, maxPageSize)));
+
+        response = testRestTemplate.exchange("/api/books/?rating=great&page=0&size=" + tooBig, HttpMethod.GET, null, String.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertTrue(response.toString().contains(String.format(PAGE_REQUEST_TOO_BIG_MESSAGE, maxPageSize)));
+    }
+
+    @Test
+    public void askForEmptySearchCriteria() {
+        final String partialErrorMsg = "cannot be empty";
+
+        ResponseEntity<String> response = testRestTemplate.exchange("/api/books/?author=&page=0&size=" + maxPageSize, HttpMethod.GET, null, String.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertTrue(response.toString().contains(partialErrorMsg));
+
+        response = testRestTemplate.exchange("/api/books/?search=&page=0&size=" + maxPageSize, HttpMethod.GET, null, String.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertTrue(response.toString().contains(partialErrorMsg));
+
+        response = testRestTemplate.exchange("/api/books/?genre=&page=0&size=" + maxPageSize, HttpMethod.GET, null, String.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertTrue(response.toString().contains(partialErrorMsg));
+
+        response = testRestTemplate.exchange("/api/books/?rating=&page=0&size=" + maxPageSize, HttpMethod.GET, null, String.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertTrue(response.toString().contains(partialErrorMsg));
     }
 
 }

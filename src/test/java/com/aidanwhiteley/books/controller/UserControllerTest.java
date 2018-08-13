@@ -1,5 +1,6 @@
 package com.aidanwhiteley.books.controller;
 
+import com.aidanwhiteley.books.controller.dtos.ClientRoles;
 import com.aidanwhiteley.books.controller.jwt.JwtUtils;
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.User;

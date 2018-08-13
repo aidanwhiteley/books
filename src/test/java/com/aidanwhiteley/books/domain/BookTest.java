@@ -57,4 +57,5 @@ public class BookTest {
         assertEquals(book1, book2);
     	assertEquals(book1.toString(), book2.toString());
     }
+    
 }

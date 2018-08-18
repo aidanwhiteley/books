@@ -1,7 +1,7 @@
 package com.aidanwhiteley.books.controller;
 
 import com.aidanwhiteley.books.controller.aspect.LimitDataVisibility;
-import com.aidanwhiteley.books.controller.exceptions.AccessForbiddenException;
+import com.aidanwhiteley.books.controller.exceptions.NotAuthorisedException;
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.Comment;
 import com.aidanwhiteley.books.domain.Owner;
@@ -175,7 +175,7 @@ public class BookSecureController {
             if (comment.isOwner(user.get()) || user.get().getRoles().contains(User.Role.ROLE_ADMIN)) {
                 return bookRepository.removeCommentFromBook(id, commentId, user.get().getFullName());
             } else {
-                throw new AccessForbiddenException("Not owner of comment or admin");
+                throw new NotAuthorisedException("Not owner of comment or admin");
             }
         } else {
             return null;

@@ -90,7 +90,9 @@ public class BookSecureControllerTest extends IntegrationTest {
         ResponseEntity<String> response = testRestTemplate.exchange("/secure/api/books", HttpMethod.POST, request, String.class);
 
         assertEquals(HttpStatus.UNSUPPORTED_MEDIA_TYPE, response.getStatusCode());
-        assertTrue(response.getBody().contains("SafeHtml"));
+
+        // The response should contain the name of the field that contains the suspected html
+        assertTrue(response.getBody().contains("title"));
     }
 
     @Test

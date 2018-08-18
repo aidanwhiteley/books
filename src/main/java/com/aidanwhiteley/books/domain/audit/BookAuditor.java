@@ -16,12 +16,11 @@ import java.util.Optional;
 @Component
 public class BookAuditor implements AuditorAware<Owner> {
 
-    @Autowired
-    private JwtAuthenticationUtils jwtAuthenticationUtils;
+    private final JwtAuthenticationUtils jwtAuthenticationUtils;
+
+    private final UserRepository userRepository;
 
     @Autowired
-    private UserRepository userRepository;
-
     public BookAuditor(JwtAuthenticationUtils jwtAuthenticationUtils, UserRepository userRepository) {
         this.jwtAuthenticationUtils = jwtAuthenticationUtils;
         this.userRepository = userRepository;

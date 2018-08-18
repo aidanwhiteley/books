@@ -1,6 +1,5 @@
 package com.aidanwhiteley.books.controller;
 
-import com.aidanwhiteley.books.controller.dtos.ClientRoles;
 import com.aidanwhiteley.books.controller.jwt.JwtUtils;
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.User;
@@ -13,7 +12,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class UserControllerTest extends IntegrationTest {
 

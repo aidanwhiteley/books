@@ -1,7 +1,7 @@
 package com.aidanwhiteley.books.controller;
 
 import com.aidanwhiteley.books.controller.dtos.ClientRoles;
-import com.aidanwhiteley.books.controller.exceptions.AccessForbiddenException;
+import com.aidanwhiteley.books.controller.exceptions.NotAuthorisedException;
 import com.aidanwhiteley.books.controller.jwt.JwtAuthenticationService;
 import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.repository.UserRepository;
@@ -59,7 +59,7 @@ public class UserController {
 			// database.
 			LOGGER.warn("Valid JWT passed but no corresponding user in data store");
 			authService.expireJwtCookie(response);
-			throw new AccessForbiddenException("No user found in user store for input JWT");
+			throw new NotAuthorisedException("No user found in user store for input JWT");
 		}
 	}
 

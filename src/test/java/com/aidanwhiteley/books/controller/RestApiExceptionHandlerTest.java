@@ -3,7 +3,6 @@ package com.aidanwhiteley.books.controller;
 import com.aidanwhiteley.books.controller.jwt.JwtUtils;
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.User;
-import com.aidanwhiteley.books.repository.BookRepositoryTest;
 import com.aidanwhiteley.books.util.IntegrationTest;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,6 +80,7 @@ public class RestApiExceptionHandlerTest extends IntegrationTest {
                 .accept(MediaType.APPLICATION_JSON);
     }
 
+    @SuppressWarnings("SameParameterValue")
     private RequestBuilder getPostRequestBuilder(String url, Book book) {
         User user = BookControllerTestUtils.getTestUser();
         String token = jwtUtils.createTokenForUser(user);

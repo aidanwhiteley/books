@@ -42,7 +42,7 @@ public class SiteRssFeed {
 	}
 
 	SyndFeed createSiteRssFeed() {
-		PageRequest pageObj = PageRequest.of(1, booksFeedsMaxEntries);
+		PageRequest pageObj = PageRequest.of(0, booksFeedsMaxEntries);
 		Page<Book> recentBooks = bookRepository.findAllByOrderByCreatedDateTimeDesc(pageObj);
 
 		SyndFeed feed = new SyndFeedImpl();

@@ -131,5 +131,5 @@ books:
   feeds:
     maxentries: 1000
     title: The Cloudy Bookclub recent entries
-    domain: localhost
+    domain: http://localhost:9000/
     description: Updates from the Cloudy Bookclub application

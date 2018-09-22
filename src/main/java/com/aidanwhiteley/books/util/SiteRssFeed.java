@@ -2,23 +2,22 @@ package com.aidanwhiteley.books.util;
 
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.repository.BookRepository;
-import com.rometools.rome.feed.rss.Channel;
-import com.rometools.rome.feed.rss.Content;
-import com.rometools.rome.feed.rss.Description;
-import com.rometools.rome.feed.rss.Item;
+import com.rometools.rome.feed.rss.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.stream.Collectors;
 
 @Component
 public class SiteRssFeed {
 
-	private static final String FEED_TYPE_RSS_1_0 = "rss_1.0";
+	private static final String FEED_TYPE_RSS_2_0 = "rss_2.0";
 
 	@Value("${books.feeds.maxentries}")
 	private int booksFeedsMaxEntries;
@@ -43,7 +42,7 @@ public class SiteRssFeed {
 		PageRequest pageObj = PageRequest.of(0, booksFeedsMaxEntries);
 		Page<Book> recentBooks = bookRepository.findAllByOrderByCreatedDateTimeDesc(pageObj);
 
-        Channel channel = new Channel(FEED_TYPE_RSS_1_0);
+        Channel channel = new Channel(FEED_TYPE_RSS_2_0);
         channel.setTitle(booksFeedsTitles);
         channel.setLink(booksFeedsDomain);
         channel.setDescription(booksFeedsDescription);
@@ -52,15 +51,22 @@ public class SiteRssFeed {
         channel.setItems(recentBooks.stream().map(b -> {
             Item item = new Item();
             item.setTitle(b.getTitle());
-            item.setLink(booksFeedsDomain + "/" + b.getId());
-            Description descrip = new Description();
-            descrip.setType("text/plain");
-            descrip.setValue("Book added");
-            item.setDescription(descrip);
+            item.setLink(booksFeedsDomain + "#/book/" + b.getId());
+
+            Guid guid = new Guid();
+            guid.setPermaLink(true);
+            guid.setValue(booksFeedsDomain + "#/book/" + b.getId());
+            item.setGuid(guid);
+
+            ZonedDateTime zdt = b.getCreatedDateTime().atZone(ZoneId.systemDefault());
+            item.setPubDate(Date.from(zdt.toInstant()));
+
             Content content = new Content();
-            content.setType("text/plain");
+            content.setType("text/html");
             content.setValue(b.getSummary());
+
             item.setContent(content);
+
             return item;
 		}).collect(Collectors.toList()));
 

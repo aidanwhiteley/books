@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 
 import java.net.URL;
+import java.util.Date;
 
 import static org.junit.Assert.*;
 
@@ -34,8 +35,11 @@ public class FeedsControllerTest extends IntegrationTest {
         assertEquals(booksFeedsTitles, feed.getTitle());
 
         assertTrue(feed.getEntries().size() > 0);
+
+        Date date = new Date();
         for (SyndEntry entry : feed.getEntries()) {
             assertFalse(entry.getContents().get(0).getValue().isEmpty());
+            System.out.println("Entry: " + entry);
         }
     }
 }

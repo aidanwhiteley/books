@@ -127,5 +127,9 @@ books:
         capacity: 50
       thread:
         prefix: GoogleBooksLookup-
-
-
+        
+  feeds:
+    maxentries: 1000
+    title: The Cloudy Bookclub recent entries
+    domain: localhost
+    description: Sitemap for the Cloudy Bookclub application

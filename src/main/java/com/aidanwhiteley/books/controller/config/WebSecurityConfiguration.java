@@ -117,7 +117,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).
                     enableSessionUrlRewriting(false).and().
                 antMatcher("/**").authorizeRequests().
-                    antMatchers("/api/**", "/login**", "/actuator/info", "/actuator/health").permitAll().
+                    antMatchers("/api/**", "/login**", "/feeds/**", "/actuator/info", "/actuator/health").permitAll().
                     antMatchers(SWAGGER_AUTH_WHITELIST).permitAll().
                     antMatchers("/actuator/**").hasRole("ADMIN").
                     anyRequest().authenticated().and().

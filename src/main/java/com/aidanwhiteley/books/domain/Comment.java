@@ -1,16 +1,13 @@
 package com.aidanwhiteley.books.domain;
 
-import static com.aidanwhiteley.books.domain.User.Role.ROLE_ADMIN;
-import static com.aidanwhiteley.books.domain.User.Role.ROLE_EDITOR;
-import static com.aidanwhiteley.books.domain.User.Role.ROLE_USER;
-import static org.hibernate.validator.constraints.SafeHtml.WhiteListType.NONE;
-
-import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.util.UUID;
-
-import javax.validation.constraints.NotNull;
-
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.SafeHtml;
 import org.slf4j.Logger;
@@ -19,15 +16,13 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import javax.validation.constraints.NotNull;
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.UUID;
 
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Setter;
+import static com.aidanwhiteley.books.domain.User.Role.*;
+import static org.hibernate.validator.constraints.SafeHtml.WhiteListType.NONE;
 
 @SuppressWarnings("DefaultAnnotationParam")
 @Data
@@ -45,7 +40,6 @@ public class Comment implements Serializable {
 	@Id
 	private String id = UUID.randomUUID().toString();
 
-	@NotNull
 	@Length(min = 1, max = 1000)
 	@SafeHtml(whitelistType=NONE)
 	private String commentText;

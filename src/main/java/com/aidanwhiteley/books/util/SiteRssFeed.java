@@ -1,21 +1,19 @@
 package com.aidanwhiteley.books.util;
 
-import java.util.stream.Collectors;
-
+import com.aidanwhiteley.books.domain.Book;
+import com.aidanwhiteley.books.repository.BookRepository;
+import com.rometools.rome.feed.rss.Channel;
+import com.rometools.rome.feed.rss.Content;
+import com.rometools.rome.feed.rss.Description;
+import com.rometools.rome.feed.rss.Item;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
-import com.aidanwhiteley.books.domain.Book;
-import com.aidanwhiteley.books.repository.BookRepository;
-import com.sun.syndication.feed.synd.SyndContent;
-import com.sun.syndication.feed.synd.SyndContentImpl;
-import com.sun.syndication.feed.synd.SyndEntry;
-import com.sun.syndication.feed.synd.SyndEntryImpl;
-import com.sun.syndication.feed.synd.SyndFeed;
-import com.sun.syndication.feed.synd.SyndFeedImpl;
+import java.util.Date;
+import java.util.stream.Collectors;
 
 @Component
 public class SiteRssFeed {
@@ -41,27 +39,31 @@ public class SiteRssFeed {
 		this.bookRepository = bookRepository;
 	}
 
-	SyndFeed createSiteRssFeed() {
+    public Channel createSiteRssFeed() {
 		PageRequest pageObj = PageRequest.of(0, booksFeedsMaxEntries);
 		Page<Book> recentBooks = bookRepository.findAllByOrderByCreatedDateTimeDesc(pageObj);
 
-		SyndFeed feed = new SyndFeedImpl();
-		feed.setFeedType(FEED_TYPE_RSS_1_0);
-		feed.setTitle(booksFeedsTitles);
-		feed.setLink(booksFeedsDomain);
-		feed.setDescription(booksFeedsDescription);
+        Channel channel = new Channel(FEED_TYPE_RSS_1_0);
+        channel.setTitle(booksFeedsTitles);
+        channel.setLink(booksFeedsDomain);
+        channel.setDescription(booksFeedsDescription);
+        channel.setPubDate(new Date());
 
-		feed.setEntries(recentBooks.stream().map(b -> {
-			SyndEntry entry = new SyndEntryImpl();
-			entry.setTitle(b.getTitle());
-			entry.setLink(booksFeedsDomain + "/" + b.getId());
-			SyndContent description = new SyndContentImpl();
-			description.setType("text/html");
-			description.setValue(b.getSummary());
-			entry.setDescription(description);
-			return entry;
+        channel.setItems(recentBooks.stream().map(b -> {
+            Item item = new Item();
+            item.setTitle(b.getTitle());
+            item.setLink(booksFeedsDomain + "/" + b.getId());
+            Description descrip = new Description();
+            descrip.setType("text/plain");
+            descrip.setValue("Book added");
+            item.setDescription(descrip);
+            Content content = new Content();
+            content.setType("text/plain");
+            content.setValue(b.getSummary());
+            item.setContent(content);
+            return item;
 		}).collect(Collectors.toList()));
 
-		return feed;
+        return channel;
 	}
 }

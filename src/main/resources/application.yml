@@ -132,4 +132,4 @@ books:
     maxentries: 1000
     title: The Cloudy Bookclub recent entries
     domain: localhost
-    description: Sitemap for the Cloudy Bookclub application
+    description: Updates from the Cloudy Bookclub application

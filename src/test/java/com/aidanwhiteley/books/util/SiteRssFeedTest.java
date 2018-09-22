@@ -1,14 +1,12 @@
 package com.aidanwhiteley.books.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
+import com.rometools.rome.feed.rss.Channel;
+import com.rometools.rome.feed.rss.Item;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import com.sun.syndication.feed.synd.SyndEntry;
 
-import com.sun.syndication.feed.synd.SyndFeed;
+import static org.junit.Assert.*;
 
 public class SiteRssFeedTest extends IntegrationTest {
 	
@@ -23,12 +21,12 @@ public class SiteRssFeedTest extends IntegrationTest {
     
     @Test
     public void checkFeedForFeedData() {
-    	SyndFeed feed = siteFeed.createSiteRssFeed();
-    	assertEquals(booksFeedsDescription, feed.getDescription());
-    	assertTrue(feed.getEntries().size() > 0 && feed.getEntries().size() <= booksFeedsMaxEntries);
-    	
-    	SyndEntry entry = (SyndEntry)(feed.getEntries().get(0));
-    	assertTrue(entry.getDescription().getValue().isEmpty() == false);
+        Channel channel = siteFeed.createSiteRssFeed();
+        assertEquals(booksFeedsDescription, channel.getDescription());
+        assertTrue(channel.getItems().size() > 0 && channel.getItems().size() <= booksFeedsMaxEntries);
+
+        Item item = channel.getItems().get(0);
+        assertFalse(item.getDescription().getValue().isEmpty());
     }
 
 }

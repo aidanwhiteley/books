@@ -51,12 +51,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     private static final String CONTENT_TYPE = "Content-Type";
     private static final String ORIGIN = "Origin";
 
-//    private static final String[] SWAGGER_AUTH_WHITELIST = {
-//            "/swagger-resources/**",
-//            "/swagger-ui.html",
-//            "/v2/api-docs",
-//            "/webjars/**"
-//    };
     private static final RequestMatcher PUBLIC_URLS = new OrRequestMatcher(
             new AntPathRequestMatcher("/api/**"),
             new AntPathRequestMatcher("/login**"),

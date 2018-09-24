@@ -39,7 +39,6 @@ public class FeedsControllerTest extends IntegrationTest {
         Date date = new Date();
         for (SyndEntry entry : feed.getEntries()) {
             assertFalse(entry.getContents().get(0).getValue().isEmpty());
-            System.out.println("Entry: " + entry);
         }
     }
 }

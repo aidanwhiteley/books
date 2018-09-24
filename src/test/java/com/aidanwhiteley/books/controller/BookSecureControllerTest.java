@@ -1,6 +1,5 @@
 package com.aidanwhiteley.books.controller;
 
-import com.aidanwhiteley.books.controller.config.WebSecurityConfiguration;
 import com.aidanwhiteley.books.controller.jwt.JwtAuthenticationService;
 import com.aidanwhiteley.books.controller.jwt.JwtUtils;
 import com.aidanwhiteley.books.domain.Book;
@@ -104,16 +103,7 @@ public class BookSecureControllerTest extends IntegrationTest {
                 HttpMethod.POST,
                 request,
                 Book.class);
-
-        // Spring security will issue a 302 to redirect to the logon page.
-        // For GETs this would be automatically followed and the "logon page"
-        // responds with a 403 Forbidden.
-        // However, POSTs, PUTs etc the client shouldnt automatically follow the
-        // 302 redirect. Hence this test looks for the 302.
-        // The test is still successful as the client code is
-        // prevented (via the 302 to a logon page) from doing what is doesnt have the
-        // required permissions to do.
-        assertEquals(HttpStatus.FOUND, response.getStatusCode());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
     }
 
     @Test
@@ -131,8 +121,7 @@ public class BookSecureControllerTest extends IntegrationTest {
         ResponseEntity<Book> postResponse = testRestTemplate.exchange("/secure/api/books", HttpMethod.POST, putData,
                 Book.class);
 
-        // See comments in the tryToCreateBookWithNoPermissions test for why a 302 is expected.
-        assertEquals(HttpStatus.FOUND, postResponse.getStatusCode());
+        assertEquals(HttpStatus.FORBIDDEN, postResponse.getStatusCode());
     }
 
     @Test
@@ -188,8 +177,7 @@ public class BookSecureControllerTest extends IntegrationTest {
         ResponseEntity<Book> putResponse = testRestTemplate.exchange("/secure/api/books", HttpMethod.PUT, putData,
                 Book.class);
 
-        // See comments in the tryToCreateBookWithNoPermissions test for why a 302 is expected.
-        assertEquals(HttpStatus.FOUND, putResponse.getStatusCode());
+        assertEquals(HttpStatus.FORBIDDEN, putResponse.getStatusCode());
     }
 
     @Test
@@ -208,10 +196,7 @@ public class BookSecureControllerTest extends IntegrationTest {
         // And now check the action is forbidden when no xsrf token is supplied
         request = BookControllerTestUtils.getBookHttpEntity(testBook, token, null);
         response = testRestTemplate.exchange("/secure/api/books", HttpMethod.POST, request, Book.class);
-
-        // In actual fact, what happens is that the request is re-directed to the "logon page", A 403 would have been preferable
-        assertEquals(HttpStatus.FOUND, response.getStatusCode());
-        assertEquals(WebSecurityConfiguration.API_LOGIN, response.getHeaders().getLocation().getPath());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
     }
 
     @Test

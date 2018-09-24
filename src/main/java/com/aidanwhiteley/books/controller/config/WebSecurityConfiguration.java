@@ -73,9 +73,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     );
     private static final RequestMatcher PROTECTED_URLS = new NegatedRequestMatcher(PUBLIC_URLS);
 
-    // Fake login page - just sets a 403 / Forbidden response
-    public static final String API_LOGIN = "/api/login";
-
     private final JwtAuthenticationFilter jwtAuththenticationFilter;
 
     private final JwtAuthenticationService jwtAuthenticationService;
@@ -144,25 +141,18 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).
                     enableSessionUrlRewriting(false).and().
                 exceptionHandling().defaultAuthenticationEntryPointFor(forbiddenEntryPoint(), PROTECTED_URLS).and().
-//                antMatcher("/**").authorizeRequests().
-//                    antMatchers(PUBLIC_URLS).permitAll().
-//                    antMatchers(SWAGGER_AUTH_WHITELIST).permitAll().
-//                    antMatchers("/actuator/**").hasRole("ADMIN").
-//                    anyRequest().authenticated().and().
                 addFilterBefore(jwtAuththenticationFilter, UsernamePasswordAuthenticationFilter.class).
                 oauth2Login().
-                    // The logon page referred to below just returns a 403 - forbidden - as it should only be accessed by APIs.
-                    // This doesnt work well for API calls with verbs other than GET as the 302 to the 403 isnt automatically followed
-                    // by the client. However, the end effect is still OK as an API call to (say) create a book review when the caller
-                    // doesnt have the required permission will result in no update happening and the API getting a 302 response
-                    // (meaning the call was blocked).
-                    // Having client code look for a 302 to the logon page is just not as intuitive as handling a 403.
-                    //loginPage(API_LOGIN).
                     authorizationEndpoint().baseUri("/login").
                     authorizationRequestRepository(cookieBasedAuthorizationRequestRepository()).and().
                     successHandler(new Oauth2AuthenticationSuccessHandler()).and().
                 headers().referrerPolicy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN);
         // @formatter:on
+    }
+
+    @Bean
+    AuthenticationEntryPoint forbiddenEntryPoint() {
+        return new HttpStatusEntryPoint(FORBIDDEN);
     }
 
     /**
@@ -180,11 +170,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 super.setDefaultTargetUrl(postLogonUrl);
                 super.onAuthenticationSuccess(request, response, authentication);
             }
-    }
-
-    @Bean
-    AuthenticationEntryPoint forbiddenEntryPoint() {
-        return new HttpStatusEntryPoint(FORBIDDEN);
     }
 
     @Bean

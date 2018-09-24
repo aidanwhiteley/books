@@ -46,10 +46,14 @@ public class UserController {
 	@GetMapping(value = "/user")
 	public User user(Principal principal, HttpServletResponse response) {
 
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Principal passed in to user method is: {}",
-					(principal == null ? null : principal.toString()));
-		}
+		if (principal == null) {
+		    LOGGER.debug("Principal passed to user method was null");
+		    throw new NotAuthorisedException("No user data available - if you havent authenticated then this is expected.");
+        } else {
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Principal passed in to user method is: {}", principal.toString());
+            }
+        }
 
 		Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
 		if (user.isPresent()) {
@@ -57,7 +61,7 @@ public class UserController {
 		} else {
 			// We've been supplied a valid JWT but the user is no longer in the
 			// database.
-			LOGGER.warn("Valid JWT passed but no corresponding user in data store");
+			LOGGER.warn("No user was found for the given principal - assuming an old JWT supplied for a user removed from data store");
 			authService.expireJwtCookie(response);
 			throw new NotAuthorisedException("No user found in user store for input JWT");
 		}

@@ -26,7 +26,7 @@ public class UserControllerTest extends IntegrationTest {
     @Test
     public void getUserDetailsNoAuthentication() {
         ResponseEntity<User> response = testRestTemplate.getForEntity("/secure/api/user", User.class);
-        assertEquals(302, response.getStatusCode().value());
+        assertEquals(401, response.getStatusCode().value());
     }
 
     @Test

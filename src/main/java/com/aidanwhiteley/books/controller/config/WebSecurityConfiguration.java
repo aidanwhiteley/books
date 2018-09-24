@@ -19,10 +19,16 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
+import org.springframework.security.web.util.matcher.OrRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -30,6 +36,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+
+import static org.springframework.http.HttpStatus.FORBIDDEN;
 
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -42,15 +50,22 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     private static final String X_REQUESTED_WITH = "X-Requested-With";
     private static final String CONTENT_TYPE = "Content-Type";
     private static final String ORIGIN = "Origin";
-    private static final String[] SWAGGER_AUTH_WHITELIST = {
-            "/swagger-resources/**",
-            "/swagger-ui.html",
-            "/v2/api-docs",
-            "/webjars/**"
-    };
 
-    // Fake login page - just sets a 403 / Forbidden response
-    public static final String API_LOGIN = "/api/login";
+    private static final RequestMatcher PUBLIC_URLS = new OrRequestMatcher(
+            new AntPathRequestMatcher("/api/**"),
+            new AntPathRequestMatcher("/login**"),
+            new AntPathRequestMatcher("/feeds/**"),
+            new AntPathRequestMatcher("/favicon.ico"),
+            new AntPathRequestMatcher("/actuator/info"),
+            new AntPathRequestMatcher("/actuator/health"),
+            // And some paths just for playing with SWAGGER UI within the same app
+            new AntPathRequestMatcher("/swagger-resources/**"),
+            new AntPathRequestMatcher("/swagger-ui.html"),
+            new AntPathRequestMatcher("/v2/api-docs"),
+            new AntPathRequestMatcher("/webjars/**")
+
+    );
+    private static final RequestMatcher PROTECTED_URLS = new NegatedRequestMatcher(PUBLIC_URLS);
 
     private final JwtAuthenticationFilter jwtAuththenticationFilter;
 
@@ -112,29 +127,28 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
         }
 
+        // With all due thanks to https://octoperf.com/blog/2018/03/08/securing-rest-api-spring-security/ for
+        // some of what follows.
+
         // @formatter:off
         http.
                 sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).
                     enableSessionUrlRewriting(false).and().
-                antMatcher("/**").authorizeRequests().
-                    antMatchers("/api/**", "/login**", "/feeds/**", "/favicon.ico", "/actuator/info", "/actuator/health").permitAll().
-                    antMatchers(SWAGGER_AUTH_WHITELIST).permitAll().
-                    antMatchers("/actuator/**").hasRole("ADMIN").
-                    anyRequest().authenticated().and().
+                exceptionHandling().defaultAuthenticationEntryPointFor(forbiddenEntryPoint(), PROTECTED_URLS).and().
                 addFilterBefore(jwtAuththenticationFilter, UsernamePasswordAuthenticationFilter.class).
                 oauth2Login().
-                    // The logon page referred to below just returns a 403 - forbidden - as it should only be accessed by APIs.
-                    // This doesnt work well for API calls with verbs other than GET as the 302 to the 403 isnt automatically followed
-                    // by the client. However, the end effect is still OK as an API call to (say) create a book review when the caller
-                    // doesnt have the required permission will result in no update happening and the API getting a 302 response
-                    // (meaning the call was blocked).
-                    // Having client code look for a 302 to the logon page is just not as intuitive as handling a 403.
-                    loginPage(API_LOGIN).
                     authorizationEndpoint().baseUri("/login").
                     authorizationRequestRepository(cookieBasedAuthorizationRequestRepository()).and().
                     successHandler(new Oauth2AuthenticationSuccessHandler()).and().
+                formLogin().disable().
+                httpBasic().disable().
                 headers().referrerPolicy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN);
         // @formatter:on
+    }
+
+    @Bean
+    AuthenticationEntryPoint forbiddenEntryPoint() {
+        return new HttpStatusEntryPoint(FORBIDDEN);
     }
 
     /**

@@ -138,6 +138,10 @@ public class JwtAuthenticationService {
 		emptyCookie.setSecure(cookieOverHttpsOnly);
 		emptyCookie.setPath(jwtCookiePath);
 		response.addCookie(emptyCookie);
+
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("Expired JWT cookie");
+		}
 	}
 
 	public void expireXsrfCookie(HttpServletResponse response) {
@@ -147,6 +151,10 @@ public class JwtAuthenticationService {
 		emptyCookie.setSecure(cookieOverHttpsOnly);
 		emptyCookie.setPath(jwtCookiePath);
 		response.addCookie(emptyCookie);
+
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("Expired Xsrf cookie");
+		}
 	}
 
 	public void expireJsessionIdCookie(HttpServletResponse response) {
@@ -165,6 +173,10 @@ public class JwtAuthenticationService {
         emptyCookie.setSecure(cookieOverHttpsOnly);
         emptyCookie.setPath(jwtCookiePath);
         response.addCookie(emptyCookie);
+
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("Expired Oauth cookie");
+		}
     }
 
 }

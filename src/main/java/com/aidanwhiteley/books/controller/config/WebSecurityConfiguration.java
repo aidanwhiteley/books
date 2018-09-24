@@ -146,6 +146,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                     authorizationEndpoint().baseUri("/login").
                     authorizationRequestRepository(cookieBasedAuthorizationRequestRepository()).and().
                     successHandler(new Oauth2AuthenticationSuccessHandler()).and().
+                formLogin().disable().
+                httpBasic().disable().
                 headers().referrerPolicy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN);
         // @formatter:on
     }

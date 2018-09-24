@@ -42,6 +42,9 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({NotAuthorisedException.class})
     @ResponseStatus(UNAUTHORIZED)
     public ApiExceptionData handleAccessDeniedException(Exception ex, WebRequest request) {
+        if (API_LOGGER.isDebugEnabled()) {
+            API_LOGGER.debug("Running in blah doing blah");
+        }
         return new ApiExceptionData(UNAUTHORIZED.value(), UNAUTHORIZED.getReasonPhrase(),
                 MESSAGE_DENIED + " : " + ex.getLocalizedMessage(), getPath(request));
     }

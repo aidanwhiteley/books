@@ -205,7 +205,7 @@
 			<plugin>
 				<groupId>io.gatling</groupId>
 				<artifactId>gatling-maven-plugin</artifactId>
-				<version>2.2.4</version>
+				<version>3.0.0</version>
 			</plugin>
 
 			<!-- Using https://snyk.io/ instead -->

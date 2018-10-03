@@ -50,7 +50,7 @@ public class SiteRssFeed {
 
         channel.setItems(recentBooks.stream().map(b -> {
             Item item = new Item();
-            item.setTitle(b.getTitle());
+            item.setTitle(b.getTitle() + " by " + b.getAuthor());
             item.setLink(booksFeedsDomain + "#/book/" + b.getId());
 
             Guid guid = new Guid();
@@ -63,7 +63,7 @@ public class SiteRssFeed {
 
             Content content = new Content();
             content.setType("text/html");
-            content.setValue(b.getSummary());
+            content.setValue(b.getSummary() + "\r\n \r\nRating: " + b.getRating());
 
             item.setContent(content);
 

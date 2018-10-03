@@ -12,4 +12,5 @@ cache:
 
 script:
   # other script steps might be done before running the actual analysis
+  - git fetch --unshallow
   - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar

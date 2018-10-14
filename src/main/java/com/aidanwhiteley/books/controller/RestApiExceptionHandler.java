@@ -20,6 +20,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import static org.springframework.http.HttpStatus.*;
 
+@SuppressWarnings("NullableProblems")
 @RestControllerAdvice
 public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
 

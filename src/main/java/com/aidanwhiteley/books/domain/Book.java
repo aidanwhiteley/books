@@ -19,6 +19,7 @@ import java.util.List;
 import static com.aidanwhiteley.books.domain.User.Role.*;
 import static org.hibernate.validator.constraints.SafeHtml.WhiteListType.NONE;
 
+@SuppressWarnings("DefaultAnnotationParam")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor

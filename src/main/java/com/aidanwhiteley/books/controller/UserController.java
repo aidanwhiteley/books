@@ -51,7 +51,7 @@ public class UserController {
 		    throw new NotAuthorisedException("No user data available - if you havent authenticated then this is expected.");
         } else {
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Principal passed in to user method is: {}", principal.toString());
+                LOGGER.debug("Principal passed in to user method is: {}", principal);
             }
         }
 

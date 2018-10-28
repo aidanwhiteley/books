@@ -69,7 +69,7 @@ public class Comment implements Serializable {
 		this.owner = owner;
 	}
 
-	public Comment(String commentText, Owner owner, LocalDateTime entered) {
+	public Comment(String commentText, Owner owner, @NotNull LocalDateTime entered) {
 		this.commentText = commentText;
 		this.owner = owner;
 		this.entered = entered;

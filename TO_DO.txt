@@ -109,3 +109,4 @@ db.book.updateMany({}, {$unset: {entered: ""}});
 Find latest changed documents
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+Resolved conflicts

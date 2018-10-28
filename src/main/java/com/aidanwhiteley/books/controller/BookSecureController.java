@@ -87,7 +87,7 @@ public class BookSecureController {
 
             // Basic GET of book details are not on a secure API
             location = new URI(location.toURL().toString().replaceAll("/secure", ""));
-            LOGGER.debug("createBook existed. New Book createdd in store - accessible at {}", location);
+            LOGGER.debug("createBook existed. New Book created in store - accessible at {}", location);
             return ResponseEntity.created(location).build();
         } else {
             LOGGER.error("Couldnt create a book as user to own book not found! Principal: {}", principal);

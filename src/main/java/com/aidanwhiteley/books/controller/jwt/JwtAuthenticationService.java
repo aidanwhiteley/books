@@ -127,7 +127,7 @@ public class JwtAuthenticationService {
 	private void checkForRedundantOauthCookie(JwtAuthentication auth, boolean oauthCookieFound,HttpServletResponse response) {
         if (oauthCookieFound && auth != null && auth.isAuthenticated()) {
             expireOauthCookie(response);
-            LOGGER.info("Expired redundant OAuth cookie");
+            LOGGER.error("This code should now be redundant -  but still expiring a redundant OAuth cookie");
         }
     }
 

@@ -16,6 +16,7 @@ import javax.annotation.PostConstruct;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.time.Duration;
 
 @Repository
 public class GoogleBooksDaoSync {
@@ -75,7 +76,7 @@ public class GoogleBooksDaoSync {
 
     private RestTemplate buildRestTemplate(RestTemplateBuilder builder) {
 
-        return builder.setConnectTimeout(googleBooksApiConfig.getConnectTimeout()).
-                setReadTimeout(googleBooksApiConfig.getReadTimeout()).build();
+        return builder.setConnectTimeout(Duration.ofMillis(googleBooksApiConfig.getConnectTimeout())).
+                setReadTimeout(Duration.ofMillis(googleBooksApiConfig.getReadTimeout())).build();
     }
 }

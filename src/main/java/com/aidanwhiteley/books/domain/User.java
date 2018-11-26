@@ -29,7 +29,8 @@ public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final List<Role> roles = new ArrayList<>();
+    @Setter
+    private List<Role> roles = new ArrayList<>();
 
     @Id
     @Setter(AccessLevel.PROTECTED)
@@ -89,6 +90,9 @@ public class User implements Serializable {
     }
 
     public void addRole(Role role) {
+        if (this.roles == null) {
+            this.roles = new ArrayList<Role>();
+        }
         this.roles.add(role);
     }
 

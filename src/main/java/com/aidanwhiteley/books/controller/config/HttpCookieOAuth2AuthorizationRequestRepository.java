@@ -44,6 +44,13 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
         response.addCookie(cookie);
     }
 
+    /**
+     * Removes the outh auth cookie.
+     *
+     * @param request  Thhtp Request
+     * @return an OAuth2AuthorizationRequest
+     * @deprecated Since Spring Boot 2.1.0 and associated Spring Security version
+     */
     @Override
     @Deprecated
     public OAuth2AuthorizationRequest removeAuthorizationRequest(HttpServletRequest request) {

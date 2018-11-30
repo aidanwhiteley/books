@@ -72,7 +72,6 @@ public class JwtAuthenticationService {
 		LOGGER.debug("Running JwtAuthenticationService - readAndValidateAuthenticationData");
 
 		JwtAuthentication auth = null;
-		boolean oauthCookieFound = false;
 
 		Cookie[] cookies = request.getCookies();
 

@@ -8,16 +8,15 @@ import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.lang.NonNull;
 
-//@Configuration
-//@Profile({"fongo"})
-//@EnableMongoRepositories(basePackages = "com.aidanwhiteley.books")
+@Configuration
+@Profile({"fongo"})
+@EnableMongoRepositories(basePackages = "com.aidanwhiteley.books")
 /*
   Tests can be run against Fongo - a fake in memory replacement for
   Mongo. Means that no Mongo install is needed to run tests.
  */
 //public class FongoConfig extends AbstractMongoConfiguration {
-public class FongoConfig {
-
+//
 //    private static final String DB_NAME = "books-integration-test";
 //
 //    @Override
@@ -31,4 +30,11 @@ public class FongoConfig {
 //    public MongoClient mongoClient() {
 //        return new Fongo(getDatabaseName()).getMongo();
 //    }
+//}
+
+/*
+ Fongo not currently supported in the Books project - see https://github.com/aidanwhiteley/books/issues/39
+ */
+public class FongoConfig {
+
 }

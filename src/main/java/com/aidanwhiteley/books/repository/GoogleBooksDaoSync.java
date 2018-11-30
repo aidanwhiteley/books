@@ -15,7 +15,6 @@ import org.springframework.web.client.RestTemplate;
 import javax.annotation.PostConstruct;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 
@@ -23,10 +22,8 @@ import java.time.Duration;
 public class GoogleBooksDaoSync {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GoogleBooksDaoSync.class);
-
-    private RestTemplate googleBooksRestTemplate;
-
     private final GoogleBooksApiConfig googleBooksApiConfig;
+    private RestTemplate googleBooksRestTemplate;
 
     @Autowired
     public GoogleBooksDaoSync(GoogleBooksApiConfig googleBooksApiConfig) {
@@ -63,7 +60,7 @@ public class GoogleBooksDaoSync {
 
         googleBooksRestTemplate.getMessageConverters().add(0, new StringHttpMessageConverter(StandardCharsets.UTF_8));
         try {
-            return googleBooksRestTemplate.getForObject(googleBooksApiConfig.getGetByIdUrl()+ id + "/?" +
+            return googleBooksRestTemplate.getForObject(googleBooksApiConfig.getGetByIdUrl() + id + "/?" +
                     googleBooksApiConfig.getCountryCode(), Item.class);
         } catch (HttpStatusCodeException e) {
             String errorpayload = e.getResponseBodyAsString();

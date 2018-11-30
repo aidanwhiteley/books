@@ -16,6 +16,7 @@ import javax.annotation.PostConstruct;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 
 @Repository
@@ -51,7 +52,7 @@ public class GoogleBooksDaoSync {
         }
 
         googleBooksRestTemplate.getMessageConverters().add(0,
-                new StringHttpMessageConverter(Charset.forName(GoogleBooksApiConfig.UTF_8)));
+                new StringHttpMessageConverter(StandardCharsets.UTF_8));
 
         return googleBooksRestTemplate.getForObject(googleBooksApiConfig.getSearchUrl() + encodedTitle + "&" +
                         googleBooksApiConfig.getCountryCode(),
@@ -60,7 +61,7 @@ public class GoogleBooksDaoSync {
 
     public Item searchGoogleBooksByGoogleBookId(String id) {
 
-        googleBooksRestTemplate.getMessageConverters().add(0, new StringHttpMessageConverter(Charset.forName(GoogleBooksApiConfig.UTF_8)));
+        googleBooksRestTemplate.getMessageConverters().add(0, new StringHttpMessageConverter(StandardCharsets.UTF_8));
         try {
             return googleBooksRestTemplate.getForObject(googleBooksApiConfig.getGetByIdUrl()+ id + "/?" +
                     googleBooksApiConfig.getCountryCode(), Item.class);

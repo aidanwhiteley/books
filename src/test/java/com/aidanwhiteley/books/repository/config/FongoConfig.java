@@ -1,12 +1,8 @@
 package com.aidanwhiteley.books.repository.config;
 
-import com.github.fakemongo.Fongo;
-import com.mongodb.MongoClient;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
-import org.springframework.lang.NonNull;
 
 @Configuration
 @Profile({"fongo"})

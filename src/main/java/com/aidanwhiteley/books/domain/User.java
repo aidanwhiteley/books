@@ -95,7 +95,7 @@ public class User implements Serializable {
         // array in the Mongo Dcoument could end up being null when the member
         // variable is initialised to an empty list.
         if (this.roles == null) {
-            this.roles = new ArrayList<Role>();
+            this.roles = new ArrayList<>();
         }
         this.roles.add(role);
     }

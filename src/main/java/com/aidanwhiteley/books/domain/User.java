@@ -29,7 +29,7 @@ public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final List<Role> roles = new ArrayList<>();
+    private List<Role> roles = new ArrayList<>();
 
     @Id
     @Setter(AccessLevel.PROTECTED)
@@ -89,6 +89,14 @@ public class User implements Serializable {
     }
 
     public void addRole(Role role) {
+
+        // TODO - fully understand whythe move from Spring Boot 2.0.x to 2.1.x
+        // and the corresponding update to Spring Data meant that the "roles"
+        // array in the Mongo Dcoument could end up being null when the member
+        // variable is initialised to an empty list.
+        if (this.roles == null) {
+            this.roles = new ArrayList<>();
+        }
         this.roles.add(role);
     }
 

@@ -44,9 +44,16 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
         response.addCookie(cookie);
     }
 
+    /**
+     * Removes the outh auth cookie.
+     *
+     * @param request  Thhtp Request
+     * @return an OAuth2AuthorizationRequest
+     * @deprecated Since Spring Boot 2.1.0 and associated Spring Security version
+     */
     @Override
+    @Deprecated
     public OAuth2AuthorizationRequest removeAuthorizationRequest(HttpServletRequest request) {
-
         // Question: How to remove the cookie, because we don't have access to response object here.
         // This seems to be a flaw in the design of the AuthorizationRequestRepository interface
         // as the default behaviour is to remove data from the HTTP session -
@@ -54,8 +61,18 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
         // want to clear out a cookie for which we need access to the response object.
         // So, for the time being, another unrelated part of the code base clears the cookie -
         // see the JwtAuthenticationService class for details.
-        // There is an issue raised on Spring Security for this and the interface may be
+        // There was an issue raised on Spring Security for this and the interface may be
         // uplifted in 5.1 - see https://github.com/spring-projects/spring-security/issues/5313
+
+        // Since Spring Boot 2.1 (Spring Security 5.1) this method is now deprecated and the
+        // version below with provides access to the HttpServletResponse is preferred (as this
+        // allows access to clearing out the cookie).
+        return loadAuthorizationRequest(request);
+    }
+
+    @Override
+    public OAuth2AuthorizationRequest removeAuthorizationRequest(HttpServletRequest request, HttpServletResponse response) {
+        deleteCookie(request, response);
         return loadAuthorizationRequest(request);
     }
     

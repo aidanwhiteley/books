@@ -33,11 +33,13 @@ public class Book extends Auditable implements Serializable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Book.class);
 
-    private final List<Comment> comments = new ArrayList<>();
-
     @Id
     @Setter(AccessLevel.PROTECTED)
     private String id;
+
+    // Setter added for Mongo serialisation problems with Spring Boot 2.1.0
+    @Setter
+    private List<Comment> comments = new ArrayList<>();
 
     @NotNull
     @Length(min = 1, max = 100)

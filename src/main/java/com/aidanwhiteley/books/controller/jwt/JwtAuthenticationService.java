@@ -1,6 +1,5 @@
 package com.aidanwhiteley.books.controller.jwt;
 
-import com.aidanwhiteley.books.controller.config.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.aidanwhiteley.books.domain.User;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.slf4j.Logger;
@@ -73,7 +72,6 @@ public class JwtAuthenticationService {
 		LOGGER.debug("Running JwtAuthenticationService - readAndValidateAuthenticationData");
 
 		JwtAuthentication auth = null;
-		boolean oauthCookieFound = false;
 
 		Cookie[] cookies = request.getCookies();
 
@@ -109,35 +107,18 @@ public class JwtAuthenticationService {
                         LOGGER.warn("Unexpectedly found a JSESSIONID based cookie - killing it!");
                         expireJsessionIdCookie(response);
                         break;
-                    case HttpCookieOAuth2AuthorizationRequestRepository.COOKIE_NAME:
-                        oauthCookieFound = true;
-                        break;
-
                     default:
                         LOGGER.debug("Found cookie named {}", cookie.getName());
                 }
 			}
 		}
 
-		checkForRedundantOauthCookie(auth, oauthCookieFound, response);
-
 		return auth;
 	}
 
-	private void checkForRedundantOauthCookie(JwtAuthentication auth, boolean oauthCookieFound,HttpServletResponse response) {
-        if (oauthCookieFound && auth != null && auth.isAuthenticated()) {
-            expireOauthCookie(response);
-            LOGGER.info("Expired redundant OAuth cookie");
-        }
-    }
-
 	public void expireJwtCookie(HttpServletResponse response) {
 		Cookie emptyCookie = new Cookie(JWT_COOKIE_NAME, "");
-		emptyCookie.setMaxAge(0);
-		emptyCookie.setHttpOnly(cookieAccessedByHttpOnly);
-		emptyCookie.setSecure(cookieOverHttpsOnly);
-		emptyCookie.setPath(jwtCookiePath);
-		response.addCookie(emptyCookie);
+		expireCookie(response, emptyCookie, cookieAccessedByHttpOnly);
 
 		if (LOGGER.isDebugEnabled()) {
 			LOGGER.debug("Expired JWT cookie");
@@ -146,11 +127,7 @@ public class JwtAuthenticationService {
 
 	public void expireXsrfCookie(HttpServletResponse response) {
 		Cookie emptyCookie = new Cookie(XSRF_COOKIE_NAME, "");
-		emptyCookie.setMaxAge(0);
-		emptyCookie.setHttpOnly(false);
-		emptyCookie.setSecure(cookieOverHttpsOnly);
-		emptyCookie.setPath(jwtCookiePath);
-		response.addCookie(emptyCookie);
+		expireCookie(response, emptyCookie, false);
 
 		if (LOGGER.isDebugEnabled()) {
 			LOGGER.debug("Expired Xsrf cookie");
@@ -159,24 +136,16 @@ public class JwtAuthenticationService {
 
 	public void expireJsessionIdCookie(HttpServletResponse response) {
 		Cookie emptyCookie = new Cookie(JSESSIONID_COOKIE_NAME, "");
+		expireCookie(response, emptyCookie, true);
+	}
+
+	private void expireCookie(HttpServletResponse response, Cookie emptyCookie, boolean httpOnly) {
 		emptyCookie.setMaxAge(0);
-		emptyCookie.setHttpOnly(true);
+		emptyCookie.setHttpOnly(httpOnly);
 		emptyCookie.setSecure(cookieOverHttpsOnly);
 		emptyCookie.setPath(jwtCookiePath);
 		response.addCookie(emptyCookie);
 	}
 
-	private void expireOauthCookie(HttpServletResponse response) {
-        Cookie emptyCookie = new Cookie(HttpCookieOAuth2AuthorizationRequestRepository.COOKIE_NAME, "");
-        emptyCookie.setMaxAge(0);
-        emptyCookie.setHttpOnly(true);
-        emptyCookie.setSecure(cookieOverHttpsOnly);
-        emptyCookie.setPath(jwtCookiePath);
-        response.addCookie(emptyCookie);
-
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Expired Oauth cookie");
-		}
-    }
 
 }

@@ -29,9 +29,10 @@ making the web application entirely free of http session state (which has its pr
 * Accessing the Google Books API with the Spring RestTemplate and, a work in progress, the reactive Spring WebClient
 
 ### Tests
-All tests should run fine "out of the box". By default, the tests expect there to be a Mongo instance running locally. 
-There is an option to run the tests using Fongo (an in memory Mongo replacement) - change the spring.profiles.active in application.yml to "fongo".
-However, to run the project, Mongo is always required - even if tests are run against Fongo.
+All tests should run fine "out of the box". By default, the tests expect there to be a Mongo instance running locally. The option to run test against an in memory 
+Fongo is currently not supported - see https://github.com/aidanwhiteley/books/issues/39
+<!--- There is an option to run the tests using Fongo (an in memory Mongo replacement) - change the spring.profiles.active in application.yml to "fongo".
+However, to run the project, Mongo is always required - even if tests are run against Fongo. -->
 
 Some of the integration tests make use of WireMock (a replacement for Stubby4J due to SnakeYaml version conflicts with Spring Boot). 
 See the /src/test/resources/mappings and __files directories for the configuration details.

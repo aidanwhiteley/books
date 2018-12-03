@@ -114,7 +114,7 @@
         <dependency>
             <groupId>com.rometools</groupId>
             <artifactId>rome</artifactId>
-            <version>1.11.1</version>
+            <version>1.12.0</version>
         </dependency>
 
 		<!-- Test dependencies -->

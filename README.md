@@ -158,3 +158,6 @@ of any other domain names that weren't already taken.
 
 ## Client functionality
 ![Screen shot](https://github.com/aidanwhiteley/books-web/blob/master/app/images/cloudy-book-club-screen-grab.jpg "Book review")
+
+## New test
+[![Cloudy Bookclub Screenshot](https://github.com/aidanwhiteley/books-web/blob/master/app/images/cloudy-book-club-screen-grab.jpg)](https://github.com/aidanwhiteley/books-web)

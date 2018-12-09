@@ -88,7 +88,7 @@ indexes - just more slowly as the data volumes increase!
 There is functionality to send an email to an admin when a new user has logged on. This is intended to prompt the
 admin to give the new user the ROLE_EDITOR role (or delete the user!).
 This functionality must be enabled - see the books.users.registrationAdminEmail entries in application.yml (where 
-it is disabled by default).
+it is disabled by default). There's also a strong argument that having scheduled tasks runnable on each node is a poor option in an app that is trying to be "twelve factor" compliant - see https://12factor.net/admin-processes
 
 ## Levels of access
 The code supports four access levels

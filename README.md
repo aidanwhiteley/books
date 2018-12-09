@@ -117,7 +117,9 @@ doesn't currently work. So only use this application with CORS configured (i.e. 
 Don't use this application with CORS in production - it will leave you open to XSRF based attacks.
 
 ## Swagger API documentation
-![https://cloudybookclub.com/v2/api-docs](https://online.swagger.io/validator?url=https://cloudybookclub.com/v2/api-docs)
+
+
+[![Swagger Documentation](https://github.com/aidanwhiteley/books/blob/master/src/main/resources/static/swagger-logo.png)](https://cloudybookclub.com/swagger-ui.html#/book-controller)
 
 The public read only part of the application's REST API is automatically documented using the [Springfox](http://springfox.github.io/springfox/)
 tool to auto create Swagger 2 JSON. The API can be explored and tested using the Swagger UI available [here](https://cloudybookclub.com/swagger-ui.html#/book-controller).
@@ -156,8 +158,5 @@ Why "The Cloudy BookClub"? Well - it's gong to run in the cloud innit. And I cou
 of any other domain names that weren't already taken.
 
 
-## Client functionality
-![Screen shot](https://github.com/aidanwhiteley/books-web/blob/master/app/images/cloudy-book-club-screen-grab.jpg "Book review")
-
-## New test
+## Client Functionality
 [![Cloudy Bookclub Screenshot](https://github.com/aidanwhiteley/books-web/blob/master/app/images/cloudy-book-club-screen-grab.jpg)](https://github.com/aidanwhiteley/books-web)

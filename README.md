@@ -71,6 +71,9 @@ creation of a Mongo database and the two required collections (dependant on the 
 This project makes use of the excellent Lombok project. So to build in your favourite IDE, if necessary
 head on over to [Lombok](https://projectlombok.org/) and click the appropriate "Install" link (tested with IntelliJ and Eclipse).
 
+The project builds om Travis with both JDK8 and JDK11. To build locally on JDK ll make sure that you have Maven 3.6.0+
+and JDK 11+.
+
 ### Sample data
 There is some sample data provided to make initial understanding of the functionality a bit easier.
 It is is the /src/main/resources/sample_data. See the #README.txt in that directory.

@@ -48,7 +48,7 @@ The (Scala) source code of this test in at test/scala/com/aidanwhiteley/books/lo
 This is currently a "work in progress" - the eventual aim being to compare the resource utilisation of the GoogleBooksDaoSync
 and GoogleBooksDaoAsync implementations.
 
-### How to run
+### How to configure
 A lot of the functionality is protected behind oauth2 authentication (via Google and Facebook). 
 To use this, you must set up credentials (oauth2 client ids) on Google and Facebook.
 You must then make the clientId and clientSecret available to the running code.
@@ -67,9 +67,22 @@ set/change the secretKey used for the JWT token signing (see books:jwt:secretKey
 You will also need access to a Mongo instance. The connection URL (in the yml files) will result in the automatic
 creation of a Mongo database and the two required collections (dependant on the security config of your Mongo install).
 
-### How to build
+### How to build and run
 This project makes use of the excellent Lombok project. So to build in your favourite IDE, if necessary
 head on over to [Lombok](https://projectlombok.org/) and click the appropriate "Install" link (tested with IntelliJ and Eclipse).
+
+The project builds on Travis with both JDK8 and JDK11. To build locally on JDK 11 make sure that you have Maven 3.6.0+
+and JDK 11+.
+
+With appropriate versions of the JDK, Maven and a Mongo installed, start with
+~~~~
+mvn clean compile test
+~~~~
+and then try
+~~~~
+mvn spring-boot:run
+~~~~
+To run a client to access the microservice, head on over to https://github.com/aidanwhiteley/books-web
 
 ### Sample data
 There is some sample data provided to make initial understanding of the functionality a bit easier.

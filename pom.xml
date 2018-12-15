@@ -116,6 +116,15 @@
             <version>1.12.0</version>
         </dependency>
 
+		<!-- Security related version overrides -->
+
+		<!-- https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-10237 via Springfox Swagger dependency -->
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>27.0.1-jre</version>
+		</dependency>
+
 		<!-- Test dependencies -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

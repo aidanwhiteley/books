@@ -31,6 +31,7 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
     @Override
     public void saveAuthorizationRequest(OAuth2AuthorizationRequest authorizationRequest, HttpServletRequest request,
                                          HttpServletResponse response) {
+
         if (authorizationRequest == null) {
             deleteCookie(request, response);
             return;
@@ -65,7 +66,7 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
         // uplifted in 5.1 - see https://github.com/spring-projects/spring-security/issues/5313
 
         // Since Spring Boot 2.1 (Spring Security 5.1) this method is now deprecated and the
-        // version below with provides access to the HttpServletResponse is preferred (as this
+        // version below which provides access to the HttpServletResponse is preferred (as this
         // allows access to clearing out the cookie).
         return loadAuthorizationRequest(request);
     }
@@ -77,21 +78,19 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
     }
     
     private String fromAuthorizationRequest(OAuth2AuthorizationRequest authorizationRequest) {
-
         return Base64.getUrlEncoder().encodeToString(
                 SerializationUtils.serialize(authorizationRequest));
     }
 
     private void deleteCookie(HttpServletRequest request, HttpServletResponse response) {
-
         fetchCookie(request).ifPresent(cookie -> {
-
-            cookie.setValue("");
-            cookie.setPath("/");
-            cookie.setMaxAge(0);
-            cookie.setSecure(cookieOverHttpsOnly);
-            cookie.setHttpOnly(true);
-            response.addCookie(cookie);
+            // Delete the cookie from the response while leaving it in the request
+            Cookie responseCookie = new Cookie(COOKIE_NAME, "");
+            responseCookie.setPath("/");
+            responseCookie.setMaxAge(0);
+            responseCookie.setSecure(cookieOverHttpsOnly);
+            responseCookie.setHttpOnly(true);
+            response.addCookie(responseCookie);
         });
     }
 

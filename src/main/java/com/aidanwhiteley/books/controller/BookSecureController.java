@@ -105,14 +105,10 @@ public class BookSecureController {
                     .orElseThrow(() -> new IllegalArgumentException("Didnt find book to update"));
 
             if (currentBookState.isOwner(user.get()) || user.get().getRoles().contains(User.Role.ROLE_ADMIN)) {
-                // Have the Google book details for this book review changed (or
-                // been removed)
-                if ((book.getGoogleBookId() != null &&
-                        (!book.getGoogleBookId().isEmpty()) &&
-                        currentBookState.getGoogleBookDetails() == null)
+                boolean inputHasGoogleBookId = book.getGoogleBookId() != null && (!book.getGoogleBookId().isEmpty());
+                if ((inputHasGoogleBookId && currentBookState.getGoogleBookDetails() == null)
                         ||
-                        (currentBookState.getGoogleBookId() != null &&
-                                book.getGoogleBookId() != null &&
+                        (currentBookState.getGoogleBookId() != null && book.getGoogleBookId() != null &&
                                 (!currentBookState.getGoogleBookId().equalsIgnoreCase(book.getGoogleBookId())))
                 ) {
                     // Retrieve and update Google Book details synchronously

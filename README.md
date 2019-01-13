@@ -48,7 +48,7 @@ The (Scala) source code of this test in at test/scala/com/aidanwhiteley/books/lo
 This is currently a "work in progress" - the eventual aim being to compare the resource utilisation of the GoogleBooksDaoSync
 and GoogleBooksDaoAsync implementations.
 
-### How to run
+### How to configure
 A lot of the functionality is protected behind oauth2 authentication (via Google and Facebook). 
 To use this, you must set up credentials (oauth2 client ids) on Google and Facebook.
 You must then make the clientId and clientSecret available to the running code.
@@ -67,9 +67,22 @@ set/change the secretKey used for the JWT token signing (see books:jwt:secretKey
 You will also need access to a Mongo instance. The connection URL (in the yml files) will result in the automatic
 creation of a Mongo database and the two required collections (dependant on the security config of your Mongo install).
 
-### How to build
+### How to build and run
 This project makes use of the excellent Lombok project. So to build in your favourite IDE, if necessary
 head on over to [Lombok](https://projectlombok.org/) and click the appropriate "Install" link (tested with IntelliJ and Eclipse).
+
+The project builds on Travis with both JDK8 and JDK11. To build locally on JDK 11 make sure that you have Maven 3.6.0+
+and JDK 11+.
+
+With appropriate versions of the JDK, Maven and a Mongo installed, start with
+~~~~
+mvn clean compile test
+~~~~
+and then try
+~~~~
+mvn spring-boot:run
+~~~~
+To run a client to access the microservice, head on over to https://github.com/aidanwhiteley/books-web
 
 ### Sample data
 There is some sample data provided to make initial understanding of the functionality a bit easier.
@@ -88,7 +101,7 @@ indexes - just more slowly as the data volumes increase!
 There is functionality to send an email to an admin when a new user has logged on. This is intended to prompt the
 admin to give the new user the ROLE_EDITOR role (or delete the user!).
 This functionality must be enabled - see the books.users.registrationAdminEmail entries in application.yml (where 
-it is disabled by default).
+it is disabled by default). There's also a strong argument that having scheduled tasks runnable on each node is a poor option in an app that is trying to be "twelve factor" compliant - see https://12factor.net/admin-processes
 
 ## Levels of access
 The code supports four access levels
@@ -117,7 +130,9 @@ doesn't currently work. So only use this application with CORS configured (i.e. 
 Don't use this application with CORS in production - it will leave you open to XSRF based attacks.
 
 ## Swagger API documentation
-![https://cloudybookclub.com/v2/api-docs](https://online.swagger.io/validator?url=https://cloudybookclub.com/v2/api-docs)
+
+
+[![Swagger Documentation](https://github.com/aidanwhiteley/books/blob/develop/src/main/resources/static/swagger-logo.png)](https://cloudybookclub.com/swagger-ui.html#/book-controller)
 
 The public read only part of the application's REST API is automatically documented using the [Springfox](http://springfox.github.io/springfox/)
 tool to auto create Swagger 2 JSON. The API can be explored and tested using the Swagger UI available [here](https://cloudybookclub.com/swagger-ui.html#/book-controller).
@@ -156,5 +171,5 @@ Why "The Cloudy BookClub"? Well - it's gong to run in the cloud innit. And I cou
 of any other domain names that weren't already taken.
 
 
-## Client functionality
-![Screen shot](https://github.com/aidanwhiteley/books-web/blob/master/app/images/cloudy-book-club-screen-grab.jpg "Book review")
+## Client Functionality
+[![Cloudy Bookclub Screenshot](https://github.com/aidanwhiteley/books-web/blob/master/app/images/cloudy-book-club-screen-grab.jpg)](https://github.com/aidanwhiteley/books-web)

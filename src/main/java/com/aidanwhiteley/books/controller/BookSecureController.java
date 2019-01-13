@@ -7,6 +7,7 @@ import com.aidanwhiteley.books.domain.Comment;
 import com.aidanwhiteley.books.domain.Owner;
 import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.domain.googlebooks.BookSearchResult;
+import com.aidanwhiteley.books.domain.googlebooks.Item;
 import com.aidanwhiteley.books.repository.BookRepository;
 import com.aidanwhiteley.books.repository.GoogleBooksDaoAsync;
 import com.aidanwhiteley.books.repository.GoogleBooksDaoSync;
@@ -104,12 +105,15 @@ public class BookSecureController {
                     .orElseThrow(() -> new IllegalArgumentException("Didnt find book to update"));
 
             if (currentBookState.isOwner(user.get()) || user.get().getRoles().contains(User.Role.ROLE_ADMIN)) {
-                // Have the Google book details for this book review changed (or
-                // been removed)
-                if (book.getGoogleBookId() != null && !book.getGoogleBookId().isEmpty()
-                        && (!book.getGoogleBookId().equals(currentBookState.getGoogleBookId()))) {
-                    // Retrieve and update Google Book details asynchronously
-                    googleBooksDaoSync.searchGoogleBooksByGoogleBookId(book.getGoogleBookId());
+                boolean inputHasGoogleBookId = book.getGoogleBookId() != null && (!book.getGoogleBookId().isEmpty());
+                if ((inputHasGoogleBookId && currentBookState.getGoogleBookDetails() == null)
+                        ||
+                        (currentBookState.getGoogleBookId() != null && book.getGoogleBookId() != null &&
+                                (!currentBookState.getGoogleBookId().equalsIgnoreCase(book.getGoogleBookId())))
+                ) {
+                    // Retrieve and update Google Book details synchronously
+                    Item item = googleBooksDaoSync.searchGoogleBooksByGoogleBookId(book.getGoogleBookId());
+                    book.setGoogleBookDetails(item);
                 } else if (book.getGoogleBookId() == null || book.getGoogleBookId().isEmpty()) {
                     book.setGoogleBookDetails(null);
                 }

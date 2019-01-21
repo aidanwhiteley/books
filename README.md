@@ -30,9 +30,9 @@ making the web application entirely free of http session state (which has its pr
 
 ### Tests
 All tests should run fine "out of the box". By default, the tests expect there to be a Mongo instance running locally. The option to run test against an in memory 
-Fongo is currently not supported - see https://github.com/aidanwhiteley/books/issues/39
-<!--- There is an option to run the tests using Fongo (an in memory Mongo replacement) - change the spring.profiles.active in application.yml to "fongo".
-However, to run the project, Mongo is always required - even if tests are run against Fongo. -->
+Fongo is cno longer supported - see https://github.com/aidanwhiteley/books/issues/39 but there is now
+an option to run the tests using mongo-java-server (an in memory Mongo replacement) - change the spring.profiles.active in application.yml to "mongo-java-server" or use mvn test -Dspring.profiles.active=mongo-java-server.
+However, to run the project, Mongo is always required - even if tests are run against mongo-java-server.
 
 Some of the integration tests make use of WireMock (a replacement for Stubby4J due to SnakeYaml version conflicts with Spring Boot). 
 See the /src/test/resources/mappings and __files directories for the configuration details.

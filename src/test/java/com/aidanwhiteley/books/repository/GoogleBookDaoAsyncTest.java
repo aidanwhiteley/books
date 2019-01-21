@@ -13,7 +13,7 @@ import org.springframework.test.context.ActiveProfiles;
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-@ActiveProfiles({"test", "fongo"})
+@ActiveProfiles({"test", "mongo-java-server"})
 @AutoConfigureWireMock(port=0)
 public class GoogleBookDaoAsyncTest extends IntegrationTest {
 

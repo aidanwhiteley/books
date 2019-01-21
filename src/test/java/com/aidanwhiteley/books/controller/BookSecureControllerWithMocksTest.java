@@ -96,6 +96,7 @@ public class BookSecureControllerWithMocksTest {
     }
 
     private Principal getPrincipal() {
+        //noinspection Convert2Lambda
         return new Principal() {
             @Override
             public String getName() {

@@ -14,9 +14,9 @@ import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
-import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.FACEBOOK;
-import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.GOOGLE;
+import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.*;
 
 @Service
 public class UserService {
@@ -58,6 +58,10 @@ public class UserService {
             }
             case FACEBOOK: {
                 user = createFacebookUser(userDetails);
+                break;
+            }
+            case LOCAL: {
+                user = createLocalUser(userDetails, now);
                 break;
             }
             default: {
@@ -112,6 +116,24 @@ public class UserService {
         return user;
     }
 
+    private User createLocalUser(Map<String, Object> userDetails, LocalDateTime now) {
+        User user;
+        user = User.builder().authenticationServiceId((String) userDetails.get("sub")).
+                firstName((String) userDetails.get("given_name")).
+                lastName((String) userDetails.get("family_name")).
+                fullName((String) userDetails.get("name")).
+                link((String) userDetails.get("link")).
+                picture((String) userDetails.get(PICTURE)).
+                email((String) userDetails.get(EMAIL)).
+                lastLogon(now).
+                firstLogon(now).
+                authProvider(LOCAL).
+                build();
+
+        user.addRole(User.Role.ROLE_ACTUATOR);
+        return user;
+    }
+
     private User updateUser(Map<String, Object> userDetails, User user, User.AuthenticationProvider provider) {
 
         switch (provider) {
@@ -160,6 +182,7 @@ public class UserService {
     private void setDefaultAdminUser(User user) {
         if (defaultAdminEmail != null && defaultAdminEmail.equals(user.getEmail())) {
             user.addRole(User.Role.ROLE_EDITOR);
+            user.addRole(User.Role.ROLE_ACTUATOR);
             user.addRole(User.Role.ROLE_ADMIN);
         }
     }

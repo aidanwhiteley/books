@@ -56,8 +56,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             new AntPathRequestMatcher("/login**"),
             new AntPathRequestMatcher("/feeds/**"),
             new AntPathRequestMatcher("/favicon.ico"),
-            new AntPathRequestMatcher("/actuator/info"),
-            new AntPathRequestMatcher("/actuator/health"),
             // And some paths just for playing with SWAGGER UI within the same app
             new AntPathRequestMatcher("/swagger-resources/**"),
             new AntPathRequestMatcher("/swagger-ui.html"),
@@ -127,23 +125,32 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
         }
 
+        // Require a specific role to access actuator end points
+//        http.requestMatcher(EndpointRequest.toAnyEndpoint()).authorizeRequests()
+//                .anyRequest().hasRole("ACTUATOR");
+
         // With all due thanks to https://octoperf.com/blog/2018/03/08/securing-rest-api-spring-security/ for
         // some of what follows.
 
         // @formatter:off
         http.
-                sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).
-                    enableSessionUrlRewriting(false).and().
-                exceptionHandling().defaultAuthenticationEntryPointFor(forbiddenEntryPoint(), PROTECTED_URLS).and().
-                addFilterBefore(jwtAuththenticationFilter, UsernamePasswordAuthenticationFilter.class).
-                oauth2Login().
-                    authorizationEndpoint().baseUri("/login").
-                    authorizationRequestRepository(cookieBasedAuthorizationRequestRepository()).and().
-                    successHandler(new Oauth2AuthenticationSuccessHandler()).and().
-                formLogin().disable().
-                httpBasic().disable().
-                headers().referrerPolicy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN);
+                sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).enableSessionUrlRewriting(false)
+                .and()
+                .exceptionHandling()
+                .defaultAuthenticationEntryPointFor(forbiddenEntryPoint(), PROTECTED_URLS)
+                .and()
+                .addFilterBefore(jwtAuththenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .oauth2Login()
+                    .authorizationEndpoint().baseUri("/login")
+                    .authorizationRequestRepository(cookieBasedAuthorizationRequestRepository()).and()
+                    .successHandler(new Oauth2AuthenticationSuccessHandler())
+                .and()
+                .formLogin().disable()
+                .httpBasic().disable()
+                .headers().referrerPolicy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN);
         // @formatter:on
+
+
     }
 
     @Bean

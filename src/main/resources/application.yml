@@ -51,11 +51,12 @@ management:
     enabled-by-default: true
     web:
       exposure:
-        include: auditevents, beans, conditions, configprops, env, health, httptrace, info, logfile, loggers, metrics, mappings, scheduledtasks, sessions
+        # Exposing only read only items and not large data amounts - so no heapdump or shutdown. No project use of flyway, integrationgraph, liquibase, prometheus
+        include: auditevents, beans, caches, conditions, configprops, env, health, httptrace, info, jolokia, logfile, loggers, metrics, mappings, scheduledtasks, sessions, threaddump
   endpoint:
     health:
       show-details: when_authorized
-      roles: ADMIN
+      roles: ACTUATOR
   info:
     git:
       mode: full

@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -37,6 +38,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static com.aidanwhiteley.books.domain.User.Role.ROLE_ACTUATOR;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 
 @Configuration
@@ -125,10 +127,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
         }
 
-        // Require a specific role to access actuator end points
-//        http.requestMatcher(EndpointRequest.toAnyEndpoint()).authorizeRequests()
-//                .anyRequest().hasRole("ACTUATOR");
-
         // With all due thanks to https://octoperf.com/blog/2018/03/08/securing-rest-api-spring-security/ for
         // some of what follows.
 
@@ -144,6 +142,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .authorizationEndpoint().baseUri("/login")
                     .authorizationRequestRepository(cookieBasedAuthorizationRequestRepository()).and()
                     .successHandler(new Oauth2AuthenticationSuccessHandler())
+                .and()
+                .authorizeRequests().requestMatchers(EndpointRequest.toAnyEndpoint())
+                    .hasRole(ROLE_ACTUATOR.getShortName())
                 .and()
                 .formLogin().disable()
                 .httpBasic().disable()

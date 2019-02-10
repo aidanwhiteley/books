@@ -16,7 +16,7 @@ management:
         include: auditevents, beans, caches, conditions, configprops, env, health, httptrace, info, jolokia, logfile, loggers, metrics, mappings, scheduledtasks, sessions, threaddump
   info:
     git:
-      mode: full
+      mode: fullgit
 
 books:
   client:

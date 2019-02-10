@@ -46,23 +46,11 @@ spring:
     # protocol-header: x-forwarded-proto            # e.g. for Apache
     # internal-proxies: 123\.45\.\d{1,3}\.\d{1,3}   # RequestHeader set X-Forwarded-Proto https and RequestHeader set X-Forwarded-Port 443
 
+# By default actuator is disabled.
+# If you want to enable for your application, see the application-dev.yml for an example where these values are overriden
 management:
   endpoints:
-    enabled-by-default: true
-    web:
-      exposure:
-        # Exposing only read only items and not large data amounts - so no heapdump or shutdown. No project use of flyway, integrationgraph, liquibase, prometheus
-        include: auditevents, beans, caches, conditions, configprops, env, health, httptrace, info, jolokia, logfile, loggers, metrics, mappings, scheduledtasks, sessions, threaddump
-  endpoint:
-    health:
-      show-details: when_authorized
-      roles: ACTUATOR
-  info:
-    git:
-      mode: full
-  health:
-    mail:
-      enabled: false
+    enabled-by-default: false
 
 info:
   build:

@@ -22,7 +22,12 @@ public class UserService {
     private static final String PICTURE = "picture";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
-    
+
+    private static final String LOCAL_ACTUATOR_USER = "LOCAL_ACTUATOR_USER";
+    private static final String FIRST_NAME_PROPERTY = "first_name";
+    private static final String LAST_NAME_PROPERTY = "last_name";
+    private static final String NAME_PROPERTY = "name";
+
     private final UserRepository userRepository;
     private final Oauth2AuthenticationUtils authUtils;
     
@@ -47,13 +52,13 @@ public class UserService {
 
         Map<String, Object> userDetails = new HashMap<>();
         User.AuthenticationProvider provider = LOCAL;
-        userDetails.put("first_name", "Actuator");
-        userDetails.put("last_name", "User");
-        userDetails.put("name", "Actuator User");
-        //User user = User.builder().fullName("Actuator User").firstName("Actuator").lastName("Users").build();
+        userDetails.put(FIRST_NAME_PROPERTY, "Actuator");
+        userDetails.put(LAST_NAME_PROPERTY, "User");
+        userDetails.put(NAME_PROPERTY, "Actuator User");
+
         List<User> users = userRepository.
-                findAllByAuthenticationServiceIdAndAuthProvider("LOCAL_ACTUATOR_USER", LOCAL.toString());
-        if (users.size() == 0) {
+                findAllByAuthenticationServiceIdAndAuthProvider(LOCAL_ACTUATOR_USER, LOCAL.toString());
+        if (users.isEmpty()) {
             return createUser(userDetails, provider);
         } else {
             return updateUser(userDetails, users.get(0), provider);
@@ -75,7 +80,7 @@ public class UserService {
                 break;
             }
             case LOCAL: {
-                user = createLocalUser(userDetails, now);
+                user = createLocalActuatorUser(userDetails, now);
                 break;
             }
             default: {
@@ -92,9 +97,9 @@ public class UserService {
     private User createFacebookUser(Map<String, Object> userDetails) {
         User user;
         user = User.builder().authenticationServiceId((String) userDetails.get("id")).
-                firstName((String) userDetails.get("first_name")).
-                lastName((String) userDetails.get("last_name")).
-                fullName((String) userDetails.get("name")).
+                firstName((String) userDetails.get(FIRST_NAME_PROPERTY)).
+                lastName((String) userDetails.get(LAST_NAME_PROPERTY)).
+                fullName((String) userDetails.get(NAME_PROPERTY)).
                 link((String) userDetails.get("link")).
                 email((String) userDetails.get(EMAIL)).
                 lastLogon(LocalDateTime.now()).
@@ -116,7 +121,7 @@ public class UserService {
         user = User.builder().authenticationServiceId((String) userDetails.get("sub")).
                 firstName((String) userDetails.get("given_name")).
                 lastName((String) userDetails.get("family_name")).
-                fullName((String) userDetails.get("name")).
+                fullName((String) userDetails.get(NAME_PROPERTY)).
                 link((String) userDetails.get("link")).
                 picture((String) userDetails.get(PICTURE)).
                 email((String) userDetails.get(EMAIL)).
@@ -130,15 +135,12 @@ public class UserService {
         return user;
     }
 
-    private User createLocalUser(Map<String, Object> userDetails, LocalDateTime now) {
+    private User createLocalActuatorUser(Map<String, Object> userDetails, LocalDateTime now) {
         User user;
-        user = User.builder().authenticationServiceId("LOCAL_ACTUATOR_USER").
-                firstName((String) userDetails.get("given_name")).
-                lastName((String) userDetails.get("family_name")).
-                fullName((String) userDetails.get("name")).
-                //link((String) userDetails.get("link")).
-                //picture((String) userDetails.get(PICTURE)).
-                //email((String) userDetails.get(EMAIL)).
+        user = User.builder().authenticationServiceId(LOCAL_ACTUATOR_USER).
+                firstName((String) userDetails.get(FIRST_NAME_PROPERTY)).
+                lastName((String) userDetails.get(LAST_NAME_PROPERTY)).
+                fullName((String) userDetails.get(NAME_PROPERTY)).
                 lastLogon(now).
                 firstLogon(now).
                 authProvider(LOCAL).
@@ -160,7 +162,7 @@ public class UserService {
                 break;
             }
             case LOCAL: {
-                updateLocalUser(user);
+                updateLocalActuatorUser(user);
                 break;
             }
             default: {
@@ -190,14 +192,14 @@ public class UserService {
     private void updateGoogleUser(Map<String, Object> userDetails, User user) {
         user.setFirstName((String) userDetails.get("given_name"));
         user.setLastName((String) userDetails.get("family_name"));
-        user.setFullName((String) userDetails.get("name"));
+        user.setFullName((String) userDetails.get(NAME_PROPERTY));
         user.setLink((String) userDetails.get("link"));
         user.setPicture((String) userDetails.get(PICTURE));
         user.setEmail((String) userDetails.get(EMAIL));
         user.setLastLogon(LocalDateTime.now());
     }
 
-    private void updateLocalUser(User user) {
+    private void updateLocalActuatorUser(User user) {
         user.setLastLogon(LocalDateTime.now());
     }
 

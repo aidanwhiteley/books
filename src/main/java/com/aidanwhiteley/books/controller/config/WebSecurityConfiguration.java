@@ -127,10 +127,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
         }
 
-        // Require a specific role to access actuator end points
-//        http.requestMatcher(EndpointRequest.toAnyEndpoint()).authorizeRequests()
-//                .anyRequest().hasRole("ACTUATOR");
-
         // With all due thanks to https://octoperf.com/blog/2018/03/08/securing-rest-api-spring-security/ for
         // some of what follows.
 

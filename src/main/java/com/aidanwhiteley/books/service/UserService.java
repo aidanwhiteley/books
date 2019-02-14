@@ -11,9 +11,7 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.*;
 
@@ -43,6 +41,23 @@ public class UserService {
         User.AuthenticationProvider provider = authUtils.getAuthenticationProvider(authentication);
         Optional<User> user = authUtils.getUserIfExists(authentication);
         return user.map(user1 -> updateUser(userDetails, user1, provider)).orElseGet(() -> createUser(userDetails, provider));
+    }
+
+    public User createOrUpdateActuatorUser() {
+
+        Map<String, Object> userDetails = new HashMap<>();
+        User.AuthenticationProvider provider = LOCAL;
+        userDetails.put("first_name", "Actuator");
+        userDetails.put("last_name", "User");
+        userDetails.put("name", "Actuator User");
+        //User user = User.builder().fullName("Actuator User").firstName("Actuator").lastName("Users").build();
+        List<User> users = userRepository.
+                findAllByAuthenticationServiceIdAndAuthProvider("LOCAL_ACTUATOR_USER", LOCAL.toString());
+        if (users.size() == 0) {
+            return createUser(userDetails, provider);
+        } else {
+            return updateUser(userDetails, users.get(0), provider);
+        }
     }
 
     private User createUser(Map<String, Object> userDetails, User.AuthenticationProvider provider) {
@@ -117,13 +132,13 @@ public class UserService {
 
     private User createLocalUser(Map<String, Object> userDetails, LocalDateTime now) {
         User user;
-        user = User.builder().authenticationServiceId((String) userDetails.get("sub")).
+        user = User.builder().authenticationServiceId("LOCAL_ACTUATOR_USER").
                 firstName((String) userDetails.get("given_name")).
                 lastName((String) userDetails.get("family_name")).
                 fullName((String) userDetails.get("name")).
-                link((String) userDetails.get("link")).
-                picture((String) userDetails.get(PICTURE)).
-                email((String) userDetails.get(EMAIL)).
+                //link((String) userDetails.get("link")).
+                //picture((String) userDetails.get(PICTURE)).
+                //email((String) userDetails.get(EMAIL)).
                 lastLogon(now).
                 firstLogon(now).
                 authProvider(LOCAL).
@@ -142,6 +157,10 @@ public class UserService {
             }
             case FACEBOOK: {
                 updateFacebookUser(userDetails, user);
+                break;
+            }
+            case LOCAL: {
+                updateLocalUser(user);
                 break;
             }
             default: {
@@ -175,6 +194,10 @@ public class UserService {
         user.setLink((String) userDetails.get("link"));
         user.setPicture((String) userDetails.get(PICTURE));
         user.setEmail((String) userDetails.get(EMAIL));
+        user.setLastLogon(LocalDateTime.now());
+    }
+
+    private void updateLocalUser(User user) {
         user.setLastLogon(LocalDateTime.now());
     }
 

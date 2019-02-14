@@ -28,4 +28,5 @@
     <logger name="/" level="WARN"/>
     <logger name="org.eclipse.jetty.util.thread.QueuedThreadPool" level="WARN" />
     <logger name="wiremock.org.eclipse.jetty.util.thread.QueuedThreadPool" level="ERROR" />
+    <logger name="org.springframework.cloud.contract.wiremock" level="WARN" />
 </configuration>

@@ -25,7 +25,6 @@ import static org.hibernate.validator.constraints.SafeHtml.WhiteListType.NONE;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 @ToString
-@Builder
 @Document
 public class Book extends Auditable implements Serializable {
 

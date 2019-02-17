@@ -7,6 +7,7 @@ import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.util.IntegrationTest;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
@@ -24,6 +25,9 @@ public class UserControllerTest extends IntegrationTest {
 
     @Autowired
     private JwtUtils jwtUtils;
+
+    @Value("${books.jwt.actuatorExpiryInMilliSeconds}")
+    private long expiryInMilliSecondsActuator;
 
     @Test
     public void getUserDetailsNoAuthentication() {
@@ -96,7 +100,9 @@ public class UserControllerTest extends IntegrationTest {
         assertEquals("Actuator user should only have actuator role", User.Role.ROLE_ACTUATOR, userFromToken.getRoles().get(0));
         assertEquals("Actuator authprovider should be local", User.AuthenticationProvider.LOCAL, userFromToken.getAuthProvider());
 
-        assertEquals("Expiry should be as specified in config", 1000L, jwtUtils.getExpiryFromToken(actuatorJwtToken.getBody()).getTime());
+        final int aLiitleBit = 10 * 1000;
+        assertTrue("Expiry should be as specified in config",
+                System.currentTimeMillis() + expiryInMilliSecondsActuator + aLiitleBit > jwtUtils.getExpiryFromToken(actuatorJwtToken.getBody()).getTime());
 
     }
 

@@ -17,6 +17,9 @@ management:
   info:
     git:
       mode: full
+  health:
+    mail:
+      enabled: false
 
 books:
   client:
@@ -37,6 +40,11 @@ books:
       enabled: false
       emailFrom: "exampleFrom@example.com"
       emailTo: "exampleTo@example.com"
+
+    allow:
+      actuator:
+        user:
+          creation: true
 
   jwt:
     secretKey: "NotARealSecret"

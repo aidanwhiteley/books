@@ -38,6 +38,11 @@ books:
       emailFrom: "exampleFrom@example.com"
       emailTo: "exampleTo@example.com"
 
+    allow:
+      actuator:
+        user:
+          creation: true
+
   jwt:
     secretKey: "NotARealSecret"
     cookieOverHttpsOnly: false

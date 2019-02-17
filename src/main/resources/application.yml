@@ -96,14 +96,20 @@ books:
       emailTo:
       cron: "15 */15 * * * *"   # Cron expression for how often to look for new users and email an admin
 
+    allow:
+      actuator:
+        user:
+          creation: false
+
   jwt:
-    expiryInMilliSeconds: 86400000 # One day
-    secretKey:                     # Specify your secret key here
+    expiryInMilliSeconds: 86400000  # One day
+    actuatorExpiryInMilliSeconds: 31536000000  # One year / not set by cookie so "cookieExpirySeconds" not relevant
+    cookieExpirySeconds: 86400      # One day
+    secretKey:                      # Specify your secret key here
     issuer: "CloudyBookClub"
     cookieOverHttpsOnly: true
     cookieAccessedByHttpOnly: true
     cookiePath: /
-    cookieExpirySeconds: 86400 # One day
 
   oauth2:
     cookieOverHttpsOnly: true

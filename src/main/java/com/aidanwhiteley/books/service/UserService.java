@@ -34,6 +34,9 @@ public class UserService {
     @Value("${books.users.default.admin.email}")
     private String defaultAdminEmail;
 
+    @Value("${books.users.allow.actuator.user.creation}")
+    private boolean allowActuatorUserCreation;
+
     @Autowired
     public UserService(UserRepository userRepository, Oauth2AuthenticationUtils oauth2AuthenticationUtils) {
         this.userRepository = userRepository;
@@ -50,18 +53,22 @@ public class UserService {
 
     public User createOrUpdateActuatorUser() {
 
-        Map<String, Object> userDetails = new HashMap<>();
-        User.AuthenticationProvider provider = LOCAL;
-        userDetails.put(FIRST_NAME_PROPERTY, "Actuator");
-        userDetails.put(LAST_NAME_PROPERTY, "User");
-        userDetails.put(NAME_PROPERTY, "Actuator User");
+        if (allowActuatorUserCreation) {
+            Map<String, Object> userDetails = new HashMap<>();
+            User.AuthenticationProvider provider = LOCAL;
+            userDetails.put(FIRST_NAME_PROPERTY, "Actuator");
+            userDetails.put(LAST_NAME_PROPERTY, "User");
+            userDetails.put(NAME_PROPERTY, "Actuator User");
 
-        List<User> users = userRepository.
-                findAllByAuthenticationServiceIdAndAuthProvider(LOCAL_ACTUATOR_USER, LOCAL.toString());
-        if (users.isEmpty()) {
-            return createUser(userDetails, provider);
+            List<User> users = userRepository.
+                    findAllByAuthenticationServiceIdAndAuthProvider(LOCAL_ACTUATOR_USER, LOCAL.toString());
+            if (users.isEmpty()) {
+                return createUser(userDetails, provider);
+            } else {
+                return updateUser(userDetails, users.get(0), provider);
+            }
         } else {
-            return updateUser(userDetails, users.get(0), provider);
+            throw new UnsupportedOperationException("Creation of JWT token for accessing Actuator end points not supported");
         }
     }
 

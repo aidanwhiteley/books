@@ -1,5 +1,6 @@
 package com.aidanwhiteley.books.controller;
 
+import com.aidanwhiteley.books.controller.jwt.JwtAuthenticationService;
 import com.aidanwhiteley.books.controller.jwt.JwtUtils;
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.User;
@@ -7,15 +8,16 @@ import com.aidanwhiteley.books.util.IntegrationTest;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class UserControllerTest extends IntegrationTest {
+
+    private static final String COOKIE_HEADER_NAME = "Cookie";
 
     @Autowired
     private TestRestTemplate testRestTemplate;
@@ -75,6 +77,41 @@ public class UserControllerTest extends IntegrationTest {
         userDeleteResponse = testRestTemplate.exchange("/secure/api/users/" + madeUpUserid, HttpMethod.DELETE, request, User.class);
         assertEquals(HttpStatus.OK, userDeleteResponse.getStatusCode());
         
+    }
+
+    @Test
+    public void tryToGetActuatorJwtToken() {
+        // Get a user with admin access
+        User user = BookControllerTestUtils.getTestUser();
+        String token = jwtUtils.createTokenForUser(user);
+
+        HttpHeaders requestHeaders = new HttpHeaders();
+        requestHeaders.add(COOKIE_HEADER_NAME, JwtAuthenticationService.JWT_COOKIE_NAME + "=" + token);
+        HttpEntity<String> request = new HttpEntity<>(null, requestHeaders);
+        ResponseEntity<String> actuatorJwtToken = testRestTemplate.exchange("/secure/api/users/actuator", HttpMethod.GET, request, String.class);
+
+        User userFromToken = jwtUtils.getUserFromToken(actuatorJwtToken.getBody());
+        assertEquals("Call should succeed", HttpStatus.OK, actuatorJwtToken.getStatusCode());
+        assertEquals("Actuator user should have single role", 1, userFromToken.getRoles().size());
+        assertEquals("Actuator user should only have actuator role", User.Role.ROLE_ACTUATOR, userFromToken.getRoles().get(0));
+        assertEquals("Actuator authprovider should be local", User.AuthenticationProvider.LOCAL, userFromToken.getAuthProvider());
+
+        assertEquals("Expiry should be as specified in config", 1000L, jwtUtils.getExpiryFromToken(actuatorJwtToken.getBody()).getTime());
+
+    }
+
+    @Test
+    public void tryToGetActuatorJwtTokenWithoutAdminAccess() {
+        // Get a user without admin access
+        User user = BookControllerTestUtils.getEditorTestUser();
+        String token = jwtUtils.createTokenForUser(user);
+
+        HttpHeaders requestHeaders = new HttpHeaders();
+        requestHeaders.add(COOKIE_HEADER_NAME, JwtAuthenticationService.JWT_COOKIE_NAME + "=" + token);
+        HttpEntity<String> request = new HttpEntity<>(null, requestHeaders);
+        ResponseEntity<String> actuatorJwtToken = testRestTemplate.exchange("/secure/api/users/actuator", HttpMethod.GET, request, String.class);
+
+        assertEquals("Access should be forbidden", HttpStatus.FORBIDDEN, actuatorJwtToken.getStatusCode());
     }
     
 	private ResponseEntity<User> getUserDetails() {

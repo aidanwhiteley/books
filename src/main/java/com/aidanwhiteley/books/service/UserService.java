@@ -184,9 +184,9 @@ public class UserService {
     }
 
     private void updateFacebookUser(Map<String, Object> userDetails, User user) {
-        user.setFirstName((String) userDetails.get("first_name"));
-        user.setLastName((String) userDetails.get("last_name"));
-        user.setFullName((String) userDetails.get("name"));
+        user.setFirstName((String) userDetails.get(FIRST_NAME_PROPERTY));
+        user.setLastName((String) userDetails.get(LAST_NAME_PROPERTY));
+        user.setFullName((String) userDetails.get(NAME_PROPERTY));
         user.setLink((String) userDetails.get("link"));
         String url = extractFaceBookPictureUrl(userDetails);
         if (url != null) {

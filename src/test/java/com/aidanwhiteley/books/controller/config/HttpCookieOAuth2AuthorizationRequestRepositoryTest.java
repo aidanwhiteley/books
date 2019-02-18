@@ -17,7 +17,7 @@ public class HttpCookieOAuth2AuthorizationRequestRepositoryTest {
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		String TEST_CLIENT_ID = "Hello world";
-		String DUMMY_TEXT_NOT_TESTED = "dummy";
+		String DUMMY_TEXT_NOT_TESTED = "http://example.com/example";
 
 		OAuth2AuthorizationRequest authorizationRequest =
 				OAuth2AuthorizationRequest.authorizationCode().clientId(TEST_CLIENT_ID).

@@ -5,6 +5,11 @@ spring:
   mail:
     port: 3025    # Must match the value specified in the SignUpNotificationServiceTest. Set hight to avoid problems on Unix envs
 
+  boot:
+    admin:
+      client:
+        url: http://localhost:8888
+
 # By default actuator is disabled.
 # These values are overriden here to values that could be used on production
 management:

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Enumeration;
 
 @Service
 public class JwtAuthenticationService {
@@ -70,6 +71,14 @@ public class JwtAuthenticationService {
                                                                HttpServletResponse response) {
 
         LOGGER.debug("Running JwtAuthenticationService - readAndValidateAuthenticationData");
+        if (LOGGER.isDebugEnabled()) {
+            Enumeration headerNames = request.getHeaderNames();
+            while (headerNames.hasMoreElements()) {
+                String key = (String) headerNames.nextElement();
+                String value = request.getHeader(key);
+                LOGGER.debug("Key: " + key + "   Value: " + value);
+            }
+        }
 
         JwtAuthentication auth = null;
 

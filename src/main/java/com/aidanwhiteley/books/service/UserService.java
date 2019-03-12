@@ -72,6 +72,14 @@ public class UserService {
         }
     }
 
+    public boolean isAllowActuatorUserCreation() {
+        return allowActuatorUserCreation;
+    }
+
+    public void setAllowActuatorUserCreation(boolean allowActuatorUserCreation) {
+        this.allowActuatorUserCreation = allowActuatorUserCreation;
+    }
+
     private User createUser(Map<String, Object> userDetails, User.AuthenticationProvider provider) {
 
         User user;

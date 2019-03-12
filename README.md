@@ -60,8 +60,9 @@ There are lots of other ways to pass in these values e.g. they can be passed as 
 ~~~~
 Otherwise, see the Spring documentation for more options.
 
-"Out of the box" the code runs with the "dev" Spring profile. When running in other environments you will need to decide the 
-required profile and set some Spring parameters accordingly. For instance, you **WILL** want to 
+"Out of the box" the code runs with the "dev" Spring profile - see the first lines of application.yml. Outside of development
+and test environments **DO NOT** run with is profile. When running in other environments you will need to decide the 
+required functionality and configure your Spring profile accordingly. For instance, you **WILL** want to 
 set/change the secretKey used for the JWT token signing (see books:jwt:secretKey in the yml files).
 
 You will also need access to a Mongo instance. The connection URL (in the yml files) will result in the automatic
@@ -104,11 +105,12 @@ This functionality must be enabled - see the books.users.registrationAdminEmail 
 it is disabled by default). There's also a strong argument that having scheduled tasks runnable on each node is a poor option in an app that is trying to be "twelve factor" compliant - see https://12factor.net/admin-processes
 
 ## Levels of access
-The code supports four access levels
+The code supports five access levels
 * anonymous (never logged in)
 * ROLE_USER (logged in but no more permissions than anonymous)
 * ROLE_EDITOR (logged in with permission to create book reviews and comment on other people's book reviews)
 * ROLE_ADMIN (logged in with full admin access)
+* ROLE_ACTUATOR (logged in but with no permissions except to access Actuator endpoints)
 
 The application-<env>.yml files can be edited to automatically give a logged on user admin access 
 by specifying their email on Google / Facebook. See the books:users:default:admin:email setting.
@@ -151,7 +153,39 @@ However, it does allow configuration of your own AuthorizationRequestRepository 
 based version. So, finally, this application is completely free of any HTTP session state! Which was the point of originally starting to write this 
 microservice as I wanted to try it out on cloud implementations such as the Pivotal Cloud Foundry and AWS.
 
-## Functionality
+## Spring Boot Admin
+The application supports exposing [Actuator](https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready.html) 
+endpoints to be consumed by [Spring Boot Admin](http://codecentric.github.io/spring-boot-admin/current/).
+
+By default, the Actuator end points are disabled and require authentication/authorisation. To enable them to be consumed by a Spring Boot Admin based application 
+you need to 
+* enable the required Actuator endpoints and make them accessible over HTTP(S) - see the application-dev.yml file under 
+the management.endpoints hierarchy
+* set books.users.allow.actuator.user.creation to true to allow a user with ADMIN role to get a JWT token that 
+represents a user with ACTUATOR role
+* with the above property set and with a logged on user with the ADMIN role, access the /secure/api/users/actuator endpoint 
+on the server application. With everything correctly configured, this will return a long lasting JWT token with just the 
+ACTUATOR role e.g. it cannot be used to create or edit book reviews
+* plug the above JWT token into a Spring Boot Admin application that is configured to send the above JWT token with each 
+request to the Actuator endpoints in this application. A short extract of the required configuration of a class that
+implements de.codecentric.boot.admin.server.web.client.HttpHeadersProvider is listed below 
+with a fully working example being available at https://github.com/aidanwhiteley/books-springbootadmin/blob/master/src/main/java/com/aidanwhiteley/springbootadmin/JwtHeaderProvider.java
+
+```java
+@Component
+public class JwtHeaderProvider implements HttpHeadersProvider {
+    
+    ...
+    
+    @Override
+    public HttpHeaders getHeaders(Instance instance) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.COOKIE, JWT_COOKIE_NAME + "=" + jwtTokenActuatorUser);
+        return headers;
+    }
+```
+
+## Client Side Functionality
 
 There is an Angular 1.x based front end that consumes the microservice that is available 
 at https://github.com/aidanwhiteley

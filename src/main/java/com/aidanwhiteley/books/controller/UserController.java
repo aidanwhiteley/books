@@ -36,7 +36,7 @@ public class UserController {
 
 	private final JwtUtils jwtUtils;
 
-	private UserService userService;
+	private final UserService userService;
 
 	@Value("${books.client.postLogonUrl}")
 	private String postLogonUrl;

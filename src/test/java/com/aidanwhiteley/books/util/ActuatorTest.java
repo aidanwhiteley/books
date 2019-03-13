@@ -83,6 +83,7 @@ public class ActuatorTest extends IntegrationTest {
         return testRestTemplate.exchange(path, HttpMethod.GET, request, String.class);
     }
 
+    @SuppressWarnings("SameParameterValue")
     private HttpEntity<String> getActuatorHttpEntity(String jwtToken, String xsrfToken) {
         HttpHeaders requestHeaders = new HttpHeaders();
         requestHeaders.add("Cookie", JwtAuthenticationService.JWT_COOKIE_NAME + "=" + jwtToken);

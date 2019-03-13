@@ -160,22 +160,22 @@ endpoints to be consumed by [Spring Boot Admin](http://codecentric.github.io/spr
 By default, the Actuator end points are disabled and require authentication/authorisation. To enable them to be consumed by a Spring Boot Admin based application 
 you need to 
 * enable the required Actuator endpoints and make them accessible over HTTP(S) - see the application-dev.yml file under 
-the management.endpoints hierarchy
+the management.endpoints hierarchy for an example
 * set books.users.allow.actuator.user.creation to true to allow a user with ADMIN role to get a JWT token that 
-represents a user with ACTUATOR role
+represents a user with ACTUATOR role - again see the application-dev.yml
 * with the above property set and with a logged on user with the ADMIN role, access the /secure/api/users/actuator endpoint 
 on the server application. With everything correctly configured, this will return a long lasting JWT token with just the 
-ACTUATOR role e.g. it cannot be used to create or edit book reviews
+ACTUATOR role e.g. it cannot be used to create or edit book reviews.
+Note - this user can always be deleted via the front end application or directly from the Mongo database - its access is 
+checked on each use.
 * plug the above JWT token into a Spring Boot Admin application that is configured to send the above JWT token with each 
-request to the Actuator endpoints in this application. A short extract of the required configuration of a class that
+request to the Actuator endpoints in this application. A extract of the required configuration of a class that
 implements de.codecentric.boot.admin.server.web.client.HttpHeadersProvider is listed below 
-with a fully working example being available at https://github.com/aidanwhiteley/books-springbootadmin/blob/master/src/main/java/com/aidanwhiteley/springbootadmin/JwtHeaderProvider.java
+with a fully working example project being available at https://github.com/aidanwhiteley/books-springbootadmin
 
 ```java
 @Component
 public class JwtHeaderProvider implements HttpHeadersProvider {
-    
-    ...
     
     @Override
     public HttpHeaders getHeaders(Instance instance) {
@@ -183,27 +183,19 @@ public class JwtHeaderProvider implements HttpHeadersProvider {
         headers.add(HttpHeaders.COOKIE, JWT_COOKIE_NAME + "=" + jwtTokenActuatorUser);
         return headers;
     }
+}
 ```
-
-## Client Side Functionality
-
-There is an Angular 1.x based front end that consumes the microservice that is available 
-at https://github.com/aidanwhiteley
-
-The running application can be seen at https://cloudybookclub.com/
-
-
-## To-dos
-
-The main "to do"s include
-* more exploration of HATEOAS and HAL in the JSON APIs
-* making the front end app a bit prettier!
 
 ## The name
 
 Why "The Cloudy BookClub"? Well - it's gong to run in the cloud innit. And I couldnt think
 of any other domain names that weren't already taken.
 
+## Client Side Functionality
 
-## Client Functionality
+There is an Angular 1.x based front end application that consumes the microservice available 
+at https://github.com/aidanwhiteley
+
+The running application can be seen at https://cloudybookclub.com/
+
 [![Cloudy Bookclub Screenshot](https://github.com/aidanwhiteley/books-web/blob/master/app/images/cloudy-book-club-screen-grab.jpg)](https://github.com/aidanwhiteley/books-web)

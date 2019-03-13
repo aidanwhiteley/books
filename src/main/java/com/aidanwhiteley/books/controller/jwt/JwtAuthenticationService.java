@@ -76,7 +76,7 @@ public class JwtAuthenticationService {
             while (headerNames.hasMoreElements()) {
                 String key = (String) headerNames.nextElement();
                 String value = request.getHeader(key);
-                LOGGER.debug("Key: " + key + "   Value: " + value);
+                LOGGER.debug(String.format("Key: %s   Value: %s", key, value));
             }
         }
 
@@ -95,7 +95,12 @@ public class JwtAuthenticationService {
                         } else {
                             try {
                                 User user = jwtUtils.getUserFromToken(token);
+
+                                // TODO - add support for interval based checking of whether the user is still in the database.
+                                //        Will require adding a "lastChecked" field to the JWT and calling the database appropriately.
+
                                 auth = new JwtAuthentication(user);
+
                                 // If we got to here with no exceptions thrown
                                 // then we can assume we have a valid token
                                 auth.setAuthenticated(true);

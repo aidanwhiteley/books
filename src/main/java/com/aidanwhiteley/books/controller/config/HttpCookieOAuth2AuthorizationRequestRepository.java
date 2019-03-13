@@ -14,7 +14,7 @@ import java.util.Optional;
 /**
  * Based on https://stackoverflow.com/questions/49095383/spring-security-5-stateless-oauth2-login-how-to-implement-cookies-based-author
  */
-public class HttpCookieOAuth2AuthorizationRequestRepository implements AuthorizationRequestRepository<OAuth2AuthorizationRequest> {
+class HttpCookieOAuth2AuthorizationRequestRepository implements AuthorizationRequestRepository<OAuth2AuthorizationRequest> {
 
     @Value("${books.oauth2.cookieOverHttpsOnly}")
     private boolean cookieOverHttpsOnly;

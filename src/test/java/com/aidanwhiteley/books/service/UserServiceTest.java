@@ -99,7 +99,7 @@ public class UserServiceTest extends IntegrationTest {
         User user = userService.createOrUpdateActuatorUser();
         assertNotNull(user);
         String id = user.getId();
-        assertEquals(user.getAuthProvider(), LOCAL);
+        assertEquals(LOCAL, user.getAuthProvider());
 
         User user2 = userService.createOrUpdateActuatorUser();
         String id2 = user.getId();

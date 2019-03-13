@@ -9,6 +9,8 @@ spring:
     admin:
       client:
         url: http://localhost:8888
+        username: testuser
+        password: testpass
 
 # By default actuator is disabled.
 # These values are overriden here to values that could be used on production

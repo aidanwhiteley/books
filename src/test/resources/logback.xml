@@ -9,6 +9,7 @@
     <logger name="org.mongodb" level="WARN"/>
     <logger name="com.icegreen.greenmail" level="WARN" />
     <logger name="springfox.documentation" level="WARN"/>
+    <logger name="de.bwaldvogel.mongo" level="WARN"/>
 
     <logger name="com.aidanwhiteley" level="WARN"/>
     <logger name="com.aidanwhiteley.books.controller" level="WARN" />
@@ -27,4 +28,5 @@
     <logger name="/" level="WARN"/>
     <logger name="org.eclipse.jetty.util.thread.QueuedThreadPool" level="WARN" />
     <logger name="wiremock.org.eclipse.jetty.util.thread.QueuedThreadPool" level="ERROR" />
+    <logger name="org.springframework.cloud.contract.wiremock" level="WARN" />
 </configuration>

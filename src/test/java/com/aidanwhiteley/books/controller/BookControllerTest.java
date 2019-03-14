@@ -133,10 +133,10 @@ public class BookControllerTest extends IntegrationTest {
     @Test
     public void findUsingFullTextSearch() {
 
-        // This test doesnt run with Fongo as it uses weighted full text index
-        // against multiple fields - which is not currently supported by Fongo.
-        if (Arrays.asList(this.environment.getActiveProfiles()).contains("fongo")) {
-            LOGGER.warn("Test skipped - Fongo doesnt yet support weighted full text indexes on multiple fields");
+        // This test doesnt run with mongo-java-server as it uses weighted full text index
+        // against multiple fields - which is not currently supported by mongo-java-server.
+        if (Arrays.asList(this.environment.getActiveProfiles()).contains("mongo-java-server")) {
+            LOGGER.warn("Test skipped - mongo-java-server doesnt yet support weighted full text indexes on multiple fields");
             return;
         }
 
@@ -156,10 +156,10 @@ public class BookControllerTest extends IntegrationTest {
     @Test
     public void fullTextSearchShouldntFindStopWord() {
 
-        // This test doesnt run with Fongo as it uses weighted full text index
-        // against multiple fields - which is not currently supported by Fongo.
-        if (Arrays.asList(this.environment.getActiveProfiles()).contains("fongo")) {
-            LOGGER.warn("Test skipped - Fongo doesnt yet support weighted full text indexes on multiple fields");
+        // This test doesnt run with mongo-java-server as it uses weighted full text index
+        // against multiple fields - which is not currently supported by mongo-java-server.
+        if (Arrays.asList(this.environment.getActiveProfiles()).contains("mongo-java-server")) {
+            LOGGER.warn("Test skipped - mongo-java-server doesnt yet support weighted full text indexes on multiple fields");
             return;
         }
 

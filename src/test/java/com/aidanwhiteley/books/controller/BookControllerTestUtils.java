@@ -19,7 +19,7 @@ import static org.junit.Assert.assertNotNull;
 public class BookControllerTestUtils {
 
 	// These values match data in /src/main/resourees/sample_data that are auto
-	// loaded into the Fongo / Mongo at the start of the tests
+	// loaded into the mongo-java-server / Mongo at the start of the tests
 	public static final String USER_WITH_ALL_ROLES_FULL_NAME = "Joe Dimagio";
 	public static final String USER_WITH_EDITOR_ROLE_FULL_NAME = "Babe Ruth";
 	private static final String USER_WITH_ALL_ROLES = "107641999401234521888";

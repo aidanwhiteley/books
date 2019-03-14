@@ -30,9 +30,9 @@ making the web application entirely free of http session state (which has its pr
 
 ### Tests
 All tests should run fine "out of the box". By default, the tests expect there to be a Mongo instance running locally. The option to run test against an in memory 
-Fongo is currently not supported - see https://github.com/aidanwhiteley/books/issues/39
-<!--- There is an option to run the tests using Fongo (an in memory Mongo replacement) - change the spring.profiles.active in application.yml to "fongo".
-However, to run the project, Mongo is always required - even if tests are run against Fongo. -->
+Fongo is cno longer supported - see https://github.com/aidanwhiteley/books/issues/39 but there is now
+an option to run the tests using mongo-java-server (an in memory Mongo replacement) - change the spring.profiles.active in application.yml to "mongo-java-server" or use mvn test -Dspring.profiles.active=mongo-java-server.
+However, to run the project, Mongo is always required - even if tests are run against mongo-java-server.
 
 Some of the integration tests make use of WireMock (a replacement for Stubby4J due to SnakeYaml version conflicts with Spring Boot). 
 See the /src/test/resources/mappings and __files directories for the configuration details.
@@ -60,8 +60,9 @@ There are lots of other ways to pass in these values e.g. they can be passed as 
 ~~~~
 Otherwise, see the Spring documentation for more options.
 
-"Out of the box" the code runs with the "dev" Spring profile. When running in other environments you will need to decide the 
-required profile and set some Spring parameters accordingly. For instance, you **WILL** want to 
+"Out of the box" the code runs with the "dev" Spring profile - see the first lines of application.yml. Outside of development
+and test environments **DO NOT** run with is profile. When running in other environments you will need to decide the 
+required functionality and configure your Spring profile accordingly. For instance, you **WILL** want to 
 set/change the secretKey used for the JWT token signing (see books:jwt:secretKey in the yml files).
 
 You will also need access to a Mongo instance. The connection URL (in the yml files) will result in the automatic
@@ -104,11 +105,12 @@ This functionality must be enabled - see the books.users.registrationAdminEmail 
 it is disabled by default). There's also a strong argument that having scheduled tasks runnable on each node is a poor option in an app that is trying to be "twelve factor" compliant - see https://12factor.net/admin-processes
 
 ## Levels of access
-The code supports four access levels
+The code supports five access levels
 * anonymous (never logged in)
 * ROLE_USER (logged in but no more permissions than anonymous)
 * ROLE_EDITOR (logged in with permission to create book reviews and comment on other people's book reviews)
 * ROLE_ADMIN (logged in with full admin access)
+* ROLE_ACTUATOR (logged in but with no permissions except to access Actuator endpoints)
 
 The application-<env>.yml files can be edited to automatically give a logged on user admin access 
 by specifying their email on Google / Facebook. See the books:users:default:admin:email setting.
@@ -151,25 +153,51 @@ However, it does allow configuration of your own AuthorizationRequestRepository 
 based version. So, finally, this application is completely free of any HTTP session state! Which was the point of originally starting to write this 
 microservice as I wanted to try it out on cloud implementations such as the Pivotal Cloud Foundry and AWS.
 
-## Functionality
+## Spring Boot Admin
+The application supports exposing [Actuator](https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready.html) 
+endpoints to be consumed by [Spring Boot Admin](http://codecentric.github.io/spring-boot-admin/current/). We need security applied to 
+the Actuator end points but don't want to introduce another security layer into the application - we want to stick with the JWT based implemetation 
+we already have. So we need Spring Boot Admin to be able to supply a suitable JWT token when calling the Actuator end points. 
 
-There is an Angular 1.x based front end that consumes the microservice that is available 
-at https://github.com/aidanwhiteley
-
-The running application can be seen at https://cloudybookclub.com/
-
-
-## To-dos
-
-The main "to do"s include
-* more exploration of HATEOAS and HAL in the JSON APIs
-* making the front end app a bit prettier!
+In this application, by default, the Actuator end points are disabled and require authentication/authorisation. To enable them to be consumed by a Spring Boot Admin based application 
+you need to 
+* enable the required Actuator endpoints and make them accessible over HTTP(S) - see the application-dev.yml file under 
+the management.endpoints hierarchy for an example
+* set books.users.allow.actuator.user.creation to true to allow a user with ADMIN role to get a JWT token that 
+represents a user with ACTUATOR role - again see the application-dev.yml
+* with the above property set and with a logged on user with the ADMIN role, access the /secure/api/users/actuator endpoint 
+on the server application. With everything correctly configured, this will return a long lasting JWT token with just the 
+ACTUATOR role e.g. it cannot be used to create or edit book reviews.
+* plug the above JWT token into a Spring Boot Admin application that is configured to send the above JWT token with each 
+request to the Actuator endpoints in this application. A extract of the required configuration of a class that
+implements de.codecentric.boot.admin.server.web.client.HttpHeadersProvider is listed below 
+with a fully working example project being available at https://github.com/aidanwhiteley/books-springbootadmin
+```java
+@Component
+public class JwtHeaderProvider implements HttpHeadersProvider {
+    
+    @Override
+    public HttpHeaders getHeaders(Instance instance) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.COOKIE, JWT_COOKIE_NAME + "=" + jwtTokenActuatorUser);
+        return headers;
+    }
+}
+```
+* Set HTTP basic username/password values required when the client application registers with the Spring Boot Admin instance
+    * in the client application (i.e. this application) by setting the spring.boot.admin.client.username/password values 
+    * configure the Spring Boot admin application with the same values by setting spring.security.user.name/password
 
 ## The name
 
 Why "The Cloudy BookClub"? Well - it's gong to run in the cloud innit. And I couldnt think
 of any other domain names that weren't already taken.
 
+## Client Side Functionality
 
-## Client Functionality
+There is an Angular 1.x based front end application that consumes the microservice available 
+at https://github.com/aidanwhiteley
+
+The running application can be seen at https://cloudybookclub.com/
+
 [![Cloudy Bookclub Screenshot](https://github.com/aidanwhiteley/books-web/blob/master/app/images/cloudy-book-club-screen-grab.jpg)](https://github.com/aidanwhiteley/books-web)

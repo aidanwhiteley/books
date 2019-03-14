@@ -110,7 +110,8 @@ public class User implements Serializable {
     public enum Role {
         ROLE_USER(0),
         ROLE_EDITOR(1),
-        ROLE_ADMIN(2);
+        ROLE_ACTUATOR(2),
+        ROLE_ADMIN(3);
 
         private final int role;
 
@@ -142,7 +143,8 @@ public class User implements Serializable {
 
     public enum AuthenticationProvider {
         GOOGLE(0),
-        FACEBOOK(1);
+        FACEBOOK(1),
+        LOCAL(2);
 
         private final int provider;
 

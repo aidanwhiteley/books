@@ -28,6 +28,9 @@ public class JwtUtils {
     @Value("${books.jwt.expiryInMilliSeconds}")
     private int expiryInMilliSeconds;
 
+    @Value("${books.jwt.actuatorExpiryInMilliSeconds}")
+    private long expiryInMilliSecondsActuator;
+
     @Value("${books.jwt.secretKey}")
     private String secretKey;
 
@@ -83,6 +86,9 @@ public class JwtUtils {
         ArrayList<String> roles = new ArrayList<>();
         user.getRoles().forEach(s -> roles.add(String.valueOf(s.getRoleNumber())));
 
+        long tokenExpiry = (user.getRoles().size() == 1 && user.getRoles().get(0) == User.Role.ROLE_ACTUATOR)
+                ? expiryInMilliSecondsActuator : expiryInMilliSeconds;
+
         return Jwts.builder()
                 .setSubject(user.getAuthenticationServiceId())
                 .setIssuer(issuer)
@@ -91,8 +97,17 @@ public class JwtUtils {
                 .claim(FULL_NAME, user.getFullName())
                 .claim(ROLES, String.join(ROLES_DELIMETER, roles))
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(new Date().getTime() + expiryInMilliSeconds))
+                .setExpiration(new Date(new Date().getTime() + tokenExpiry))
                 .signWith(SignatureAlgorithm.HS512, secretKey)
                 .compact();
+    }
+
+    public Date getExpiryFromToken(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(secretKey)
+                .parseClaimsJws(token)
+                .getBody();
+
+        return claims.getExpiration();
     }
 }

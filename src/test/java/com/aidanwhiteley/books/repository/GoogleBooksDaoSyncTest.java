@@ -22,7 +22,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 
 @ActiveProfiles("test")
-@AutoConfigureWireMock(port=0)
+@AutoConfigureWireMock(port=0, httpsPort = 0)
 public class GoogleBooksDaoSyncTest extends IntegrationTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GoogleBooksDaoSyncTest.class);

@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -38,6 +39,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static com.aidanwhiteley.books.domain.User.Role.*;
 
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -56,8 +58,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             new AntPathRequestMatcher("/login**"),
             new AntPathRequestMatcher("/feeds/**"),
             new AntPathRequestMatcher("/favicon.ico"),
-            new AntPathRequestMatcher("/actuator/info"),
-            new AntPathRequestMatcher("/actuator/health"),
             // And some paths just for playing with SWAGGER UI within the same app
             new AntPathRequestMatcher("/swagger-resources/**"),
             new AntPathRequestMatcher("/swagger-ui.html"),
@@ -132,18 +132,26 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         // @formatter:off
         http.
-                sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).
-                    enableSessionUrlRewriting(false).and().
-                exceptionHandling().defaultAuthenticationEntryPointFor(forbiddenEntryPoint(), PROTECTED_URLS).and().
-                addFilterBefore(jwtAuththenticationFilter, UsernamePasswordAuthenticationFilter.class).
-                oauth2Login().
-                    authorizationEndpoint().baseUri("/login").
-                    authorizationRequestRepository(cookieBasedAuthorizationRequestRepository()).and().
-                    successHandler(new Oauth2AuthenticationSuccessHandler()).and().
-                formLogin().disable().
-                httpBasic().disable().
-                headers().referrerPolicy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN);
+                sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).enableSessionUrlRewriting(false)
+                .and()
+                .authorizeRequests().requestMatchers(EndpointRequest.toAnyEndpoint())
+                    .hasRole(ROLE_ACTUATOR.getShortName())
+                .and()
+                .exceptionHandling()
+                .defaultAuthenticationEntryPointFor(forbiddenEntryPoint(), PROTECTED_URLS)
+                .and()
+                .addFilterBefore(jwtAuththenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .oauth2Login()
+                    .authorizationEndpoint().baseUri("/login")
+                    .authorizationRequestRepository(cookieBasedAuthorizationRequestRepository()).and()
+                    .successHandler(new Oauth2AuthenticationSuccessHandler())
+                .and()
+                .formLogin().disable()
+                .httpBasic().disable()
+                .headers().referrerPolicy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN);
         // @formatter:on
+
+
     }
 
     @Bean

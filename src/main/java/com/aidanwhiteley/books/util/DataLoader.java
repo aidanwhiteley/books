@@ -49,7 +49,7 @@ public class DataLoader {
      * and also a config switch setting.
      */
     @Bean
-    @Profile({"dev", "fongo"})
+    @Profile({"dev", "mongo-java-server"})
     public CommandLineRunner populateDummyData() {
         return args -> {
 
@@ -86,8 +86,8 @@ public class DataLoader {
     }
 
     /**
-     * Created indexes on collections. Does not run when Fongo profile is active as
-     * Fongo doesnt support full text indexes that cover multiple fields.
+     * Created indexes on collections. Does not run when mongo-java-server profile is active as
+     * mongo-java-server doesnt support full text indexes that cover multiple fields.
      */
     @Bean
     @Profile({"dev"})

@@ -155,9 +155,11 @@ microservice as I wanted to try it out on cloud implementations such as the Pivo
 
 ## Spring Boot Admin
 The application supports exposing [Actuator](https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready.html) 
-endpoints to be consumed by [Spring Boot Admin](http://codecentric.github.io/spring-boot-admin/current/).
+endpoints to be consumed by [Spring Boot Admin](http://codecentric.github.io/spring-boot-admin/current/). We need security applied to 
+the Actuator end points but don't want to introduce another security layer into the application - we want to stick with the JWT based implemetation 
+we already have. So we need Spring Boot Admin to be able to supply a suitable JWT token when calling the Actuator end points. 
 
-By default, the Actuator end points are disabled and require authentication/authorisation. To enable them to be consumed by a Spring Boot Admin based application 
+In this application, by default, the Actuator end points are disabled and require authentication/authorisation. To enable them to be consumed by a Spring Boot Admin based application 
 you need to 
 * enable the required Actuator endpoints and make them accessible over HTTP(S) - see the application-dev.yml file under 
 the management.endpoints hierarchy for an example
@@ -166,13 +168,10 @@ represents a user with ACTUATOR role - again see the application-dev.yml
 * with the above property set and with a logged on user with the ADMIN role, access the /secure/api/users/actuator endpoint 
 on the server application. With everything correctly configured, this will return a long lasting JWT token with just the 
 ACTUATOR role e.g. it cannot be used to create or edit book reviews.
-Note - this user can always be deleted via the front end application or directly from the Mongo database - its access is 
-checked on each use.
 * plug the above JWT token into a Spring Boot Admin application that is configured to send the above JWT token with each 
 request to the Actuator endpoints in this application. A extract of the required configuration of a class that
 implements de.codecentric.boot.admin.server.web.client.HttpHeadersProvider is listed below 
 with a fully working example project being available at https://github.com/aidanwhiteley/books-springbootadmin
-
 ```java
 @Component
 public class JwtHeaderProvider implements HttpHeadersProvider {
@@ -185,6 +184,9 @@ public class JwtHeaderProvider implements HttpHeadersProvider {
     }
 }
 ```
+* Set HTTP basic username/password values required when the client application registers with the Spring Boot Admin instance
+    * in the client application (i.e. this application) by setting the spring.boot.admin.client.username/password values 
+    * configure the Spring Boot admin application with the same values by setting spring.security.user.name/password
 
 ## The name
 

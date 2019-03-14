@@ -103,8 +103,8 @@ books:
 
   jwt:
     expiryInMilliSeconds: 86400000  # One day
-    actuatorExpiryInMilliSeconds: 31536000000  # One year / not set by cookie so "cookieExpirySeconds" not relevant
-    cookieExpirySeconds: 86400      # One day
+    actuatorExpiryInMilliSeconds: 31536000000  # One year
+    cookieExpirySeconds: 86400      # One day / not set by cookie so "cookieExpirySeconds" not relevant
     secretKey:                      # Specify your secret key here
     issuer: "CloudyBookClub"
     cookieOverHttpsOnly: true

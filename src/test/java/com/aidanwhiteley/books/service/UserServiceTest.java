@@ -27,10 +27,10 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.LOCAL;
 
 public class UserServiceTest extends IntegrationTest {
 
@@ -39,13 +39,13 @@ public class UserServiceTest extends IntegrationTest {
     private static final String NEW_USER_2 = "New User 2";
     private static final String UPDATED_USER_1 = "Updated User 1";
     private static final String UPDATED_USER_2 = "Updated User 2";
-    
+
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
     
     @Autowired
     UserRepository userRepository;
-    
+
     @Value("${spring.security.oauth2.client.registration.google.client-id}")
     private String googleClientClientId;
     @Value("${spring.security.oauth2.client.registration.facebook.client-id}")
@@ -90,6 +90,21 @@ public class UserServiceTest extends IntegrationTest {
 
         // Check that the user was updated and not created again
         assertEquals(user.getId(), updatedUser.getId());
+    }
+
+    @Test
+    public void testCreateActuatorUser() {
+        UserService userService = configureUserService();
+        userService.setAllowActuatorUserCreation(true);
+        User user = userService.createOrUpdateActuatorUser();
+        assertNotNull(user);
+        String id = user.getId();
+        assertEquals(LOCAL, user.getAuthProvider());
+
+        User user2 = userService.createOrUpdateActuatorUser();
+        String id2 = user.getId();
+        assertEquals(id, id2);
+        assertTrue("Logon timestamp should have been updated", user2.getLastLogon().isAfter(user.getFirstLogon()));
     }
 
 

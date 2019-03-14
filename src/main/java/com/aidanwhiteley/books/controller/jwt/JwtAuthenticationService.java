@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Enumeration;
 
 @Service
 public class JwtAuthenticationService {
@@ -70,6 +71,14 @@ public class JwtAuthenticationService {
                                                                HttpServletResponse response) {
 
         LOGGER.debug("Running JwtAuthenticationService - readAndValidateAuthenticationData");
+        if (LOGGER.isDebugEnabled()) {
+            Enumeration<String> headerNames = request.getHeaderNames();
+            while (headerNames.hasMoreElements()) {
+                String key = headerNames.nextElement();
+                String value = request.getHeader(key);
+                LOGGER.debug(String.format("Key: %s   Value: %s", key, value));
+            }
+        }
 
         JwtAuthentication auth = null;
 
@@ -86,7 +95,12 @@ public class JwtAuthenticationService {
                         } else {
                             try {
                                 User user = jwtUtils.getUserFromToken(token);
+
+                                // TODO - add support for interval based checking of whether the user is still in the database.
+                                //        Will require adding a "lastChecked" field to the JWT and calling the database appropriately.
+
                                 auth = new JwtAuthentication(user);
+
                                 // If we got to here with no exceptions thrown
                                 // then we can assume we have a valid token
                                 auth.setAuthenticated(true);

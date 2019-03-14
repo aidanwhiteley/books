@@ -12,6 +12,8 @@ spring:
   jackson:
     serialization:
       write-dates-as-timestamps: true
+  application:
+    name: The Cloudy Book Club
 
   security:
     oauth2:

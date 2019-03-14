@@ -11,6 +11,11 @@ spring:
         url: http://localhost:8888
         username: testuser
         password: testpass
+        instance:
+          service-base-url: http://localhost:9000/
+          metadata:
+            tags:
+              environment: development
 
 # By default actuator is disabled.
 # These values are overriden here to values that could be used on production

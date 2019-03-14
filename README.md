@@ -133,7 +133,6 @@ Don't use this application with CORS in production - it will leave you open to X
 
 ## Swagger API documentation
 
-
 [![Swagger Documentation](https://github.com/aidanwhiteley/books/blob/develop/src/main/resources/static/swagger-logo.png)](https://cloudybookclub.com/swagger-ui.html#/book-controller)
 
 The public read only part of the application's REST API is automatically documented using the [Springfox](http://springfox.github.io/springfox/)

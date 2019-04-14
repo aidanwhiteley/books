@@ -26,9 +26,9 @@ public class BookSecureControllerWithMocksTest {
     @MockBean
     JwtAuthenticationUtils jwtAuthenticationUtils;
     @MockBean
-    BookRepository bookRepository;
+    private BookRepository bookRepository;
     @MockBean
-    GoogleBooksDaoSync googleBooksDaoSync;
+    private GoogleBooksDaoSync googleBooksDaoSync;
 
     @Test
     public void updateBookWithoutSettingGoogleBookData() {

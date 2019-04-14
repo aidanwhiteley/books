@@ -113,6 +113,8 @@ public class User implements Serializable {
         ROLE_ACTUATOR(2),
         ROLE_ADMIN(3);
 
+        private static final Map<Integer, Role> map = new HashMap<>();
+
         private final int role;
 
         Role(int role) {
@@ -126,8 +128,6 @@ public class User implements Serializable {
         public int getRoleNumber() {
             return this.role;
         }
-
-        private static final Map<Integer, Role> map = new HashMap<>();
 
         static {
             for (Role aRole : Role.values()) {

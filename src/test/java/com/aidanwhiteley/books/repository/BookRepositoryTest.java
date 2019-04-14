@@ -35,7 +35,7 @@ public class BookRepositoryTest extends IntegrationTest {
     private static final int PAGE_SIZE = 10;
 
     @Autowired
-    BookRepository bookRepository;
+    private BookRepository bookRepository;
 
     public static Book createTestBook() {
         return Book.builder().title(J_UNIT_TESTING_FOR_BEGINNERS)

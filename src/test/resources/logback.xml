@@ -21,6 +21,9 @@
     <!-- Turning off logging in tests for Tomcat to prevent stack traces printing for for expected tests -->
     <logger name="org.apache.catalina" level="OFF"/>
 
+    <!-- Not interested in errors trying to  register with Spring Boot Admin instance in tests -->
+    <logger name="de.codecentric.boot.admin.client.registration.ApplicationRegistrator" level="ERROR"/>
+
     <!-- WireMock is a bit "noisy" on the logging front! -->
     <logger name="wiremock.org.eclipse.jetty" level="WARN" />
     <logger name="com.github.tomakehurst.wiremock" level="WARN" />

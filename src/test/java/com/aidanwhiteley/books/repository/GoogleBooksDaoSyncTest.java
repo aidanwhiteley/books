@@ -33,7 +33,7 @@ public class GoogleBooksDaoSyncTest extends IntegrationTest {
     private static final int NUMBER_OF_BOOKS_IN_SEARCH_RESULTS = 30;
 
     @Autowired
-    GoogleBooksDaoSync theDao;
+    private GoogleBooksDaoSync theDao;
 
     @Test
     public void findByTitle() {

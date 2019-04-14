@@ -84,7 +84,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
     public WebSecurityConfiguration(JwtAuthenticationFilter jwtAuthenticationFilter, JwtAuthenticationService jwtAuthenticationService,
-                                    UserRepository userRepository,
                                     UserService userService) {
 
         this.jwtAuththenticationFilter = jwtAuthenticationFilter;

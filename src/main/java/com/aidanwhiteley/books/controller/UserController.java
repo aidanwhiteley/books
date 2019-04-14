@@ -38,9 +38,6 @@ public class UserController {
 
 	private final UserService userService;
 
-	@Value("${books.client.postLogonUrl}")
-	private String postLogonUrl;
-
 	@Autowired
 	public UserController(UserRepository userRepository, JwtAuthenticationUtils jwtAuthenticationUtils,
 						  JwtAuthenticationService jwtAuthenticationService, JwtUtils jwtUtils,

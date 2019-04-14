@@ -3,7 +3,6 @@ package com.aidanwhiteley.books.controller.config;
 import com.aidanwhiteley.books.controller.jwt.JwtAuthenticationFilter;
 import com.aidanwhiteley.books.controller.jwt.JwtAuthenticationService;
 import com.aidanwhiteley.books.domain.User;
-import com.aidanwhiteley.books.repository.UserRepository;
 import com.aidanwhiteley.books.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,8 +37,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static com.aidanwhiteley.books.domain.User.Role.ROLE_ACTUATOR;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
-import static com.aidanwhiteley.books.domain.User.Role.*;
 
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)

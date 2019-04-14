@@ -78,7 +78,6 @@ public class ActuatorTest extends IntegrationTest {
 
     private ResponseEntity<String> getResponseStringEntity(User user, String path) {
         String token = jwtUtils.createTokenForUser(user);
-        String xsrfToken = BookControllerTestUtils.getXsrfToken(testRestTemplate);
         HttpEntity<String> request = getActuatorHttpEntity(token, null);
         return testRestTemplate.exchange(path, HttpMethod.GET, request, String.class);
     }

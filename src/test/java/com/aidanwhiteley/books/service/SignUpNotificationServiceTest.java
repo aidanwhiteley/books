@@ -37,10 +37,10 @@ public class SignUpNotificationServiceTest extends IntegrationTest {
     private String registrationAdminEmailContent;
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    MailClient mailClient;
+    private MailClient mailClient;
 
     @Before
     public void setUp() {

@@ -37,15 +37,6 @@ public class JwtAuthenticationService {
     @Value("${books.jwt.cookieExpirySeconds}")
     private int cookieExpirySeconds;
 
-    @Value("${books.client.xsrfHeader}")
-    private String xsrfHeader;
-
-    @Value("${books.client.allowedCorsOrigin}")
-    private String allowedCorsOrigin;
-
-    @Value("${books.client.enableCORS}")
-    private boolean enableCORS;
-
     @Autowired
     public JwtAuthenticationService(JwtUtils jwtUtils) {
         this.jwtUtils = jwtUtils;

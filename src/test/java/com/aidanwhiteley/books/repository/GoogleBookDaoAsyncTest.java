@@ -21,10 +21,10 @@ public class GoogleBookDaoAsyncTest extends IntegrationTest {
     private static final String SPRING_FRAMEWORK_GOOGLE_BOOK_ID = "oMVIzzKjJCcC";
 
     @Autowired
-    BookRepository bookRepository;
+    private BookRepository bookRepository;
 
     @Autowired
-    GoogleBooksDaoAsync async;
+    private GoogleBooksDaoAsync async;
 
     @Test
     public void testBookUpdatedWithGoogleBookDetails() {

@@ -24,11 +24,11 @@ public class BookSecureControllerWithMocksTest {
     private static final String GOOGLE_BOOK_ID_1 = "g1234";
     private static final String GOOGLE_BOOK_ID_2 = "g5678";
     @MockBean
-    JwtAuthenticationUtils jwtAuthenticationUtils;
+    private JwtAuthenticationUtils jwtAuthenticationUtils;
     @MockBean
-    BookRepository bookRepository;
+    private BookRepository bookRepository;
     @MockBean
-    GoogleBooksDaoSync googleBooksDaoSync;
+    private GoogleBooksDaoSync googleBooksDaoSync;
 
     @Test
     public void updateBookWithoutSettingGoogleBookData() {

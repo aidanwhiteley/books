@@ -44,7 +44,7 @@ public class UserServiceTest extends IntegrationTest {
     public MockitoRule mockitoRule = MockitoJUnit.rule();
     
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Value("${spring.security.oauth2.client.registration.google.client-id}")
     private String googleClientClientId;

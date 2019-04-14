@@ -1,10 +1,14 @@
 language: java
+
 jdk:
   - openjdk11
   - oraclejdk8
+
 services: mongodb
+
 after_success:
   - bash <(curl -s https://codecov.io/bash)
+
 addons:
   sonarcloud:
     organization: "aidanwhiteley-github"

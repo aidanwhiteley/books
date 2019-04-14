@@ -11,7 +11,7 @@ import static org.junit.Assert.*;
 public class SiteRssFeedTest extends IntegrationTest {
 	
     @Autowired
-    SiteRssFeed siteFeed;
+    private SiteRssFeed siteFeed;
     
     @Value("${books.feeds.description}")
 	private String booksFeedsDescription;

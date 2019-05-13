@@ -1,8 +1,8 @@
 language: java
 
 jdk:
-# Commenting out JDK11 while Oracle cert invalid
-#  - openjdk11
+# trying Travis JDK11 support again
+  - openjdk11
   - oraclejdk8
 
 services: mongodb

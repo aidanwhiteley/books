@@ -51,7 +51,7 @@ Some of the integration tests make use of WireMock - see the /src/test/resources
 
 #### Stress Test
 To examine how the WebClient code is behaving there is a Maven plugin configured that runs a basic Gatling load test.
-After starting the Spring Boot application run the command:
+After starting the Spring Boot application (i.e. mvn spring-boot:run or via your IDE) run the command:
 
 mvn gatling:test
 
@@ -65,7 +65,7 @@ A lot of the functionality is protected behind oauth2 authentication (via Google
 To use this, you must set up credentials (oauth2 client ids) on Google and Facebook.
 You must then make the clientId and clientSecret available to the running code.
 There are "placeholders" for these in /src/main/resources/application.yml i.e. replace the existing
-"NotInSCMx" (not in source code management!) values with your own.
+"NotInSCMx" (Not In Source Code Management!) values with your own.
 There are lots of other ways to pass in these values e.g. they can be passed as program arguments
 ~~~~
 --spring.security.oauth2.client.registration.google.client-id=xxxx --spring.security.oauth2.client.registration.google.client-secret=xxxx --spring.security.oauth2.client.registration.facebook.client-id=xxxx --spring.security.oauth2.client.registration.facebook.client-secret=xxxx 
@@ -80,6 +80,8 @@ set/change the secretKey used for the JWT token signing (see books:jwt:secretKey
 
 You will also need access to a Mongo instance. The connection URL (in the yml files) will result in the automatic
 creation of a Mongo database and the two required collections (dependant on the security config of your Mongo install).
+
+Check the console log when running in production - you should see **NO** warning messages!
 
 ### How to build and run
 This project makes use of the excellent Lombok project. So to build in your favourite IDE, if necessary

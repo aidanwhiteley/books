@@ -18,8 +18,7 @@
     <logger name="com.aidanwhiteley.books.repository.GoogleBookDaoAsyncTest" level="WARN"/>
     <logger name="com.aidanwhiteley.books.util.MailClient" level="WARN" />
 
-    <!-- Turning off logging in tests for Tomcat to prevent stack traces printing for for expected tests -->
-    <logger name="org.apache.catalina" level="OFF"/>
+    <logger name="org.apache.catalina" level="WARN"/>
 
     <!-- Not interested in errors trying to  register with Spring Boot Admin instance in tests -->
     <logger name="de.codecentric.boot.admin.client.registration.ApplicationRegistrator" level="ERROR"/>

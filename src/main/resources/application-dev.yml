@@ -33,6 +33,17 @@ management:
     mail:
       enabled: false
 
+# With this profile we dont want any warning messages when the application cannot contact a Spring Boot Admin isntance at start up
+logging:
+  level:
+    de:
+      codecentric:
+        boot:
+          admin:
+            client:
+              registration:
+                ApplicationRegistrator: ERROR
+
 books:
   client:
     enableCORS: true      # Note - this value overriden in the IntegrationTest base test class

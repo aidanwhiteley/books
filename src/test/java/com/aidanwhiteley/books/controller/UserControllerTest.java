@@ -64,6 +64,8 @@ public class UserControllerTest extends IntegrationTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         
         User user = response.getBody();
+        assertNotNull(user);
+
         String token = jwtUtils.createTokenForUser(user);
         String xsrfToken = BookControllerTestUtils.getXsrfToken(testRestTemplate);
         HttpEntity<Book> request = BookControllerTestUtils.getBookHttpEntity(null, token, xsrfToken);

@@ -1,4 +1,4 @@
-package com.aidanwhiteley.books.util;
+package com.aidanwhiteley.books.util.preprod;
 
 import org.bson.Document;
 import org.slf4j.Logger;
@@ -54,6 +54,16 @@ public class DataLoader {
         return args -> {
 
             if (reloadDevelopmentData) {
+
+                LOGGER.warn("");
+                LOGGER.warn("****************************************************************************");
+                LOGGER.warn("*** WARNING!                                                             ***");
+                LOGGER.warn("*** All data is deleted and dummy data reloaded when running with        ***");
+                LOGGER.warn("*** either the 'dev' or 'mongo-java-server' Spring profiles.             ***");
+                LOGGER.warn("*** To persist data edit the /src/main/resources/application.yml         ***");
+                LOGGER.warn("*** so spring.profiles.active is other than 'dev' or 'mongo-java-server'.***");
+                LOGGER.warn("****************************************************************************");
+                LOGGER.warn("");
 
                 List<String> jsons;
 

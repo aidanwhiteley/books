@@ -18,7 +18,6 @@ public class BooksByRating implements Comparable<BooksByRating> {
     /**
      * We want these sorted from best to worst.
      */
-    @SuppressWarnings("NullableProblems")
     @Override
     public int compareTo(BooksByRating other) {
         return Integer.compare(rating.getRatingLevel(), other.getRating().getRatingLevel());

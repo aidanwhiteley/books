@@ -119,7 +119,7 @@ public class BookRepositoryTest extends IntegrationTest {
         Optional<Book> oBook = bookRepository.findById(savedBook.getId());
         Book updatedBook = null;
         if (oBook.isPresent()) {
-            //noinspection OptionalGetWithoutIsPresent,ConstantConditions
+            //noinspection OptionalGetWithoutIsPresent
             updatedBook = bookRepository.findById(savedBook.getId()).get();
         } else {
             fail("Optional not expected to be empty");

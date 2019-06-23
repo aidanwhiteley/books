@@ -110,7 +110,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         // So if using CORS, there's no XSRF protection!
         if (enableCORS) {
             http.csrf().disable();
-
+            LOGGER.warn("");
             LOGGER.warn("****************************************************************************");
             LOGGER.warn("*** WARNING!                                                             ***");
             LOGGER.warn("*** You are running with CORS enabled. This is only supported for        ***");
@@ -119,6 +119,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             LOGGER.warn("*** running with CORS enabled. Change the settings in the .yml files     ***");
             LOGGER.warn("*** if you are not developing locally.                                   ***");
             LOGGER.warn("****************************************************************************");
+            LOGGER.warn("");
         } else {
             // The CSRF cookie is also read and sent by by Angular - hence it being marked as not "httpOnly".
             // The JWT token is stored in a cookie that IS httpOnly.

@@ -3,6 +3,8 @@ package com.aidanwhiteley.books.service;
 import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.repository.UserRepository;
 import com.aidanwhiteley.books.util.Oauth2AuthenticationUtils;
+import lombok.Builder;
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +50,16 @@ public class UserService {
         Map<String, Object> userDetails = authUtils.getUserDetails(authentication);
         User.AuthenticationProvider provider = authUtils.getAuthenticationProvider(authentication);
         Optional<User> user = authUtils.getUserIfExists(authentication);
-        return user.map(user1 -> updateUser(userDetails, user1, provider)).orElseGet(() -> createUser(userDetails, provider));
+
+
+
+        return user.map(user1 -> updateUser(
+                UpdateUserDetails.builder().
+                        userDetails(userDetails).
+                        user(user1).
+                        provider(provider).
+                        build())
+            ).orElseGet(() -> createUser(userDetails, provider));
     }
 
     public User createOrUpdateActuatorUser() {
@@ -65,7 +76,9 @@ public class UserService {
             if (users.isEmpty()) {
                 return createUser(userDetails, provider);
             } else {
-                return updateUser(userDetails, users.get(0), provider);
+                return updateUser(
+                        UpdateUserDetails.builder().userDetails(userDetails).
+                                user(users.get(0)).provider(provider).build());
             }
         } else {
             throw new UnsupportedOperationException("Creation of JWT token for accessing Actuator end points not supported");
@@ -165,30 +178,30 @@ public class UserService {
         return user;
     }
 
-    private User updateUser(Map<String, Object> userDetails, User user, User.AuthenticationProvider provider) {
+    private User updateUser(UpdateUserDetails updateUserDetails) {
 
-        switch (provider) {
+        switch (updateUserDetails.getProvider()) {
             case GOOGLE: {
-                updateGoogleUser(userDetails, user);
+                updateGoogleUser(updateUserDetails.getUserDetails(), updateUserDetails.getUser());
                 break;
             }
             case FACEBOOK: {
-                updateFacebookUser(userDetails, user);
+                updateFacebookUser(updateUserDetails.getUserDetails(), updateUserDetails.getUser());
                 break;
             }
             case LOCAL: {
-                updateLocalActuatorUser(user);
+                updateLocalActuatorUser(updateUserDetails.getUser());
                 break;
             }
             default: {
-                LOGGER.error("Unexpected oauth user type {}", provider);
-                throw new IllegalArgumentException("Unexpected oauth type: " + provider);
+                LOGGER.error("Unexpected oauth user type {}", updateUserDetails.getProvider());
+                throw new IllegalArgumentException(String.format("Unexpected oauth type: %s", updateUserDetails.getProvider()));
             }
         }
 
-        userRepository.save(user);
-        LOGGER.info("User updated in repository: {}", user);
-        return user;
+        userRepository.save(updateUserDetails.getUser());
+        LOGGER.info("User updated in repository: {}", updateUserDetails.getUser());
+        return updateUserDetails.getUser();
     }
 
     private void updateFacebookUser(Map<String, Object> userDetails, User user) {
@@ -237,5 +250,13 @@ public class UserService {
             }
         }
         return null;
+    }
+
+    @Builder
+    @Getter
+    private static class UpdateUserDetails {
+        private Map<String, Object> userDetails;
+        private User user;
+        private User.AuthenticationProvider provider;
     }
 }

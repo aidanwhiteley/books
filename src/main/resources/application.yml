@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: dev
+    active: mongo-java-server
   data:
     mongodb:
       uri: mongodb://localhost:27017/books?safe=true&journal=true&w=majority&connectTimeoutMS=1001&wtimeoutMS=1000&serverSelectionTimeoutMS=10000
@@ -12,6 +12,8 @@ spring:
   jackson:
     serialization:
       write-dates-as-timestamps: true
+  application:
+    name: The Cloudy Book Club
 
   security:
     oauth2:

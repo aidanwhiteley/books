@@ -35,7 +35,7 @@ public class BookRepositoryTest extends IntegrationTest {
     private static final int PAGE_SIZE = 10;
 
     @Autowired
-    BookRepository bookRepository;
+    private BookRepository bookRepository;
 
     public static Book createTestBook() {
         return Book.builder().title(J_UNIT_TESTING_FOR_BEGINNERS)
@@ -119,7 +119,7 @@ public class BookRepositoryTest extends IntegrationTest {
         Optional<Book> oBook = bookRepository.findById(savedBook.getId());
         Book updatedBook = null;
         if (oBook.isPresent()) {
-            //noinspection OptionalGetWithoutIsPresent,ConstantConditions
+            //noinspection OptionalGetWithoutIsPresent
             updatedBook = bookRepository.findById(savedBook.getId()).get();
         } else {
             fail("Optional not expected to be empty");

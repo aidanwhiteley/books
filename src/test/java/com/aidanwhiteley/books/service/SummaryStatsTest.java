@@ -14,7 +14,7 @@ import java.util.List;
 public class SummaryStatsTest extends IntegrationTest {
 
 	@Autowired
-	StatsService statsService;
+	private StatsService statsService;
 
 	@Test
 	public void getSummaryStats() {

@@ -9,6 +9,8 @@ So welcome to the "Cloudy Bookclub" microservice!
 
 [![Build Status](https://travis-ci.org/aidanwhiteley/books.svg?branch=master)](https://travis-ci.org/aidanwhiteley/books) 
 [![Sonar Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=com.aidanwhiteley%3Abooks&metric=alert_status)](https://sonarcloud.io/dashboard?id=com.aidanwhiteley%3Abooks)
+[![Codacy Code Quality](https://api.codacy.com/project/badge/Grade/0570d8fd3bfa4811a3f10071ad73988f)](https://www.codacy.com/app/Books_Team/books?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=aidanwhiteley/books&amp;utm_campaign=Badge_Grade)
+[![BCH compliance](https://bettercodehub.com/edge/badge/aidanwhiteley/books?branch=develop)](https://bettercodehub.com/)
 [![codecov](https://codecov.io/gh/aidanwhiteley/books/branch/master/graph/badge.svg)](https://codecov.io/gh/aidanwhiteley/books)
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Faidanwhiteley%2Fbooks.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Faidanwhiteley%2Fbooks?ref=badge_shield)
 
@@ -28,18 +30,29 @@ making the web application entirely free of http session state (which has its pr
     * except for some Mongo aggregation queries added to the Repository implementation
 * Accessing the Google Books API with the Spring RestTemplate and, a work in progress, the reactive Spring WebClient
 
-### Tests
-All tests should run fine "out of the box". By default, the tests expect there to be a Mongo instance running locally. The option to run test against an in memory 
-Fongo is cno longer supported - see https://github.com/aidanwhiteley/books/issues/39 but there is now
-an option to run the tests using mongo-java-server (an in memory Mongo replacement) - change the spring.profiles.active in application.yml to "mongo-java-server" or use mvn test -Dspring.profiles.active=mongo-java-server.
-However, to run the project, Mongo is always required - even if tests are run against mongo-java-server.
+### Running in development
+The checked in default Spring profile is "mongo-java-server". This uses mongo-java-server so there is no need to run MongoDb locally. So you 
+should be able to just check out the code and run the application for development purposes with no other dependencies.
 
-Some of the integration tests make use of WireMock (a replacement for Stubby4J due to SnakeYaml version conflicts with Spring Boot). 
-See the /src/test/resources/mappings and __files directories for the configuration details.
+To develop Mongo related code you should switch to the "dev" profile which does expect to be able to connect to a real MongoDb instance.
+
+Please check the console log when running the application. Any key constraints/warnings related to the Spring profile being used will be
+output to the console.
+
+To run the application and access the "behind logon" functionality, see the "How to configure application logon security" section below.
+
+### Tests
+All tests should run fine "out of the box". 
+
+By default, the tests run against mongo-java-server so there is no need to install
+MongDb to test most of the application. Functionality not supported by mogo-java-server such as full text indexes results in some tests being skipped when 
+running with the monog-java-server Spring profile.
+
+Some of the integration tests make use of WireMock - see the /src/test/resources/mappings and __files directories for the configuration details.
 
 #### Stress Test
 To examine how the WebClient code is behaving there is a Maven plugin configured that runs a basic Gatling load test.
-After starting the Spring Boot application run the command:
+After starting the Spring Boot application (i.e. mvn spring-boot:run or via your IDE) run the command:
 
 mvn gatling:test
 
@@ -48,25 +61,28 @@ The (Scala) source code of this test in at test/scala/com/aidanwhiteley/books/lo
 This is currently a "work in progress" - the eventual aim being to compare the resource utilisation of the GoogleBooksDaoSync
 and GoogleBooksDaoAsync implementations.
 
-### How to configure
+### How to configure application logon security
 A lot of the functionality is protected behind oauth2 authentication (via Google and Facebook). 
 To use this, you must set up credentials (oauth2 client ids) on Google and Facebook.
 You must then make the clientId and clientSecret available to the running code.
 There are "placeholders" for these in /src/main/resources/application.yml i.e. replace the existing
-"NotInSCMx" (not in source code managament!) values with your own.
+"NotInSCMx" (Not In Source Code Management!) values with your own.
 There are lots of other ways to pass in these values e.g. they can be passed as program arguments
 ~~~~
 --spring.security.oauth2.client.registration.google.client-id=xxxx --spring.security.oauth2.client.registration.google.client-secret=xxxx --spring.security.oauth2.client.registration.facebook.client-id=xxxx --spring.security.oauth2.client.registration.facebook.client-secret=xxxx 
 ~~~~
 Otherwise, see the Spring documentation for more options.
 
-"Out of the box" the code runs with the "dev" Spring profile - see the first lines of application.yml. Outside of development
-and test environments **DO NOT** run with is profile. When running in other environments you will need to decide the 
+### Configuring for production
+"Out of the box" the code runs with the "mongo-java-server" Spring profile - see the first lines of application.yml. Outside of development
+and test environments **DO NOT** run with is profile (or the "dev" profile). When running in other environments you will need to decide the 
 required functionality and configure your Spring profile accordingly. For instance, you **WILL** want to 
 set/change the secretKey used for the JWT token signing (see books:jwt:secretKey in the yml files).
 
 You will also need access to a Mongo instance. The connection URL (in the yml files) will result in the automatic
 creation of a Mongo database and the two required collections (dependant on the security config of your Mongo install).
+
+Check the console log when running in production - you should see **NO** warning messages!
 
 ### How to build and run
 This project makes use of the excellent Lombok project. So to build in your favourite IDE, if necessary
@@ -88,11 +104,11 @@ To run a client to access the microservice, head on over to https://github.com/a
 ### Sample data
 There is some sample data provided to make initial understanding of the functionality a bit easier.
 It is is the /src/main/resources/sample_data. See the #README.txt in that directory.
-The sample data is auto loaded when running with Spring profiles of "dev" (the checked in default)
-and "integration".
+The sample data is auto loaded when running with Spring profiles of "mongo-java-server" (the checked in default)
+and "dev".
 
 #### Indexes
-The Mongo indexes required by the application are also "auto created" when running in "dev" or "integration" profiles.
+The Mongo indexes required by the application are also "auto created" when running with the "dev" profile.
 When running with other profiles, you should manually apply the indexes defined in /src/main/resources/indexes.
 In particular, the application's Search functionality won't work unless you run the command to build
 the weighted full text index across various fields of the Book collection. The rest of the application will run without 
@@ -132,7 +148,6 @@ doesn't currently work. So only use this application with CORS configured (i.e. 
 Don't use this application with CORS in production - it will leave you open to XSRF based attacks.
 
 ## Swagger API documentation
-
 
 [![Swagger Documentation](https://github.com/aidanwhiteley/books/blob/develop/src/main/resources/static/swagger-logo.png)](https://cloudybookclub.com/swagger-ui.html#/book-controller)
 

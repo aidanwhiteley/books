@@ -3,7 +3,6 @@ package com.aidanwhiteley.books.controller.config;
 import com.aidanwhiteley.books.controller.jwt.JwtAuthenticationFilter;
 import com.aidanwhiteley.books.controller.jwt.JwtAuthenticationService;
 import com.aidanwhiteley.books.domain.User;
-import com.aidanwhiteley.books.repository.UserRepository;
 import com.aidanwhiteley.books.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,8 +37,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static com.aidanwhiteley.books.domain.User.Role.ROLE_ACTUATOR;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
-import static com.aidanwhiteley.books.domain.User.Role.*;
 
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -84,7 +83,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
     public WebSecurityConfiguration(JwtAuthenticationFilter jwtAuthenticationFilter, JwtAuthenticationService jwtAuthenticationService,
-                                    UserRepository userRepository,
                                     UserService userService) {
 
         this.jwtAuththenticationFilter = jwtAuthenticationFilter;
@@ -112,7 +110,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         // So if using CORS, there's no XSRF protection!
         if (enableCORS) {
             http.csrf().disable();
-
+            LOGGER.warn("");
             LOGGER.warn("****************************************************************************");
             LOGGER.warn("*** WARNING!                                                             ***");
             LOGGER.warn("*** You are running with CORS enabled. This is only supported for        ***");
@@ -121,6 +119,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             LOGGER.warn("*** running with CORS enabled. Change the settings in the .yml files     ***");
             LOGGER.warn("*** if you are not developing locally.                                   ***");
             LOGGER.warn("****************************************************************************");
+            LOGGER.warn("");
         } else {
             // The CSRF cookie is also read and sent by by Angular - hence it being marked as not "httpOnly".
             // The JWT token is stored in a cookie that IS httpOnly.
@@ -155,7 +154,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    AuthenticationEntryPoint forbiddenEntryPoint() {
+    protected AuthenticationEntryPoint forbiddenEntryPoint() {
         return new HttpStatusEntryPoint(FORBIDDEN);
     }
 

@@ -20,7 +20,7 @@ public class UserRepositoryTest extends IntegrationTest {
     private static final String SERVICE_ID = "abcd";
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     private static User createTestUser() {
         return User.builder().authenticationServiceId(SERVICE_ID).authProvider(GOOGLE).

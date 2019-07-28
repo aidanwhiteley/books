@@ -210,11 +210,11 @@ public class BookControllerTest extends IntegrationTest {
         ResponseEntity<String> response = testRestTemplate.exchange("/api/books/stats", HttpMethod.GET, null, String.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         int count = JsonPath.parse(response.getBody()).read("$.count", Integer.class);
-        assertTrue(count > 0);
+        assertTrue("Should find more than 0 books", count > 0);
         List<BooksByGenre> genres = JsonPath.read(response.getBody(), "$.bookByGenre");
-        assertTrue(genres.size() > 0);
+        assertTrue("Shoudl find more than 0 genres", genres.size() > 0);
         List<BooksByRating> ratings = JsonPath.read(response.getBody(), "$.booksByRating");
-        assertTrue(ratings.size() > 0);
+        assertTrue("Should have found more than 0 ratings", ratings.size() > 0);
     }
 
     @Test

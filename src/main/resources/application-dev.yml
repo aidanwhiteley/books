@@ -11,6 +11,11 @@ spring:
         url: http://localhost:8888
         username: testuser
         password: testpass
+        instance:
+          service-base-url: http://localhost:9000/
+          metadata:
+            tags:
+              environment: development
 
 # By default actuator is disabled.
 # These values are overriden here to values that could be used on production
@@ -27,6 +32,17 @@ management:
   health:
     mail:
       enabled: false
+
+# With this profile we dont want any warning messages when the application cannot contact a Spring Boot Admin isntance at start up
+logging:
+  level:
+    de:
+      codecentric:
+        boot:
+          admin:
+            client:
+              registration:
+                ApplicationRegistrator: ERROR
 
 books:
   client:

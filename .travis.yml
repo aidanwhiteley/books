@@ -1,5 +1,7 @@
 language: java
 
+dist: trusty
+
 jdk:
 # trying Travis JDK11 support again
   - openjdk11

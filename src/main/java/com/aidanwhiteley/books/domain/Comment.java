@@ -21,7 +21,9 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import static com.aidanwhiteley.books.domain.User.Role.*;
+import static com.aidanwhiteley.books.domain.User.Role.ROLE_ADMIN;
+import static com.aidanwhiteley.books.domain.User.Role.ROLE_EDITOR;
+import static com.aidanwhiteley.books.domain.User.Role.ROLE_USER;
 import static org.hibernate.validator.constraints.SafeHtml.WhiteListType.NONE;
 
 @SuppressWarnings("DefaultAnnotationParam")

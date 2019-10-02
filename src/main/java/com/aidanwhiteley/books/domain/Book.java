@@ -1,7 +1,14 @@
 package com.aidanwhiteley.books.domain;
 
 import com.aidanwhiteley.books.domain.googlebooks.Item;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.SafeHtml;
 import org.slf4j.Logger;
@@ -16,7 +23,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.aidanwhiteley.books.domain.User.Role.*;
+import static com.aidanwhiteley.books.domain.User.Role.ROLE_ADMIN;
+import static com.aidanwhiteley.books.domain.User.Role.ROLE_EDITOR;
+import static com.aidanwhiteley.books.domain.User.Role.ROLE_USER;
 import static org.hibernate.validator.constraints.SafeHtml.WhiteListType.NONE;
 
 @SuppressWarnings("DefaultAnnotationParam")

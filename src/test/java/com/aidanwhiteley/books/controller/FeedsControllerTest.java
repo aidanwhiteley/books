@@ -12,7 +12,9 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 
 import java.net.URL;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class FeedsControllerTest extends IntegrationTest {
 

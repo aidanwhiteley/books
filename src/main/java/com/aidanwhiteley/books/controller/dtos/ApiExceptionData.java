@@ -1,7 +1,8 @@
 package com.aidanwhiteley.books.controller.dtos;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 

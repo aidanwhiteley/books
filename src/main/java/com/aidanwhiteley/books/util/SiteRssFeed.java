@@ -2,7 +2,10 @@ package com.aidanwhiteley.books.util;
 
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.repository.BookRepository;
-import com.rometools.rome.feed.rss.*;
+import com.rometools.rome.feed.rss.Channel;
+import com.rometools.rome.feed.rss.Content;
+import com.rometools.rome.feed.rss.Guid;
+import com.rometools.rome.feed.rss.Item;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;

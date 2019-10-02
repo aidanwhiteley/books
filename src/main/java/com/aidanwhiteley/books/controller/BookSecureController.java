@@ -23,7 +23,15 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
@@ -87,7 +95,7 @@ public class BookSecureController {
                     .buildAndExpand(insertedBook.getId()).toUri();
 
             // Basic GET of book details are not on a secure API
-            location = new URI(location.toURL().toString().replaceAll("/secure", ""));
+            location = new URI(location.toURL().toString().replace("/secure", ""));
             LOGGER.debug("createBook existed. New Book created in store - accessible at {}", location);
             return ResponseEntity.created(location).build();
         } else {

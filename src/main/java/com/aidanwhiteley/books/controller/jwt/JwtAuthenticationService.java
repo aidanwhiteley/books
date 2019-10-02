@@ -114,6 +114,7 @@ public class JwtAuthenticationService {
                         break;
                     default:
                         LOGGER.debug("Found cookie named {}", cookie.getName());
+                        break;
                 }
             }
         }

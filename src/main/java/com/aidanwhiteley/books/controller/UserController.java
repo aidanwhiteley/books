@@ -99,7 +99,7 @@ public class UserController {
 		Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
 		if (user.isPresent()) {
 			if (user.get().getId().equals(id)) {
-				LOGGER.warn("User {} on {} attempted to delete themselves. This isn't allowed",
+				LOGGER.info("User {} on {} attempted to delete themselves. This isn't allowed",
 						user.get().getFullName(), user.get().getAuthProvider());
 				return ResponseEntity.status(HttpStatus.CONFLICT)
 						.body("{\"msg\" : \"Cant delete your own logged on user\"}");

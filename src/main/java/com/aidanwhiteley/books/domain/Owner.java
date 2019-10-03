@@ -10,7 +10,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 
-import static com.aidanwhiteley.books.domain.User.Role.*;
+import static com.aidanwhiteley.books.domain.User.Role.ROLE_ADMIN;
+import static com.aidanwhiteley.books.domain.User.Role.ROLE_EDITOR;
+import static com.aidanwhiteley.books.domain.User.Role.ROLE_USER;
 
 @Getter
 @AllArgsConstructor

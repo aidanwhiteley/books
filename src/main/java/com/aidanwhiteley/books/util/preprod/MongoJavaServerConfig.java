@@ -1,12 +1,7 @@
 package com.aidanwhiteley.books.util.preprod;
 
 import com.mongodb.client.MongoClient;
-import com.mongodb.MongoClientSettings;
-import com.mongodb.ServerAddress;
-
 import com.mongodb.client.MongoClients;
-import com.mongodb.connection.ClusterSettings;
-import com.mongodb.connection.ServerSettings;
 import com.mongodb.lang.NonNull;
 import de.bwaldvogel.mongo.MongoServer;
 import de.bwaldvogel.mongo.backend.memory.MemoryBackend;
@@ -15,12 +10,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
-import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 import java.net.InetSocketAddress;
-
-import static java.util.Arrays.asList;
 
 @Configuration
 @Profile({"mongo-java-server"})
@@ -57,8 +49,6 @@ public class MongoJavaServerConfig extends AbstractMongoClientConfiguration {
 
         // bind on a random local port
         InetSocketAddress serverAddress = server.bind();
-        ServerAddress serverAddress1 = new ServerAddress(serverAddress);
-
         return MongoClients.create("mongodb://" + serverAddress.getHostName() + ":" + serverAddress.getPort());
     }
 }

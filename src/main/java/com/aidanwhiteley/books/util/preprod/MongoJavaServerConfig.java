@@ -1,7 +1,12 @@
 package com.aidanwhiteley.books.util.preprod;
 
+import com.mongodb.client.MongoClient;
+import com.mongodb.MongoClientSettings;
 import com.mongodb.ServerAddress;
-import com.mongodb.MongoClient;
+
+import com.mongodb.client.MongoClients;
+import com.mongodb.connection.ClusterSettings;
+import com.mongodb.connection.ServerSettings;
 import com.mongodb.lang.NonNull;
 import de.bwaldvogel.mongo.MongoServer;
 import de.bwaldvogel.mongo.backend.memory.MemoryBackend;
@@ -9,10 +14,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 import java.net.InetSocketAddress;
+
+import static java.util.Arrays.asList;
 
 @Configuration
 @Profile({"mongo-java-server"})
@@ -21,7 +29,7 @@ import java.net.InetSocketAddress;
   Tests can be run against mongo-java-server - a fake in memory replacement for
   Mongo. Means that no Mongo install is needed to run tests.
  */
-public class MongoJavaServerConfig extends AbstractMongoConfiguration {
+public class MongoJavaServerConfig extends AbstractMongoClientConfiguration {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MongoJavaServerConfig.class);
     private static final String DB_NAME = "books-integration-test";
@@ -49,7 +57,8 @@ public class MongoJavaServerConfig extends AbstractMongoConfiguration {
 
         // bind on a random local port
         InetSocketAddress serverAddress = server.bind();
+        ServerAddress serverAddress1 = new ServerAddress(serverAddress);
 
-        return new MongoClient(new ServerAddress(serverAddress));
+        return MongoClients.create("mongodb://" + serverAddress.getHostName() + ":" + serverAddress.getPort());
     }
 }

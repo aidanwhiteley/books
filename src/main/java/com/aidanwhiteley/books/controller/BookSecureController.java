@@ -216,7 +216,7 @@ public class BookSecureController {
             throw new IllegalArgumentException(String.format("Cannot request a page of data containing more that %s elements", maxPageSize));
         }
 
-        PageRequest pageObj = PageRequest.of(page, size, new Sort(Sort.Direction.DESC, "createdDateTime"));
+        PageRequest pageObj = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdDateTime"));
         return bookRepository.findByReaderOrderByCreatedDateTimeDesc(pageObj, reader);
     }
 

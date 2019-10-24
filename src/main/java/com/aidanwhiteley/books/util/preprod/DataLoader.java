@@ -72,20 +72,19 @@ public class DataLoader {
                 LOGGER.info("Clearing books collection and loading development data for books project");
                 template.dropCollection(BOOKS_COLLECTION);
                 ClassPathResource classPathResource = new ClassPathResource("sample_data/books.data");
-                try (InputStream resource = classPathResource.getInputStream()) {
-                    jsons = new BufferedReader(new InputStreamReader(resource, StandardCharsets.UTF_8)).lines()
-                            .collect(Collectors.toList());
+                try (InputStream resource = classPathResource.getInputStream();
+                     InputStreamReader inputStreamReader = new InputStreamReader(resource, StandardCharsets.UTF_8)) {
+                    jsons = new BufferedReader(inputStreamReader).lines().collect(Collectors.toList());
                 }
                 jsons.stream().map(Document::parse).forEach(i -> template.insert(i, BOOKS_COLLECTION));
-
 
                 // Clearing and loading data into user collection
                 LOGGER.info("Clearing users collection and loading development data for books project");
                 template.dropCollection(USERS_COLLECTION);
                 classPathResource = new ClassPathResource("sample_data/users.data");
-                try (InputStream resource = classPathResource.getInputStream()) {
-                    jsons = new BufferedReader(new InputStreamReader(resource, StandardCharsets.UTF_8)).lines()
-                            .collect(Collectors.toList());
+                try (InputStream resource = classPathResource.getInputStream();
+                     InputStreamReader inputStreamReader = new InputStreamReader(resource, StandardCharsets.UTF_8)) {
+                    jsons = new BufferedReader(inputStreamReader).lines().collect(Collectors.toList());
                 }
                 jsons.stream().map(Document::parse).forEach(i -> template.insert(i, USERS_COLLECTION));
                 LOGGER.info(SEPARATOR);
@@ -113,9 +112,9 @@ public class DataLoader {
                 LOGGER.info("Loading indexes for books project");
 
                 ClassPathResource classPathResource = new ClassPathResource("indexes/books.data");
-                try (InputStream resource = classPathResource.getInputStream()) {
-                    jsons = new BufferedReader(new InputStreamReader(resource, StandardCharsets.UTF_8)).lines()
-                            .collect(Collectors.toList());
+                try (InputStream resource = classPathResource.getInputStream();
+                     InputStreamReader inputStreamReader = new InputStreamReader(resource, StandardCharsets.UTF_8)) {
+                    jsons = new BufferedReader(inputStreamReader).lines().collect(Collectors.toList());
                 }
                 jsons.stream().map(s -> new Document().append("$eval", s)).forEach(template::executeCommand);
                 LOGGER.info("Created indexes for books project");

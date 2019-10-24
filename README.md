@@ -12,6 +12,7 @@ So welcome to the "Cloudy Bookclub" microservice!
 [![Codacy Code Quality](https://api.codacy.com/project/badge/Grade/0570d8fd3bfa4811a3f10071ad73988f)](https://www.codacy.com/app/Books_Team/books?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=aidanwhiteley/books&amp;utm_campaign=Badge_Grade)
 [![codecov](https://codecov.io/gh/aidanwhiteley/books/branch/master/graph/badge.svg)](https://codecov.io/gh/aidanwhiteley/books)
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Faidanwhiteley%2Fbooks.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Faidanwhiteley%2Fbooks?ref=badge_shield)
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/aidanwhiteley/books.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/aidanwhiteley/books/alerts/)
 
 
 ## Implementation

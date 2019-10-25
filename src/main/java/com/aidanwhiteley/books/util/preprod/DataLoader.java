@@ -73,8 +73,9 @@ public class DataLoader {
                 template.dropCollection(BOOKS_COLLECTION);
                 ClassPathResource classPathResource = new ClassPathResource("sample_data/books.data");
                 try (InputStream resource = classPathResource.getInputStream();
-                     InputStreamReader inputStreamReader = new InputStreamReader(resource, StandardCharsets.UTF_8)) {
-                    jsons = new BufferedReader(inputStreamReader).lines().collect(Collectors.toList());
+                     InputStreamReader inputStreamReader = new InputStreamReader(resource, StandardCharsets.UTF_8);
+                     BufferedReader bufferedReader = new BufferedReader(inputStreamReader)) {
+                    jsons = bufferedReader.lines().collect(Collectors.toList());
                 }
                 jsons.stream().map(Document::parse).forEach(i -> template.insert(i, BOOKS_COLLECTION));
 
@@ -83,8 +84,9 @@ public class DataLoader {
                 template.dropCollection(USERS_COLLECTION);
                 classPathResource = new ClassPathResource("sample_data/users.data");
                 try (InputStream resource = classPathResource.getInputStream();
-                     InputStreamReader inputStreamReader = new InputStreamReader(resource, StandardCharsets.UTF_8)) {
-                    jsons = new BufferedReader(inputStreamReader).lines().collect(Collectors.toList());
+                     InputStreamReader inputStreamReader = new InputStreamReader(resource, StandardCharsets.UTF_8);
+                     BufferedReader bufferedReader = new BufferedReader(inputStreamReader)) {
+                    jsons = bufferedReader.lines().collect(Collectors.toList());
                 }
                 jsons.stream().map(Document::parse).forEach(i -> template.insert(i, USERS_COLLECTION));
                 LOGGER.info(SEPARATOR);
@@ -113,8 +115,9 @@ public class DataLoader {
 
                 ClassPathResource classPathResource = new ClassPathResource("indexes/books.data");
                 try (InputStream resource = classPathResource.getInputStream();
-                     InputStreamReader inputStreamReader = new InputStreamReader(resource, StandardCharsets.UTF_8)) {
-                    jsons = new BufferedReader(inputStreamReader).lines().collect(Collectors.toList());
+                     InputStreamReader inputStreamReader = new InputStreamReader(resource, StandardCharsets.UTF_8);
+                     BufferedReader bufferedReader = new BufferedReader(inputStreamReader)) {
+                    jsons = bufferedReader.lines().collect(Collectors.toList());
                 }
                 jsons.stream().map(s -> new Document().append("$eval", s)).forEach(template::executeCommand);
                 LOGGER.info("Created indexes for books project");

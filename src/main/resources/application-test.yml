@@ -5,6 +5,15 @@ spring:
   mail:
     port: 3025    # Must match the value specified in the SignUpNotificationServiceTest. Set hight to avoid problems on Unix envs
 
+# By default actuator is disabled.
+# These values are overriden here to allow for testing
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      exposure:
+        include: info, threaddump
+
 wiremock:
   server:
     port: 8883

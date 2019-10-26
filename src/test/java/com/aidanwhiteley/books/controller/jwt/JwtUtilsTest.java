@@ -13,6 +13,7 @@ import static org.junit.Assert.assertEquals;
 public class JwtUtilsTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtUtilsTest.class);
+
     @Test
     public void testCreadAndReadGoodToken() {
         JwtUtils jwt = new JwtUtils();

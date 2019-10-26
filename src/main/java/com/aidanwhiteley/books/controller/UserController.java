@@ -14,7 +14,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
@@ -26,6 +33,8 @@ import java.util.Optional;
 public class UserController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
+	public static final String CANT_CHANGE_PERMISSIONS_FOR_YOUR_OWN_LOGGED_ON_USER =
+			"Cant change permissions for your own logged on user";
 
 	private final UserRepository userRepository;
 
@@ -92,7 +101,7 @@ public class UserController {
 		Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
 		if (user.isPresent()) {
 			if (user.get().getId().equals(id)) {
-				LOGGER.warn("User {} on {} attempted to delete themselves. This isn't allowed",
+				LOGGER.info("User {} on {} attempted to delete themselves. This isn't allowed",
 						user.get().getFullName(), user.get().getAuthProvider());
 				return ResponseEntity.status(HttpStatus.CONFLICT)
 						.body("{\"msg\" : \"Cant delete your own logged on user\"}");
@@ -116,7 +125,7 @@ public class UserController {
 				LOGGER.warn("User {} on {} attempted to change their own roles. This isn't allowed",
 						user.get().getFullName(), user.get().getAuthProvider());
 				return ResponseEntity.status(HttpStatus.CONFLICT)
-						.body("{\"msg\" : \"Cant change permissions for your own logged on user\"}");
+						.body("{\"msg\" : \"" + CANT_CHANGE_PERMISSIONS_FOR_YOUR_OWN_LOGGED_ON_USER + "\"}");
 			}
 
 			LOGGER.debug("Received patch of: {}", clientRoles);

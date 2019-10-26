@@ -1,12 +1,18 @@
 package com.aidanwhiteley.books.domain;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 
-import static com.aidanwhiteley.books.domain.User.Role.*;
+import static com.aidanwhiteley.books.domain.User.Role.ROLE_ADMIN;
+import static com.aidanwhiteley.books.domain.User.Role.ROLE_EDITOR;
+import static com.aidanwhiteley.books.domain.User.Role.ROLE_USER;
 
 @Getter
 @AllArgsConstructor

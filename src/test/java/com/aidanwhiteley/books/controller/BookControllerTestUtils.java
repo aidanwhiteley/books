@@ -9,7 +9,11 @@ import com.aidanwhiteley.books.repository.BookRepositoryTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDateTime;
 
@@ -65,6 +69,17 @@ public class BookControllerTestUtils {
 		}
 
 		return new HttpEntity<>(testBook, requestHeaders);
+	}
+
+	public static HttpEntity<User> getUserHttpEntity(User aUser, String jwtToken, String xsrfToken) {
+		HttpHeaders requestHeaders = new HttpHeaders();
+		requestHeaders.add("Cookie", JwtAuthenticationService.JWT_COOKIE_NAME + "=" + jwtToken);
+		if (xsrfToken != null && (!xsrfToken.trim().isEmpty())) {
+			requestHeaders.add("Cookie", JwtAuthenticationService.XSRF_COOKIE_NAME + "=" + xsrfToken);
+			requestHeaders.add(JwtAuthenticationService.XSRF_HEADER_NAME, xsrfToken);
+		}
+
+		return new HttpEntity<>(aUser, requestHeaders);
 	}
 
 	public static HttpEntity<Comment> getBookHttpEntityForComment(Comment testComment, String jwtToken, String xsrfToken) {

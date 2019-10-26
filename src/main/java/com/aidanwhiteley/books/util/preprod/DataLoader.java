@@ -13,6 +13,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -45,47 +46,62 @@ public class DataLoader {
      * Reads from files where each line is expected to be a valid JSON object but
      * the whole file itself isnt a valid JSON object (hence the .data extension rather than .json).
      * <p>
-     * Double "fail safe" of checking for required Spring profile being active
-     * and also a config switch setting.
+     * Triple "fail safe" of checking for required Spring profile being active,
+     * the config switch setting and being able to find files in the /src/test/... directories.
      */
     @Bean
-    @Profile({"dev", "mongo-java-server"})
+    @Profile({"dev", "test", "mongo-java-server"})
     public CommandLineRunner populateDummyData() {
         return args -> {
 
             if (reloadDevelopmentData) {
 
                 LOGGER.warn("");
-                LOGGER.warn("****************************************************************************");
+                LOGGER.warn(SEPARATOR);
                 LOGGER.warn("*** WARNING!                                                             ***");
                 LOGGER.warn("*** All data is deleted and dummy data reloaded when running with        ***");
                 LOGGER.warn("*** either the 'dev' or 'mongo-java-server' Spring profiles.             ***");
-                LOGGER.warn("*** To persist data edit the /src/main/resources/application.yml         ***");
-                LOGGER.warn("*** so spring.profiles.active is other than 'dev' or 'mongo-java-server'.***");
-                LOGGER.warn("****************************************************************************");
+                LOGGER.warn("*** To persist data edit the /src/main/resources/application.yml so      ***");
+                LOGGER.warn("*** spring.profiles.active is other than dev, test or mongo-java-server. ***");
+                LOGGER.warn(SEPARATOR);
                 LOGGER.warn("");
 
                 List<String> jsons;
 
-                // Clearing and loading data into books collection
-                LOGGER.info(SEPARATOR);
-                LOGGER.info("Clearing books collection and loading development data for books project");
-                template.dropCollection(BOOKS_COLLECTION);
                 ClassPathResource classPathResource = new ClassPathResource("sample_data/books.data");
-                try (InputStream resource = classPathResource.getInputStream()) {
-                    jsons = new BufferedReader(new InputStreamReader(resource, StandardCharsets.UTF_8)).lines()
-                            .collect(Collectors.toList());
+                try (InputStream resource = classPathResource.getInputStream();
+                     InputStreamReader inputStreamReader = new InputStreamReader(resource, StandardCharsets.UTF_8);
+                     BufferedReader bufferedReader = new BufferedReader(inputStreamReader)) {
+
+                    // Clearing and loading data into books collection. We do this _after_ checking for the
+                    // existence of the file that holds the test data - as this file should not be part of
+                    // any build and deployment to a running instance.
+                    LOGGER.info(SEPARATOR);
+                    LOGGER.info("Clearing books collection and loading development data for books project");
+                    template.dropCollection(BOOKS_COLLECTION);
+
+                    jsons = bufferedReader.lines().collect(Collectors.toList());
+                    jsons.stream().map(Document::parse).forEach(i -> template.insert(i, BOOKS_COLLECTION));
+                } catch (FileNotFoundException fe) {
+                    LOGGER.error(SEPARATOR);
+                    LOGGER.error("*** ERROR!                                                               ***");
+                    LOGGER.error("*** You are trying to drop the collections in Mongo in an environment    ***");
+                    LOGGER.error("*** where test resources / files are not part of the deployed build.     ***");
+                    LOGGER.error(SEPARATOR);
+                    throw new IllegalStateException("Application incorrectly configured");
                 }
-                jsons.stream().map(Document::parse).forEach(i -> template.insert(i, BOOKS_COLLECTION));
 
 
-                // Clearing and loading data into user collection
-                LOGGER.info("Clearing users collection and loading development data for books project");
-                template.dropCollection(USERS_COLLECTION);
                 classPathResource = new ClassPathResource("sample_data/users.data");
-                try (InputStream resource = classPathResource.getInputStream()) {
-                    jsons = new BufferedReader(new InputStreamReader(resource, StandardCharsets.UTF_8)).lines()
-                            .collect(Collectors.toList());
+                try (InputStream resource = classPathResource.getInputStream();
+                     InputStreamReader inputStreamReader = new InputStreamReader(resource, StandardCharsets.UTF_8);
+                     BufferedReader bufferedReader = new BufferedReader(inputStreamReader)) {
+
+                    // Clearing and loading data into user collection - happens after index creation file found and loaded
+                    LOGGER.info("Clearing users collection and loading development data for books project");
+                    template.dropCollection(USERS_COLLECTION);
+
+                    jsons = bufferedReader.lines().collect(Collectors.toList());
                 }
                 jsons.stream().map(Document::parse).forEach(i -> template.insert(i, USERS_COLLECTION));
                 LOGGER.info(SEPARATOR);
@@ -100,7 +116,7 @@ public class DataLoader {
      * mongo-java-server doesnt support full text indexes that cover multiple fields.
      */
     @Bean
-    @Profile({"dev"})
+    @Profile({"dev", "test"})
     public CommandLineRunner createIndexed() {
         return args -> {
 
@@ -108,15 +124,16 @@ public class DataLoader {
 
                 List<String> jsons;
 
-                // Clearing and loading data into books collection
+                ClassPathResource classPathResource = new ClassPathResource("indexes/books.data");
+                try (InputStream resource = classPathResource.getInputStream();
+                     InputStreamReader inputStreamReader = new InputStreamReader(resource, StandardCharsets.UTF_8);
+                     BufferedReader bufferedReader = new BufferedReader(inputStreamReader)) {
+                    jsons = bufferedReader.lines().collect(Collectors.toList());
+                }
+
                 LOGGER.info(SEPARATOR);
                 LOGGER.info("Loading indexes for books project");
 
-                ClassPathResource classPathResource = new ClassPathResource("indexes/books.data");
-                try (InputStream resource = classPathResource.getInputStream()) {
-                    jsons = new BufferedReader(new InputStreamReader(resource, StandardCharsets.UTF_8)).lines()
-                            .collect(Collectors.toList());
-                }
                 jsons.stream().map(s -> new Document().append("$eval", s)).forEach(template::executeCommand);
                 LOGGER.info("Created indexes for books project");
 

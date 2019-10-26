@@ -75,7 +75,7 @@ public class JwtUtils {
 
         String[] rolesArray = roles.split(ROLES_DELIMETER);
         for (String s : rolesArray) {
-            user.addRole(User.Role.getRole(Integer.valueOf(s)));
+            user.addRole(User.Role.getRole(Integer.parseInt(s)));
         }
 
         return user;

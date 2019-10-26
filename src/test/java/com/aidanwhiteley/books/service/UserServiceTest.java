@@ -27,7 +27,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.LOCAL;
@@ -58,12 +60,12 @@ public class UserServiceTest extends IntegrationTest {
 
     @Test
     public void testCreateGoogleBasedUser() {
-        testUserCreate(googleClientClientId, NEW_USER_1, User.AuthenticationProvider.GOOGLE);
+        assertNotNull(testUserCreate(googleClientClientId, NEW_USER_1, User.AuthenticationProvider.GOOGLE));
     }
 
     @Test
     public void testCreateFacebookBasedUser() {
-        testUserCreate(facebookClientClientId, NEW_USER_2, User.AuthenticationProvider.FACEBOOK);
+        assertNotNull(testUserCreate(facebookClientClientId, NEW_USER_2, User.AuthenticationProvider.FACEBOOK));
     }
 
     @Test

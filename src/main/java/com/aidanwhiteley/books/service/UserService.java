@@ -13,9 +13,15 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
-import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.*;
+import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.FACEBOOK;
+import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.GOOGLE;
+import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.LOCAL;
 
 @Service
 public class UserService {

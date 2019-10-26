@@ -9,9 +9,15 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class UserControllerTest extends IntegrationTest {
 
@@ -80,6 +86,23 @@ public class UserControllerTest extends IntegrationTest {
         userDeleteResponse = testRestTemplate.exchange("/secure/api/users/" + madeUpUserid, HttpMethod.DELETE, request, User.class);
         assertEquals(HttpStatus.OK, userDeleteResponse.getStatusCode());
         
+    }
+
+    @Test
+    public void tryToPatchOwnUserid() {
+        ResponseEntity<User> response = getUserDetails();
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        User aUser = response.getBody();
+        assertNotNull(aUser);
+
+        String token = jwtUtils.createTokenForUser(aUser);
+        String xsrfToken = BookControllerTestUtils.getXsrfToken(testRestTemplate);
+        HttpEntity<User> request = BookControllerTestUtils.getUserHttpEntity(aUser, token, xsrfToken);
+
+        // Shouldnt be able to patch own userid!
+        String userPatchResponse = testRestTemplate.patchForObject("/secure/api/users/" + aUser.getId(), request, String.class);
+        assertTrue(userPatchResponse.contains(UserController.CANT_CHANGE_PERMISSIONS_FOR_YOUR_OWN_LOGGED_ON_USER));
     }
 
     @Test

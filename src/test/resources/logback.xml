@@ -19,8 +19,9 @@
     <logger name="com.aidanwhiteley.books.util.MailClient" level="WARN" />
 
     <logger name="org.apache.catalina" level="WARN"/>
+    <logger name="org.apache.tomcat.util.modeler.Registry" level="ERROR"/>
 
-    <!-- Not interested in errors trying to  register with Spring Boot Admin instance in tests -->
+    <!-- Not interested in errors trying to register with Spring Boot Admin instance in tests -->
     <logger name="de.codecentric.boot.admin.client.registration.ApplicationRegistrator" level="ERROR"/>
 
     <!-- WireMock is a bit "noisy" on the logging front! -->

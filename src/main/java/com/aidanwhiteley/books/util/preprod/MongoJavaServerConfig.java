@@ -1,6 +1,5 @@
 package com.aidanwhiteley.books.util.preprod;
 
-import com.mongodb.MongoDriverInformation;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.lang.NonNull;

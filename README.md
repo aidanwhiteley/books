@@ -49,6 +49,8 @@ By default, the tests run against mongo-java-server so there is no need to insta
 MongDb to test most of the application. Functionality not supported by mogo-java-server such as full text indexes results in some tests being skipped when 
 running with the monog-java-server Spring profile.
 
+When running the Travis builds, tests run against a real Mongo instance.
+
 Some of the integration tests make use of WireMock - see the /src/test/resources/mappings and __files directories for the configuration details.
 
 #### Stress Test
@@ -104,13 +106,13 @@ To run a client to access the microservice, head on over to https://github.com/a
 
 ### Sample data
 There is some sample data provided to make initial understanding of the functionality a bit easier.
-It is is the /src/main/resources/sample_data. See the #README.txt in that directory.
-The sample data is auto loaded when running with Spring profiles of "mongo-java-server" (the checked in default)
-and "dev".
+It is is the /src/test/resources/sample_data. See the #README.txt in that directory.
+The sample data is auto loaded when running with Spring profiles of "mongo-java-server" (the checked in default),  
+"dev" and "test".
 
 #### Indexes
-The Mongo indexes required by the application are also "auto created" when running with the "dev" profile.
-When running with other profiles, you should manually apply the indexes defined in /src/main/resources/indexes.
+The Mongo indexes required by the application are also "auto created" when running with the "dev", "test" and "mongo-java-server" profiles.
+When running with other profiles, you should manually apply the indexes defined in /src/test/resources/indexes.
 In particular, the application's Search functionality won't work unless you run the command to build
 the weighted full text index across various fields of the Book collection. The rest of the application will run without 
 indexes - just more slowly as the data volumes increase!

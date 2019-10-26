@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.context.annotation.Profile;
 
-import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 @Profile({"dev", "test", "mongo-java-server"})

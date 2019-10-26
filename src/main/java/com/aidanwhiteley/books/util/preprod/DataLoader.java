@@ -57,13 +57,13 @@ public class DataLoader {
             if (reloadDevelopmentData) {
 
                 LOGGER.warn("");
-                LOGGER.warn("****************************************************************************");
+                LOGGER.warn(SEPARATOR);
                 LOGGER.warn("*** WARNING!                                                             ***");
                 LOGGER.warn("*** All data is deleted and dummy data reloaded when running with        ***");
                 LOGGER.warn("*** either the 'dev' or 'mongo-java-server' Spring profiles.             ***");
                 LOGGER.warn("*** To persist data edit the /src/main/resources/application.yml so      ***");
                 LOGGER.warn("*** spring.profiles.active is other than dev, test or mongo-java-server. ***");
-                LOGGER.warn("****************************************************************************");
+                LOGGER.warn(SEPARATOR);
                 LOGGER.warn("");
 
                 List<String> jsons;
@@ -83,12 +83,11 @@ public class DataLoader {
                     jsons = bufferedReader.lines().collect(Collectors.toList());
                     jsons.stream().map(Document::parse).forEach(i -> template.insert(i, BOOKS_COLLECTION));
                 } catch (FileNotFoundException fe) {
-                    LOGGER.error("****************************************************************************");
+                    LOGGER.error(SEPARATOR);
                     LOGGER.error("*** ERROR!                                                               ***");
                     LOGGER.error("*** You are trying to drop the collections in Mongo in an environment    ***");
                     LOGGER.error("*** where test resources / files are not part of the deployed build.     ***");
-                    LOGGER.error("*** You are likely one step away from disaster!!!                        ***");
-                    LOGGER.error("****************************************************************************");
+                    LOGGER.error(SEPARATOR);
                     throw new IllegalStateException("Application incorrectly configured");
                 }
 

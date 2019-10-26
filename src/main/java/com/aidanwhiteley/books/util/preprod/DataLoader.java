@@ -26,7 +26,7 @@ public class DataLoader {
     private static final String BOOKS_COLLECTION = "book";
     private static final String USERS_COLLECTION = "user";
     private static final Logger LOGGER = LoggerFactory.getLogger(DataLoader.class);
-    private static final String SEPARATOR = "**************************************************************************";
+    private static final String SEPARATOR = "****************************************************************************";
 
     private final MongoTemplate template;
 

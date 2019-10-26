@@ -4,7 +4,7 @@ import com.aidanwhiteley.books.domain.User;
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 public class JwtAuthenticationServiceTest {
 

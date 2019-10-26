@@ -10,11 +10,15 @@ import com.aidanwhiteley.books.repository.dtos.BooksByReader;
 import com.aidanwhiteley.books.util.IntegrationTest;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +28,8 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public class BookRepositoryTest extends IntegrationTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(BookRepositoryTest.class);
 
     public static final String DR_ZEUSS = "Dr Zuess";
     public static final String J_UNIT_TESTING_FOR_BEGINNERS = "JUnit testing for beginners";
@@ -39,6 +45,9 @@ public class BookRepositoryTest extends IntegrationTest {
 
     @Autowired
     private BookRepository bookRepository;
+
+    @Autowired
+    private Environment environment;
 
     public static Book createTestBook() {
         return Book.builder().title(J_UNIT_TESTING_FOR_BEGINNERS)
@@ -138,5 +147,20 @@ public class BookRepositoryTest extends IntegrationTest {
         assertEquals("", updatedBook.getComments().get(0).getCommentText());
         assertTrue(updatedBook.getComments().get(0).isDeleted());
         assertEquals(COMMENT_REMOVER, updatedBook.getComments().get(0).getDeletedBy());
+    }
+
+    @Test
+    public void searchForBooks() {
+        // mongo-java-server doesnt support full text indexes across fields
+        if (Arrays.asList(this.environment.getActiveProfiles()).contains("mongo-java-server")) {
+            LOGGER.warn("Test skipped - mongo-java-server doesnt yet support weighted full text indexes on multiple fields");
+            return;
+        }
+
+        final String searchPhrase = "The Pigeon Tunnel";
+        PageRequest pageObj = PageRequest.of(PAGE, PAGE_SIZE);
+        Page<Book> books = bookRepository.searchForBooks(searchPhrase, pageObj);
+
+        assertNotNull(books.get().filter(s -> s.getTitle().contains(searchPhrase)).findFirst().orElse(null));
     }
 }

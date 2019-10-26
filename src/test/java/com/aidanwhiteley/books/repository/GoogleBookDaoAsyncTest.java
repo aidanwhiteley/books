@@ -17,6 +17,7 @@ import static org.junit.Assert.assertNull;
 public class GoogleBookDaoAsyncTest extends IntegrationTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GoogleBookDaoAsyncTest.class);
+
     private static final String SPRING_FRAMEWORK_GOOGLE_BOOK_ID = "oMVIzzKjJCcC";
 
     @Autowired
@@ -40,8 +41,7 @@ public class GoogleBookDaoAsyncTest extends IntegrationTest {
         async.updateBookWithGoogleBookDetails(savedBook, SPRING_FRAMEWORK_GOOGLE_BOOK_ID);
 
         // TODO - fix such that following call will only take place after async update has completed.
-        Book updatedBook = bookRepository.
-                findById(savedBook.getId()).orElseThrow(() -> new IllegalStateException("Expected book not found"));
+        bookRepository.findById(savedBook.getId()).orElseThrow(() -> new IllegalStateException("Expected book not found"));
 
         // Commented out until above to do is completed.
         //assertNotNull(updatedBook.getGoogleBookDetails(),

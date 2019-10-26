@@ -11,7 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.context.annotation.Profile;
 import org.springframework.web.client.ResourceAccessException;
 
 import com.aidanwhiteley.books.domain.googlebooks.BookSearchResult;
@@ -21,7 +21,7 @@ import com.aidanwhiteley.books.util.IntegrationTest;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 
-@ActiveProfiles("test")
+@Profile({"dev", "test", "mongo-java-server"})
 @AutoConfigureWireMock(port=0, httpsPort = 0)
 public class GoogleBooksDaoSyncTest extends IntegrationTest {
 
@@ -56,7 +56,8 @@ public class GoogleBooksDaoSyncTest extends IntegrationTest {
     @Test
     public void confirmFindbyBookTimesOut() {
 
-    	// Turn off unwanted logging for read timeout. Prevents JUnit output having unnecessary stack traces etc
+    	// Turn off unwanted logging for read timeout. Prevents JUnit output having unnecessary stack traces etc.
+        // Set to DEBUG to debug any test failures.
         LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
         context.getLogger(GoogleBooksDaoSync.class).setLevel(Level.valueOf("OFF"));
 

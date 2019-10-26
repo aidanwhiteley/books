@@ -89,6 +89,23 @@ public class UserControllerTest extends IntegrationTest {
     }
 
     @Test
+    public void tryToPatchOwnUserid() {
+        ResponseEntity<User> response = getUserDetails();
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        User aUser = response.getBody();
+        assertNotNull(aUser);
+
+        String token = jwtUtils.createTokenForUser(aUser);
+        String xsrfToken = BookControllerTestUtils.getXsrfToken(testRestTemplate);
+        HttpEntity<User> request = BookControllerTestUtils.getUserHttpEntity(aUser, token, xsrfToken);
+
+        // Shouldnt be able to patch own userid!
+        String userPatchResponse = testRestTemplate.patchForObject("/secure/api/users/" + aUser.getId(), request, String.class);
+        assertTrue(userPatchResponse.contains(UserController.CANT_CHANGE_PERMISSIONS_FOR_YOUR_OWN_LOGGED_ON_USER));
+    }
+
+    @Test
     public void tryToGetActuatorJwtToken() {
         // Get a user with admin access
         User user = BookControllerTestUtils.getTestUser();

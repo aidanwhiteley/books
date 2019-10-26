@@ -33,6 +33,8 @@ import java.util.Optional;
 public class UserController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
+	public static final String CANT_CHANGE_PERMISSIONS_FOR_YOUR_OWN_LOGGED_ON_USER =
+			"Cant change permissions for your own logged on user";
 
 	private final UserRepository userRepository;
 
@@ -123,7 +125,7 @@ public class UserController {
 				LOGGER.warn("User {} on {} attempted to change their own roles. This isn't allowed",
 						user.get().getFullName(), user.get().getAuthProvider());
 				return ResponseEntity.status(HttpStatus.CONFLICT)
-						.body("{\"msg\" : \"Cant change permissions for your own logged on user\"}");
+						.body("{\"msg\" : \"" + CANT_CHANGE_PERMISSIONS_FOR_YOUR_OWN_LOGGED_ON_USER + "\"}");
 			}
 
 			LOGGER.debug("Received patch of: {}", clientRoles);

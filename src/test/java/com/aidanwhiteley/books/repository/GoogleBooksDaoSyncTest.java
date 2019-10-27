@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.context.annotation.Profile;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
 import com.aidanwhiteley.books.domain.googlebooks.BookSearchResult;
@@ -29,6 +30,7 @@ public class GoogleBooksDaoSyncTest extends IntegrationTest {
 
     private static final String SPRING_FRAMEWORK_GOOGLE_BOOK_ID = "oMVIzzKjJCcC";
     private static final String SLOW_BOOK_ID = "slowbookid";
+    private static final String SERVICE_UNAVAILABLE_BOOK_ID = "serviceunavailablebookid";
     private static final String SPRING_BOOK_TITLE = "Professional Java Development with the Spring Framework";
     private static final int NUMBER_OF_BOOKS_IN_SEARCH_RESULTS = 30;
 
@@ -66,6 +68,24 @@ public class GoogleBooksDaoSyncTest extends IntegrationTest {
             fail("There should have been a timeout on accessing stubbed http service");
         } catch (ResourceAccessException rae) {
             LOGGER.debug("Expected exception caught");
+        }
+
+        context.getLogger(GoogleBooksDaoSync.class).setLevel(Level.valueOf("ON"));
+    }
+
+    @Test
+    public void confirmFindbyBookIdHandlesServiceUnavailable() {
+
+        // Turn off unwanted logging for read timeout. Prevents JUnit output having unnecessary stack traces etc.
+        // Set to DEBUG to debug any test failures.
+        LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+        context.getLogger(GoogleBooksDaoSync.class).setLevel(Level.valueOf("OFF"));
+
+        try {
+            theDao.searchGoogleBooksByGoogleBookId(SERVICE_UNAVAILABLE_BOOK_ID);
+            fail("There should have been a 503 on accessing stubbed http service");
+        } catch (HttpServerErrorException hsee) {
+            LOGGER.debug("Expected HttpServerErrorException exception caught: " + hsee);
         }
 
         context.getLogger(GoogleBooksDaoSync.class).setLevel(Level.valueOf("ON"));

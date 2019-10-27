@@ -1,0 +1,14 @@
+{
+  "request" : {
+    "url" : "/books/v1/volumes/serviceunavailablebookid/?country=GB",
+    "method" : "GET"
+  },
+  "response" : {
+    "status" : 503,
+    "bodyFileName" : "retrieveOneBookFromGoogleBookApi1.json",
+    "fixedDelayMilliseconds": 50,
+    "headers" : {
+      "Content-Type" : "application/json"
+    }
+  }
+}

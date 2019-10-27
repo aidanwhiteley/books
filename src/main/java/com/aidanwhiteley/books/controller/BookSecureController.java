@@ -60,9 +60,6 @@ public class BookSecureController {
 
     private final JwtAuthenticationUtils authUtils;
 
-    @Value("${books.users.default.page.size}")
-    private int defaultPageSize;
-
     @Value("${books.users.max.page.size}")
     private int maxPageSize;
 
@@ -194,19 +191,14 @@ public class BookSecureController {
         }
     }
 
-    @GetMapping(value = "/books", params = {"reader"})
-    public Page<Book> findByReader(@RequestParam("reader") String reader, Principal principal) {
-        return findByReader(reader, 0, defaultPageSize, principal);
-    }
-
     /**
      * This method is secured so that it cant be called to try and find out who
      * has been reviewing books if you are not an authorised user i.e. with at
      * least ROLE_EDITOR
      */
-    @GetMapping(value = "/books", params = {"reader", "page", "size"})
-    public Page<Book> findByReader(@RequestParam("reader") String reader, @RequestParam(value = "page") int page,
-                                   @RequestParam(value = "size") int size, Principal principal) {
+    @GetMapping(value = "/books")
+    public Page<Book> findByReader(@RequestParam String reader, @RequestParam(value = "page", defaultValue = "0") int page,
+                                   @RequestParam(value = "size", defaultValue = "5") int size, Principal principal) {
 
         if (null == reader || reader.trim().isEmpty()) {
             throw new IllegalArgumentException("Reader parameter cannot be empty");

@@ -11,6 +11,7 @@ import com.aidanwhiteley.books.util.IntegrationTest;
 import com.jayway.jsonpath.JsonPath;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -31,12 +32,14 @@ public class BookSecureControllerTest extends IntegrationTest {
 
     private static final String GENRE_TOO_LONG = "abcdefghjijklmnopqrstuvwxyz01234567890";
 
-
     @Autowired
     private TestRestTemplate testRestTemplate;
 
     @Autowired
     private JwtUtils jwtUtils;
+
+    @Value("${books.users.max.page.size}")
+    private int maxPageSize;
 
     @Test
     public void createAndDeleteBook() {
@@ -257,6 +260,26 @@ public class BookSecureControllerTest extends IntegrationTest {
         ResponseEntity<String> response = testRestTemplate.exchange("/secure/api/books?reader=" + testReader, HttpMethod.GET, request, String.class);   
         List<Book> books = JsonPath.read(response.getBody(), "$.content");
         assertTrue(books.size() > 0);
+
+        final String emptyReader = "";
+        response = testRestTemplate.exchange("/secure/api/books?reader=" + emptyReader, HttpMethod.GET, request, String.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+
+        final int excessivePageSize = maxPageSize + 1000;
+        response = testRestTemplate.exchange("/secure/api/books?reader=" + testReader + "&page=0&size=" + excessivePageSize, HttpMethod.GET, request, String.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    public void findBookReaders() {
+        User user = BookControllerTestUtils.getTestUser();
+        String token = jwtUtils.createTokenForUser(user);
+        String xsrfToken = BookControllerTestUtils.getXsrfToken(testRestTemplate);
+        HttpEntity<Book> request = BookControllerTestUtils.getBookHttpEntity(null, token, xsrfToken);
+
+        ResponseEntity<String> response = testRestTemplate.exchange("/secure/api/books/readers", HttpMethod.GET, request, String.class);
+        List<String> bookReaders = JsonPath.read(response.getBody(), "$[*].reader");
+        assertTrue(bookReaders.size() > 0);
     }
 
     @Test

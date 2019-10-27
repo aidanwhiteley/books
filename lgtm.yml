@@ -1,7 +1,4 @@
 # LGTM config file
 
 queries:
-  # We exclude the following check for secure cookies as the LGTM parser
-  # doesnt seem to understand passing a variable into the setSecure call on cookies
-  # i.e.  aCookie.setSecure(cookieOverHttpsOnly);
-  - exclude: java/insecure-cookie
+  # No exclusions currently

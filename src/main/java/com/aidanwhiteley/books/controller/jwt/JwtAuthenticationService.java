@@ -47,7 +47,7 @@ public class JwtAuthenticationService {
 
         Cookie cookie = new Cookie(JWT_COOKIE_NAME, token);
         cookie.setHttpOnly(cookieAccessedByHttpOnly);
-        cookie.setSecure(cookieOverHttpsOnly);
+        cookie.setSecure(cookieOverHttpsOnly);          // lgtm[java/insecure-cookie]
         cookie.setPath(jwtCookiePath);
         cookie.setMaxAge(cookieExpirySeconds);
 
@@ -135,7 +135,7 @@ public class JwtAuthenticationService {
     private void expireCookie(HttpServletResponse response, Cookie emptyCookie, boolean httpOnly) {
         emptyCookie.setMaxAge(0);
         emptyCookie.setHttpOnly(httpOnly);
-        emptyCookie.setSecure(cookieOverHttpsOnly);
+        emptyCookie.setSecure(cookieOverHttpsOnly);         // lgtm[java/insecure-cookie]
         emptyCookie.setPath(jwtCookiePath);
         response.addCookie(emptyCookie);
     }

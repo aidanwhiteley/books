@@ -6,6 +6,9 @@
     <logger name="org.springframework.web" level="WARN"/>
     <logger name="org.springframework.web.servlet.mvc.method.annotation" level="ERROR" />
 
+    <!-- Temporarily setting to ERROR - see https://github.com/aidanwhiteley/books/issues/86  -->
+    <logger name="org.springframework.data.convert.CustomConversions" level="ERROR" />
+
     <logger name="org.mongodb" level="WARN"/>
     <logger name="com.icegreen.greenmail" level="WARN" />
     <logger name="springfox.documentation" level="WARN"/>

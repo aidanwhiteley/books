@@ -11,7 +11,7 @@ So welcome to the "Cloudy Bookclub" microservice!
 [![Sonar Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=com.aidanwhiteley%3Abooks&metric=alert_status)](https://sonarcloud.io/dashboard?id=com.aidanwhiteley%3Abooks)
 [![Codacy Code Quality](https://api.codacy.com/project/badge/Grade/0570d8fd3bfa4811a3f10071ad73988f)](https://www.codacy.com/app/Books_Team/books?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=aidanwhiteley/books&amp;utm_campaign=Badge_Grade)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/aidanwhiteley/books.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/aidanwhiteley/books/alerts/)
-[![codecov](https://codecov.io/gh/aidanwhiteley/books/branch/master/graph/badge.svg)](https://codecov.io/gh/aidanwhiteley/books)
+[![codecov](https://codecov.io/gh/aidanwhiteley/books/branch/develop/graph/badge.svg)](https://codecov.io/gh/aidanwhiteley/books)
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Faidanwhiteley%2Fbooks.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Faidanwhiteley%2Fbooks?ref=badge_shield)
 
 
@@ -106,13 +106,12 @@ To run a client to access the microservice, head on over to https://github.com/a
 
 ### Sample data
 There is some sample data provided to make initial understanding of the functionality a bit easier.
-It is is the /src/test/resources/sample_data. See the #README.txt in that directory.
-The sample data is auto loaded when running with Spring profiles of "mongo-java-server" (the checked in default),  
-"dev" and "test".
+It is is the /src/main/resources/sample_data. See the #README.txt in that directory.
+The sample data is auto loaded when running with Spring profiles of "mongo-java-server" (the checked in default), "dev" and "test".
 
 #### Indexes
 The Mongo indexes required by the application are also "auto created" when running with the "dev", "test" and "mongo-java-server" profiles.
-When running with other profiles, you should manually apply the indexes defined in /src/test/resources/indexes.
+When running with other profiles, you should manually apply the indexes defined in /src/main/resources/indexes.
 In particular, the application's Search functionality won't work unless you run the command to build
 the weighted full text index across various fields of the Book collection. The rest of the application will run without 
 indexes - just more slowly as the data volumes increase!

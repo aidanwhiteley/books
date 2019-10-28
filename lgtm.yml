@@ -1,4 +1,4 @@
 # LGTM config file
 
 queries:
-  # No exclusions currently
+  - exclude: java/insecure-cookie

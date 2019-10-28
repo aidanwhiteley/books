@@ -1,10 +1,14 @@
 package com.aidanwhiteley.books.controller;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.LoggerContext;
+import com.aidanwhiteley.books.controller.dtos.ApiExceptionData;
 import com.aidanwhiteley.books.controller.jwt.JwtUtils;
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.util.IntegrationTest;
 import org.junit.Test;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -18,6 +22,7 @@ import static com.aidanwhiteley.books.controller.RestApiExceptionHandler.MESSAGE
 import static com.aidanwhiteley.books.controller.RestApiExceptionHandler.MESSAGE_NOT_FOUND;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertTrue;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -60,6 +65,17 @@ public class RestApiExceptionHandlerTest extends IntegrationTest {
         RequestBuilder requestBuilder = getPostRequestBuilder("/secure/api/books", book);
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void testHandleDefaultExceptions() {
+        RestApiExceptionHandler raeh = new RestApiExceptionHandler();
+        final String errMsg = "Its all gone Pete Tong";
+        LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+        context.getLogger(RestApiExceptionHandler .class).setLevel(Level.valueOf("OFF"));
+        ApiExceptionData aed = raeh.handleDefaultExceptions(new RuntimeException(errMsg), null);
+        context.getLogger(RestApiExceptionHandler .class).setLevel(Level.valueOf("ON"));
+        assertTrue(aed.getMessage().contains(errMsg));
     }
 //
 //    @Test

@@ -40,9 +40,9 @@ class HttpCookieOAuth2AuthorizationRequestRepository implements AuthorizationReq
         Cookie cookie = new Cookie(COOKIE_NAME, fromAuthorizationRequest(authorizationRequest));
         cookie.setPath("/");
         cookie.setHttpOnly(true);
-        cookie.setSecure(cookieOverHttpsOnly);          // lgtm[java/insecure-cookie]
+        cookie.setSecure(cookieOverHttpsOnly);
         cookie.setMaxAge(-1);   // Expire when browser closed - bug in API means explicit removal not possible
-        response.addCookie(cookie);
+        response.addCookie(cookie);     // lgtm[java/insecure-cookie]
     }
 
     /**
@@ -88,9 +88,9 @@ class HttpCookieOAuth2AuthorizationRequestRepository implements AuthorizationReq
             Cookie responseCookie = new Cookie(COOKIE_NAME, "");
             responseCookie.setPath("/");
             responseCookie.setMaxAge(0);
-            responseCookie.setSecure(cookieOverHttpsOnly);          // lgtm[java/insecure-cookie]
+            responseCookie.setSecure(cookieOverHttpsOnly);
             responseCookie.setHttpOnly(true);
-            response.addCookie(responseCookie);
+            response.addCookie(responseCookie);     // lgtm[java/insecure-cookie]
         });
     }
 

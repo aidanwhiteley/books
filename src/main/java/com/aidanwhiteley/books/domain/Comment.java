@@ -9,7 +9,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.SafeHtml;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.annotation.Id;
@@ -24,7 +23,6 @@ import java.util.UUID;
 import static com.aidanwhiteley.books.domain.User.Role.ROLE_ADMIN;
 import static com.aidanwhiteley.books.domain.User.Role.ROLE_EDITOR;
 import static com.aidanwhiteley.books.domain.User.Role.ROLE_USER;
-import static org.hibernate.validator.constraints.SafeHtml.WhiteListType.NONE;
 
 @SuppressWarnings("DefaultAnnotationParam")
 @Data
@@ -43,7 +41,6 @@ public class Comment implements Serializable {
 	private String id = UUID.randomUUID().toString();
 
 	@Length(min = 1, max = 1000)
-	@SafeHtml(whitelistType=NONE)
 	private String commentText;
 
 	@JsonDeserialize(using = LocalDateTimeDeserializer.class)

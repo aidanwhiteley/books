@@ -11,7 +11,6 @@ import org.junit.Test;
 import com.aidanwhiteley.books.domain.User.AuthenticationProvider;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
 import java.util.Collections;
 
 public class OwnerTest {

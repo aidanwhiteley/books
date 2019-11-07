@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.SafeHtml;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.annotation.Id;
@@ -26,7 +25,6 @@ import java.util.List;
 import static com.aidanwhiteley.books.domain.User.Role.ROLE_ADMIN;
 import static com.aidanwhiteley.books.domain.User.Role.ROLE_EDITOR;
 import static com.aidanwhiteley.books.domain.User.Role.ROLE_USER;
-import static org.hibernate.validator.constraints.SafeHtml.WhiteListType.NONE;
 
 @SuppressWarnings("DefaultAnnotationParam")
 @Getter
@@ -52,23 +50,19 @@ public class Book extends Auditable implements Serializable {
     @NotNull
     @Length(min = 1, max = 100)
     @Setter
-    @SafeHtml(whitelistType = NONE)       // Output encoding is the primary XSS defence but we still block HTML input
     private String title;
 
     @NotNull
     @Length(min = 1, max = 75)
-    @SafeHtml(whitelistType = NONE)
     private String author;
 
     @NotNull
     @Length(min = 1, max = 35)
     @Setter
-    @SafeHtml(whitelistType = NONE)
     private String genre;
 
     @NotNull
     @Length(min = 1, max = 20000)
-    @SafeHtml(whitelistType = NONE)
     private String summary;
 
     @NotNull

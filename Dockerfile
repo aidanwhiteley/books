@@ -1,5 +1,5 @@
 
-FROM openjdk:11-jdk-alpine
+FROM openjdk:8-jdk-alpine
 LABEL maintainer="github@aidanwhiteley.com"
 VOLUME /tmp
 COPY target/*.jar app.jar

@@ -1,6 +1,7 @@
 package com.aidanwhiteley.books.controller.jwt;
 
 import com.aidanwhiteley.books.domain.User;
+import com.aidanwhiteley.books.repository.UserRepository;
 import com.aidanwhiteley.books.util.preprod.MongoJavaServerConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,13 +32,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final ApplicationContext applicationContext;
 
+    private final UserRepository userRepository;
+
     @Value("${books.autoAuthUser}")
     private boolean autoAuthUser;
 
     @Autowired
-    public JwtAuthenticationFilter(JwtAuthenticationService jwtAuthenticationService, ApplicationContext applicationContext) {
+    public JwtAuthenticationFilter(JwtAuthenticationService jwtAuthenticationService, ApplicationContext applicationContext,
+                                   UserRepository userRepository) {
         this.jwtService = jwtAuthenticationService;
         this.applicationContext = applicationContext;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -53,6 +58,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             // config has been set and we are running with an in memory database
             // which will drop and recreate all data every time the application is started.
             auth = new JwtAuthentication(createDummyUser());
+            auth.setAuthenticated(true);
             SecurityContextHolder.getContext().setAuthentication(auth);
             LOGGER.debug("Setting dummy auth: {}", auth);
         } else {
@@ -80,13 +86,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private User createDummyUser() {
         User dummyUser = new User();
+
+        // The data below must match the corresponding entry in users.data
         dummyUser.setFirstName("Auto");
         dummyUser.setLastName("Logon");
+        dummyUser.setFullName("Auto Logon");
         dummyUser.addRole(User.Role.ROLE_EDITOR);
         dummyUser.setLastLogon(LocalDateTime.MIN);
         dummyUser.setEmail("example@example.com");
         dummyUser.setAuthProvider(User.AuthenticationProvider.LOCAL);
-        dummyUser.setAuthenticationServiceId(User.AuthenticationProvider.LOCAL.toString());
+        dummyUser.setAuthenticationServiceId("Dummy12345678");
 
         return dummyUser;
     }

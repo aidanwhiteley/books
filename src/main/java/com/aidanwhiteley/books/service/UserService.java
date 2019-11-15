@@ -57,8 +57,6 @@ public class UserService {
         User.AuthenticationProvider provider = authUtils.getAuthenticationProvider(authentication);
         Optional<User> user = authUtils.getUserIfExists(authentication);
 
-
-
         return user.map(user1 -> updateUser(
                 UpdateUserDetails.builder().
                         userDetails(userDetails).

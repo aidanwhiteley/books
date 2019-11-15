@@ -32,6 +32,9 @@ public class DataLoader {
     @Value("${books.reload.development.data}")
     private boolean reloadDevelopmentData;
 
+    @Value("${books.autoAuthUser}")
+    private boolean autoAuthUser;
+
     @Autowired
     public DataLoader(MongoTemplate mongoTemplate) {
         this.template = mongoTemplate;
@@ -48,7 +51,7 @@ public class DataLoader {
      * "Fail safe" checking for required Spring profile being active and the config switch setting.
      */
     @Bean
-    @Profile({"dev", "test", "mongo-java-server"})
+    @Profile({"dev", "test", "mongo-java-server", "mongo-java-server-no-auth"})
     public CommandLineRunner populateDummyData() {
         return args -> {
 
@@ -92,7 +95,15 @@ public class DataLoader {
 
                     jsons = bufferedReader.lines().collect(Collectors.toList());
                 }
-                jsons.stream().map(Document::parse).forEach(i -> template.insert(i, USERS_COLLECTION));
+                jsons.stream().map(Document::parse).forEach(i -> {
+                    boolean autoAuthUserServiceId = i.get("authenticationServiceId").toString().contains("Dummy12345678");
+                    // Only insert the user data for the "auto logon" user if the config says to
+                    if (autoAuthUserServiceId && autoAuthUser) {
+                        template.insert(i, USERS_COLLECTION);
+                    } else if (!autoAuthUserServiceId) {
+                        template.insert(i, USERS_COLLECTION);
+                    }
+                });
                 LOGGER.info(SEPARATOR);
             } else {
                 LOGGER.info("Development data not reloaded due to config settings");
@@ -101,7 +112,7 @@ public class DataLoader {
     }
 
     /**
-     * Created indexes on collections. Does not run when mongo-java-server profile is active as
+     * Created indexes on collections. Does not run when mongo-java-server(-no-auth) profiles are active as
      * mongo-java-server doesnt support full text indexes that cover multiple fields.
      */
     @Bean

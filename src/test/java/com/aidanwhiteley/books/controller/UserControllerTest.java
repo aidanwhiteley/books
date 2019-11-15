@@ -9,11 +9,14 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
+import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -29,13 +32,19 @@ public class UserControllerTest extends IntegrationTest {
     @Autowired
     private JwtUtils jwtUtils;
 
+    @Autowired
+    private Environment environment;
+
     @Value("${books.jwt.actuatorExpiryInMilliSeconds}")
     private long expiryInMilliSecondsActuator;
 
     @Test
     public void getUserDetailsNoAuthentication() {
+        int expectedStatusCode = (Arrays.asList(this.environment.getActiveProfiles()).contains("mongo-java-server-no-auth")) ?
+            HttpStatus.OK.value() : HttpStatus.UNAUTHORIZED.value();
+
         ResponseEntity<User> response = testRestTemplate.getForEntity("/secure/api/user", User.class);
-        assertEquals(HttpStatus.UNAUTHORIZED.value(), response.getStatusCode().value());
+        assertEquals(expectedStatusCode, response.getStatusCode().value());
     }
 
     @Test

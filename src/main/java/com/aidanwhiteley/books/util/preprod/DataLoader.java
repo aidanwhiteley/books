@@ -61,9 +61,10 @@ public class DataLoader {
                 LOGGER.warn(SEPARATOR);
                 LOGGER.warn("*** WARNING!                                                             ***");
                 LOGGER.warn("*** All data is deleted and dummy data reloaded when running with        ***");
-                LOGGER.warn("*** either the 'dev' or 'mongo-java-server' Spring profiles.             ***");
+                LOGGER.warn("*** the 'dev', 'mongo-java-server' or 'mongo-java-server-no-auth' Spring ***");
+                LOGGER.warn("*** profiles.                                                            ***");
                 LOGGER.warn("*** To persist data edit the /src/main/resources/application.yml so      ***");
-                LOGGER.warn("*** spring.profiles.active is other than dev, test or mongo-java-server. ***");
+                LOGGER.warn("*** spring.profiles.active is other than the above profiles.             ***");
                 LOGGER.warn(SEPARATOR);
                 LOGGER.warn("");
 

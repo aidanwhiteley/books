@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: mongo-java-server
+    active: mongo-java-server-no-auth
   data:
     mongodb:
       uri: mongodb://localhost:27017/books?safe=true&journal=true&w=majority&connectTimeoutMS=1001&wtimeoutMS=1000&serverSelectionTimeoutMS=10000
@@ -62,6 +62,8 @@ info:
     version: "@project.version@"
 
 books:
+  autoAuthUser: false
+
   client:
     enableCORS: false
     allowedCorsOrigin: http://localhost:9000

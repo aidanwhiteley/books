@@ -14,21 +14,21 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 
 import java.net.InetSocketAddress;
 
-@Configuration
-@Profile({"mongo-java-server"})
+@Configuration(value="books-mongo-java-server")
+@Profile({"mongo-java-server", "mongo-java-server-no-auth"})
 @EnableMongoRepositories(basePackages = "com.aidanwhiteley.books")
 /*
-  Tests can be run against mongo-java-server - a fake in memory replacement for
-  Mongo. Means that no Mongo install is needed to run tests.
+  Tests can be run against mongo-java-server - a fake in memory replacement for Mongo.
+  Means that no Mongo install is needed to run tests or perform non Mongo related development.
  */
 public class MongoJavaServerConfig extends AbstractMongoClientConfiguration {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MongoJavaServerConfig.class);
-    private static final String DB_NAME = "books-integration-test";
+    public static final String DB_NAME = "books-mongo-in-memory";
 
     @Override
     @NonNull
-    protected String getDatabaseName() {
+    public String getDatabaseName() {
         return DB_NAME;
     }
 

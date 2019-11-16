@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: mongo-java-server-no-auth
+    active: mongo-java-server
 
   data:
     mongodb:

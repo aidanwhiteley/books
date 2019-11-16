@@ -1,16 +1,12 @@
 package com.aidanwhiteley.books.controller.jwt;
 
 import com.aidanwhiteley.books.domain.User;
-import com.aidanwhiteley.books.repository.UserRepository;
 import com.aidanwhiteley.books.util.preprod.MongoJavaServerConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
-import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
-import org.springframework.data.mongodb.config.MongoConfigurationSupport;
 import org.springframework.lang.NonNull;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -32,17 +28,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final ApplicationContext applicationContext;
 
-    private final UserRepository userRepository;
-
     @Value("${books.autoAuthUser}")
     private boolean autoAuthUser;
 
     @Autowired
-    public JwtAuthenticationFilter(JwtAuthenticationService jwtAuthenticationService, ApplicationContext applicationContext,
-                                   UserRepository userRepository) {
+    public JwtAuthenticationFilter(JwtAuthenticationService jwtAuthenticationService, ApplicationContext applicationContext) {
         this.jwtService = jwtAuthenticationService;
         this.applicationContext = applicationContext;
-        this.userRepository = userRepository;
     }
 
     @Override
@@ -71,14 +63,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         boolean inMemoryMongoDb = false;
         try {
             Object mongoConfigObj = applicationContext.getBean("books-mongo-java-server");
-            if (mongoConfigObj != null && mongoConfigObj instanceof MongoJavaServerConfig) {
+            if (mongoConfigObj instanceof MongoJavaServerConfig) {
                 MongoJavaServerConfig mongoConfig = (MongoJavaServerConfig) mongoConfigObj;
                 if (mongoConfig.getDatabaseName().equalsIgnoreCase(MongoJavaServerConfig.DB_NAME)) {
                     inMemoryMongoDb = true;
                 }
             }
         } catch (Exception e) {
-            inMemoryMongoDb = false;
+            LOGGER.warn("Unable to retrieve Mongo client bean from application context", e);
         }
 
         return inMemoryMongoDb;

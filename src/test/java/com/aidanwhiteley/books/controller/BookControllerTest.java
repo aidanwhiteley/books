@@ -20,6 +20,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.net.URI;
 import java.util.Arrays;
@@ -84,8 +85,12 @@ public class BookControllerTest extends IntegrationTest {
 
         // Title should be available to everyone
         assertEquals(J_UNIT_TESTING_FOR_BEGINNERS, book.getTitle());
+
         // Email should only be available to admins
-        assertEquals("", book.getCreatedBy().getEmail());
+        boolean noAuthProfile = Arrays.stream(this.environment.getActiveProfiles()).
+                anyMatch(s -> s.startsWith("mongo-java-server-no-auth"));
+        String expected = noAuthProfile ? "joe.dimagio@gmail.com" : "";
+        assertEquals(expected, book.getCreatedBy().getEmail());
     }
 
     @Test

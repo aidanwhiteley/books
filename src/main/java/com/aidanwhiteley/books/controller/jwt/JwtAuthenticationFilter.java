@@ -83,7 +83,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         dummyUser.setFirstName("Auto");
         dummyUser.setLastName("Logon");
         dummyUser.setFullName("Auto Logon");
-        dummyUser.addRole(User.Role.ROLE_EDITOR);
+        dummyUser.addRole(User.Role.ROLE_ADMIN);
         dummyUser.setLastLogon(LocalDateTime.MIN);
         dummyUser.setEmail("example@example.com");
         dummyUser.setAuthProvider(User.AuthenticationProvider.LOCAL);

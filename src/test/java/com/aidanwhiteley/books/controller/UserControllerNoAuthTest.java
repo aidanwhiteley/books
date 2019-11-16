@@ -25,7 +25,7 @@ public class UserControllerNoAuthTest extends IntegrationTest {
         ResponseEntity<User> response = testRestTemplate.getForEntity("/secure/api/user", User.class);
         assertEquals(expectedStatusCode, response.getStatusCode().value());
 
-        assertEquals(Objects.requireNonNull(response.getBody()).getHighestRole(), User.Role.ROLE_EDITOR);
+        assertEquals(Objects.requireNonNull(response.getBody()).getHighestRole(), User.Role.ROLE_ADMIN);
     }
 
 

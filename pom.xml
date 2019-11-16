@@ -234,7 +234,7 @@
                 <version>1.7.0</version>
                 <configuration>
                     <to>
-                        <image>books</image>
+                        <image>books-spring-boot</image>
                     </to>
                     <container>
                         <ports>

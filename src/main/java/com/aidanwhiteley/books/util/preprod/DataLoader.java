@@ -117,9 +117,7 @@ public class DataLoader {
         jsons.stream().map(Document::parse).forEach(i -> {
             boolean autoAuthUserServiceId = i.get("authenticationServiceId").toString().contains("Dummy12345678");
             // Only insert the user data for the "auto logon" user if the config says to
-            if (autoAuthUserServiceId && autoAuthUser) {
-                template.insert(i, USERS_COLLECTION);
-            } else if (!autoAuthUserServiceId) {
+            if ((autoAuthUserServiceId && autoAuthUser) || !autoAuthUserServiceId) {
                 template.insert(i, USERS_COLLECTION);
             }
         });

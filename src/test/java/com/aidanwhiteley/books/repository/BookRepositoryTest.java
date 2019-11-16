@@ -152,7 +152,7 @@ public class BookRepositoryTest extends IntegrationTest {
     @Test
     public void searchForBooks() {
         // mongo-java-server doesnt support full text indexes across fields
-        if (Arrays.asList(this.environment.getActiveProfiles()).contains("mongo-java-server")) {
+        if (Arrays.stream(this.environment.getActiveProfiles()).anyMatch(s -> s.startsWith("mongo-java-server"))) {
             LOGGER.warn("Test skipped - mongo-java-server doesnt yet support weighted full text indexes on multiple fields");
             return;
         }

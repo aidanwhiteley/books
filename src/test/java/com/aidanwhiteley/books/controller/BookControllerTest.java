@@ -84,8 +84,12 @@ public class BookControllerTest extends IntegrationTest {
 
         // Title should be available to everyone
         assertEquals(J_UNIT_TESTING_FOR_BEGINNERS, book.getTitle());
+
         // Email should only be available to admins
-        assertEquals("", book.getCreatedBy().getEmail());
+        boolean noAuthProfile = Arrays.stream(this.environment.getActiveProfiles()).
+                anyMatch(s -> s.startsWith("mongo-java-server-no-auth"));
+        String expected = noAuthProfile ? "joe.dimagio@gmail.com" : "";
+        assertEquals(expected, book.getCreatedBy().getEmail());
     }
 
     @Test
@@ -139,7 +143,7 @@ public class BookControllerTest extends IntegrationTest {
 
         // This test doesnt run with mongo-java-server as it uses weighted full text index
         // against multiple fields - which is not currently supported by mongo-java-server.
-        if (Arrays.asList(this.environment.getActiveProfiles()).contains("mongo-java-server")) {
+        if (Arrays.stream(this.environment.getActiveProfiles()).anyMatch(s -> s.startsWith("mongo-java-server"))) {
             LOGGER.warn("Test skipped - mongo-java-server doesnt yet support weighted full text indexes on multiple fields");
             return;
         }
@@ -162,7 +166,7 @@ public class BookControllerTest extends IntegrationTest {
 
         // This test doesnt run with mongo-java-server as it uses weighted full text index
         // against multiple fields - which is not currently supported by mongo-java-server.
-        if (Arrays.asList(this.environment.getActiveProfiles()).contains("mongo-java-server")) {
+        if (Arrays.stream(this.environment.getActiveProfiles()).anyMatch(s -> s.startsWith("mongo-java-server"))) {
             LOGGER.warn("Test skipped - mongo-java-server doesnt yet support weighted full text indexes on multiple fields");
             return;
         }

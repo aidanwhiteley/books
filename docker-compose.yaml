@@ -1,0 +1,18 @@
+
+version: '2'
+services:
+  webtier:
+    container_name: books-web-c
+    image: aidanwhiteley/books-web
+    restart: always
+    ports:
+      - 80:80
+    depends_on:
+      - javatier
+
+  javatier:
+    container_name: books-spring-boot-c
+    image: aidanwhiteley/books-spring-boot
+    restart: always
+    expose:
+      - "8080"

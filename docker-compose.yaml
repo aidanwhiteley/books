@@ -23,3 +23,18 @@ services:
       - "8080"
     environment:
       - "SPRING_PROFILES_ACTIVE=mongo-java-server-no-auth"
+    depends_on:
+      - mongo-data-tier
+
+  mongo-data-tier:
+    container_name: books-data-mongodb
+    image: mongo:4.2.1-bionic
+    restart: always
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/dev/null
+    ports:
+      - 27017:27017
+    #command: mongod "--smallfiles --logpath=/dev/null" # --quiet
+
+# https://dev.to/hugodias/wait-for-mongodb-to-start-on-docker-3h8b

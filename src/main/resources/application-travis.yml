@@ -1,0 +1,62 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/books-dev?safe=true&journal=true&w=majority&connectTimeoutMS=1001&wtimeoutMS=1000&serverSelectionTimeoutMS=10000
+  mail:
+    port: 3025    # Must match the value specified in the SignUpNotificationServiceTest. Set hight to avoid problems on Unix envs
+
+# By default actuator is disabled.
+# These values are overriden here to allow for testing
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      exposure:
+        include: info, threaddump
+
+wiremock:
+  server:
+    port: 8883
+
+books:
+  client:
+    enableCORS: true      # Note - this value overriden in the IntegrationTest base test class
+    allowedCorsOrigin: http://localhost:9000
+    postLogonUrl: http://localhost:9000/
+    xsrfHeader: X-XSRF
+
+  google:
+    books:
+      api:
+        searchUrl: http://localhost:${wiremock.server.port}/books/v1/volumes?maxResults=30&q=
+        getByIdUrl: http://localhost:${wiremock.server.port}/books/v1/volumes/
+        countryCode: country=GB
+        connectTimeout: 500
+        readTimeout: 750
+
+  reload:
+    development:
+      data: true    # Whether the contents of the /src/main/resources/sample_data will be reloaded into the database at application startup. Deletes all existing data!!!
+
+  users:
+    default:
+      admin:
+        email: "exmaple@example.com"  # The remote email address for the user that will be automatically made an admin on first logon
+    registrationAdminEmail:
+      enabled: false
+      emailFrom: "exampleFrom@example.com"
+      emailTo: "exampleTo@example.com"
+
+    allow:
+      actuator:
+        user:
+          creation: true
+
+  jwt:
+    secretKey: "NotARealSecret"
+    cookieOverHttpsOnly: false
+    cookieAccessedByHttpOnly: true
+
+  oauth2:
+    cookieOverHttpsOnly: false
+

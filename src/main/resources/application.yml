@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: mongo-java-server
+    active: travis
 
   data:
     mongodb:

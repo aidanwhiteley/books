@@ -1,0 +1,41 @@
+# Run the Docker containers for the
+# a) books api microservice - https://github.com/aidanwhiteley/books
+# b) the books web tier SPA - https://github.com/aidanwhiteley/books-web
+# c) the books Mongo data store
+
+version: '2'
+
+services:
+
+  webtier:
+    container_name: books-web-container
+    image: aidanwhiteley/books-web
+    restart: always
+    ports:
+      - 80:80
+    depends_on:
+      - javatier
+
+  javatier:
+    container_name: books-spring-boot-container
+    image: aidanwhiteley/books-spring-boot
+    restart: always
+    expose:
+      - "8080"
+    environment:
+      - "SPRING_PROFILES_ACTIVE=dev"
+    depends_on:
+      - mongo-data-tier
+
+  mongo-data-tier:
+    container_name: books-data-mongodb
+    image: mongo:4.2.1-bionic
+    restart: always
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/dev/null
+    ports:
+      - 27017:27017
+    #command: mongod "--smallfiles --logpath=/dev/null" # --quiet
+
+# https://dev.to/hugodias/wait-for-mongodb-to-start-on-docker-3h8b

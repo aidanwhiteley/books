@@ -27,6 +27,7 @@ public class DataLoader {
     private static final String USERS_COLLECTION = "user";
     private static final Logger LOGGER = LoggerFactory.getLogger(DataLoader.class);
     private static final String SEPARATOR = "****************************************************************************";
+    public static final String AUTO_LOGON_ID = "Dummy12345678";
 
     private final MongoTemplate template;
 
@@ -52,7 +53,7 @@ public class DataLoader {
      * "Fail safe" checking for required Spring profile being active and the config switch setting.
      */
     @Bean
-    @Profile({"dev", "test", "mongo-java-server", "mongo-java-server-no-auth"})
+    @Profile({"dev", "travis", "mongo-java-server", "mongo-java-server-no-auth"})
     public CommandLineRunner populateDummyData() {
         return args -> {
 
@@ -115,7 +116,7 @@ public class DataLoader {
             jsons = bufferedReader.lines().collect(Collectors.toList());
         }
         jsons.stream().map(Document::parse).forEach(i -> {
-            boolean autoAuthUserServiceId = i.get("authenticationServiceId").toString().contains("Dummy12345678");
+            boolean autoAuthUserServiceId = i.get("authenticationServiceId").toString().contains(AUTO_LOGON_ID);
             // Only insert the user data for the "auto logon" user if the config says to
             if ((autoAuthUserServiceId && autoAuthUser) || !autoAuthUserServiceId) {
                 template.insert(i, USERS_COLLECTION);
@@ -130,7 +131,7 @@ public class DataLoader {
      * mongo-java-server doesnt support full text indexes that cover multiple fields.
      */
     @Bean
-    @Profile({"dev", "test"})
+    @Profile({"doNotRun"})
     public CommandLineRunner createIndexed() {
         return args -> {
 
@@ -148,7 +149,7 @@ public class DataLoader {
                 LOGGER.info(SEPARATOR);
                 LOGGER.info("Loading indexes for books project");
 
-                jsons.stream().map(s -> new Document().append("$eval", s)).forEach(template::executeCommand);
+                jsons.stream().map(Document::parse).forEach(template::executeCommand);
                 LOGGER.info("Created indexes for books project");
 
                 LOGGER.info(SEPARATOR);

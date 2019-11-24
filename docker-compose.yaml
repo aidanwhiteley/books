@@ -7,23 +7,19 @@ version: '2'
 
 services:
 
-  webtier:
+  web-tier:
     container_name: books-web-container
     image: aidanwhiteley/books-web
     restart: always
     ports:
       - 80:80
     depends_on:
-      - javatier
+      - java-tier
 
-  javatier:
+  java-tier:
     container_name: books-spring-boot-container
     image: aidanwhiteley/books-spring-boot
     restart: always
-    expose:
-      - "8080"
-    environment:
-      - "SPRING_PROFILES_ACTIVE=dev"
     depends_on:
       - mongo-data-tier
 

@@ -53,7 +53,7 @@ public class DataLoader {
      * "Fail safe" checking for required Spring profile being active and the config switch setting.
      */
     @Bean
-    @Profile({"dev", "travis", "mongo-java-server", "mongo-java-server-no-auth"})
+    @Profile({"dev-mongo-java-server", "dev-mongo-java-server-no-auth", "dev-mongodb-no-auth", "dev-mongodb", "travis", "container-demo-no-auth"})
     public CommandLineRunner populateDummyData() {
         return args -> {
 
@@ -109,7 +109,7 @@ public class DataLoader {
              InputStreamReader inputStreamReader = new InputStreamReader(resource, StandardCharsets.UTF_8);
              BufferedReader bufferedReader = new BufferedReader(inputStreamReader)) {
 
-            // Clearing and loading data into user collection - happens after index creation file found and loaded
+            // Clearing and loading data into user collection - happens after user creation file found and loaded
             LOGGER.info("Clearing users collection and loading development data for books project");
             template.dropCollection(USERS_COLLECTION);
 

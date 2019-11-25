@@ -15,7 +15,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 import java.net.InetSocketAddress;
 
 @Configuration(value="books-mongo-java-server")
-@Profile({"mongo-java-server", "mongo-java-server-no-auth"})
+@Profile({"dev-mongo-java-server", "dev-mongo-java-server-no-auth"})
 @EnableMongoRepositories(basePackages = "com.aidanwhiteley.books")
 /*
   Tests can be run against mongo-java-server - a fake in memory replacement for Mongo.

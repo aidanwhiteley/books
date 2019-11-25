@@ -96,9 +96,15 @@ dev-mongo-java-server-no-auth
 	- configured to allow CORS access to APIs
 	- clears down DB and reloads test data on every restart
 	
-dev-no-auth
+dev-mongodb-no-auth
 	- uses a real MongoDb
 	- configured such that all request have admin access
+	- configured to allow CORS access to APIs
+	- clears down DB and reloads test data on every restart
+	
+dev-mongodb
+	- uses a real MongoDb
+	- requires oauth configured correctly for access to update operations
 	- configured to allow CORS access to APIs
 	- clears down DB and reloads test data on every restart
 	

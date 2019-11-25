@@ -13,7 +13,7 @@ import java.util.Objects;
 
 import static org.junit.Assert.assertEquals;
 
-@ActiveProfiles({"mongo-java-server-no-auth"})
+@ActiveProfiles({"dev-mongo-java-server-no-auth"})
 public class UserControllerNoAuthTest extends IntegrationTest {
 
     @Autowired

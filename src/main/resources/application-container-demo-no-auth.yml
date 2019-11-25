@@ -19,6 +19,8 @@ wiremock:
     port: 8883
 
 books:
+  autoAuthUser: true
+
   client:
     enableCORS: true      # Note - this value overriden in the IntegrationTest base test class
     allowedCorsOrigin: http://localhost:9000

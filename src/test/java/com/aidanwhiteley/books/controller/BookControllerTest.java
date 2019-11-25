@@ -88,7 +88,7 @@ public class BookControllerTest extends IntegrationTest {
 
         // Email should only be available to admins
         boolean noAuthProfile = Arrays.stream(this.environment.getActiveProfiles()).
-                anyMatch(s -> s.startsWith("mongo-java-server-no-auth"));
+                anyMatch(s -> s.contains(IN_MEMORY_MONGODB_SPRING_PROFILE));
         String expected = noAuthProfile ? "joe.dimagio@gmail.com" : "";
         assertEquals(expected, book.getCreatedBy().getEmail());
     }

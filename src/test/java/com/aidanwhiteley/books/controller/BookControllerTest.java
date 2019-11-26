@@ -34,6 +34,7 @@ import static org.junit.Assert.assertTrue;
 public class BookControllerTest extends IntegrationTest {
 
     public static final String IN_MEMORY_MONGODB_SPRING_PROFILE = "mongo-java-server";
+    private static final String NO_AUTH_SPRING_PROFILE = "no-auth";
     private static final Logger LOGGER = LoggerFactory.getLogger(BookControllerTest.class);
     private static final String ERROR_MESSAGE_FOR_INVALID_RATING = "Supplied rating parameter not recognised";
 
@@ -88,7 +89,7 @@ public class BookControllerTest extends IntegrationTest {
 
         // Email should only be available to admins
         boolean noAuthProfile = Arrays.stream(this.environment.getActiveProfiles()).
-                anyMatch(s -> s.contains(IN_MEMORY_MONGODB_SPRING_PROFILE));
+                anyMatch(s -> s.contains(NO_AUTH_SPRING_PROFILE));
         String expected = noAuthProfile ? "joe.dimagio@gmail.com" : "";
         assertEquals(expected, book.getCreatedBy().getEmail());
     }

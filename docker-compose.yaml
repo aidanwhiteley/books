@@ -20,6 +20,10 @@ services:
     container_name: books-spring-boot-container
     image: aidanwhiteley/books-spring-boot
     restart: always
+    expose:
+      - "8080"
+    environment:
+      - "SPRING_PROFILES_ACTIVE=container-demo-no-auth"
     depends_on:
       - mongo-data-tier
 

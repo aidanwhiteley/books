@@ -1,12 +1,10 @@
 package com.aidanwhiteley.books.controller.jwt;
 
 import com.aidanwhiteley.books.domain.User;
-import com.aidanwhiteley.books.util.preprod.MongoJavaServerConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
 import org.springframework.lang.NonNull;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -26,15 +24,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtAuthenticationService jwtService;
 
-    private final ApplicationContext applicationContext;
-
     @Value("${books.autoAuthUser}")
     private boolean autoAuthUser;
 
+    @Value("${books.reload.development.data}")
+    private boolean reloadDevelopmentData;
+
     @Autowired
-    public JwtAuthenticationFilter(JwtAuthenticationService jwtAuthenticationService, ApplicationContext applicationContext) {
+    public JwtAuthenticationFilter(JwtAuthenticationService jwtAuthenticationService) {
         this.jwtService = jwtAuthenticationService;
-        this.applicationContext = applicationContext;
     }
 
     @Override
@@ -45,10 +43,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (auth != null && auth.isAuthenticated()) {
             LOGGER.debug("Setting authentication into SecurityContext");
             SecurityContextHolder.getContext().setAuthentication(auth);
-        } else if (auth == null && autoAuthUser && isInMemoryMongoDb()) {
-            // Support for auto authorising users - but only if the correct
-            // config has been set and we are running with an in memory database
-            // which will drop and recreate all data every time the application is started.
+        } else if (auth == null && autoAuthUser && reloadDevelopmentData) {
+            // Support for auto authorising a dummy user - but only if the correct
+            // config has been set and we are running a profile that drops and
+            // recreates all data in the database each time the application starts
+            // i.e. we are running a non production system!
             auth = new JwtAuthentication(createDummyUser());
             auth.setAuthenticated(true);
             SecurityContextHolder.getContext().setAuthentication(auth);
@@ -57,23 +56,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             LOGGER.debug("Auth status was: {}", auth);
         }
         filterChain.doFilter(request, response);
-    }
-
-    private boolean isInMemoryMongoDb() {
-        boolean inMemoryMongoDb = false;
-        try {
-            Object mongoConfigObj = applicationContext.getBean("books-mongo-java-server");
-            if (mongoConfigObj instanceof MongoJavaServerConfig) {
-                MongoJavaServerConfig mongoConfig = (MongoJavaServerConfig) mongoConfigObj;
-                if (mongoConfig.getDatabaseName().equalsIgnoreCase(MongoJavaServerConfig.DB_NAME)) {
-                    inMemoryMongoDb = true;
-                }
-            }
-        } catch (Exception e) {
-            LOGGER.warn("Unable to retrieve Mongo client bean from application context", e);
-        }
-
-        return inMemoryMongoDb;
     }
 
     private User createDummyUser() {

@@ -1,5 +1,6 @@
 package com.aidanwhiteley.books.util.preprod;
 
+import com.aidanwhiteley.books.domain.Book;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,8 +9,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.index.TextIndexDefinition;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
@@ -17,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,9 +31,11 @@ public class DataLoader {
     private static final String USERS_COLLECTION = "user";
     private static final Logger LOGGER = LoggerFactory.getLogger(DataLoader.class);
     private static final String AUTO_LOGON_ID = "Dummy12345678";
+    private static final String IN_MEMORY_MONGODB_SPRING_PROFILE = "mongo-java-server";
 
     private final MongoTemplate template;
     private final PreProdWarnings preProdWarnings;
+    private final Environment environment;
 
     @Value("${books.reload.development.data}")
     private boolean reloadDevelopmentData;
@@ -38,9 +44,10 @@ public class DataLoader {
     private boolean autoAuthUser;
 
     @Autowired
-    public DataLoader(MongoTemplate mongoTemplate, PreProdWarnings preProdWarnings) {
+    public DataLoader(MongoTemplate mongoTemplate, PreProdWarnings preProdWarnings, Environment environment) {
         this.template = mongoTemplate;
         this.preProdWarnings = preProdWarnings;
+        this.environment = environment;
     }
 
 
@@ -64,6 +71,7 @@ public class DataLoader {
                 preProdWarnings.displayDataReloadWarningMessage();
                 loadBooksData();
                 loadUserData();
+                createFullTextIndex();
 
             } else {
                 LOGGER.info("Development data not reloaded due to config settings");
@@ -108,6 +116,36 @@ public class DataLoader {
                 template.insert(i, USERS_COLLECTION);
             }
         });
+    }
+
+    /**
+     * The creation of indexes for the MongoDb is outside of the application code to allow
+     * better tweaking of those indexes over time.
+     * Almost all tests run fine without indexes in place - the test data isn't large.
+     * The exception is the tests that require a full text index to be in place for "search" to work.
+     * Therefore, we run in the full text index below when loading test data - but not
+     * when the Spring profile means we are running against the in memory mongo-java-server
+     * as that fale Mongo doesn't support full text indexes currently.
+     *
+     * The real application index creation commands are in
+     * /src/main/resources/indexes/books.data
+     * It does not matter much if the index below gets out of step with the real index - in terms
+     * of the field weightings at least!
+     */
+    private void createFullTextIndex() {
+
+        if (Arrays.stream(this.environment.getActiveProfiles()).noneMatch(s -> s.contains(IN_MEMORY_MONGODB_SPRING_PROFILE))) {
+            TextIndexDefinition textIndex = new TextIndexDefinition.TextIndexDefinitionBuilder()
+                    .onField("title", 10F)
+                    .onField("author", 10F)
+                    .onField("genre", 5F)
+                    .onField("summary", 4F)
+                    .onField("comments.comment", 3F)
+                    .onField("googleBookDetails.volumeInfo.description", 1F)
+                    .named("fullTextIndexForTests")
+                    .build();
+            template.indexOps(Book.class).ensureIndex(textIndex);
+        }
     }
 
 }

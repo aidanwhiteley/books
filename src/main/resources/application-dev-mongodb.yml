@@ -1,7 +1,7 @@
 spring:
   data:
     mongodb:
-      uri: mongodb://localhost:27017/books-mongo-java-server?safe=true&journal=true&w=majority&connectTimeoutMS=1001&wtimeoutMS=1000&serverSelectionTimeoutMS=10000
+      uri: mongodb://localhost:27017/books-mongo-dev?safe=true&journal=true&w=majority&connectTimeoutMS=1001&wtimeoutMS=1000&serverSelectionTimeoutMS=10000
   mail:
     port: 3025    # Must match the value specified in the SignUpNotificationServiceTest. Set hight to avoid problems on Unix envs
 
@@ -46,7 +46,7 @@ logging:
 
 
 books:
-  autoAuthUser: true
+  autoAuthUser: false
 
   client:
     enableCORS: true      # Note - this value overriden in the IntegrationTest base test class

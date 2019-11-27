@@ -25,7 +25,7 @@ import java.net.InetSocketAddress;
 public class MongoJavaServerConfig extends AbstractMongoClientConfiguration {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MongoJavaServerConfig.class);
-    public static final String DB_NAME = "books-mongo-in-memory";
+    private static final String DB_NAME = "books-mongo-in-memory";
     private final PreProdWarnings preProdWarnings;
 
     @Autowired

@@ -13,7 +13,7 @@ import java.util.Objects;
 
 import static org.junit.Assert.assertEquals;
 
-@ActiveProfiles({"mongo-java-server-no-auth"})
+@ActiveProfiles({"dev-mongo-java-server-no-auth"})
 public class UserControllerNoAuthTest extends IntegrationTest {
 
     @Autowired
@@ -26,7 +26,7 @@ public class UserControllerNoAuthTest extends IntegrationTest {
         ResponseEntity<User> response = testRestTemplate.getForEntity("/secure/api/user", User.class);
         assertEquals(expectedStatusCode, response.getStatusCode().value());
 
-        assertEquals(Objects.requireNonNull(response.getBody()).getHighestRole(), User.Role.ROLE_ADMIN);
+        assertEquals(User.Role.ROLE_ADMIN, Objects.requireNonNull(response.getBody()).getHighestRole());
     }
 
 

@@ -228,13 +228,15 @@
                 <version>2.2.4</version>
             </plugin>
 
+            <!-- To build to local Docker daemon use:
+                mvn compile jib:dockerBuild -->
             <plugin>
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>jib-maven-plugin</artifactId>
                 <version>1.8.0</version>
                 <configuration>
                     <to>
-                        <image>books</image>
+                        <image>aidanwhiteley/books-spring-boot</image>
                     </to>
                     <container>
                         <ports>

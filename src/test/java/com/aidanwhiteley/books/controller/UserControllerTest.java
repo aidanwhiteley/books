@@ -24,6 +24,7 @@ import static org.junit.Assert.assertTrue;
 
 public class UserControllerTest extends IntegrationTest {
 
+    private static final String NO_AUTH_SPRING_PROFILE = "no-auth";
     private static final String COOKIE_HEADER_NAME = "Cookie";
 
     @Autowired
@@ -40,7 +41,7 @@ public class UserControllerTest extends IntegrationTest {
 
     @Test
     public void getUserDetailsNoAuthentication() {
-        int expectedStatusCode = (Arrays.asList(this.environment.getActiveProfiles()).contains("mongo-java-server-no-auth")) ?
+        int expectedStatusCode = (Arrays.stream(this.environment.getActiveProfiles()).anyMatch(s -> s.contains(NO_AUTH_SPRING_PROFILE))) ?
             HttpStatus.OK.value() : HttpStatus.UNAUTHORIZED.value();
 
         ResponseEntity<User> response = testRestTemplate.getForEntity("/secure/api/user", User.class);

@@ -76,6 +76,64 @@ There are lots of other ways to pass in these values e.g. they can be passed as 
 ~~~~
 Otherwise, see the Spring documentation for more options.
 
+### Spring profiles - WiP
+
+default 
+	- sets active profile to dev-mongo-java-server - otherwise
+	- requires oauth configured correctly for access to update operations
+	- configured to disallow CORS access to APIs
+	- does not clear down DB or reload test data on every restart
+
+dev-mongo-java-server
+	- uses in memory mongo-java-server rather than real MongoDb
+	- requires oauth configured correctly for access to update operations
+	- configured to allow CORS access to APIs
+	- clears down DB and reloads test data on every restart
+	
+dev-mongo-java-server-no-auth
+	- uses in memory mongo-java-server rather than real MongoDb
+	- configured such that all request have admin access
+	- configured to allow CORS access to APIs
+	- clears down DB and reloads test data on every restart
+	
+dev-mongodb-no-auth
+	- uses a real MongoDb
+	- configured such that all request have admin access
+	- configured to allow CORS access to APIs
+	- clears down DB and reloads test data on every restart
+	
+dev-mongodb
+	- uses a real MongoDb
+	- requires oauth configured correctly for access to update operations
+	- configured to allow CORS access to APIs
+	- clears down DB and reloads test data on every restart
+	
+travis
+	- uses a real MongoDb and relies on script running to set up full text indexes
+	- requires oauth configured correctly for access to update operations
+	- configured to allow CORS access to APIs
+	- clears down DB and reloads test data on every restart
+	
+container-demo-no-auth
+	- uses a real MongoDb
+	- configured such that all request have admin access
+	- does not allow CORS access to APIs
+	- clears down DB and reloads test data on every restart
+	
+container-production
+	- uses a real MongoDb and requires the running of a script to create indexes
+	- requires script file outside of source code control setting JWT secret keys and Mongo connection details
+	- requires oauth configured correctly for access to update operations
+	- does not allow CORS access to APIs
+	- does not load / reload test data
+	
+production
+	- uses a real MongoDb and requires the running of a script to create indexes
+	- requires script file outside of source code control setting JWT secret keys and Mongo connection details
+	- requires oauth configured correctly for access to update operations
+	- does not allow CORS access to APIs
+	- does not load / reload test data
+
 ### Configuring for production
 "Out of the box" the code runs with the "mongo-java-server" Spring profile - see the first lines of application.yml. Outside of development
 and test environments **DO NOT** run with is profile (or the "dev" profile). When running in other environments you will need to decide the 
@@ -107,10 +165,10 @@ To run a client to access the microservice, head on over to https://github.com/a
 ### Sample data
 There is some sample data provided to make initial understanding of the functionality a bit easier.
 It is is the /src/main/resources/sample_data. See the #README.txt in that directory.
-The sample data is auto loaded when running with Spring profiles of "mongo-java-server" (the checked in default), "mongo-java-server-no-auth", "dev" and "test".
+The sample data is auto loaded when running with Spring profiles of "mongo-java-server" (the checked in default), "mongo-java-server-no-auth", "dev" and "travis".
 
 #### Indexes
-The Mongo indexes required by the application are also "auto created" when running with the "dev", "test", "mongo-java-server" and "mongo-java-server-no-auth" profiles.
+The Mongo indexes required by the application are also "auto created" when running with the "dev", "travis", "mongo-java-server" and "mongo-java-server-no-auth" profiles.
 When running with other profiles, you should manually apply the indexes defined in /src/main/resources/indexes.
 In particular, the application's Search functionality won't work unless you run the command to build
 the weighted full text index across various fields of the Book collection. The rest of the application will run without 

@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: mongo-java-server
+    active: dev-mongo-java-server
 
   data:
     mongodb:
@@ -16,7 +16,7 @@ spring:
   application:
     name: The Cloudy Book Club
 
-  security:
+  security:           # You need to set up your own accounts / client secrets etc in Google and Facebook and replace NotInSCMx values
     oauth2:
       client:
         registration:
@@ -41,16 +41,8 @@ spring:
           writetimeout: 5000
     test-connection: false
 
-#server:
-  # use-forward-headers: true       # Assuming that this service is running behind a proxy / gateway that terminates the SSL
-  # port:                           # If you need to set the port the service runs on
-  # tomcat:
-    # remote-ip-header: x-forwarded-for             # If you need to set these, then also add required headers in proxy
-    # protocol-header: x-forwarded-proto            # e.g. for Apache
-    # internal-proxies: 123\.45\.\d{1,3}\.\d{1,3}   # RequestHeader set X-Forwarded-Proto https and RequestHeader set X-Forwarded-Port 443
-
 # By default actuator is disabled.
-# If you want to enable for your application, see the application-dev.yml for an example where these values are overriden
+# If you want to enable for your application, see the application-dev-mongo-java-server.yml for an example where these values are overriden
 management:
   endpoints:
     enabled-by-default: false
@@ -63,10 +55,10 @@ info:
     version: "@project.version@"
 
 books:
-  autoAuthUser: false
+  autoAuthUser: false       # Must be false in production!
 
   client:
-    enableCORS: false
+    enableCORS: false       # Setting this to true in production is not supported - leaves app at risk of CSRF
     allowedCorsOrigin: http://localhost:9000
     postLogonUrl: http://localhost:9000/
     xsrfHeader: X-XSRF
@@ -104,7 +96,7 @@ books:
     allow:
       actuator:
         user:
-          creation: false
+          creation: false           # Whether you allow admins to request the creation of users access Actuator endpoints
 
   jwt:
     expiryInMilliSeconds: 86400000  # One day

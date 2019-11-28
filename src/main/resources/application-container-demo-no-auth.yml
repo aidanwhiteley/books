@@ -1,0 +1,32 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://mongo-data-tier:27017/books-container-demo-no-auth?safe=true&journal=true&w=majority&connectTimeoutMS=1001&wtimeoutMS=1000&serverSelectionTimeoutMS=10000
+
+books:
+  autoAuthUser: true
+
+  client:
+    enableCORS: false
+
+  reload:
+    development:
+      data: true    # Whether the contents of the /src/main/resources/sample_data will be reloaded into the database at application startup. Deletes all existing data!!!
+
+  users:
+    registrationAdminEmail:
+      enabled: false
+
+    allow:
+      actuator:
+        user:
+          creation: false
+
+  jwt:
+    secretKey: "ThisIsntASecret"
+    cookieOverHttpsOnly: false
+    cookieAccessedByHttpOnly: true
+
+  oauth2:
+    cookieOverHttpsOnly: false
+

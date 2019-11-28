@@ -33,6 +33,8 @@ import static org.junit.Assert.assertTrue;
 @SuppressWarnings("ConstantConditions")
 public class BookControllerTest extends IntegrationTest {
 
+    public static final String IN_MEMORY_MONGODB_SPRING_PROFILE = "mongo-java-server";
+    private static final String NO_AUTH_SPRING_PROFILE = "no-auth";
     private static final Logger LOGGER = LoggerFactory.getLogger(BookControllerTest.class);
     private static final String ERROR_MESSAGE_FOR_INVALID_RATING = "Supplied rating parameter not recognised";
 
@@ -87,7 +89,7 @@ public class BookControllerTest extends IntegrationTest {
 
         // Email should only be available to admins
         boolean noAuthProfile = Arrays.stream(this.environment.getActiveProfiles()).
-                anyMatch(s -> s.startsWith("mongo-java-server-no-auth"));
+                anyMatch(s -> s.contains(NO_AUTH_SPRING_PROFILE));
         String expected = noAuthProfile ? "joe.dimagio@gmail.com" : "";
         assertEquals(expected, book.getCreatedBy().getEmail());
     }
@@ -143,7 +145,7 @@ public class BookControllerTest extends IntegrationTest {
 
         // This test doesnt run with mongo-java-server as it uses weighted full text index
         // against multiple fields - which is not currently supported by mongo-java-server.
-        if (Arrays.stream(this.environment.getActiveProfiles()).anyMatch(s -> s.startsWith("mongo-java-server"))) {
+        if (Arrays.stream(this.environment.getActiveProfiles()).anyMatch(s -> s.contains(IN_MEMORY_MONGODB_SPRING_PROFILE))) {
             LOGGER.warn("Test skipped - mongo-java-server doesnt yet support weighted full text indexes on multiple fields");
             return;
         }
@@ -158,6 +160,7 @@ public class BookControllerTest extends IntegrationTest {
         List<Book> books = JsonPath.read(response.getBody(), "$.content");
         LOGGER.debug("Retrieved JSON was: " + response.getBody());
 
+
         assertTrue("No books found", books.size() >= 1);
     }
 
@@ -166,7 +169,7 @@ public class BookControllerTest extends IntegrationTest {
 
         // This test doesnt run with mongo-java-server as it uses weighted full text index
         // against multiple fields - which is not currently supported by mongo-java-server.
-        if (Arrays.stream(this.environment.getActiveProfiles()).anyMatch(s -> s.startsWith("mongo-java-server"))) {
+        if (Arrays.stream(this.environment.getActiveProfiles()).anyMatch(s -> s.contains(IN_MEMORY_MONGODB_SPRING_PROFILE))) {
             LOGGER.warn("Test skipped - mongo-java-server doesnt yet support weighted full text indexes on multiple fields");
             return;
         }

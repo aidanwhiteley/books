@@ -1,7 +1,7 @@
 spring:
   data:
     mongodb:
-      uri: mongodb://localhost:27017/books-mongo-java-server?safe=true&journal=true&w=majority&connectTimeoutMS=1001&wtimeoutMS=1000&serverSelectionTimeoutMS=10000
+      uri: mongodb://localhost:27017/books-dev-mongo-java-server?safe=true&journal=true&w=majority&connectTimeoutMS=1001&wtimeoutMS=1000&serverSelectionTimeoutMS=10000
   mail:
     port: 3025    # Must match the value specified in the SignUpNotificationServiceTest. Set hight to avoid problems on Unix envs
 
@@ -15,7 +15,7 @@ spring:
           service-base-url: http://localhost:9000/
           metadata:
             tags:
-              environment: mongo-java-server
+              environment: development
 
 # By default actuator is disabled.
 # These values are overriden here to values that could be used on production
@@ -33,7 +33,7 @@ management:
     mail:
       enabled: false
 
-# With this profile we dont want any warning messages when the application cannot contact a Spring Boot Admin isntance at start up
+# With this profile we dont want any warning messages when the application cannot contact a Spring Boot Admin instance at start up
 logging:
   level:
     de:
@@ -43,7 +43,6 @@ logging:
             client:
               registration:
                 ApplicationRegistrator: ERROR
-
 
 books:
   client:

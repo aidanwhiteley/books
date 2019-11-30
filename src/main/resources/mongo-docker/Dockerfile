@@ -4,7 +4,7 @@
 # docker build -t aidanwhiteley/books-db-mongodb .
 #
 # To run the Dockerfile created image use something like:
-# docker run -e MONGO_INITDB_APP_USERNAME=abc -e MONGO_INITDB_APP_PASSWORD=def aidanwhiteley/books-db-mongodb
+# docker run -e MONGO_INITDB_APP_USERNAME=abc -e MONGO_INITDB_APP_PASSWORD=def -e MONGO_INITDB_DB_NAME=ghi aidanwhiteley/books-db-mongodb
 #
 # The Dockerfile created image is expected to be run from a docker-compose that sets the environment variables
 # and is also in control of setting the overall MongoDb authorisation settings i.e. requiring authorisation!

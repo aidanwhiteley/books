@@ -13,8 +13,12 @@
 # This is not checked into source code control (it is excluded by .gitignore).
 # The .env file should have the following contents
 #
+# MongoDB related env vars
 # MONGO_INITDB_ROOT_USERNAME=<your MongoDB root user name here>
 # MONGO_INITDB_ROOT_PASSWORD=<password for MongoDB root user here>
+# MONGO_INITDB_APP_USERNAME=<MongoDb user used by the application>
+# MONGO_INITDB_APP_PASSWORD=<password for the MongoDB userid used by the application>
+# MONGO_INITDB_DB_NAME=<Name of the MongoDb to use for the applicarion>
 
 version: '2'
 
@@ -32,7 +36,7 @@ services:
       - api-tier-java
 
   # This container is built using Google Jib using the maven command for this project of
-  # mvn compile jib:dockerBuild.
+  # mvn compile jib:dockerBuild
   # The service name "api-tier-java" is known to the nginx config used on the web-tier-angular
   # service implementation
   api-tier-java:
@@ -43,8 +47,8 @@ services:
       - "8080"
     environment:
       - "SPRING_PROFILES_ACTIVE=container-demo-no-auth"
-      - "MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_APP_USERNAME}"
-      - "MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_APP_PASSWORD}"
+      - "MONGO_INITDB_APP_USERNAME=${MONGO_INITDB_APP_USERNAME}"
+      - "MONGO_INITDB_APP_PASSWORD=${MONGO_INITDB_APP_PASSWORD}"
     depends_on:
       - data-tier-mongo
 

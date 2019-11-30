@@ -2,7 +2,7 @@ spring:
   data:
     mongodb:
       # Username and password are expected to be passed in as environment variables
-      uri: mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@data-tier-mongo:27017/books-container-demo-no-auth?safe=true&journal=true&w=majority&connectTimeoutMS=1001&wtimeoutMS=1000&serverSelectionTimeoutMS=10000&authSource=admin
+      uri: mongodb://${MONGO_INITDB_APP_USERNAME}:${MONGO_INITDB_APP_PASSWORD}@data-tier-mongo:27017/${MONGO_INITDB_DB_NAME}?safe=true&journal=true&w=majority&connectTimeoutMS=1001&wtimeoutMS=1000&serverSelectionTimeoutMS=10000&authSource=admin
 
 books:
   autoAuthUser: true

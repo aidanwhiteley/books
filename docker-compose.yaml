@@ -2,6 +2,11 @@
 # a) books api microservice - https://github.com/aidanwhiteley/books
 # b) the books web tier SPA - https://github.com/aidanwhiteley/books-web
 # c) the books Mongo data store
+#
+# Started with either
+# docker-compose up
+# or
+# docker-compose up --force-recreate
 
 version: '2'
 
@@ -34,8 +39,10 @@ services:
     environment:
       - MONGO_DATA_DIR=/data/db
       - MONGO_LOG_DIR=/dev/null
-    ports:
-      - 27017:27017
+      # - MONGODB_ROOT_PASSWORD=password123
+    #ports:
+    #  - 27017:27017
     #command: mongod "--smallfiles --logpath=/dev/null" # --quiet
 
-# https://dev.to/hugodias/wait-for-mongodb-to-start-on-docker-3h8b
+# https://dev.to/hugodias/wait-for-mongodb-to-start-on-docker-3h8b3h8b
+# https://docs.docker.com/compose/environment-variables/#/the-env-file

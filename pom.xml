@@ -236,7 +236,7 @@
                 <version>1.8.0</version>
                 <configuration>
                     <to>
-                        <image>aidanwhiteley/books-spring-boot</image>
+                        <image>aidanwhiteley/books-api-java</image>
                     </to>
                     <container>
                         <ports>

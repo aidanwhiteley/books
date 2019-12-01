@@ -62,7 +62,7 @@ public class DataLoader {
      * "Fail safe" checking for required Spring profile being active and the config switch setting.
      */
     @Bean
-    @Profile({"dev-mongo-java-server", "dev-mongo-java-server-no-auth", "dev-mongodb-no-auth", "dev-mongodb", "travis", "container-demo-no-auth"})
+    @Profile({"dev-mongo-java-server", "dev-mongo-java-server-no-auth", "dev-mongodb-no-auth", "dev-mongodb", "travis"})
     public CommandLineRunner populateDummyData() {
         return args -> {
 

@@ -1,7 +1,7 @@
 # Docker file for the MongoDB tier used by the Books Microservice
 #
 # To build Docker image use:
-# docker build -t aidanwhiteley/books-db-mongodb .
+# docker build --rm -t aidanwhiteley/books-db-mongodb .
 #
 # To run the Dockerfile created image use something like:
 # docker run -e MONGO_INITDB_APP_USERNAME=abc -e MONGO_INITDB_APP_PASSWORD=def -e MONGO_INITDB_DB_NAME=ghi aidanwhiteley/books-db-mongodb

@@ -49,6 +49,7 @@ services:
       - "SPRING_PROFILES_ACTIVE=container-demo-no-auth"
       - "MONGO_INITDB_APP_USERNAME=${MONGO_INITDB_APP_USERNAME}"
       - "MONGO_INITDB_APP_PASSWORD=${MONGO_INITDB_APP_PASSWORD}"
+      - "MONGO_INITDB_DB_NAME=${MONGO_INITDB_DB_NAME}"
     depends_on:
       - data-tier-mongo
 
@@ -59,6 +60,8 @@ services:
     container_name: books-data-mongodb-container
     image: aidanwhiteley/books-db-mongodb
     restart: always
+    ports:
+      - 27017:27017
     environment:
       - MONGO_DATA_DIR=/data/db
       - MONGO_LOG_DIR=/dev/null
@@ -66,4 +69,5 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
       - MONGO_INITDB_APP_USERNAME=${MONGO_INITDB_APP_USERNAME}
       - MONGO_INITDB_APP_PASSWORD=${MONGO_INITDB_APP_PASSWORD}
-      - MONGO_INITDB_DATABASE=books-container-demo-no-auth
+      - MONGO_INITDB_DATABASE=${MONGO_INITDB_DB_NAME}
+

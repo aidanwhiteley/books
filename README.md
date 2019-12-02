@@ -1,6 +1,6 @@
 # books
 This project started as I wanted a simple "microservice" to use when trying out frameworks
-such as Spring Cloud, Pivotal Cloud Foundy and AWS.
+such as Docker, Docker Compose, Spring Cloud, Pivotal Cloud Foundy and AWS.
 
 It has developed a little further such that it is starting to provide some functionality that may 
 actually be useful.
@@ -76,68 +76,56 @@ There are lots of other ways to pass in these values e.g. they can be passed as 
 ~~~~
 Otherwise, see the Spring documentation for more options.
 
-### Spring profiles - WiP
+### Available Spring profiles
+There are Spring profile files for a range of development and test scenarios. 
 
-default 
+#### default 
 	- sets active profile to dev-mongo-java-server - otherwise
 	- requires oauth configured correctly for access to update operations
 	- configured to disallow CORS access to APIs
 	- does not clear down DB or reload test data on every restart
 
-dev-mongo-java-server
-	- uses in memory mongo-java-server rather than real MongoDb
+#### dev-mongo-java-server
+	- uses an in memory mongo-java-server rather than a real MongoDb
 	- requires oauth configured correctly for access to update operations
 	- configured to allow CORS access to APIs
-	- clears down DB and reloads test data on every restart
+	- clears down the DB and reloads test data on every restart
 	
-dev-mongo-java-server-no-auth
-	- uses in memory mongo-java-server rather than real MongoDb
-	- configured such that all request have admin access
+#### dev-mongo-java-server-no-auth
+	- uses an in memory mongo-java-server rather than a real MongoDb
+	- configured such that all request have admin access. No oauth set up required and no logon
 	- configured to allow CORS access to APIs
-	- clears down DB and reloads test data on every restart
+	- clears down the DB and reloads test data on every restart
 	
-dev-mongodb-no-auth
+#### dev-mongodb-no-auth
 	- uses a real MongoDb
-	- configured such that all request have admin access
+	- configured such that all request have admin access. No oauth set up required and no logon
 	- configured to allow CORS access to APIs
-	- clears down DB and reloads test data on every restart
+	- clears down the DB and reloads test data on every restart
 	
-dev-mongodb
+#### dev-mongodb
 	- uses a real MongoDb
 	- requires oauth configured correctly for access to update operations
 	- configured to allow CORS access to APIs
 	- clears down DB and reloads test data on every restart
 	
-travis
-	- uses a real MongoDb and relies on script running to set up full text indexes
-	- requires oauth configured correctly for access to update operations
-	- configured to allow CORS access to APIs
-	- clears down DB and reloads test data on every restart
-	
-container-demo-no-auth
+#### travis
 	- uses a real MongoDb
-	- configured such that all request have admin access
-	- does not allow CORS access to APIs
-	- clears down DB and reloads test data on every restart
+	- configured to allow CORS access to APIs
+	- clears down the DB and reloads test data on every restart
 	
-container-production
-	- uses a real MongoDb and requires the running of a script to create indexes
-	- requires script file outside of source code control setting JWT secret keys and Mongo connection details
-	- requires oauth configured correctly for access to update operations
+#### container-demo-no-auth
+    - requires the use of "docker compose up" to start Docker containers - see later
+	- uses a real MongoDb
+	- configured such that all request have admin access and oauth config is not required
 	- does not allow CORS access to APIs
-	- does not load / reload test data
+	- clears down the Mongo DB and reloads test data on every restart of the Docker containers
 	
-production
-	- uses a real MongoDb and requires the running of a script to create indexes
-	- requires script file outside of source code control setting JWT secret keys and Mongo connection details
-	- requires oauth configured correctly for access to update operations
-	- does not allow CORS access to APIs
-	- does not load / reload test data
 
 ### Configuring for production
-"Out of the box" the code runs with the "mongo-java-server" Spring profile - see the first lines of application.yml. Outside of development
-and test environments **DO NOT** run with is profile (or the "dev" profile). When running in other environments you will need to decide the 
-required functionality and configure your Spring profile accordingly. For instance, you **WILL** want to 
+"Out of the box" the code runs with the "mongo-java-server" Spring profile - see the first lines of application.yml. None
+of the checked in available Spring profiles are intended for production use. You will need to decide the 
+required functionality for your environment and configure your Spring profile accordingly. For instance, you **WILL** want to 
 set/change the secretKey used for the JWT token signing (see books:jwt:secretKey in the yml files).
 
 You will also need access to a Mongo instance. The connection URL (in the yml files) will result in the automatic
@@ -165,11 +153,11 @@ To run a client to access the microservice, head on over to https://github.com/a
 ### Sample data
 There is some sample data provided to make initial understanding of the functionality a bit easier.
 It is is the /src/main/resources/sample_data. See the #README.txt in that directory.
-The sample data is auto loaded when running with Spring profiles of "mongo-java-server" (the checked in default), "mongo-java-server-no-auth", "dev" and "travis".
+The the details of above for the available Spring profiles to see when this sample data is auto loaded.
 
 #### Indexes
-The Mongo indexes required by the application are also "auto created" when running with the "dev", "travis", "mongo-java-server" and "mongo-java-server-no-auth" profiles.
-When running with other profiles, you should manually apply the indexes defined in /src/main/resources/indexes.
+The Mongo indexes required by the application are not "auto created" (except when running in Docker containers).
+You should manually apply the indexes defined in /src/main/resources/indexes.
 In particular, the application's Search functionality won't work unless you run the command to build
 the weighted full text index across various fields of the Book collection. The rest of the application will run without 
 indexes - just more slowly as the data volumes increase!
@@ -227,6 +215,50 @@ The current version of this application has moved to the Oauth2 functionality in
 However, it does allow configuration of your own AuthorizationRequestRepository meaning that it is possible to implement a cookie
 based version. So, finally, this application is completely free of any HTTP session state! Which was the point of originally starting to write this 
 microservice as I wanted to try it out on cloud implementations such as the Pivotal Cloud Foundry and AWS.
+
+## Docker
+Docker images are available for the various tiers that make up the full application.
+### Docker web tier
+An nginx based Docker image (aidanwhiteley/books-web-angular) is available that hosts the AngularJS single page app
+and acts as the reverse proxy through to the API tier (this application). See https://github.com/aidanwhiteley/books-web
+for more details
+### Java API tier
+There is Google Jib created image (aidanwhiteley/books-api-java) for this application. 
+The image can be recreated by running "mvn compile jib:dockerBuild"
+### MongoDB data tier
+A MongoDB based Docker image (aidanwhiteley/books-db-mongodb or aidanwhiteley/books-db-mongodb-demodata) is available
+to provide data tier required by this application.
+Use the aidanwhiteley/books-db-mongodb-demodata to have sample data reloaded into the MongoDB every time the 
+container is restarted.
+See the src/main/resources/mongo-docker directory for Docker build of the data tier.
+### Docker compose
+There is a docker-compose.yaml file in the root of this application. This starts Docker containers for the above
+three tier of the overall application.
+### .env file
+The docker-compose file, the data tier and the Spring profile for use in a container all expect a set of configuration
+values to be available as environment variables. Specifically, docker-compose.yaml expects a .env file next to it. Such a
+.env file is **not** checked in to source code control - you must provide it yourself.
+The following structure is expected
+~~~~
+MONGO_INITDB_ROOT_USERNAME=Name for root user in MongoDB
+MONGO_INITDB_ROOT_PASSWORD=Password for root user in MOngoDb
+MONGO_INITDB_APP_USERNAME=Name for the MongoDB user used by the application tier
+MONGO_INITDB_APP_PASSWORD=Password for the MongoDB user used by the application
+MONGO_INITDB_DATABASE=Name of the database in MOngoDB to be used by the application
+JAVA_BOOKS_JWT_SECRET_KEY=The secret key used to sign the Java Web Toekns
+# Only applies to some development related Spring profiles.
+# In a container environment, use the aidanwhiteley/books-db-mongodb-demodata image instead
+# but still set this value to true
+JAVA_BOOKS_RELOAD_DEVELOPMENT_DATA=Whether to reload development data every restart
+# If the next key is set to true, then the following 4 keys dont need to be set and vice versa.
+# A value of true will only work if JAVA_BOOKS_RELOAD_DEVELOPMENT_DATA is also set to true
+JAVA_BOOKS_AUTO_AUTH_USER=Whether to bypass ouath security and always run HTTP requests as an admin user
+SPRING_SECURITY_OUATH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_ID=Google oauth client id
+SPRING_SECURITY_OUATH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_SECRET=Google oauth client secret
+SPRING_SECURITY_OUATH2_CLIENT_REGISTRATION_FACEBOOK_CLIENT_ID=Facebook oauth client id
+SPRING_SECURITY_OUATH2_CLIENT_REGISTRATION_FACEBOOK_CLIENT_SECRET=Facebook oauth client secret
+~~~~
+
 
 ## Spring Boot Admin
 The application supports exposing [Actuator](https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready.html) 

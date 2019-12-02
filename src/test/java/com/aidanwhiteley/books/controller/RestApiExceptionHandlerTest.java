@@ -22,7 +22,7 @@ import static com.aidanwhiteley.books.controller.RestApiExceptionHandler.MESSAGE
 import static com.aidanwhiteley.books.controller.RestApiExceptionHandler.MESSAGE_NOT_FOUND;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -75,7 +75,9 @@ public class RestApiExceptionHandlerTest extends IntegrationTest {
         context.getLogger(RestApiExceptionHandler .class).setLevel(Level.valueOf("OFF"));
         ApiExceptionData aed = raeh.handleDefaultExceptions(new RuntimeException(errMsg), null);
         context.getLogger(RestApiExceptionHandler .class).setLevel(Level.valueOf("ON"));
-        assertTrue(aed.getMessage().contains(errMsg));
+        // We dont want to accidentally expose any internal implementation details so
+        // we dont want the text of the unexpected exception sent to the client.
+        assertFalse(aed.getMessage().contains(errMsg));
     }
 //
 //    @Test

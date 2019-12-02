@@ -95,7 +95,7 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
         API_LOGGER.error("An unhandled exception was caught, logged and HTTP status 500 returned to the client.", ex);
 
         return new ApiExceptionData(INTERNAL_SERVER_ERROR.value(), INTERNAL_SERVER_ERROR.getReasonPhrase(),
-                MESSAGE_UNEXPECTED_EXCEPTION + " : " + ex.getLocalizedMessage(), getPath(request));
+                MESSAGE_UNEXPECTED_EXCEPTION, getPath(request));
     }
 
     @Override

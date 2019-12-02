@@ -219,14 +219,14 @@ microservice as I wanted to try it out on cloud implementations such as the Pivo
 ## Docker
 Docker images are available for the various tiers that make up the full application.
 ### Docker web tier
-An nginx based Docker image (aidanwhiteley/books-web-angular) is available that hosts the AngularJS single page app
+An nginx based Docker image (docker pull aidanwhiteley/books-web-angular:latest) is available that hosts the AngularJS single page app
 and acts as the reverse proxy through to the API tier (this application). See https://github.com/aidanwhiteley/books-web
 for more details
 ### Java API tier
-There is Google Jib created image (aidanwhiteley/books-api-java) for this application. 
+There is Google Jib created image (docker pull aidanwhiteley/books-api-java:latest) for this application. 
 The image can be recreated by running "mvn compile jib:dockerBuild"
 ### MongoDB data tier
-A MongoDB based Docker image (aidanwhiteley/books-db-mongodb or aidanwhiteley/books-db-mongodb-demodata) is available
+A MongoDB based Docker image (docker pull aidanwhiteley/books-db-mongodb:latest or docker pull aidanwhiteley/books-db-mongodb-demodata:latest) is available
 to provide data tier required by this application.
 Use the aidanwhiteley/books-db-mongodb-demodata to have sample data reloaded into the MongoDB every time the 
 container is restarted.
@@ -241,10 +241,10 @@ values to be available as environment variables. Specifically, docker-compose.ya
 The following structure is expected
 ~~~~
 MONGO_INITDB_ROOT_USERNAME=Name for root user in MongoDB
-MONGO_INITDB_ROOT_PASSWORD=Password for root user in MOngoDb
+MONGO_INITDB_ROOT_PASSWORD=Password for root user in MongoDb
 MONGO_INITDB_APP_USERNAME=Name for the MongoDB user used by the application tier
 MONGO_INITDB_APP_PASSWORD=Password for the MongoDB user used by the application
-MONGO_INITDB_DATABASE=Name of the database in MOngoDB to be used by the application
+MONGO_INITDB_DATABASE=Name of the database in MongoDB to be used by the application
 JAVA_BOOKS_JWT_SECRET_KEY=The secret key used to sign the Java Web Toekns
 # Only applies to some development related Spring profiles.
 # In a container environment, use the aidanwhiteley/books-db-mongodb-demodata image instead

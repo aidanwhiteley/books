@@ -1,41 +1,84 @@
 # Run the Docker containers for the
 # a) books api microservice - https://github.com/aidanwhiteley/books
 # b) the books web tier SPA - https://github.com/aidanwhiteley/books-web
-# c) the books Mongo data store
+# c) the books Mongo data store - defined local to this file.
+#
+# Run with either
+# docker-compose up
+# or
+# docker-compose up --force-recreate
+#
+# This docker-compose file expects to see a .env file in the same directory
+# see https://docs.docker.com/compose/environment-variables/
+# This is not checked into source code control (it is excluded by .gitignore).
+# The .env file should have the following contents
+#
+# MongoDB related env vars
+# MONGO_INITDB_ROOT_USERNAME=<your MongoDB root user name here>
+# MONGO_INITDB_ROOT_PASSWORD=<password for MongoDB root user here>
+# MONGO_INITDB_APP_USERNAME=<MongoDb user used by the application>
+# MONGO_INITDB_APP_PASSWORD=<password for the MongoDB userid used by the application>
+# MONGO_INITDB_DB_NAME=<Name of the MongoDb to use for the applicarion>
 
 version: '2'
 
 services:
 
-  web-tier:
-    container_name: books-web-container
-    image: aidanwhiteley/books-web
+  # This container is built using the commands detailed in the Dockerfile
+  # at https://github.com/aidanwhiteley/books-web
+  web-tier-angular:
+    container_name: books-web-angular-container
+    image: aidanwhiteley/books-web-angular
     restart: always
     ports:
       - 80:80
     depends_on:
-      - java-tier
+      - api-tier-java
 
-  java-tier:
-    container_name: books-spring-boot-container
-    image: aidanwhiteley/books-spring-boot
+  # This container is built using Google Jib using the maven command for this project of
+  # mvn compile jib:dockerBuild
+  # The service name "api-tier-java" is known to the nginx config used on the web-tier-angular
+  # service implementation
+  api-tier-java:
+    container_name: books-api-java-container
+    image: aidanwhiteley/books-api-java
     restart: always
     expose:
       - "8080"
     environment:
       - "SPRING_PROFILES_ACTIVE=container-demo-no-auth"
+      - "MONGO_INITDB_APP_USERNAME=${MONGO_INITDB_APP_USERNAME}"
+      - "MONGO_INITDB_APP_PASSWORD=${MONGO_INITDB_APP_PASSWORD}"
+      - "MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}"
+      - "MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}"
+      - "MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}"
+      - "JAVA_BOOKS_JWT_SECRET_KEY=${JAVA_BOOKS_JWT_SECRET_KEY}"
+      - "JAVA_BOOKS_RELOAD_DEVELOPMENT_DATA=${JAVA_BOOKS_RELOAD_DEVELOPMENT_DATA}"
+      - "JAVA_BOOKS_AUTO_AUTH_USER=${JAVA_BOOKS_AUTO_AUTH_USER}"
+      - "SPRING_SECURITY_OUATH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_ID=${SPRING_SECURITY_OUATH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_ID}"
+      - "SPRING_SECURITY_OUATH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_SECRET=${SPRING_SECURITY_OUATH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_SECRET}"
+      - "SPRING_SECURITY_OUATH2_CLIENT_REGISTRATION_FACEBOOK_CLIENT_ID=${SPRING_SECURITY_OUATH2_CLIENT_REGISTRATION_FACEBOOK_CLIENT_ID}"
+      - "SPRING_SECURITY_OUATH2_CLIENT_REGISTRATION_FACEBOOK_CLIENT_SECRET=${SPRING_SECURITY_OUATH2_CLIENT_REGISTRATION_FACEBOOK_CLIENT_SECRET}"
     depends_on:
-      - mongo-data-tier
+      - data-tier-mongo
 
-  mongo-data-tier:
-    container_name: books-data-mongodb
-    image: mongo:4.2.1-bionic
+  # This container is built dynamically when the docker-compose up command is issued.
+  # The service name is known to the spring-boot application-xxxxx.properties file
+  # used by the active Spring profile specified when starting the api-tier-java service.
+  data-tier-mongo:
+    container_name: books-data-mongodb-container
+    # To load sample data and users, change the image name to aidanwhiteley/books-db-mongodb-demodata
+    # This is typically done when also using a Spring profile (for the api tier) that is suffixed -no-auth
+    image: aidanwhiteley/books-db-mongodb-demodata
     restart: always
-    environment:
-      - MONGO_DATA_DIR=/data/db
-      - MONGO_LOG_DIR=/dev/null
     ports:
       - 27017:27017
-    #command: mongod "--smallfiles --logpath=/dev/null" # --quiet
+    environment:
+      - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/dev/null
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+      - MONGO_INITDB_APP_USERNAME=${MONGO_INITDB_APP_USERNAME}
+      - MONGO_INITDB_APP_PASSWORD=${MONGO_INITDB_APP_PASSWORD}
 
-# https://dev.to/hugodias/wait-for-mongodb-to-start-on-docker-3h8b

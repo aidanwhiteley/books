@@ -25,7 +25,7 @@ public class PreProdWarnings {
         LOGGER.warn(SEPARATOR);
         LOGGER.warn("*** WARNING!                                                       ***");
         LOGGER.warn("*** All data is deleted and dummy data reloaded when running with  ***");
-        LOGGER.warn("*** the profile " + padRight(profiles, 50) + " ***");
+        LOGGER.warn("*** the profile {} ***", padRight(profiles, 50) );
         LOGGER.warn(SEPARATOR);
         LOGGER.warn("");
     }
@@ -37,7 +37,7 @@ public class PreProdWarnings {
         LOGGER.warn(SEPARATOR);
         LOGGER.warn("*** WARNING!                                                       ***");
         LOGGER.warn("*** You are running with an in memory version of Mongo with the    ***");
-        LOGGER.warn("*** profile " + padRight(profiles, 54) + " ***");
+        LOGGER.warn("*** profile {} ***",  padRight(profiles, 54));
         LOGGER.warn(SEPARATOR);
         LOGGER.warn("");
     }

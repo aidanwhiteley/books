@@ -25,3 +25,6 @@ nbdist/
 
 ### VSCode ###
 .vscode
+
+### Docker / docker-compose ###
+.env

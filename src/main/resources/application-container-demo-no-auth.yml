@@ -2,17 +2,32 @@ spring:
   data:
     mongodb:
       # Username and password are expected to be passed in as environment variables
-      uri: mongodb://${MONGO_INITDB_APP_USERNAME}:${MONGO_INITDB_APP_PASSWORD}@data-tier-mongo:27017/${MONGO_INITDB_DB_NAME}?safe=true&journal=true&w=majority&connectTimeoutMS=1001&wtimeoutMS=1000&serverSelectionTimeoutMS=10000&authSource=admin
+      uri: mongodb://${MONGO_INITDB_APP_USERNAME}:${MONGO_INITDB_APP_PASSWORD}@data-tier-mongo:27017/${MONGO_INITDB_DATABASE}?safe=true&journal=true&w=majority&connectTimeoutMS=1001&wtimeoutMS=1000&serverSelectionTimeoutMS=10000&authSource=admin
+
+  security:           # You need to set up your own accounts / client secrets etc in Google and Facebook and replace NotInSCMx values
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${SPRING_SECURITY_OUATH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_ID}
+            client-secret: ${SPRING_SECURITY_OUATH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_SECRET}
+          facebook:
+            client-id: ${SPRING_SECURITY_OUATH2_CLIENT_REGISTRATION_FACEBOOK_CLIENT_ID}
+            client-secret: ${SPRING_SECURITY_OUATH2_CLIENT_REGISTRATION_FACEBOOK_CLIENT_SECRET}
+        provider:
+          # Google provides all the info this app needs by default. Facebook needs configuring.
+          facebook:
+            user-info-uri: https://graph.facebook.com/me?fields=name,first_name,last_name,link,picture,email
 
 books:
-  autoAuthUser: true
-
-  client:
-    enableCORS: false
+  autoAuthUser: ${JAVA_BOOKS_AUTO_AUTH_USER}
 
   reload:
     development:
-      data: true    # Whether the contents of the /src/main/resources/sample_data will be reloaded into the database at application startup. Deletes all existing data!!!
+      data: ${JAVA_BOOKS_RELOAD_DEVELOPMENT_DATA}
+
+  client:
+    enableCORS: false
 
   users:
     registrationAdminEmail:
@@ -24,7 +39,7 @@ books:
           creation: false
 
   jwt:
-    secretKey: "ThisIsntASecret"
+    secretKey: ${JAVA_BOOKS_JWT_SECRET_KEY}
     cookieOverHttpsOnly: false
     cookieAccessedByHttpOnly: true
 

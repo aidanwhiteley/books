@@ -49,9 +49,16 @@ services:
       - "SPRING_PROFILES_ACTIVE=container-demo-no-auth"
       - "MONGO_INITDB_APP_USERNAME=${MONGO_INITDB_APP_USERNAME}"
       - "MONGO_INITDB_APP_PASSWORD=${MONGO_INITDB_APP_PASSWORD}"
-      - "MONGO_INITDB_DB_NAME=${MONGO_INITDB_DB_NAME}"
+      - "MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}"
       - "MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}"
       - "MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}"
+      - "JAVA_BOOKS_JWT_SECRET_KEY=${JAVA_BOOKS_JWT_SECRET_KEY}"
+      - "JAVA_BOOKS_RELOAD_DEVELOPMENT_DATA=${JAVA_BOOKS_RELOAD_DEVELOPMENT_DATA}"
+      - "JAVA_BOOKS_AUTO_AUTH_USER=${JAVA_BOOKS_AUTO_AUTH_USER}"
+      - "SPRING_SECURITY_OUATH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_ID=${SPRING_SECURITY_OUATH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_ID}"
+      - "SPRING_SECURITY_OUATH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_SECRET=${SPRING_SECURITY_OUATH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_SECRET}"
+      - "SPRING_SECURITY_OUATH2_CLIENT_REGISTRATION_FACEBOOK_CLIENT_ID=${SPRING_SECURITY_OUATH2_CLIENT_REGISTRATION_FACEBOOK_CLIENT_ID}"
+      - "SPRING_SECURITY_OUATH2_CLIENT_REGISTRATION_FACEBOOK_CLIENT_SECRET=${SPRING_SECURITY_OUATH2_CLIENT_REGISTRATION_FACEBOOK_CLIENT_SECRET}"
     depends_on:
       - data-tier-mongo
 
@@ -60,12 +67,14 @@ services:
   # used by the active Spring profile specified when starting the api-tier-java service.
   data-tier-mongo:
     container_name: books-data-mongodb-container
-    image: aidanwhiteley/books-db-mongodb
+    # To load sample data and users, change the image name to aidanwhiteley/books-db-mongodb-demodata
+    # This is typically done when also using a Spring profile (for the api tier) that is suffixed -no-auth
+    image: aidanwhiteley/books-db-mongodb-demodata
     restart: always
     ports:
       - 27017:27017
     environment:
-      - MONGO_INITDB_DATABASE=${MONGO_INITDB_DB_NAME}
+      - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
       - MONGO_DATA_DIR=/data/db
       - MONGO_LOG_DIR=/dev/null
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}

@@ -1,6 +1,10 @@
-# Docker file for the MongoDB tier used by the Books Microservice
+# Docker file for the MongoDB tier used by the Books Microservice.
 #
-# To build Docker image use:
+# This Dockerfile does not load any demonstration data for sample users. To set up an admin user,
+# make sure that the Spring profile used for the books microservice specifies an email address
+# for books.users.default.admin.email.
+#
+# To build the Docker image use:
 # docker build --rm -t aidanwhiteley/books-db-mongodb .
 #
 # To run the Dockerfile created image use something like:
@@ -10,6 +14,5 @@
 # and is also in control of setting the overall MongoDb authorisation settings i.e. requiring authorisation!
 #
 FROM mongo:4.2.1-bionic
-COPY db_init/*.js /docker-entrypoint-initdb.d/
 COPY db_init/*.sh /docker-entrypoint-initdb.d/
 RUN chmod +x /docker-entrypoint-initdb.d/addUserFromEnvVar.sh

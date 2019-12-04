@@ -41,6 +41,33 @@ spring:
           writetimeout: 5000
     test-connection: false
 
+  # Default is that registering with Eureka service registry is disabled
+  cloud:
+    service-registry:
+      auto-registration:
+        enabled: false
+    discovery:
+      enabled: false
+    loadbalancer:
+      ribbon:
+        enabled: false    # Deprecated - so use BlockingLoadBalancerClient instead
+
+# If Eureka service registration inst enabled, turn off associated error logging
+logging:
+  level:
+    com:
+      netflix:
+        config:
+          sources:
+            URLConfigurationSource : ERROR
+    org:
+      springframework:
+        cloud:
+          netflix:
+            archaius:
+              ArchaiusAutoConfiguration: ERROR
+
+
 # By default actuator is disabled.
 # If you want to enable for your application, see the application-dev-mongo-java-server.yml for an example where these values are overriden
 management:

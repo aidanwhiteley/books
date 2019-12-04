@@ -110,11 +110,11 @@
             <version>1.12.2</version>
         </dependency>
 
-        <!-- Cloud related depedencies -->
-        <!-- dependency>
+        <!-- Cloud related dependencies -->
+        <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
-        </dependency -->
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
 
         <!-- Security related version overrides -->
 

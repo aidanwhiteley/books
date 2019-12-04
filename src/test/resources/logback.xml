@@ -13,6 +13,7 @@
     <logger name="com.icegreen.greenmail" level="WARN" />
     <logger name="springfox.documentation" level="WARN"/>
     <logger name="de.bwaldvogel.mongo" level="WARN"/>
+    <logger name="com.netflix.config" level="WARN"/>
 
     <logger name="com.aidanwhiteley" level="WARN"/>
     <logger name="com.aidanwhiteley.books.controller" level="WARN" />

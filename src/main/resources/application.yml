@@ -2,6 +2,8 @@ spring:
   profiles:
     active: dev-mongo-java-server
 
+  application:
+    name: The Cloudy Book Club
   data:
     mongodb:
       uri: mongodb://localhost:27017/books?safe=true&journal=true&w=majority&connectTimeoutMS=1001&wtimeoutMS=1000&serverSelectionTimeoutMS=10000
@@ -13,8 +15,6 @@ spring:
   jackson:
     serialization:
       write-dates-as-timestamps: true
-  application:
-    name: The Cloudy Book Club
 
   security:           # You need to set up your own accounts / client secrets etc in Google and Facebook and replace NotInSCMx values
     oauth2:
@@ -41,32 +41,10 @@ spring:
           writetimeout: 5000
     test-connection: false
 
-  # Default is that registering with Eureka service registry is disabled
-  cloud:
-    service-registry:
-      auto-registration:
-        enabled: false
-    discovery:
-      enabled: false
-    loadbalancer:
-      ribbon:
-        enabled: false    # Deprecated - so use BlockingLoadBalancerClient instead
-
-# If Eureka service registration inst enabled, turn off associated error logging
-logging:
-  level:
-    com:
-      netflix:
-        config:
-          sources:
-            URLConfigurationSource : ERROR
-    org:
-      springframework:
-        cloud:
-          netflix:
-            archaius:
-              ArchaiusAutoConfiguration: ERROR
-
+# By default we disable Eureka client functionality even though it is on the classpath
+eureka:
+  client:
+    enabled: false
 
 # By default actuator is disabled.
 # If you want to enable for your application, see the application-dev-mongo-java-server.yml for an example where these values are overriden

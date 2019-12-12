@@ -3,7 +3,7 @@ spring:
     active: dev-mongo-java-server
 
   application:
-    name: The Cloudy Book Club
+    name: BooksApiService
   data:
     mongodb:
       uri: mongodb://localhost:27017/books?safe=true&journal=true&w=majority&connectTimeoutMS=1001&wtimeoutMS=1000&serverSelectionTimeoutMS=10000

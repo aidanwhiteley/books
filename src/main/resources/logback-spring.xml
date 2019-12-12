@@ -2,7 +2,7 @@
 <configuration>
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
 
-    <logger name="org.springframework.web" level="WARN"/>
+    <logger name="org.springframework.web" level="DEBUG"/>
     <logger name="org.springframework.data" level="WARN"/>
     <logger name="org.springframework.boot.autoconfigure.security.oauth2" level="WARN" />
     <logger name="org.springframework.boot" level="WARN" />
@@ -24,7 +24,7 @@
     <logger name="springfox.documentation" level="WARN"/>
     <logger name="de.codecentric.boot.admin.client" level="WARN" />
 
-    <logger name="com.aidanwhiteley.books" level="WARN" />
+    <logger name="com.aidanwhiteley.books" level="DEBUG" />
     <logger name="com.aidanwhiteley.books.controller" level="WARN"/>
     <logger name="com.aidanwhiteley.books.controller.aspect" level="WARN" />
     <logger name="com.aidanwhiteley.books.controller.BookSecureController" level="WARN" />

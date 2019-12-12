@@ -36,8 +36,7 @@ server:
 eureka:
   instance:
     hostname: localhost
-    metadataMap:
-      instanceId: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
     #preferIpAddress: true
     leaseRenewalIntervalInSeconds: 5
     lease-expiration-duration-in-seconds: 5

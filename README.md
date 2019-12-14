@@ -221,17 +221,28 @@ Docker images are available for the various tiers that make up the full applicat
 ### Docker web tier
 An nginx based Docker image (aidanwhiteley/books-web-angular) is available that hosts the AngularJS single page app
 and acts as the reverse proxy through to the API tier (this application). See https://github.com/aidanwhiteley/books-web
-for more details
+for more details.
+The checked in docker.compose.yml specifies the user of aidanwhiteley/books-web-angular-gateway which routes Ajax
+call to the APIs via Spring Cloud Gateway based API gateway.
+### API Gateway
+A Spring Cloud Gateway based API gateway image is available to route web traffic on port 8000 through to 
+(a cluster of) Spring Boot based books microservices.
+Also provides throttling and load balancing amonst the available books microservices.
+Requires a Service Registry to register with and find running books microservices.
+### Service Registry 
+A Spring / Netflix Eureka service registry in which instances of the books microservice register themselves and in
+which the API gateway finds available instances of the books microservice.
 ### Java API tier
 There is Google Jib created image (aidanwhiteley/books-api-java) for this application. 
-The image can be recreated by running "mvn compile jib:dockerBuild"
+The image can be recreated by running "mvn compile jib:dockerBuild".
+Registers with Service Registry (dependant on the Spring profile used).
 ### MongoDB data tier
 A MongoDB based Docker image (aidanwhiteley/books-db-mongodb or aidanwhiteley/books-db-mongodb-demodata) is available
 to provide data tier required by this application.
 Use the aidanwhiteley/books-db-mongodb-demodata to have sample data reloaded into the MongoDB every time the 
 container is restarted.
 See the src/main/resources/mongo-docker directory for Docker build of the data tier.
-### Docker compose
+## Docker compose
 There is a docker-compose.yml file in the root of this application. This starts Docker containers for the above
 three tier of the overall application.
 ### .env file

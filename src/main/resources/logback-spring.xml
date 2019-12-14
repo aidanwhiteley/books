@@ -25,6 +25,11 @@
     <logger name="de.bwaldvogel.mongo.wire" level="WARN" />
     <logger name="springfox.documentation" level="WARN"/>
     <logger name="de.codecentric.boot.admin.client" level="WARN" />
+    <!-- Not using Netflix Archaius / config server -->
+    <logger name="com.netflix.config.sources.URLConfigurationSource" level="ERROR" />
+    <logger name="org.springframework.cloud.netflix.archaius.ArchaiusAutoConfiguration" level="ERROR" />
+    <!-- Not worried about using the default load balancer cache -->
+    <logger name="org.springframework.cloud.loadbalancer.config.LoadBalancerCacheAutoConfiguration" level="ERROR" />
 
     <logger name="com.aidanwhiteley.books" level="WARN" />
     <logger name="com.aidanwhiteley.books.controller" level="WARN"/>

@@ -41,6 +41,20 @@ spring:
           writetimeout: 5000
     test-connection: false
 
+  # Default is no registration with Eureka a service registration server
+  cloud:
+    service-registry:
+      auto-registration:
+        enabled: false
+        register-management: off
+    loadbalancer:
+      ribbon:
+        enabled: false    # RibbonLoadBalancerClient deprecated. This setting uses BlockingLoadBalancerClient
+
+# If running in containers we want to set a random port (i.e. override to set to 0)
+server:
+  port: 8080
+
 # By default we disable Eureka client functionality even though it is on the classpath
 eureka:
   client:

@@ -232,33 +232,14 @@ Use the aidanwhiteley/books-db-mongodb-demodata to have sample data reloaded int
 container is restarted.
 See the src/main/resources/mongo-docker directory for Docker build of the data tier.
 ### Docker compose
-There is a docker-compose.yaml file in the root of this application. This starts Docker containers for the above
+There is a docker-compose.yml file in the root of this application. This starts Docker containers for the above
 three tier of the overall application.
 ### .env file
-The docker-compose file, the data tier and the Spring profile for use in a container all expect a set of configuration
-values to be available as environment variables. Specifically, docker-compose.yaml expects a .env file next to it. Such a
-.env file is **not** checked in to source code control - you must provide it yourself.
-The following structure is expected
-~~~~
-MONGO_INITDB_ROOT_USERNAME=Name for root user in MongoDB
-MONGO_INITDB_ROOT_PASSWORD=Password for root user in MOngoDb
-MONGO_INITDB_APP_USERNAME=Name for the MongoDB user used by the application tier
-MONGO_INITDB_APP_PASSWORD=Password for the MongoDB user used by the application
-MONGO_INITDB_DATABASE=Name of the database in MOngoDB to be used by the application
-JAVA_BOOKS_JWT_SECRET_KEY=The secret key used to sign the Java Web Toekns
-# Only applies to some development related Spring profiles.
-# In a container environment, use the aidanwhiteley/books-db-mongodb-demodata image instead
-# but still set this value to true
-JAVA_BOOKS_RELOAD_DEVELOPMENT_DATA=Whether to reload development data every restart
-# If the next key is set to true, then the following 4 keys dont need to be set and vice versa.
-# A value of true will only work if JAVA_BOOKS_RELOAD_DEVELOPMENT_DATA is also set to true
-JAVA_BOOKS_AUTO_AUTH_USER=Whether to bypass ouath security and always run HTTP requests as an admin user
-SPRING_SECURITY_OUATH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_ID=Google oauth client id
-SPRING_SECURITY_OUATH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_SECRET=Google oauth client secret
-SPRING_SECURITY_OUATH2_CLIENT_REGISTRATION_FACEBOOK_CLIENT_ID=Facebook oauth client id
-SPRING_SECURITY_OUATH2_CLIENT_REGISTRATION_FACEBOOK_CLIENT_SECRET=Facebook oauth client secret
-~~~~
-
+The docker-compose file expects there to be a .env file in teh same directory to define the environment 
+variables expected by the various Docker images.
+There is an example .env file with comments checked in. This **MUST** be edited according to the 
+instructions in the file.
+Note that the file is marked to be excluded by .gitignore so updates should not be checked back into Github.
 
 ## Spring Boot Admin
 The application supports exposing [Actuator](https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready.html) 

@@ -15,6 +15,9 @@ import javax.servlet.http.HttpServletResponse;
 @Service
 public class JwtAuthenticationService {
 
+    // Changes made here would need to be replicated into
+    // any API gateway - to ensure that the API gateway fowards
+    // on any headers or cookies required on the application tier.
     public static final String JWT_COOKIE_NAME = "CLOUDY-JWT";
     private static final String JSESSIONID_COOKIE_NAME = "JSESSIONID";
     public static final String XSRF_HEADER_NAME = "X-XSRF-TOKEN";

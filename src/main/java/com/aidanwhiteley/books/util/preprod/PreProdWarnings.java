@@ -30,7 +30,7 @@ public class PreProdWarnings {
         LOGGER.warn("");
     }
 
-    public void displayMongoJacaServerWarningMessage() {
+    public void displayMongoJavaServerWarningMessage() {
         String profiles = String.join(",", this.environment.getActiveProfiles());
 
         LOGGER.warn("");

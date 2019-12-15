@@ -219,7 +219,7 @@ microservice as I wanted to try it out on cloud implementations such as the Pivo
 ## Docker
 Docker images are available for the various tiers that make up the full application.
 ### Docker web tier
-An nginx based Docker image (aidanwhiteley/books-web-angular) is available that hosts the AngularJS single page app
+An nginx based Docker image (docker pull aidanwhiteley/books-web-angular:latest) is available that hosts the AngularJS single page app
 and acts as the reverse proxy through to the API tier (this application). See https://github.com/aidanwhiteley/books-web
 for more details.
 The checked in docker.compose.yml specifies the user of aidanwhiteley/books-web-angular-gateway which routes Ajax
@@ -236,8 +236,9 @@ which the API gateway finds available instances of the books microservice.
 There is Google Jib created image (aidanwhiteley/books-api-java) for this application. 
 The image can be recreated by running "mvn compile jib:dockerBuild".
 Registers with Service Registry (dependant on the Spring profile used).
+
 ### MongoDB data tier
-A MongoDB based Docker image (aidanwhiteley/books-db-mongodb or aidanwhiteley/books-db-mongodb-demodata) is available
+A MongoDB based Docker image (docker pull aidanwhiteley/books-db-mongodb:latest or docker pull aidanwhiteley/books-db-mongodb-demodata:latest) is available
 to provide data tier required by this application.
 Use the aidanwhiteley/books-db-mongodb-demodata to have sample data reloaded into the MongoDB every time the 
 container is restarted.

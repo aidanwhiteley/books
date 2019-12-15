@@ -43,7 +43,7 @@ public class MongoJavaServerConfig extends AbstractMongoClientConfiguration {
     @NonNull
     public MongoClient mongoClient() {
 
-        preProdWarnings.displayMongoJacaServerWarningMessage();
+        preProdWarnings.displayMongoJavaServerWarningMessage();
 
         MongoServer server = new MongoServer(new MemoryBackend());
         // bind on a random local port

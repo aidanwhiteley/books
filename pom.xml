@@ -38,7 +38,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <spring-cloud-contract.version>2.2.0.RELEASE</spring-cloud-contract.version>
+        <spring-cloud.version>Hoxton.RELEASE</spring-cloud.version>
     </properties>
 
     <dependencies>
@@ -110,6 +110,12 @@
             <version>1.12.2</version>
         </dependency>
 
+        <!-- Cloud related dependencies -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
+
         <!-- Security related version overrides -->
 
         <!-- https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-10237 via Springfox Swagger dependency -->
@@ -165,13 +171,13 @@
 
     </dependencies>
 
-    <!-- For the Spring Clould Wiremock dependency -->
     <dependencyManagement>
         <dependencies>
+            <!-- For the Spring Cloud Wiremock / Eureka client dependencies -->
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-contract-dependencies</artifactId>
-                <version>${spring-cloud-contract.version}</version>
+                <artifactId>spring-cloud-starter-parent</artifactId>
+                <version>${spring-cloud.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

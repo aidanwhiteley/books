@@ -258,7 +258,7 @@ The checked in docker-compose.yaml results in a deployment as shown on the follo
 - edit the .env file appropriately
 - docker-compose up --scale api-tier-java=2 
 
-[![Cloudy Docker Deployment Diagram](https://github.com/aidanwhiteley/books/blob/develop/src/test/resources/images/docker1.png)](https://github.com/aidanwhiteley/books-web)
+[![Cloudy Docker Deployment Diagram](https://github.com/aidanwhiteley/books/blob/develop/src/test/resources/images/docker1.png)](https://github.com/aidanwhiteley/books)
 
 ## Spring Boot Admins
 The application supports exposing [Actuator](https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready.html) 

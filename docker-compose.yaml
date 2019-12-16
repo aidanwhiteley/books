@@ -19,6 +19,7 @@
 # or
 # docker-compose up --scale api-tier-java=2
 #
+
 # This docker-compose file expects to see a .env file in the same directory.
 # This version retrieved from Git must be edited for your usage and edits will not, by default, be
 # checked backed in to Git due to .gitignore settings.
@@ -131,6 +132,7 @@ services:
     image: aidanwhiteley/books-db-mongodb-demodata
     restart: always
     # Uncomment to access the MongoDB dirctly from the host - perhaps for debugging
+    # Uncomment ports for local connect and debugging of MongoDB issues.
     #ports:
     #  - 27017:27017
     environment:

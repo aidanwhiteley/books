@@ -252,7 +252,15 @@ There is an example .env file with comments checked in. This **MUST** be edited 
 instructions in the file.
 Note that the file is marked to be excluded by .gitignore so updates should not be checked back into Github.
 
-## Spring Boot Admin
+## Docker Compose and running the overall application
+The checked in docker-compose.yaml results in a deployment as shown on the following diagram. The steps are
+- docker-compose pull
+- edit the .env file appropriately
+- docker-compose up --scale api-tier-java=2 
+
+[![Cloudy Docker Deployment Diagram](https://github.com/aidanwhiteley/books/blob/develop/src/test/resources/images/docker1.png)](https://github.com/aidanwhiteley/books-web)
+
+## Spring Boot Admins
 The application supports exposing [Actuator](https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready.html) 
 endpoints to be consumed by [Spring Boot Admin](http://codecentric.github.io/spring-boot-admin/current/). We need security applied to 
 the Actuator end points but don't want to introduce another security layer into the application - we want to stick with the JWT based implemetation 

@@ -12,7 +12,7 @@ management:
     enabled-by-default: true
     web:
       exposure:
-        include: info, threaddump
+        include: info, scheduledtasks
 
 wiremock:
   server:

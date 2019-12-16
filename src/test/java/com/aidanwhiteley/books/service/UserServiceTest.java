@@ -94,16 +94,17 @@ public class UserServiceTest extends IntegrationTest {
         assertEquals(user.getId(), updatedUser.getId());
     }
 
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
     @Test
     public void testCreateActuatorUser() {
         UserService userService = configureUserService();
         userService.setAllowActuatorUserCreation(true);
-        User user = userService.createOrUpdateActuatorUser();
+        User user = userService.createOrUpdateActuatorUser().get();
         assertNotNull(user);
         String id = user.getId();
         assertEquals(LOCAL, user.getAuthProvider());
 
-        User user2 = userService.createOrUpdateActuatorUser();
+        User user2 = userService.createOrUpdateActuatorUser().get();
         String id2 = user.getId();
         assertEquals(id, id2);
         assertTrue("Logon timestamp should have been updated", user2.getLastLogon().isAfter(user.getFirstLogon()));

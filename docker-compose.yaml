@@ -12,12 +12,12 @@
 #   - also in this github project - see the src/main/resources/mongo-docker directory
 #
 #
-# Run with either
+# Run with commands like the following:
 # docker-compose up
 # or
 # docker-compose up --force-recreate
 # or
-# docker compose up --scale api-tier-java=2
+# docker-compose up --scale api-tier-java=2
 #
 
 # This docker-compose file expects to see a .env file in the same directory.
@@ -80,6 +80,7 @@ services:
       - 8761:8761
     environment:
       - "SPRING_PROFILES_ACTIVE=default"
+      - "SERVICE_REGISTRY=${SERVICE_REGISTRY}"
     depends_on:
       - api-tier-java
 
@@ -106,6 +107,7 @@ services:
       - "JAVA_BOOKS_JWT_SECRET_KEY=${JAVA_BOOKS_JWT_SECRET_KEY}"
       - "JAVA_BOOKS_RELOAD_DEVELOPMENT_DATA=${JAVA_BOOKS_RELOAD_DEVELOPMENT_DATA}"
       - "JAVA_BOOKS_AUTO_AUTH_USER=${JAVA_BOOKS_AUTO_AUTH_USER}"
+      - "JAVA_BOOKS_ALLOW_ACTUATOR_USER_CREATION=${JAVA_BOOKS_ALLOW_ACTUATOR_USER_CREATION}"
       - "SPRING_SERVER_PORT=${SPRING_SERVER_PORT}"
       - "SPRING_SECURITY_OUATH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_ID=${SPRING_SECURITY_OUATH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_ID}"
       - "SPRING_SECURITY_OUATH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_SECRET=${SPRING_SECURITY_OUATH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_SECRET}"
@@ -118,6 +120,9 @@ services:
   # This container is built dynamically when the docker-compose up command is issued.
   # The service name is known to the spring-boot application-xxxxx.properties file
   # used by the active Spring profile specified when starting the api-tier-java service.
+  #
+  # To see how the MongoDB is initialised with usert creation and (optional) sample data
+  # loads, see the src/main/resources/mongo-docker directory in this project.
   data-tier-mongo:
     container_name: books-data-mongodb-container
     # To load sample data and users, the image name aidanwhiteley/books-db-mongodb-demodata is used.
@@ -138,3 +143,24 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
       - MONGO_INITDB_APP_USERNAME=${MONGO_INITDB_APP_USERNAME}
       - MONGO_INITDB_APP_PASSWORD=${MONGO_INITDB_APP_PASSWORD}
+
+  # This container is built using Google Jib using the following maven command
+  # for the project at https://github.com/aidanwhiteley/books-springbootadmin
+  # mvn compile jib:dockerBuild (see comments in pom.xml).
+  # Provides a Spring Boot Admin service for monitoring those services that are
+  # registered in the Service Registry defined at service-registry-tier.
+  boot-admin-tier:
+    container_name: books-admin-container
+    image: aidanwhiteley/books-spring-boot-admin
+    restart: always
+    # Uncomment to view the Spring Boot Admin console directly rather than via the nginx reverse proxy
+    ports:
+      - 8888:8888
+    environment:
+      - "SPRING_PROFILES_ACTIVE=container"
+      - "SPRING_BOOT_ADMIN_USERNAME=${SPRING_BOOT_ADMIN_USERNAME}"
+      - "SPRING_BOOT_ADMIN_PASSWORD=${SPRING_BOOT_ADMIN_PASSWORD}"
+      - "JAVA_BOOKS_ACTUATOR_ONLY_JWT_TOKEN=${JAVA_BOOKS_ACTUATOR_ONLY_JWT_TOKEN}"
+      - "SERVICE_REGISTRY=${SERVICE_REGISTRY}"
+    depends_on:
+      - service-registry-tier

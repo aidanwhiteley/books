@@ -219,7 +219,7 @@ microservice as I wanted to try it out on cloud implementations such as the Pivo
 ## Docker
 Docker images are available for the various tiers that make up the full application.
 ### Docker web tier
-An nginx based Docker image (docker pull aidanwhiteley/books-web-angular:latest) is available that hosts the AngularJS single page app
+An nginx based Docker image (aidanwhiteley/books-web-angular) is available that hosts the AngularJS single page app
 and acts as the reverse proxy through to the API tier (this application). See https://github.com/aidanwhiteley/books-web
 for more details.
 The checked in docker.compose.yml specifies the user of aidanwhiteley/books-web-angular-gateway which routes Ajax
@@ -236,9 +236,8 @@ which the API gateway finds available instances of the books microservice.
 There is Google Jib created image (aidanwhiteley/books-api-java) for this application. 
 The image can be recreated by running "mvn compile jib:dockerBuild".
 Registers with Service Registry (dependant on the Spring profile used).
-
 ### MongoDB data tier
-A MongoDB based Docker image (docker pull aidanwhiteley/books-db-mongodb:latest or docker pull aidanwhiteley/books-db-mongodb-demodata:latest) is available
+A MongoDB based Docker image (aidanwhiteley/books-db-mongodb or aidanwhiteley/books-db-mongodb-demodata) is available
 to provide data tier required by this application.
 Use the aidanwhiteley/books-db-mongodb-demodata to have sample data reloaded into the MongoDB every time the 
 container is restarted.
@@ -253,22 +252,22 @@ There is an example .env file with comments checked in. This **MUST** be edited 
 instructions in the file.
 Note that the file is marked to be excluded by .gitignore so updates should not be checked back into Github.
 
-## Spring Boot Admin
+## Docker Compose and running the overall application
+The checked in docker-compose.yaml results in a deployment as shown on the following diagram. The steps are
+- docker-compose pull
+- edit the .env file appropriately
+- docker-compose up --scale api-tier-java=2 
+
+[![Cloudy Docker Deployment Diagram](https://github.com/aidanwhiteley/books/blob/develop/src/test/resources/images/docker1.png)](https://github.com/aidanwhiteley/books)
+
+## Spring Boot Admins
 The application supports exposing [Actuator](https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready.html) 
 endpoints to be consumed by [Spring Boot Admin](http://codecentric.github.io/spring-boot-admin/current/). We need security applied to 
 the Actuator end points but don't want to introduce another security layer into the application - we want to stick with the JWT based implemetation 
 we already have. So we need Spring Boot Admin to be able to supply a suitable JWT token when calling the Actuator end points. 
 
-In this application, by default, the Actuator end points are disabled and require authentication/authorisation. To enable them to be consumed by a Spring Boot Admin based application 
-you need to 
-* enable the required Actuator endpoints and make them accessible over HTTP(S) - see the application-dev.yml file under 
-the management.endpoints hierarchy for an example
-* set books.users.allow.actuator.user.creation to true to allow a user with ADMIN role to get a JWT token that 
-represents a user with ACTUATOR role - again see the application-dev.yml
-* with the above property set and with a logged on user with the ADMIN role, access the /secure/api/users/actuator endpoint 
-on the server application. With everything correctly configured, this will return a long lasting JWT token with just the 
-ACTUATOR role e.g. it cannot be used to create or edit book reviews.
-* plug the above JWT token into a Spring Boot Admin application that is configured to send the above JWT token with each 
+To do this, set books.allow.actuator.user.creation to true and run the application. A JWT will be printed to the application logs for a 
+user that **only** jas the Actuator role. Plug this JWT token into a Spring Boot Admin application that is configured to send the above JWT token with each 
 request to the Actuator endpoints in this application. A extract of the required configuration of a class that
 implements de.codecentric.boot.admin.server.web.client.HttpHeadersProvider is listed below 
 with a fully working example project being available at https://github.com/aidanwhiteley/books-springbootadmin

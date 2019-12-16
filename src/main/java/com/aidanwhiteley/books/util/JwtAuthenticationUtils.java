@@ -1,11 +1,15 @@
 package com.aidanwhiteley.books.util;
 
 import com.aidanwhiteley.books.controller.jwt.JwtAuthentication;
+import com.aidanwhiteley.books.controller.jwt.JwtUtils;
 import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.repository.UserRepository;
+import com.aidanwhiteley.books.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import java.security.Principal;
@@ -19,9 +23,15 @@ public class JwtAuthenticationUtils {
 
     private final UserRepository userRepository;
 
+    private final UserService userService;
+
+    private final JwtUtils jwtUtils;
+
     @Autowired
-    public JwtAuthenticationUtils(UserRepository userRepository) {
+    public JwtAuthenticationUtils(UserRepository userRepository, UserService userService, JwtUtils jwtUtils) {
         this.userRepository = userRepository;
+        this.userService = userService;
+        this.jwtUtils = jwtUtils;
     }
 
     /**
@@ -49,6 +59,21 @@ public class JwtAuthenticationUtils {
         } else {
             return getUserIfExists(auth);
         }
+    }
+
+    @Bean
+    public CommandLineRunner createAndLogActuatorUserToken() {
+        return args -> {
+            String jwtToken = getJwtForActuatorRoleUser();
+            if (!jwtToken.isEmpty()) {
+                LOGGER.warn("JWT for user with just actuator role: {}", jwtToken);
+            }
+        };
+    }
+
+    protected String getJwtForActuatorRoleUser() {
+        Optional<User> user = userService.createOrUpdateActuatorUser();
+        return user.map(jwtUtils::createTokenForUser).orElse("");
     }
 
     private Optional<User> getUserIfExists(JwtAuthentication auth) {

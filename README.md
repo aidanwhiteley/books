@@ -258,16 +258,8 @@ endpoints to be consumed by [Spring Boot Admin](http://codecentric.github.io/spr
 the Actuator end points but don't want to introduce another security layer into the application - we want to stick with the JWT based implemetation 
 we already have. So we need Spring Boot Admin to be able to supply a suitable JWT token when calling the Actuator end points. 
 
-In this application, by default, the Actuator end points are disabled and require authentication/authorisation. To enable them to be consumed by a Spring Boot Admin based application 
-you need to 
-* enable the required Actuator endpoints and make them accessible over HTTP(S) - see the application-dev.yml file under 
-the management.endpoints hierarchy for an example
-* set books.users.allow.actuator.user.creation to true to allow a user with ADMIN role to get a JWT token that 
-represents a user with ACTUATOR role - again see the application-dev.yml
-* with the above property set and with a logged on user with the ADMIN role, access the /secure/api/users/actuator endpoint 
-on the server application. With everything correctly configured, this will return a long lasting JWT token with just the 
-ACTUATOR role e.g. it cannot be used to create or edit book reviews.
-* plug the above JWT token into a Spring Boot Admin application that is configured to send the above JWT token with each 
+To do this, set books.allow.actuator.user.creation to true and run the application. A JWT will be printed to the application logs for a 
+user that **only** jas the Actuator role. Plug this JWT token into a Spring Boot Admin application that is configured to send the above JWT token with each 
 request to the Actuator endpoints in this application. A extract of the required configuration of a class that
 implements de.codecentric.boot.admin.server.web.client.HttpHeadersProvider is listed below 
 with a fully working example project being available at https://github.com/aidanwhiteley/books-springbootadmin

@@ -91,7 +91,7 @@ public class JwtAuthenticationService {
                                 LOGGER.info("JWT expired so cookie deleted");
                             } catch (RuntimeException re) {
                                 expireJwtCookie(response);
-                                LOGGER.error("Error validating jwt token: {}. So cookie deleted", re.getMessage(), re);
+                                LOGGER.error("Error validating jwt token: {}. So cookie deleted", re.getMessage());
                             }
                         }
                         break;

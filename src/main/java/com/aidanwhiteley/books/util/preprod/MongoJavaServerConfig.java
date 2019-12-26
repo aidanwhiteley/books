@@ -5,8 +5,6 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.lang.NonNull;
 import de.bwaldvogel.mongo.MongoServer;
 import de.bwaldvogel.mongo.backend.memory.MemoryBackend;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -24,7 +22,6 @@ import java.net.InetSocketAddress;
  */
 public class MongoJavaServerConfig extends AbstractMongoClientConfiguration {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MongoJavaServerConfig.class);
     private static final String DB_NAME = "books-mongo-in-memory";
     private final PreProdWarnings preProdWarnings;
 

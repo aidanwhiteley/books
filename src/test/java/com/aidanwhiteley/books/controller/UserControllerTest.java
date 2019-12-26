@@ -23,7 +23,6 @@ import static org.junit.Assert.assertTrue;
 public class UserControllerTest extends IntegrationTest {
 
     private static final String NO_AUTH_SPRING_PROFILE = "no-auth";
-    private static final String COOKIE_HEADER_NAME = "Cookie";
 
     @Autowired
     private TestRestTemplate testRestTemplate;

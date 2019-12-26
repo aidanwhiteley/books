@@ -99,7 +99,9 @@ public class JwtAuthenticationUtils {
                 user = users.get(0);
                 break;
             default:
-                LOGGER.error("More than one user found for JwtAuthentication: {}", logMessageDetaint(auth));
+                if (LOGGER.isErrorEnabled()) {
+                    LOGGER.error("More than one user found for JwtAuthentication: {}", logMessageDetaint(auth));
+                }
                 throw new IllegalStateException("More that one user found for a given Jwt Authentication");
         }
 
@@ -108,8 +110,10 @@ public class JwtAuthenticationUtils {
 
     private void checkPrincipalType(Principal principal) {
         if (!(principal instanceof JwtAuthentication)) {
-            LOGGER.error("Only Jwt authentication currently supported and supplied Principal not Jwt: {}",
-                    logMessageDetaint(principal));
+            if (LOGGER.isErrorEnabled()) {
+                LOGGER.error("Only Jwt authentication currently supported and supplied Principal not Jwt: {}",
+                        logMessageDetaint(principal));
+            }
             throw new UnsupportedOperationException("Only Jwt principals currently supported");
         }
     }

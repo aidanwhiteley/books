@@ -98,7 +98,9 @@ public class BookSecureController {
             LOGGER.debug("createBook existed. New Book created in store - accessible at {}", location);
             return ResponseEntity.created(location).build();
         } else {
-            LOGGER.error("Couldnt create a book as user to own book not found! Principal: {}", logMessageDetaint(principal));
+            if (LOGGER.isErrorEnabled()) {
+                LOGGER.error("Couldnt create a book as user to own book not found! Principal: {}", logMessageDetaint(principal));
+            }
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
     }

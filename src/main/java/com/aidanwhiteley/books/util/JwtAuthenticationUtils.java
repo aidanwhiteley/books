@@ -90,7 +90,7 @@ public class JwtAuthenticationUtils {
         LOGGER.debug("Query user repository with id of {} and provider of {}", authenticationServiceId, authenticationProviderId);
         
         List<User> users = userRepository.findAllByAuthenticationServiceIdAndAuthProvider(authenticationServiceId, authenticationProviderId);
-        User user;
+        User user = null;
         switch (users.size()) {
             case 0:
                 user = null;
@@ -99,13 +99,17 @@ public class JwtAuthenticationUtils {
                 user = users.get(0);
                 break;
             default:
-                if (LOGGER.isErrorEnabled()) {
-                    LOGGER.error("More than one user found for JwtAuthentication: {}", logMessageDetaint(auth));
-                }
-                throw new IllegalStateException("More that one user found for a given Jwt Authentication");
+                handleUnexpectedAuth(auth);
         }
 
         return Optional.ofNullable(user);
+    }
+
+    protected static void handleUnexpectedAuth(JwtAuthentication auth) throws IllegalStateException {
+        if (LOGGER.isErrorEnabled()) {
+            LOGGER.error("More than one user found for JwtAuthentication: {}", logMessageDetaint(auth));
+        }
+        throw new IllegalStateException("More that one user found for a given Jwt Authentication");
     }
 
     private void checkPrincipalType(Principal principal) {

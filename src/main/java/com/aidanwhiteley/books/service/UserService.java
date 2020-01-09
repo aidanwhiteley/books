@@ -89,10 +89,6 @@ public class UserService {
         }
     }
 
-    public boolean isAllowActuatorUserCreation() {
-        return allowActuatorUserCreation;
-    }
-
     public void setAllowActuatorUserCreation(boolean allowActuatorUserCreation) {
         this.allowActuatorUserCreation = allowActuatorUserCreation;
     }

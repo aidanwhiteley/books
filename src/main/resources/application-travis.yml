@@ -5,6 +5,18 @@ spring:
   mail:
     port: 3025    # Must match the value specified in the SignUpNotificationServiceTest. Set hight to avoid problems on Unix envs
 
+  boot:
+    admin:
+      client:
+        url: http://localhost:8888
+        username: testuser
+        password: testpass
+        instance:
+          service-base-url: http://localhost:9000/
+          metadata:
+            tags:
+              environment: development
+
 # By default actuator is disabled.
 # These values are overriden here to allow for testing
 management:
@@ -12,7 +24,25 @@ management:
     enabled-by-default: true
     web:
       exposure:
-        include: info, scheduledtasks
+        # Exposing only read only items and not large data amounts - so no heapdump, threaddump or shutdown. No project use of flyway, integrationgraph, liquibase, prometheus
+        include: auditevents, beans, caches, conditions, configprops, env, health, httptrace, info, jolokia, logfile, loggers, metrics, mappings, scheduledtasks, sessions
+  info:
+    git:
+      mode: full
+  health:
+    mail:
+      enabled: false
+
+# With this profile we dont want any warning messages when the application cannot contact a Spring Boot Admin instance at start up
+logging:
+  level:
+    de:
+      codecentric:
+        boot:
+          admin:
+            client:
+              registration:
+                ApplicationRegistrator: ERROR
 
 wiremock:
   server:

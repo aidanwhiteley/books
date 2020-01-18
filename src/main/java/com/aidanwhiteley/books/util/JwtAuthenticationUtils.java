@@ -93,7 +93,6 @@ public class JwtAuthenticationUtils {
         User user = null;
         switch (users.size()) {
             case 0:
-                user = null;
                 break;
             case 1:
                 user = users.get(0);
@@ -105,7 +104,7 @@ public class JwtAuthenticationUtils {
         return Optional.ofNullable(user);
     }
 
-    protected static void handleUnexpectedAuth(JwtAuthentication auth) throws IllegalStateException {
+    protected static void handleUnexpectedAuth(JwtAuthentication auth) {
         if (LOGGER.isErrorEnabled()) {
             LOGGER.error("More than one user found for JwtAuthentication: {}", logMessageDetaint(auth));
         }

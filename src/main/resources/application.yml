@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: travis
+    active: dev-mongo-java-server
 
   application:
     name: BooksApiService

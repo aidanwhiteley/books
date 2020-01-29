@@ -6,12 +6,12 @@
 
     <groupId>com.aidanwhiteley</groupId>
     <artifactId>books</artifactId>
-    <version>0.8.1-SNAPSHOT</version>
+    <version>0.9.0-RELEASE</version>
     <packaging>jar</packaging>
 
     <name>Books Microservice</name>
     <description>A simple project to remind myself what books Ive read recently! Also a technology sampler using the
-        latest Spring Boot, JWT, stateless in the HTTP layer, Mongo and a little reactive (e.g. WebClient) etc
+        latest Spring Boot, oauth based logons, JWTs, stateless in the HTTP layer, Spring Boot admin Mongo, Docker. docker-compose
     </description>
     <developers>
         <developer>

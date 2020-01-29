@@ -29,7 +29,8 @@ making the web application entirely free of http session state (which has its pr
 * Mongo based persistence with the use of Spring Data MongoRepository 
     * next to no persistence code
     * except for some Mongo aggregation queries added to the Repository implementation
-* Accessing the Google Books API with the Spring RestTemplate and, a work in progress, the reactive Spring WebClient
+* accessing the Google Books API with the Spring RestTemplate and, a work in progress, the reactive Spring WebClient
+* and Docker images and a docker-compose file that runs all the tiers of the application with one "docker-compose up --scale api-tier-java=N" command
 
 ### Running in development
 The checked in default Spring profile is "mongo-java-server". This uses mongo-java-server so there is no need to run MongoDb locally. So you 
@@ -243,8 +244,8 @@ Use the aidanwhiteley/books-db-mongodb-demodata to have sample data reloaded int
 container is restarted.
 See the src/main/resources/mongo-docker directory for Docker build of the data tier.
 ## Docker compose
-There is a docker-compose.yml file in the root of this application. This starts Docker containers for the above
-three tier of the overall application.
+There is a docker-compose.yml file in the root of this application. This starts Docker containers for all the above 
+tiers of the overall application.
 ### .env file
 The docker-compose file expects there to be a .env file in teh same directory to define the environment 
 variables expected by the various Docker images.
@@ -254,13 +255,15 @@ Note that the file is marked to be excluded by .gitignore so updates should not 
 
 ## Docker Compose and running the overall application
 The checked in docker-compose.yaml results in a deployment as shown on the following diagram. The steps are
-- docker-compose pull
-- edit the .env file appropriately
-- docker-compose up --scale api-tier-java=2 
+~~~~
+docker-compose pull
+edit the .env file appropriately
+docker-compose up --scale api-tier-java=2 
+~~~~
 
 [![Cloudy Docker Deployment Diagram](https://github.com/aidanwhiteley/books/blob/develop/src/test/resources/images/docker1.png)](https://github.com/aidanwhiteley/books)
 
-## Spring Boot Admins
+## Spring Boot Admin
 The application supports exposing [Actuator](https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready.html) 
 endpoints to be consumed by [Spring Boot Admin](http://codecentric.github.io/spring-boot-admin/current/). We need security applied to 
 the Actuator end points but don't want to introduce another security layer into the application - we want to stick with the JWT based implemetation 

@@ -22,7 +22,7 @@ import com.aidanwhiteley.books.util.IntegrationTest;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 
-@Profile({"dev", "test", "mongo-java-server"})
+@Profile({"dev-mongo-java-server", "dev-mongo-java-server-no-auth", "dev-mongodb-no-auth", "dev-mongodb", "travis"})
 @AutoConfigureWireMock(port=0, httpsPort = 0)
 public class GoogleBooksDaoSyncTest extends IntegrationTest {
 

@@ -1,0 +1,166 @@
+# Creates and run the Docker containers for the
+#
+# a) the books web tier SPA
+#   - github repository - https://github.com/aidanwhiteley/books-web
+# b) the books Spring Cloud API gateway
+#   - github repository - https://github.com/aidanwhiteley/books-gateway
+# b) the books Eureka service registry
+#   - github repository - https://github.com/aidanwhiteley/books-eureka
+# d) books api microservice i.e. this project
+#   - github registry - https://github.com/aidanwhiteley/books
+# e) the books Mongo datastore
+#   - also in this github project - see the src/main/resources/mongo-docker directory
+#
+#
+# Run with commands like the following:
+# docker-compose up
+# or
+# docker-compose up --force-recreate
+# or
+# docker-compose up --scale api-tier-java=2
+#
+
+# This docker-compose file expects to see a .env file in the same directory.
+# This version retrieved from Git must be edited for your usage and edits will not, by default, be
+# checked backed in to Git due to .gitignore settings.
+
+version: '2'
+
+services:
+
+  # This container is built using the commands detailed in the Dockerfile
+  # at https://github.com/aidanwhiteley/books-web
+  # Change the image name to aidanwhiteley/books-web-angular (i.e. no "-gateway") to
+  # use an image where nginx points directly to a single instance of the
+  # Spring Boot java microservice (expected to be on 8080) rather than to an API gateway container which
+  # can forward the request to multiple container based instances of the microservice.
+  # Change the "depends_on" as appropriate.
+  web-tier-angular:
+    container_name: books-web-angular-container
+    image: aidanwhiteley/books-web-angular-gateway
+    restart: always
+    ports:
+      - 80:80
+    depends_on:
+      - api-gateway-tier
+
+  # This container is built using Google Jib using the following maven command
+  # for the project at https://github.com/aidanwhiteley/books-gateway
+  # mvn compile jib:dockerBuild (see comments in pom.xml).
+  # The Spring Cloud based API gateway registers with the Eureka based
+  # service registry and then the active instances of the books microservice
+  # that have registered with the service registry.
+  # Comment out this stanza if using the aidanwhiteley/books-web-angular image
+  # which points to a single books microservice expected to be onm port 8080.
+  api-gateway-tier:
+    container_name: books-gateway-container
+    image: aidanwhiteley/books-gateway
+    restart: always
+    environment:
+      - "SPRING_PROFILES_ACTIVE=default"
+      - "SERVICE_REGISTRY=${SERVICE_REGISTRY}"
+    depends_on:
+      - service-registry-tier
+
+  # This container is built using Google Jib using the following maven command
+  # for the project at https://github.com/aidanwhiteley/books-eureka
+  # mvn compile jib:dockerBuild (see comments in pom.xml).
+  # Provides the service registry used by the API Gateway to find instances
+  # of the books microservice.
+  # The checked in code leaves the (read only) Eureka web console available
+  # on https://<docker ip>:8761
+  # Comment out this stanza if using the aidanwhiteley/books-web-angular image
+  # which points to a single books microservice expected to be onm port 8080.
+  service-registry-tier:
+    container_name: books-service-registry-container
+    image: aidanwhiteley/books-service-registry
+    restart: always
+    # Uncomment for debugging by viewing Eureka web console
+    ports:
+      - 8761:8761
+    environment:
+      - "SPRING_PROFILES_ACTIVE=default"
+      - "SERVICE_REGISTRY=${SERVICE_REGISTRY}"
+    depends_on:
+      - api-tier-java
+
+  # This container is built using Google Jib using the maven command for this project of
+  # mvn compile jib:dockerBuild (see comments in pom.xml).
+  # The service name "api-tier-java" is known to the nginx config used by the web-tier-angular
+  # nginx based image.
+  # Alternatively this tier is accessed by instances of the microservice in this container registering
+  # with a Eureka service registry and a Spring Cloud API gateway forwarding calls to registered
+  # microservice instances.
+  api-tier-java:
+    # The container_name must be commented out if starting multiple containers for this tier e.g.
+    # "docker compose up --scale api-tier-java=2"
+    # container_name: books-api-java-container
+    image: aidanwhiteley/books-api-java
+    restart: always
+    environment:
+      - "SPRING_PROFILES_ACTIVE=${JAVA_BOOKS_SPRING_PROFILE}"
+      - "MONGO_INITDB_APP_USERNAME=${MONGO_INITDB_APP_USERNAME}"
+      - "MONGO_INITDB_APP_PASSWORD=${MONGO_INITDB_APP_PASSWORD}"
+      - "MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}"
+      - "MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}"
+      - "MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}"
+      - "JAVA_BOOKS_JWT_SECRET_KEY=${JAVA_BOOKS_JWT_SECRET_KEY}"
+      - "JAVA_BOOKS_RELOAD_DEVELOPMENT_DATA=${JAVA_BOOKS_RELOAD_DEVELOPMENT_DATA}"
+      - "JAVA_BOOKS_AUTO_AUTH_USER=${JAVA_BOOKS_AUTO_AUTH_USER}"
+      - "JAVA_BOOKS_ALLOW_ACTUATOR_USER_CREATION=${JAVA_BOOKS_ALLOW_ACTUATOR_USER_CREATION}"
+      - "SPRING_SERVER_PORT=${SPRING_SERVER_PORT}"
+      - "SPRING_SECURITY_OUATH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_ID=${SPRING_SECURITY_OUATH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_ID}"
+      - "SPRING_SECURITY_OUATH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_SECRET=${SPRING_SECURITY_OUATH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_SECRET}"
+      - "SPRING_SECURITY_OUATH2_CLIENT_REGISTRATION_FACEBOOK_CLIENT_ID=${SPRING_SECURITY_OUATH2_CLIENT_REGISTRATION_FACEBOOK_CLIENT_ID}"
+      - "SPRING_SECURITY_OUATH2_CLIENT_REGISTRATION_FACEBOOK_CLIENT_SECRET=${SPRING_SECURITY_OUATH2_CLIENT_REGISTRATION_FACEBOOK_CLIENT_SECRET}"
+      - "SERVICE_REGISTRY=${SERVICE_REGISTRY}"
+    depends_on:
+      - data-tier-mongo
+
+  # This container is built dynamically when the docker-compose up command is issued.
+  # The service name is known to the spring-boot application-xxxxx.properties file
+  # used by the active Spring profile specified when starting the api-tier-java service.
+  #
+  # To see how the MongoDB is initialised with usert creation and (optional) sample data
+  # loads, see the src/main/resources/mongo-docker directory in this project.
+  data-tier-mongo:
+    container_name: books-data-mongodb-container
+    # To load sample data and users, the image name aidanwhiteley/books-db-mongodb-demodata is used.
+    # This is typically done when also using a Spring profile (for the api tier) that is suffixed -no-auth.
+    # To stop this behaviour remove the "-demodata" name from the image and make a couple of edits
+    # to the .env environment variables file.
+    image: aidanwhiteley/books-db-mongodb-demodata
+    restart: always
+    # Uncomment to access the MongoDB dirctly from the host - perhaps for debugging
+    # Uncomment ports for local connect and debugging of MongoDB issues.
+    #ports:
+    #  - 27017:27017
+    environment:
+      - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/dev/null
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+      - MONGO_INITDB_APP_USERNAME=${MONGO_INITDB_APP_USERNAME}
+      - MONGO_INITDB_APP_PASSWORD=${MONGO_INITDB_APP_PASSWORD}
+
+  # This container is built using Google Jib using the following maven command
+  # for the project at https://github.com/aidanwhiteley/books-springbootadmin
+  # mvn compile jib:dockerBuild (see comments in pom.xml).
+  # Provides a Spring Boot Admin service for monitoring those services that are
+  # registered in the Service Registry defined at service-registry-tier.
+  boot-admin-tier:
+    container_name: books-admin-container
+    image: aidanwhiteley/books-spring-boot-admin
+    restart: always
+    # Uncomment to view the Spring Boot Admin console directly rather than via the nginx reverse proxy
+    ports:
+      - 8888:8888
+    environment:
+      - "SPRING_PROFILES_ACTIVE=container"
+      - "SPRING_BOOT_ADMIN_USERNAME=${SPRING_BOOT_ADMIN_USERNAME}"
+      - "SPRING_BOOT_ADMIN_PASSWORD=${SPRING_BOOT_ADMIN_PASSWORD}"
+      - "JAVA_BOOKS_ACTUATOR_ONLY_JWT_TOKEN=${JAVA_BOOKS_ACTUATOR_ONLY_JWT_TOKEN}"
+      - "SERVICE_REGISTRY=${SERVICE_REGISTRY}"
+    depends_on:
+      - service-registry-tier

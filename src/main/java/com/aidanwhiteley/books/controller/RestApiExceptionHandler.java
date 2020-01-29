@@ -23,7 +23,6 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
-import static org.springframework.http.HttpStatus.UNSUPPORTED_MEDIA_TYPE;
 
 @SuppressWarnings("NullableProblems")
 @RestControllerAdvice
@@ -34,7 +33,6 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
     private static final String MESSAGE_FORBIDDEN = "Sorry - you do not have access to the URL you requested";
     private static final String MESSAGE_DENIED = "Sorry - you must be logged on";
     private static final String MESSAGE_UNEXPECTED_EXCEPTION = "Sorry - an unexpected problem happended - please try later";
-    private static final String SAFE_HTML_EXCEPTION_STRING = "SafeHtml";
 
     private static final Logger API_LOGGER = LoggerFactory.getLogger(RestApiExceptionHandler.class);
 
@@ -73,21 +71,13 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
                                                                   HttpHeaders headers, HttpStatus status, WebRequest request) {
 
-        if (ex.getMessage().contains(SAFE_HTML_EXCEPTION_STRING)) {
-            return new ResponseEntity<>(
-                    new ApiExceptionData(UNSUPPORTED_MEDIA_TYPE.value(), UNSUPPORTED_MEDIA_TYPE.getReasonPhrase(),
-                            (ex.getBindingResult().getFieldErrors().isEmpty() ? "Unknown error" : ex.getBindingResult().getFieldErrors().get(0).getField()),
-                            getPath(request)),
-                    new HttpHeaders(), UNSUPPORTED_MEDIA_TYPE);
-        } else {
-            return new ResponseEntity<>(
-                    new ApiExceptionData(BAD_REQUEST.value(), BAD_REQUEST.getReasonPhrase(),
-                            MESSAGE_ILLEGAL_ARGUMENT + " : "
-                                    + (ex.getBindingResult().toString() != null ? ex.getBindingResult().toString()
-                                    : ex.getMessage()),
-                            getPath(request)),
-                    new HttpHeaders(), BAD_REQUEST);
-        }
+        return new ResponseEntity<>(
+                new ApiExceptionData(BAD_REQUEST.value(), BAD_REQUEST.getReasonPhrase(),
+                        MESSAGE_ILLEGAL_ARGUMENT + " : "
+                                + (ex.getBindingResult().toString() != null ? ex.getBindingResult().toString()
+                                : ex.getMessage()),
+                        getPath(request)),
+                new HttpHeaders(), BAD_REQUEST);
     }
 
     /**
@@ -105,7 +95,7 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
         API_LOGGER.error("An unhandled exception was caught, logged and HTTP status 500 returned to the client.", ex);
 
         return new ApiExceptionData(INTERNAL_SERVER_ERROR.value(), INTERNAL_SERVER_ERROR.getReasonPhrase(),
-                MESSAGE_UNEXPECTED_EXCEPTION + " : " + ex.getLocalizedMessage(), getPath(request));
+                MESSAGE_UNEXPECTED_EXCEPTION, getPath(request));
     }
 
     @Override

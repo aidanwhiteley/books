@@ -8,7 +8,7 @@ import org.springframework.core.task.SyncTaskExecutor;
 import java.util.concurrent.Executor;
 
 @Configuration
-@Profile({"test"})
+@Profile({"travis"})
 public class ThreadingConfig {
 
     @Bean(name = "threadPoolExecutor")

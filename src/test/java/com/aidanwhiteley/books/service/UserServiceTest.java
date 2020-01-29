@@ -25,11 +25,13 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.LOCAL;
@@ -94,21 +96,29 @@ public class UserServiceTest extends IntegrationTest {
         assertEquals(user.getId(), updatedUser.getId());
     }
 
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
     @Test
     public void testCreateActuatorUser() {
         UserService userService = configureUserService();
         userService.setAllowActuatorUserCreation(true);
-        User user = userService.createOrUpdateActuatorUser();
+        User user = userService.createOrUpdateActuatorUser().get();
         assertNotNull(user);
         String id = user.getId();
         assertEquals(LOCAL, user.getAuthProvider());
 
-        User user2 = userService.createOrUpdateActuatorUser();
+        User user2 = userService.createOrUpdateActuatorUser().get();
         String id2 = user.getId();
         assertEquals(id, id2);
         assertTrue("Logon timestamp should have been updated", user2.getLastLogon().isAfter(user.getFirstLogon()));
     }
 
+    @Test
+    public void testActuatorUserCreationOff() {
+        UserService userService = new UserService(null, null);
+        userService.setAllowActuatorUserCreation(false);
+        Optional<User> aUser = userService.createOrUpdateActuatorUser();
+        assertFalse(aUser.isPresent());
+    }
 
     private User testUserCreate(String clientId, String name, User.AuthenticationProvider provider) {
         UserService userService = configureUserService();

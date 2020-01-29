@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>
+                [%thread] %-5level %logger{75} - %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <root level="warn">
+        <appender-ref ref="STDOUT"/>
+    </root>
 
     <logger name="org.springframework" level="WARN"/>
     <logger name="org.springframework.web" level="WARN"/>
@@ -13,6 +23,10 @@
     <logger name="com.icegreen.greenmail" level="WARN" />
     <logger name="springfox.documentation" level="WARN"/>
     <logger name="de.bwaldvogel.mongo" level="WARN"/>
+    <logger name="com.netflix.config" level="WARN"/>
+    <!-- Not using Netflix Archaius / config server -->
+    <logger name="com.netflix.config.sources.URLConfigurationSource" level="ERROR" />
+    <logger name="org.springframework.cloud.netflix.archaius.ArchaiusAutoConfiguration" level="ERROR" />
 
     <logger name="com.aidanwhiteley" level="WARN"/>
     <logger name="com.aidanwhiteley.books.controller" level="WARN" />
@@ -20,6 +34,8 @@
     <logger name="com.aidanwhiteley.books.repository.GoogleBooksDaoAsync" level="WARN"/>
     <logger name="com.aidanwhiteley.books.repository.GoogleBookDaoAsyncTest" level="WARN"/>
     <logger name="com.aidanwhiteley.books.util.MailClient" level="WARN" />
+    <!-- Dont want Actuator user JWT printed to test logs -->
+    <logger name="com.aidanwhiteley.books.util.JwtAuthenticationUtils" level="ERROR"/>
 
     <logger name="org.apache.catalina" level="WARN"/>
     <logger name="org.apache.tomcat.util.modeler.Registry" level="ERROR"/>

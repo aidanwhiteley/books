@@ -111,14 +111,14 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         if (enableCORS) {
             http.csrf().disable();
             LOGGER.warn("");
-            LOGGER.warn("****************************************************************************");
-            LOGGER.warn("*** WARNING!                                                             ***");
-            LOGGER.warn("*** You are running with CORS enabled. This is only supported for        ***");
-            LOGGER.warn("*** development.                                                         ***");
-            LOGGER.warn("*** There is no cross site request forgery prevention in place when      ***");
-            LOGGER.warn("*** running with CORS enabled. Change the settings in the .yml files     ***");
-            LOGGER.warn("*** if you are not developing locally.                                   ***");
-            LOGGER.warn("****************************************************************************");
+            LOGGER.warn("**********************************************************************");
+            LOGGER.warn("*** WARNING!                                                       ***");
+            LOGGER.warn("*** You are running with CORS enabled. This is only supported for  ***");
+            LOGGER.warn("*** development.                                                   ***");
+            LOGGER.warn("*** There is no cross site request forgery prevention when         ***");
+            LOGGER.warn("*** running with CORS enabled. Change settings in the .yml files   ***");
+            LOGGER.warn("*** if you are not developing locally.                             ***");
+            LOGGER.warn("**********************************************************************");
             LOGGER.warn("");
         } else {
             // The CSRF cookie is also read and sent by by Angular - hence it being marked as not "httpOnly".

@@ -57,8 +57,8 @@ public class ActuatorTest extends IntegrationTest {
     public void checkExpectedEndpointAvailable() {
         User user = BookControllerTestUtils.getTestUser();
         user.addRole(User.Role.ROLE_ACTUATOR);
-        ResponseEntity<String> response = getResponseStringEntity(user, "/actuator/threaddump");
-        assertEquals("User with ROLE_ACTUATOR should be able to see threaddumps", HttpStatus.OK, response.getStatusCode());
+        ResponseEntity<String> response = getResponseStringEntity(user, "/actuator/scheduledtasks");
+        assertEquals("User with ROLE_ACTUATOR should be able to see scheduledtasks", HttpStatus.OK, response.getStatusCode());
     }
 
     @Test

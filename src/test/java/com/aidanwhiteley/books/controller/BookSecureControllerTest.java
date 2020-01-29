@@ -88,23 +88,6 @@ public class BookSecureControllerTest extends IntegrationTest {
     }
 
     @Test
-    public void tryToCreateBookWithHtmlInContent() {
-        User user = BookControllerTestUtils.getTestUser();
-        String token = jwtUtils.createTokenForUser(user);
-        String xsrfToken = BookControllerTestUtils.getXsrfToken(testRestTemplate);
-
-        Book testBook = BookRepositoryTest.createTestBook();
-        testBook.setTitle("<b>This should fail - no HTML allowed</b>");
-        HttpEntity<Book> request  = BookControllerTestUtils.getBookHttpEntity(testBook, token, xsrfToken);
-        ResponseEntity<String> response = testRestTemplate.exchange("/secure/api/books", HttpMethod.POST, request, String.class);
-
-        assertEquals(HttpStatus.UNSUPPORTED_MEDIA_TYPE, response.getStatusCode());
-
-        // The response should contain the name of the field that contains the suspected html
-        assertTrue(response.getBody().contains("title"));
-    }
-
-    @Test
     public void tryToCreateBookWithNoPermissions() {
 
         Book testBook = BookRepositoryTest.createTestBook();

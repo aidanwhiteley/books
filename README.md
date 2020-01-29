@@ -1,6 +1,6 @@
 # books
 This project started as I wanted a simple "microservice" to use when trying out frameworks
-such as Spring Cloud, Pivotal Cloud Foundy and AWS.
+such as Docker, Docker Compose, Spring Cloud, Pivotal Cloud Foundy and AWS.
 
 It has developed a little further such that it is starting to provide some functionality that may 
 actually be useful.
@@ -29,7 +29,8 @@ making the web application entirely free of http session state (which has its pr
 * Mongo based persistence with the use of Spring Data MongoRepository 
     * next to no persistence code
     * except for some Mongo aggregation queries added to the Repository implementation
-* Accessing the Google Books API with the Spring RestTemplate and, a work in progress, the reactive Spring WebClient
+* accessing the Google Books API with the Spring RestTemplate and, a work in progress, the reactive Spring WebClient
+* and Docker images and a docker-compose file that runs all the tiers of the application with one "docker-compose up --scale api-tier-java=N" command
 
 ### Running in development
 The checked in default Spring profile is "mongo-java-server". This uses mongo-java-server so there is no need to run MongoDb locally. So you 
@@ -76,10 +77,56 @@ There are lots of other ways to pass in these values e.g. they can be passed as 
 ~~~~
 Otherwise, see the Spring documentation for more options.
 
+### Available Spring profiles
+There are Spring profile files for a range of development and test scenarios. 
+
+#### default 
+	- sets active profile to dev-mongo-java-server - otherwise
+	- requires oauth configured correctly for access to update operations
+	- configured to disallow CORS access to APIs
+	- does not clear down DB or reload test data on every restart
+
+#### dev-mongo-java-server
+	- uses an in memory mongo-java-server rather than a real MongoDb
+	- requires oauth configured correctly for access to update operations
+	- configured to allow CORS access to APIs
+	- clears down the DB and reloads test data on every restart
+	
+#### dev-mongo-java-server-no-auth
+	- uses an in memory mongo-java-server rather than a real MongoDb
+	- configured such that all request have admin access. No oauth set up required and no logon
+	- configured to allow CORS access to APIs
+	- clears down the DB and reloads test data on every restart
+	
+#### dev-mongodb-no-auth
+	- uses a real MongoDb
+	- configured such that all request have admin access. No oauth set up required and no logon
+	- configured to allow CORS access to APIs
+	- clears down the DB and reloads test data on every restart
+	
+#### dev-mongodb
+	- uses a real MongoDb
+	- requires oauth configured correctly for access to update operations
+	- configured to allow CORS access to APIs
+	- clears down DB and reloads test data on every restart
+	
+#### travis
+	- uses a real MongoDb
+	- configured to allow CORS access to APIs
+	- clears down the DB and reloads test data on every restart
+	
+#### container-demo-no-auth
+    - requires the use of "docker compose up" to start Docker containers - see later
+	- uses a real MongoDb
+	- configured such that all request have admin access and oauth config is not required
+	- does not allow CORS access to APIs
+	- clears down the Mongo DB and reloads test data on every restart of the Docker containers
+	
+
 ### Configuring for production
-"Out of the box" the code runs with the "mongo-java-server" Spring profile - see the first lines of application.yml. Outside of development
-and test environments **DO NOT** run with is profile (or the "dev" profile). When running in other environments you will need to decide the 
-required functionality and configure your Spring profile accordingly. For instance, you **WILL** want to 
+"Out of the box" the code runs with the "mongo-java-server" Spring profile - see the first lines of application.yml. None
+of the checked in available Spring profiles are intended for production use. You will need to decide the 
+required functionality for your environment and configure your Spring profile accordingly. For instance, you **WILL** want to 
 set/change the secretKey used for the JWT token signing (see books:jwt:secretKey in the yml files).
 
 You will also need access to a Mongo instance. The connection URL (in the yml files) will result in the automatic
@@ -107,11 +154,11 @@ To run a client to access the microservice, head on over to https://github.com/a
 ### Sample data
 There is some sample data provided to make initial understanding of the functionality a bit easier.
 It is is the /src/main/resources/sample_data. See the #README.txt in that directory.
-The sample data is auto loaded when running with Spring profiles of "mongo-java-server" (the checked in default), "dev" and "test".
+The the details of above for the available Spring profiles to see when this sample data is auto loaded.
 
 #### Indexes
-The Mongo indexes required by the application are also "auto created" when running with the "dev", "test" and "mongo-java-server" profiles.
-When running with other profiles, you should manually apply the indexes defined in /src/main/resources/indexes.
+The Mongo indexes required by the application are not "auto created" (except when running in Docker containers).
+You should manually apply the indexes defined in /src/main/resources/indexes.
 In particular, the application's Search functionality won't work unless you run the command to build
 the weighted full text index across various fields of the Book collection. The rest of the application will run without 
 indexes - just more slowly as the data volumes increase!
@@ -170,22 +217,60 @@ However, it does allow configuration of your own AuthorizationRequestRepository 
 based version. So, finally, this application is completely free of any HTTP session state! Which was the point of originally starting to write this 
 microservice as I wanted to try it out on cloud implementations such as the Pivotal Cloud Foundry and AWS.
 
+## Docker
+Docker images are available for the various tiers that make up the full application.
+### Docker web tier
+An nginx based Docker image (aidanwhiteley/books-web-angular) is available that hosts the AngularJS single page app
+and acts as the reverse proxy through to the API tier (this application). See https://github.com/aidanwhiteley/books-web
+for more details.
+The checked in docker.compose.yml specifies the user of aidanwhiteley/books-web-angular-gateway which routes Ajax
+call to the APIs via Spring Cloud Gateway based API gateway.
+### API Gateway
+A Spring Cloud Gateway based API gateway image is available to route web traffic on port 8000 through to 
+(a cluster of) Spring Boot based books microservices.
+Also provides throttling and load balancing amonst the available books microservices.
+Requires a Service Registry to register with and find running books microservices.
+### Service Registry 
+A Spring / Netflix Eureka service registry in which instances of the books microservice register themselves and in
+which the API gateway finds available instances of the books microservice.
+### Java API tier
+There is Google Jib created image (aidanwhiteley/books-api-java) for this application. 
+The image can be recreated by running "mvn compile jib:dockerBuild".
+Registers with Service Registry (dependant on the Spring profile used).
+### MongoDB data tier
+A MongoDB based Docker image (aidanwhiteley/books-db-mongodb or aidanwhiteley/books-db-mongodb-demodata) is available
+to provide data tier required by this application.
+Use the aidanwhiteley/books-db-mongodb-demodata to have sample data reloaded into the MongoDB every time the 
+container is restarted.
+See the src/main/resources/mongo-docker directory for Docker build of the data tier.
+## Docker compose
+There is a docker-compose.yml file in the root of this application. This starts Docker containers for all the above 
+tiers of the overall application.
+### .env file
+The docker-compose file expects there to be a .env file in teh same directory to define the environment 
+variables expected by the various Docker images.
+There is an example .env file with comments checked in. This **MUST** be edited according to the 
+instructions in the file.
+Note that the file is marked to be excluded by .gitignore so updates should not be checked back into Github.
+
+## Docker Compose and running the overall application
+The checked in docker-compose.yaml results in a deployment as shown on the following diagram. The steps are
+~~~~
+docker-compose pull
+edit the .env file appropriately
+docker-compose up --scale api-tier-java=2 
+~~~~
+
+[![Cloudy Docker Deployment Diagram](https://github.com/aidanwhiteley/books/blob/develop/src/test/resources/images/docker1.png)](https://github.com/aidanwhiteley/books)
+
 ## Spring Boot Admin
 The application supports exposing [Actuator](https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready.html) 
 endpoints to be consumed by [Spring Boot Admin](http://codecentric.github.io/spring-boot-admin/current/). We need security applied to 
 the Actuator end points but don't want to introduce another security layer into the application - we want to stick with the JWT based implemetation 
 we already have. So we need Spring Boot Admin to be able to supply a suitable JWT token when calling the Actuator end points. 
 
-In this application, by default, the Actuator end points are disabled and require authentication/authorisation. To enable them to be consumed by a Spring Boot Admin based application 
-you need to 
-* enable the required Actuator endpoints and make them accessible over HTTP(S) - see the application-dev.yml file under 
-the management.endpoints hierarchy for an example
-* set books.users.allow.actuator.user.creation to true to allow a user with ADMIN role to get a JWT token that 
-represents a user with ACTUATOR role - again see the application-dev.yml
-* with the above property set and with a logged on user with the ADMIN role, access the /secure/api/users/actuator endpoint 
-on the server application. With everything correctly configured, this will return a long lasting JWT token with just the 
-ACTUATOR role e.g. it cannot be used to create or edit book reviews.
-* plug the above JWT token into a Spring Boot Admin application that is configured to send the above JWT token with each 
+To do this, set books.allow.actuator.user.creation to true and run the application. A JWT will be printed to the application logs for a 
+user that **only** jas the Actuator role. Plug this JWT token into a Spring Boot Admin application that is configured to send the above JWT token with each 
 request to the Actuator endpoints in this application. A extract of the required configuration of a class that
 implements de.codecentric.boot.admin.server.web.client.HttpHeadersProvider is listed below 
 with a fully working example project being available at https://github.com/aidanwhiteley/books-springbootadmin

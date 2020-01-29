@@ -57,8 +57,6 @@ public class UserService {
         User.AuthenticationProvider provider = authUtils.getAuthenticationProvider(authentication);
         Optional<User> user = authUtils.getUserIfExists(authentication);
 
-
-
         return user.map(user1 -> updateUser(
                 UpdateUserDetails.builder().
                         userDetails(userDetails).
@@ -68,7 +66,7 @@ public class UserService {
             ).orElseGet(() -> createUser(userDetails, provider));
     }
 
-    public User createOrUpdateActuatorUser() {
+    public Optional<User> createOrUpdateActuatorUser() {
 
         if (allowActuatorUserCreation) {
             Map<String, Object> userDetails = new HashMap<>();
@@ -80,19 +78,15 @@ public class UserService {
             List<User> users = userRepository.
                     findAllByAuthenticationServiceIdAndAuthProvider(LOCAL_ACTUATOR_USER, LOCAL.toString());
             if (users.isEmpty()) {
-                return createUser(userDetails, provider);
+                return Optional.of(createUser(userDetails, provider));
             } else {
-                return updateUser(
+                return Optional.of(updateUser(
                         UpdateUserDetails.builder().userDetails(userDetails).
-                                user(users.get(0)).provider(provider).build());
+                                user(users.get(0)).provider(provider).build()));
             }
         } else {
-            throw new UnsupportedOperationException("Creation of JWT token for accessing Actuator end points not supported");
+            return Optional.empty();
         }
-    }
-
-    public boolean isAllowActuatorUserCreation() {
-        return allowActuatorUserCreation;
     }
 
     public void setAllowActuatorUserCreation(boolean allowActuatorUserCreation) {

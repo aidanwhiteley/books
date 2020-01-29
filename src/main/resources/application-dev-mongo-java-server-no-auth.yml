@@ -1,7 +1,7 @@
 spring:
   data:
     mongodb:
-      uri: mongodb://localhost:27017/books-mongo-java-server?safe=true&journal=true&w=majority&connectTimeoutMS=1001&wtimeoutMS=1000&serverSelectionTimeoutMS=10000
+      uri: mongodb://localhost:27017/books-dev-mongo-java-server-no-auth?safe=true&journal=true&w=majority&connectTimeoutMS=1001&wtimeoutMS=1000&serverSelectionTimeoutMS=10000
   mail:
     port: 3025    # Must match the value specified in the SignUpNotificationServiceTest. Set hight to avoid problems on Unix envs
 
@@ -25,7 +25,7 @@ management:
     web:
       exposure:
         # Exposing only read only items and not large data amounts - so no heapdump or shutdown. No project use of flyway, integrationgraph, liquibase, prometheus
-        include: auditevents, beans, caches, conditions, configprops, env, health, httptrace, info, jolokia, logfile, loggers, metrics, mappings, scheduledtasks, sessions, threaddump
+        include: auditevents, beans, caches, conditions, configprops, env, health, httptrace, info, jolokia, logfile, loggers, metrics, mappings, scheduledtasks, sessions
   info:
     git:
       mode: full
@@ -46,6 +46,8 @@ logging:
 
 
 books:
+  autoAuthUser: true
+
   client:
     enableCORS: true      # Note - this value overriden in the IntegrationTest base test class
     allowedCorsOrigin: http://localhost:9000

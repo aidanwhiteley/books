@@ -1,5 +1,6 @@
 package com.aidanwhiteley.books.util.preprod;
 
+import com.aidanwhiteley.books.domain.Book;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,14 +9,18 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.index.TextIndexDefinition;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,17 +30,26 @@ public class DataLoader {
     private static final String BOOKS_COLLECTION = "book";
     private static final String USERS_COLLECTION = "user";
     private static final Logger LOGGER = LoggerFactory.getLogger(DataLoader.class);
-    private static final String SEPARATOR = "****************************************************************************";
+    private static final String AUTO_LOGON_ID = "Dummy12345678";
+    private static final String IN_MEMORY_MONGODB_SPRING_PROFILE = "mongo-java-server";
 
     private final MongoTemplate template;
+    private final PreProdWarnings preProdWarnings;
+    private final Environment environment;
 
     @Value("${books.reload.development.data}")
     private boolean reloadDevelopmentData;
 
+    @Value("${books.autoAuthUser}")
+    private boolean autoAuthUser;
+
     @Autowired
-    public DataLoader(MongoTemplate mongoTemplate) {
+    public DataLoader(MongoTemplate mongoTemplate, PreProdWarnings preProdWarnings, Environment environment) {
         this.template = mongoTemplate;
+        this.preProdWarnings = preProdWarnings;
+        this.environment = environment;
     }
+
 
     /**
      * Reload data for development and integration tests. Whether this runs or
@@ -48,88 +62,90 @@ public class DataLoader {
      * "Fail safe" checking for required Spring profile being active and the config switch setting.
      */
     @Bean
-    @Profile({"dev", "test", "mongo-java-server"})
+    @Profile({"dev-mongo-java-server", "dev-mongo-java-server-no-auth", "dev-mongodb-no-auth", "dev-mongodb", "travis"})
     public CommandLineRunner populateDummyData() {
         return args -> {
 
             if (reloadDevelopmentData) {
 
-                LOGGER.warn("");
-                LOGGER.warn(SEPARATOR);
-                LOGGER.warn("*** WARNING!                                                             ***");
-                LOGGER.warn("*** All data is deleted and dummy data reloaded when running with        ***");
-                LOGGER.warn("*** either the 'dev' or 'mongo-java-server' Spring profiles.             ***");
-                LOGGER.warn("*** To persist data edit the /src/main/resources/application.yml so      ***");
-                LOGGER.warn("*** spring.profiles.active is other than dev, test or mongo-java-server. ***");
-                LOGGER.warn(SEPARATOR);
-                LOGGER.warn("");
+                preProdWarnings.displayDataReloadWarningMessage();
+                loadBooksData();
+                loadUserData();
+                createFullTextIndex();
 
-                List<String> jsons;
-
-                ClassPathResource classPathResource = new ClassPathResource("sample_data/books.data");
-                try (InputStream resource = classPathResource.getInputStream();
-                     InputStreamReader inputStreamReader = new InputStreamReader(resource, StandardCharsets.UTF_8);
-                     BufferedReader bufferedReader = new BufferedReader(inputStreamReader)) {
-
-                    // Clearing and loading data into books collection. We do this _after_ checking for the
-                    // existence of the file that holds the test data.
-                    LOGGER.info(SEPARATOR);
-                    LOGGER.info("Clearing books collection and loading development data for books project");
-                    template.dropCollection(BOOKS_COLLECTION);
-
-                    jsons = bufferedReader.lines().collect(Collectors.toList());
-                    jsons.stream().map(Document::parse).forEach(i -> template.insert(i, BOOKS_COLLECTION));
-                }
-
-                classPathResource = new ClassPathResource("sample_data/users.data");
-                try (InputStream resource = classPathResource.getInputStream();
-                     InputStreamReader inputStreamReader = new InputStreamReader(resource, StandardCharsets.UTF_8);
-                     BufferedReader bufferedReader = new BufferedReader(inputStreamReader)) {
-
-                    // Clearing and loading data into user collection - happens after index creation file found and loaded
-                    LOGGER.info("Clearing users collection and loading development data for books project");
-                    template.dropCollection(USERS_COLLECTION);
-
-                    jsons = bufferedReader.lines().collect(Collectors.toList());
-                }
-                jsons.stream().map(Document::parse).forEach(i -> template.insert(i, USERS_COLLECTION));
-                LOGGER.info(SEPARATOR);
             } else {
                 LOGGER.info("Development data not reloaded due to config settings");
             }
         };
     }
 
-    /**
-     * Created indexes on collections. Does not run when mongo-java-server profile is active as
-     * mongo-java-server doesnt support full text indexes that cover multiple fields.
-     */
-    @Bean
-    @Profile({"dev", "test"})
-    public CommandLineRunner createIndexed() {
-        return args -> {
+    private void loadBooksData() throws IOException {
+        List<String> jsons;
+        ClassPathResource classPathResource = new ClassPathResource("sample_data/books.data");
+        try (InputStream resource = classPathResource.getInputStream();
+             InputStreamReader inputStreamReader = new InputStreamReader(resource, StandardCharsets.UTF_8);
+             BufferedReader bufferedReader = new BufferedReader(inputStreamReader)) {
 
-            if (reloadDevelopmentData) {
+            // Clearing and loading data into books collection. We do this _after_ checking for the
+            // existence of the file that holds the test data.
+            LOGGER.info("Clearing books collection and loading development data for books project");
+            template.dropCollection(BOOKS_COLLECTION);
 
-                List<String> jsons;
-
-                ClassPathResource classPathResource = new ClassPathResource("indexes/books.data");
-                try (InputStream resource = classPathResource.getInputStream();
-                     InputStreamReader inputStreamReader = new InputStreamReader(resource, StandardCharsets.UTF_8);
-                     BufferedReader bufferedReader = new BufferedReader(inputStreamReader)) {
-                    jsons = bufferedReader.lines().collect(Collectors.toList());
-                }
-
-                LOGGER.info(SEPARATOR);
-                LOGGER.info("Loading indexes for books project");
-
-                jsons.stream().map(s -> new Document().append("$eval", s)).forEach(template::executeCommand);
-                LOGGER.info("Created indexes for books project");
-
-                LOGGER.info(SEPARATOR);
-            } else {
-                LOGGER.info("Indexes not created due to config settings");
-            }
-        };
+            jsons = bufferedReader.lines().collect(Collectors.toList());
+            jsons.stream().map(Document::parse).forEach(i -> template.insert(i, BOOKS_COLLECTION));
+        }
     }
+
+    private void loadUserData() throws IOException {
+        List<String> jsons;
+        ClassPathResource classPathResource = new ClassPathResource("sample_data/users.data");
+        try (InputStream resource = classPathResource.getInputStream();
+             InputStreamReader inputStreamReader = new InputStreamReader(resource, StandardCharsets.UTF_8);
+             BufferedReader bufferedReader = new BufferedReader(inputStreamReader)) {
+
+            // Clearing and loading data into user collection - happens after user creation file found and loaded
+            LOGGER.info("Clearing users collection and loading development data for books project");
+            template.dropCollection(USERS_COLLECTION);
+
+            jsons = bufferedReader.lines().collect(Collectors.toList());
+        }
+        jsons.stream().map(Document::parse).forEach(i -> {
+            boolean autoAuthUserServiceId = i.get("authenticationServiceId").toString().contains(AUTO_LOGON_ID);
+            // Only insert the user data for the "auto logon" user if the config says to
+            if (!autoAuthUserServiceId || autoAuthUser) {
+                template.insert(i, USERS_COLLECTION);
+            }
+        });
+    }
+
+    /**
+     * The creation of indexes for the MongoDb is outside of the application code to allow
+     * better tweaking of those indexes over time.
+     * Almost all tests run fine without indexes in place - the test data isn't large.
+     * The exception is the tests that require a full text index to be in place for "search" to work.
+     * Therefore, we run in the full text index below when loading test data - but not
+     * when the Spring profile means we are running against the in memory mongo-java-server
+     * as that fale Mongo doesn't support full text indexes currently.
+     *
+     * The real application index creation commands are in
+     * /src/main/resources/indexes/books.data
+     * It does not matter much if the index below gets out of step with the real index - in terms
+     * of the field weightings at least!
+     */
+    private void createFullTextIndex() {
+
+        if (Arrays.stream(this.environment.getActiveProfiles()).noneMatch(s -> s.contains(IN_MEMORY_MONGODB_SPRING_PROFILE))) {
+            TextIndexDefinition textIndex = new TextIndexDefinition.TextIndexDefinitionBuilder()
+                    .onField("title", 10F)
+                    .onField("author", 10F)
+                    .onField("genre", 5F)
+                    .onField("summary", 4F)
+                    .onField("comments.comment", 3F)
+                    .onField("googleBookDetails.volumeInfo.description", 1F)
+                    .named("fullTextIndexForTests")
+                    .build();
+            template.indexOps(Book.class).ensureIndex(textIndex);
+        }
+    }
+
 }

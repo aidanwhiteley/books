@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Profile;
 
 import static org.junit.Assert.assertNull;
 
-@Profile({"dev", "test", "mongo-java-server"})
+@Profile({"dev-mongo-java-server", "dev-mongo-java-server-no-auth", "dev-mongodb-no-auth", "dev-mongodb", "travis"})
 @AutoConfigureWireMock(port=0)
 public class GoogleBookDaoAsyncTest extends IntegrationTest {
 

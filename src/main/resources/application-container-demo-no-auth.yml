@@ -1,0 +1,85 @@
+spring:
+  data:
+    mongodb:
+      # Username, password and MongoDB database name are expected to be passed in as environment variables
+      uri: mongodb://${MONGO_INITDB_APP_USERNAME}:${MONGO_INITDB_APP_PASSWORD}@data-tier-mongo:27017/${MONGO_INITDB_DATABASE}?safe=true&journal=true&w=majority&connectTimeoutMS=1001&wtimeoutMS=1000&serverSelectionTimeoutMS=10000
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${SPRING_SECURITY_OUATH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_ID}
+            client-secret: ${SPRING_SECURITY_OUATH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_SECRET}
+          facebook:
+            client-id: ${SPRING_SECURITY_OUATH2_CLIENT_REGISTRATION_FACEBOOK_CLIENT_ID}
+            client-secret: ${SPRING_SECURITY_OUATH2_CLIENT_REGISTRATION_FACEBOOK_CLIENT_SECRET}
+        provider:
+          # Google provides all the info this app needs by default. Facebook needs configuring.
+          facebook:
+            user-info-uri: https://graph.facebook.com/me?fields=name,first_name,last_name,link,picture,email
+
+  # Turn on registering with Eureka service registration for this profile
+  cloud:
+    service-registry:
+      auto-registration:
+        enabled: true
+    discovery:
+      enabled: true
+
+# If running in containers we usually want to set a random port by setting the port to 0.
+server:
+  port: ${SPRING_SERVER_PORT}
+
+# Enable Eureka client functionality
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+    leaseRenewalIntervalInSeconds: 5
+    lease-expiration-duration-in-seconds: 5
+  client:
+    enabled: true
+    serviceUrl:
+      defaultZone: http://${SERVICE_REGISTRY}:8761/eureka/
+
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      exposure:
+        # Exposing only read only items and not large data amounts - so no heapdump, threaddump or shutdown. No project use of flyway, integrationgraph, liquibase, prometheus
+        include: auditevents, beans, caches, conditions, configprops, env, health, httptrace, info, jolokia, logfile, loggers, metrics, mappings, scheduledtasks, sessions
+  info:
+    git:
+      mode: full
+  health:
+    mail:
+      enabled: false
+
+books:
+  autoAuthUser: ${JAVA_BOOKS_AUTO_AUTH_USER}
+
+  reload:
+    development:
+      data: ${JAVA_BOOKS_RELOAD_DEVELOPMENT_DATA}
+
+  client:
+    enableCORS: false
+
+  users:
+    registrationAdminEmail:
+      enabled: false
+
+    allow:
+      actuator:
+        user:
+          creation: ${JAVA_BOOKS_ALLOW_ACTUATOR_USER_CREATION}
+
+  jwt:
+    secretKey: ${JAVA_BOOKS_JWT_SECRET_KEY}
+    cookieOverHttpsOnly: false
+    cookieAccessedByHttpOnly: true
+
+  oauth2:
+    cookieOverHttpsOnly: false
+

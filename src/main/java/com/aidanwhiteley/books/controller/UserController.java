@@ -3,10 +3,8 @@ package com.aidanwhiteley.books.controller;
 import com.aidanwhiteley.books.controller.dtos.ClientRoles;
 import com.aidanwhiteley.books.controller.exceptions.NotAuthorisedException;
 import com.aidanwhiteley.books.controller.jwt.JwtAuthenticationService;
-import com.aidanwhiteley.books.controller.jwt.JwtUtils;
 import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.repository.UserRepository;
-import com.aidanwhiteley.books.service.UserService;
 import com.aidanwhiteley.books.util.JwtAuthenticationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,19 +40,12 @@ public class UserController {
 
 	private final JwtAuthenticationService authService;
 
-	private final JwtUtils jwtUtils;
-
-	private final UserService userService;
-
 	@Autowired
 	public UserController(UserRepository userRepository, JwtAuthenticationUtils jwtAuthenticationUtils,
-						  JwtAuthenticationService jwtAuthenticationService, JwtUtils jwtUtils,
-						  UserService userService) {
+						  JwtAuthenticationService jwtAuthenticationService) {
 		this.userRepository = userRepository;
 		this.authUtils = jwtAuthenticationUtils;
 		this.authService = jwtAuthenticationService;
-		this.jwtUtils = jwtUtils;
-		this.userService = userService;
 	}
 
 	@GetMapping(value = "/user")
@@ -85,13 +76,6 @@ public class UserController {
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public List<User> users(Principal principal) {
 		return userRepository.findAll();
-	}
-
-	@GetMapping(value = "/users/actuator")
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public String getActuatorJwtToken(Principal principal) {
-		User user = userService.createOrUpdateActuatorUser();
-		return jwtUtils.createTokenForUser(user);
 	}
 
 	@DeleteMapping(value = "/users/{id}")

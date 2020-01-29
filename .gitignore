@@ -22,3 +22,9 @@ nbbuild/
 dist/
 nbdist/
 .nb-gradle/
+
+### VSCode ###
+.vscode
+
+### Docker / docker-compose ###
+.env

@@ -109,7 +109,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         //
         // So if using CORS, there's no XSRF protection!
         if (enableCORS) {
-            http.csrf().disable();
+            http.csrf().disable();      // lgtm [java/spring-disabled-csrf-protection]
             LOGGER.warn("");
             LOGGER.warn("**********************************************************************");
             LOGGER.warn("*** WARNING!                                                       ***");

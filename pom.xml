@@ -190,7 +190,7 @@
         <dependency>
             <groupId>io.gatling.highcharts</groupId>
             <artifactId>gatling-charts-highcharts</artifactId>
-            <version>2.3.1</version>
+            <version>3.3.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -262,7 +262,7 @@
             <plugin>
                 <groupId>io.gatling</groupId>
                 <artifactId>gatling-maven-plugin</artifactId>
-                <version>2.2.4</version>
+                <version>3.0.5</version>
             </plugin>
 
             <!-- To build to local Docker daemon use:

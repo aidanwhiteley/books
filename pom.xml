@@ -70,6 +70,8 @@
             <version>2.3.1.RELEASE</version>
         </dependency>
 
+        <!-- Temporarily setting explicit version here while tryting to work out
+        why they are not being correctly pulled in transitively from Spring Booter parent. -->
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-mongodb</artifactId>
@@ -85,6 +87,7 @@
             <artifactId>micrometer-core</artifactId>
             <version>1.5.1</version>
         </dependency>
+        <!-- End of temporary transitive dependency fixes for Spring Boot 2.3.x -->
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -197,13 +200,6 @@
             <scope>test</scope>
         </dependency>
 
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-properties-migrator</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-
     </dependencies>
 
     <dependencyManagement>
@@ -287,14 +283,6 @@
                 </configuration>
             </plugin>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-enforcer-plugin</artifactId>
-                <version>1.4.1</version>
-                <configuration>
-                    <rules><dependencyConvergence/></rules>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 

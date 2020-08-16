@@ -285,7 +285,7 @@
                 <version>2.5.2</version>
                 <configuration>
                     <from>
-                        <image>gcr.io/distroless/java:latest</image>
+                        <image>gcr.io/distroless/java:11</image>
                     </from>
                     <to>
                         <image>aidanwhiteley/books-api-java</image>

@@ -138,8 +138,9 @@ Check the console log when running in production - you should see **NO** warning
 This project makes use of the excellent Lombok project. So to build in your favourite IDE, if necessary
 head on over to [Lombok](https://projectlombok.org/) and click the appropriate "Install" link (tested with IntelliJ and Eclipse).
 
-The project currently builds on Travis only on JDK11 (the JDK8 build in .travis.yml is now commented out as SonarQube support for JDK8 
-will be removed later in 2020)
+The project builds on Travis only on JDK11 (the JDK8 build in .travis.yml is now commented out as SonarQube support for JDK8 
+will be removed later in 2020). Additionally, the project Maven depedencies have been updated to include JAXB depedencies that
+are no longer included by default in the JDK SE. The Maven build also expects JDK11. So really it's JDK11 onwards now.
 
 With appropriate versions of the JDK, Maven and a Mongo installed, start with
 ~~~~

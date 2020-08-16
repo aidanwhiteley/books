@@ -146,20 +146,18 @@
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
 
-        <!-- Security related version overrides -->
+        <!-- Depedencies moved out of JDK SE -->
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+        </dependency>
 
-        <!-- https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-10237 via Springfox Swagger dependency -->
-        <!-- dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>29.0-jre</version>
-        </dependency -->
 
         <!-- Runtime monitoring depedencies -->
         <dependency>
             <groupId>de.codecentric</groupId>
             <artifactId>spring-boot-admin-starter-client</artifactId>
-            <version>2.2.3</version>
+            <version>2.3.0</version>
         </dependency>
 
         <!-- Test dependencies -->
@@ -243,6 +241,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
+                    <release>11</release>
                     <compilerArgs>
                         <arg>-Xlint:all,-options,-path</arg>
                     </compilerArgs>

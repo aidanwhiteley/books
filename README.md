@@ -138,8 +138,8 @@ Check the console log when running in production - you should see **NO** warning
 This project makes use of the excellent Lombok project. So to build in your favourite IDE, if necessary
 head on over to [Lombok](https://projectlombok.org/) and click the appropriate "Install" link (tested with IntelliJ and Eclipse).
 
-The project builds on Travis with both JDK8 and JDK11. To build locally on JDK 11 make sure that you have Maven 3.6.0+
-and JDK 11+.
+The project currently builds on Travis only on JDK11 (the JDK8 build in .travis.yml is now commented out as SonarQube support for JDK8 
+will be removed later in 2020)
 
 With appropriate versions of the JDK, Maven and a Mongo installed, start with
 ~~~~
@@ -247,10 +247,10 @@ See the src/main/resources/mongo-docker directory for Docker build of the data t
 There is a docker-compose.yml file in the root of this application. This starts Docker containers for all the above 
 tiers of the overall application.
 ### .env file
-The docker-compose file expects there to be a .env file in teh same directory to define the environment 
+The docker-compose file expects there to be a .env file in the same directory to define the environment 
 variables expected by the various Docker images.
-There is an example .env file with comments checked in. This **MUST** be edited according to the 
-instructions in the file.
+There is an example .env file with comments checked in. This **SHOULD** be edited according to the 
+instructions in the file (noting that the containers will start and run run OK with the checked in values if you are just trying things out).
 Note that the file is marked to be excluded by .gitignore so updates should not be checked back into Github.
 
 ## Docker Compose and running the overall application

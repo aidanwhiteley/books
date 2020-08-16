@@ -18,7 +18,7 @@ class StressTestSimulation1 extends Simulation {
     val scenarioName = baseName + "-scenario"
 
     val httpProtocol = http
-        .baseURL("http://localhost:8080")
+        .baseUrl("http://localhost:8080")
         .inferHtmlResources(BlackList(""".*\.js""", """.*\.css""", """.*\.gif""", """.*\.jpeg""", """.*\.jpg""", """.*\.ico""", """.*\.woff""", """.*\.(t|o)tf""", """.*\.png"""), WhiteList())
 
     val uri1 = "127.0.0.1"
@@ -40,5 +40,5 @@ class StressTestSimulation1 extends Simulation {
       .pause(minWaitMs, maxWaitMs)
     }
 
-    setUp(scn.inject(rampUsers(noOfUsers) over (rampUpTimeSecs seconds))).protocols(httpProtocol)
+    setUp(scn.inject(rampUsers(noOfUsers) during (rampUpTimeSecs seconds))).protocols(httpProtocol)
 }

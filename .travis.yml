@@ -5,7 +5,7 @@ dist: trusty
 jdk:
 # trying Travis JDK11 support again
   - openjdk11
-  - oraclejdk8
+#  - oraclejdk8
 
 services: mongodb
 

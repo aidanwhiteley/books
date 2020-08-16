@@ -6,7 +6,7 @@
 
     <groupId>com.aidanwhiteley</groupId>
     <artifactId>books</artifactId>
-    <version>0.9.1-SNAPSHOT</version>
+    <version>0.10.0</version>
     <packaging>jar</packaging>
 
     <name>Books Microservice</name>
@@ -285,6 +285,9 @@
                 <artifactId>jib-maven-plugin</artifactId>
                 <version>2.5.2</version>
                 <configuration>
+                    <from>
+                        <image>gcr.io/distroless/java:latest</image>
+                    </from>
                     <to>
                         <image>aidanwhiteley/books-api-java</image>
                     </to>

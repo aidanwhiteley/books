@@ -11,7 +11,7 @@
 
     <name>Books Microservice</name>
     <description>A simple project to remind myself what books Ive read recently! Also a technology sampler using the
-        latest Spring Boot, oauth based logons, JWTs, stateless in the HTTP layer, Spring Boot admin Mongo, Docker. docker-compose
+        latest Spring Boot, oauth based logons, JWTs, stateless in the HTTP layer, Spring Boot admin, Mongo, Docker. docker-compose
     </description>
     <developers>
         <developer>
@@ -122,12 +122,12 @@
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
-            <version>2.9.2</version>
+            <version>3.0.0</version>
         </dependency>
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
-            <version>2.9.2</version>
+            <version>3.0.0</version>
         </dependency>
         <dependency>
             <groupId>com.rometools</groupId>
@@ -188,7 +188,7 @@
         <dependency>
             <groupId>io.gatling.highcharts</groupId>
             <artifactId>gatling-charts-highcharts</artifactId>
-            <version>3.4.0</version>
+            <version>3.4.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>

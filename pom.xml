@@ -85,7 +85,7 @@
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-core</artifactId>
-            <version>1.5.6</version>
+            <version>1.6.0</version>
         </dependency>
         <!-- End of temporary transitive dependency fixes for Spring Boot 2.3.x -->
 

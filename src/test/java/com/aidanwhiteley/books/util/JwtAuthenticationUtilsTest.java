@@ -3,7 +3,8 @@ package com.aidanwhiteley.books.util;
 import com.aidanwhiteley.books.controller.jwt.JwtAuthentication;
 import com.aidanwhiteley.books.controller.jwt.JwtUtils;
 import com.aidanwhiteley.books.domain.User;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.junit.Assert.assertEquals;
@@ -27,8 +28,11 @@ public class JwtAuthenticationUtilsTest extends IntegrationTest {
         assertEquals("Actuator authprovider should be local", User.AuthenticationProvider.LOCAL, userFromToken.getAuthProvider());
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void throwExceptionForUnexpectedAuth() {
-        JwtAuthenticationUtils.handleUnexpectedAuth(new JwtAuthentication("d\tummy", "d\rummy", "d\nummy"));
+        Assertions.assertThrows(IllegalStateException.class, () -> {
+            JwtAuthenticationUtils.handleUnexpectedAuth(new JwtAuthentication("d\tummy", "d\rummy", "d\nummy"));
+        });
+
     }
 }

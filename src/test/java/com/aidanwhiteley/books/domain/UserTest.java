@@ -1,7 +1,7 @@
 package com.aidanwhiteley.books.domain;
 
 import com.aidanwhiteley.books.domain.User.AuthenticationProvider;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 

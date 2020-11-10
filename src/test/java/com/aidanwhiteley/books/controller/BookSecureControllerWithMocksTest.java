@@ -6,21 +6,18 @@ import com.aidanwhiteley.books.domain.googlebooks.Item;
 import com.aidanwhiteley.books.repository.BookRepository;
 import com.aidanwhiteley.books.repository.GoogleBooksDaoSync;
 import com.aidanwhiteley.books.util.JwtAuthenticationUtils;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.security.Principal;
 import java.util.Collections;
 import java.util.Optional;
 
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 public class BookSecureControllerWithMocksTest {
 
     private static final String BOOK_ID_1 = "1234";

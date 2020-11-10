@@ -1,7 +1,7 @@
 package com.aidanwhiteley.books.controller.jwt;
 
 import com.aidanwhiteley.books.domain.User;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import static org.junit.Assert.assertNotNull;

@@ -5,7 +5,7 @@ import com.aidanwhiteley.books.repository.UserRepository;
 import com.aidanwhiteley.books.util.IntegrationTest;
 import com.aidanwhiteley.books.util.Oauth2AuthenticationUtils;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;

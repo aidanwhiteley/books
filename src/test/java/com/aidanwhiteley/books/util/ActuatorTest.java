@@ -5,7 +5,7 @@ import com.aidanwhiteley.books.controller.jwt.JwtAuthenticationService;
 import com.aidanwhiteley.books.controller.jwt.JwtUtils;
 import com.aidanwhiteley.books.domain.User;
 import com.jayway.jsonpath.JsonPath;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.web.client.TestRestTemplate;

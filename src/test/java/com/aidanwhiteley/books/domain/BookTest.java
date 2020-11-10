@@ -1,6 +1,6 @@
 package com.aidanwhiteley.books.domain;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 

@@ -3,7 +3,8 @@ package com.aidanwhiteley.books.controller.jwt;
 import com.aidanwhiteley.books.controller.BookControllerTestUtils;
 import com.aidanwhiteley.books.domain.User;
 import io.jsonwebtoken.ExpiredJwtException;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import io.jsonwebtoken.SignatureException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +32,7 @@ public class JwtUtilsTest {
         assertEquals(testUser.getFullName(), userFromToken.getFullName());
     }
 
-    @Test(expected = SignatureException.class)
+    @Test
     public void testTamperedWithToken() {
         JwtUtils jwt = new JwtUtils();
 
@@ -47,10 +48,13 @@ public class JwtUtilsTest {
         char aChar = token.charAt(strlength - 1);
         tampered.setCharAt(strlength - 1, (char)( aChar - 1));
 
-        jwt.getUserFromToken(tampered.toString());
+        Assertions.assertThrows(SignatureException.class, () -> {
+            jwt.getUserFromToken(tampered.toString());
+        });
+
     }
 
-    @Test(expected = ExpiredJwtException.class)
+    @Test
     public void testExpiredToken() {
         JwtUtils jwt = new JwtUtils();
 
@@ -61,6 +65,8 @@ public class JwtUtilsTest {
         User testUser = BookControllerTestUtils.getTestUser();
         String token = jwt.createTokenForUser(testUser);
 
-        jwt.getUserFromToken(token);
+        Assertions.assertThrows(ExpiredJwtException.class, () -> {
+            jwt.getUserFromToken(token);
+        });
     }
 }

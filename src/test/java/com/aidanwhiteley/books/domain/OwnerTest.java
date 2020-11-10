@@ -6,7 +6,8 @@ import static org.junit.Assert.assertFalse;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import com.aidanwhiteley.books.domain.User.AuthenticationProvider;
 import org.slf4j.LoggerFactory;
@@ -27,7 +28,7 @@ public class OwnerTest {
 		assertEquals(owner1.toString(), owner2.toString());
 	}
 
-	@Test(expected = IllegalStateException.class)
+	@Test
 	public void testForInvalidRole() {
 		User aUser = new User();
 		aUser.setRoles(Collections.singletonList(User.Role.ROLE_ACTUATOR));
@@ -36,7 +37,9 @@ public class OwnerTest {
 		LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
 		context.getLogger(Comment.class).setLevel(Level.valueOf("OFF"));
 
-		aComment.setPermissionsAndContentForUser(aUser);
+		Assertions.assertThrows(IllegalStateException.class, () -> {
+			aComment.setPermissionsAndContentForUser(aUser);
+		});
 
 		context.getLogger(Comment.class).setLevel(Level.valueOf("OFF"));
 	}

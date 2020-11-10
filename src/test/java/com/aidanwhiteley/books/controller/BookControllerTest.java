@@ -8,7 +8,7 @@ import com.aidanwhiteley.books.repository.dtos.BooksByGenre;
 import com.aidanwhiteley.books.repository.dtos.BooksByRating;
 import com.aidanwhiteley.books.util.IntegrationTest;
 import com.jayway.jsonpath.JsonPath;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -3,7 +3,7 @@ package com.aidanwhiteley.books.service;
 import static org.junit.Assert.assertEquals;
 
 import com.aidanwhiteley.books.repository.dtos.BooksByGenre;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.aidanwhiteley.books.service.dtos.SummaryStats;

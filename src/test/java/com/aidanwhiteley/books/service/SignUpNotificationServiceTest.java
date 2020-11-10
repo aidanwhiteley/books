@@ -8,7 +8,9 @@ import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -42,13 +44,13 @@ public class SignUpNotificationServiceTest extends IntegrationTest {
     @Autowired
     private MailClient mailClient;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         smtpServer = new GreenMail(new ServerSetup(PORT, null, "smtp"));
         smtpServer.start();
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         smtpServer.stop();
     }

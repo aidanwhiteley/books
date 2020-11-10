@@ -2,7 +2,7 @@ package com.aidanwhiteley.books.util;
 
 import com.rometools.rome.feed.rss.Channel;
 import com.rometools.rome.feed.rss.Item;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 

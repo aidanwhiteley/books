@@ -9,7 +9,7 @@ import com.aidanwhiteley.books.domain.User.Role;
 import com.aidanwhiteley.books.repository.BookRepositoryTest;
 import com.aidanwhiteley.books.util.IntegrationTest;
 import com.jayway.jsonpath.JsonPath;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.web.client.TestRestTemplate;

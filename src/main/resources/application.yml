@@ -54,6 +54,9 @@ spring:
 # If running in containers we want to set a random port (i.e. override to set to 0)
 server:
   port: 8080
+  servlet:
+    session:
+      tracking-modes: cookie
 
 # By default we disable Eureka client functionality even though it is on the classpath
 eureka:

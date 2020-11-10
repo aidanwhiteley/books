@@ -6,8 +6,6 @@ import com.aidanwhiteley.books.util.IntegrationTest;
 import com.aidanwhiteley.books.util.MailClient;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

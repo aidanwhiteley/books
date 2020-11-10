@@ -41,12 +41,7 @@ public class GoogleBooksDaoSync {
     public BookSearchResult searchGoogBooksByTitle(String title) {
 
         String encodedTitle;
-        try {
-            encodedTitle = URLEncoder.encode(title, GoogleBooksApiConfig.UTF_8);
-        } catch (UnsupportedEncodingException usee) {
-            LOGGER.error("Unable to encode query string - using as is", usee);
-            encodedTitle = title;
-        }
+        encodedTitle = URLEncoder.encode(title, StandardCharsets.UTF_8);
 
         googleBooksRestTemplate.getMessageConverters().add(0,
                 new StringHttpMessageConverter(StandardCharsets.UTF_8));

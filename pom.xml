@@ -6,7 +6,7 @@
 
     <groupId>com.aidanwhiteley</groupId>
     <artifactId>books</artifactId>
-    <version>0.10.1-SNAPSHOT</version>
+    <version>0.11.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Books Microservice</name>
@@ -38,7 +38,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <spring-cloud.version>Hoxton.SR8</spring-cloud.version>
+        <spring-cloud.version>Hoxton.SR9</spring-cloud.version>
     </properties>
 
     <dependencies>
@@ -56,10 +56,10 @@
         </dependency>
         <!-- Compiles OK without next (oath2-jose) dependency but Spring firewall
             problems occur when logging on via Google -->
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.security</groupId>-->
-<!--            <artifactId>spring-security-oauth2-jose</artifactId>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-oauth2-jose</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
@@ -67,27 +67,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-mongodb</artifactId>
-<!--            <version>2.3.4.RELEASE</version>-->
         </dependency>
-
-        <!-- Temporarily setting explicit version here while tryting to work out
-        why they are not being correctly pulled in transitively from Spring Booter parent. -->
-        <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-mongodb</artifactId>
-<!--            <version>3.0.4.RELEASE</version>-->
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-commons</artifactId>
-<!--            <version>2.3.1.RELEASE</version>-->
-        </dependency>
-        <dependency>
-            <groupId>io.micrometer</groupId>
-            <artifactId>micrometer-core</artifactId>
-<!--            <version>1.5.6</version>-->
-        </dependency>
-        <!-- End of temporary transitive dependency fixes for Spring Boot 2.3.x -->
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -155,22 +135,16 @@
             <version>2.3.0</version>
         </dependency>
 
-        <!-- Test dependencies -->
-<!--        <dependency>-->
-<!--            <groupId>org.junit.jupiter</groupId>-->
-<!--            <artifactId>junit-jupiter</artifactId>-->
-<!--            <version>5.6.3</version>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
             <exclusions>
                 <!-- Two JSONObjects on the classpath -->
-                <exclusion>
-                    <groupId>com.vaadin.external.google</groupId>
-                    <artifactId>android-json</artifactId>
-                </exclusion>
+<!--                <exclusion>-->
+<!--                    <groupId>com.vaadin.external.google</groupId>-->
+<!--                    <artifactId>android-json</artifactId>-->
+<!--                </exclusion>-->
                 <exclusion>
                     <groupId>org.junit.vintage</groupId>
                     <artifactId>junit-vintage-engine</artifactId>

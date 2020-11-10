@@ -140,11 +140,6 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
             <exclusions>
-                <!-- Two JSONObjects on the classpath -->
-<!--                <exclusion>-->
-<!--                    <groupId>com.vaadin.external.google</groupId>-->
-<!--                    <artifactId>android-json</artifactId>-->
-<!--                </exclusion>-->
                 <exclusion>
                     <groupId>org.junit.vintage</groupId>
                     <artifactId>junit-vintage-engine</artifactId>

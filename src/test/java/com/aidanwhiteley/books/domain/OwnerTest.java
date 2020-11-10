@@ -14,10 +14,10 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 
-public class OwnerTest {
+class OwnerTest {
 
 	@Test
-	public void testBoilerPlateMethodsForCoverage() {
+	void testBoilerPlateMethodsForCoverage() {
 		Owner owner1 = new Owner("serviceId", "firstname", "lastName", "fullName", "example@example.com", "a link",
 				"a picture", AuthenticationProvider.FACEBOOK);
 		Owner owner2 = new Owner("serviceId", "firstname", "lastName", "fullName", "example@example.com", "a link",
@@ -29,7 +29,7 @@ public class OwnerTest {
 	}
 
 	@Test
-	public void testForInvalidRole() {
+	void testForInvalidRole() {
 		User aUser = new User();
 		aUser.setRoles(Collections.singletonList(User.Role.ROLE_ACTUATOR));
 		Comment aComment = new Comment();
@@ -45,7 +45,7 @@ public class OwnerTest {
 	}
 
 	@Test
-	public void testEditorCanDeleteOwnComment() {
+	void testEditorCanDeleteOwnComment() {
 		User aUser = new User();
 		aUser.setRoles(Collections.singletonList(User.Role.ROLE_EDITOR));
 		aUser.setAuthenticationServiceId("anAuthServId");

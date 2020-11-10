@@ -23,7 +23,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class BookRepositoryTest extends IntegrationTest {
 
@@ -61,7 +64,7 @@ public class BookRepositoryTest extends IntegrationTest {
     }
 
     @Test
-    public void findByAuthor() {
+    void findByAuthor() {
         PageRequest pageObj = PageRequest.of(PAGE, PAGE_SIZE);
         Page<Book> books = bookRepository.findAllByAuthorOrderByCreatedDateTimeDesc(pageObj, DR_ZEUSS);
         assertTrue(books.getContent().size() >= 1);
@@ -72,7 +75,7 @@ public class BookRepositoryTest extends IntegrationTest {
     }
 
     @Test
-    public void countBooksByGenre() {
+    void countBooksByGenre() {
         List<BooksByGenre> list = bookRepository.countBooksByGenre();
         assertTrue(list.size() > 0);
         assertTrue(list.get(0).getGenre().length() > 0);
@@ -80,28 +83,28 @@ public class BookRepositoryTest extends IntegrationTest {
     }
 
     @Test
-    public void countBooksByRating() {
+    void countBooksByRating() {
         List<BooksByRating> list = bookRepository.countBooksByRating();
         assertTrue(list.size() > 0);
         assertTrue(list.get(0).getCountOfBooks() > 0);
     }
 
     @Test
-    public void countBooksByAuthor() {
+    void countBooksByAuthor() {
         List<BooksByAuthor> list = bookRepository.countBooksByAuthor();
         assertTrue(list.size() > 0);
         assertTrue(list.get(0).getCountOfBooks() > 0);
     }
 
     @Test
-    public void countBooksByReader() {
+    void countBooksByReader() {
         List<BooksByReader> list = bookRepository.countBooksByReader();
         assertTrue(list.size() > 0);
         assertTrue(list.get(0).getCountOfBooks() > 0);
     }
 
     @Test
-    public void addCommentToBook() {
+    void addCommentToBook() {
         Book book = createTestBook();
 
         Book savedBook = bookRepository.insert(book);
@@ -116,7 +119,7 @@ public class BookRepositoryTest extends IntegrationTest {
     }
 
     @Test
-    public void removeCommentFromBook() {
+    void removeCommentFromBook() {
 
         // Set up a couple of comments
         Book book = createTestBook();
@@ -148,7 +151,7 @@ public class BookRepositoryTest extends IntegrationTest {
     }
 
     @Test
-    public void searchForBooks() {
+    void searchForBooks() {
         // mongo-java-server doesnt support full text indexes across fields
         if (Arrays.stream(this.environment.getActiveProfiles()).anyMatch(s ->
                 s.contains(BookControllerTest.IN_MEMORY_MONGODB_SPRING_PROFILE))) {

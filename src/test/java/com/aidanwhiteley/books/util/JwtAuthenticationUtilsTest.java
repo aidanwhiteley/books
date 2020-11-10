@@ -3,13 +3,14 @@ package com.aidanwhiteley.books.util;
 import com.aidanwhiteley.books.controller.jwt.JwtAuthentication;
 import com.aidanwhiteley.books.controller.jwt.JwtUtils;
 import com.aidanwhiteley.books.domain.User;
+import lombok.val;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.junit.Assert.assertEquals;
 
-public class JwtAuthenticationUtilsTest extends IntegrationTest {
+class JwtAuthenticationUtilsTest extends IntegrationTest {
 
     @Autowired
     private JwtAuthenticationUtils jwtAuthenticationUtils;
@@ -18,7 +19,7 @@ public class JwtAuthenticationUtilsTest extends IntegrationTest {
     private JwtUtils jwtUtils;
 
     @Test
-    public void tryToGetActuatorJwtToken() {
+    void tryToGetActuatorJwtToken() {
 
         String jwt = jwtAuthenticationUtils.getJwtForActuatorRoleUser();
         User userFromToken = jwtUtils.getUserFromToken(jwt);
@@ -29,9 +30,10 @@ public class JwtAuthenticationUtilsTest extends IntegrationTest {
     }
 
     @Test
-    public void throwExceptionForUnexpectedAuth() {
+    void throwExceptionForUnexpectedAuth() {
+        final var auth = new JwtAuthentication("d\tummy", "d\rummy", "d\nummy");
         Assertions.assertThrows(IllegalStateException.class, () -> {
-            JwtAuthenticationUtils.handleUnexpectedAuth(new JwtAuthentication("d\tummy", "d\rummy", "d\nummy"));
+            JwtAuthenticationUtils.handleUnexpectedAuth(auth);
         });
 
     }

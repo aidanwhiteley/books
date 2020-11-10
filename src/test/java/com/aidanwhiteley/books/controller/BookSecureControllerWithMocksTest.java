@@ -21,7 +21,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
-public class BookSecureControllerWithMocksTest {
+class BookSecureControllerWithMocksTest {
 
     private static final String BOOK_ID_1 = "1234";
     private static final String GOOGLE_BOOK_ID_1 = "g1234";
@@ -34,7 +34,7 @@ public class BookSecureControllerWithMocksTest {
     private GoogleBooksDaoSync googleBooksDaoSync;
 
     @Test
-    public void updateBookWithoutSettingGoogleBookData() {
+    void updateBookWithoutSettingGoogleBookData() {
 
         Book book = Book.builder().id(BOOK_ID_1).build();
         Principal principal = initTest(book);
@@ -47,7 +47,7 @@ public class BookSecureControllerWithMocksTest {
     }
 
     @Test
-    public void updateBookSetGoogleBookDataForFirstTime() {
+    void updateBookSetGoogleBookDataForFirstTime() {
 
         Book book = Book.builder().id(BOOK_ID_1).googleBookId(GOOGLE_BOOK_ID_1).build();
         Principal principal = initTest(book);
@@ -60,7 +60,7 @@ public class BookSecureControllerWithMocksTest {
     }
 
     @Test
-    public void updateBookSetDifferentGoogleBookData() {
+    void updateBookSetDifferentGoogleBookData() {
 
         Book book1 = Book.builder().id(BOOK_ID_1).googleBookId(GOOGLE_BOOK_ID_1).build();
         Principal principal = initTest(book1);
@@ -74,7 +74,7 @@ public class BookSecureControllerWithMocksTest {
     }
 
     @Test
-    public void updateBookSetSameGoogleBookData() {
+    void updateBookSetSameGoogleBookData() {
 
         Book book1 = Book.builder().id(BOOK_ID_1).googleBookId(GOOGLE_BOOK_ID_1).googleBookDetails(new Item()).build();
         Principal principal = initTest(book1);

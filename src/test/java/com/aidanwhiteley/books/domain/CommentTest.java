@@ -8,10 +8,10 @@ import org.junit.jupiter.api.Test;
 
 import com.aidanwhiteley.books.domain.User.AuthenticationProvider;
 
-public class CommentTest {
+class CommentTest {
 
 	@Test
-	public void testBoilerPlates() {
+	void testBoilerPlates() {
 		Owner anOwner = new Owner("authid1", "firstname", "lastName", "fullName", 
 				"example@example.com", "a link", "a picture", AuthenticationProvider.FACEBOOK);
 		LocalDateTime now = LocalDateTime.now();

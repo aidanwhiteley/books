@@ -28,7 +28,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 @SuppressWarnings("ConstantConditions")
-public class BookSecureControllerTest extends IntegrationTest {
+class BookSecureControllerTest extends IntegrationTest {
 
     private static final String GENRE_TOO_LONG = "abcdefghjijklmnopqrstuvwxyz01234567890";
 
@@ -42,7 +42,7 @@ public class BookSecureControllerTest extends IntegrationTest {
     private int maxPageSize;
 
     @Test
-    public void createAndDeleteBook() {
+    void createAndDeleteBook() {
         // Create book
         ResponseEntity<Book> response = BookControllerTestUtils.postBookToServer(jwtUtils, testRestTemplate);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
@@ -66,7 +66,7 @@ public class BookSecureControllerTest extends IntegrationTest {
     }
 
     @Test
-    public void tryToCreateInvalidBook() {
+    void tryToCreateInvalidBook() {
 
         // An empty book should fail
         Book emptyBook = new Book();
@@ -88,7 +88,7 @@ public class BookSecureControllerTest extends IntegrationTest {
     }
 
     @Test
-    public void tryToCreateBookWithNoPermissions() {
+    void tryToCreateBookWithNoPermissions() {
 
         Book testBook = BookRepositoryTest.createTestBook();
         HttpEntity<Book> request = new HttpEntity<>(testBook);
@@ -100,7 +100,7 @@ public class BookSecureControllerTest extends IntegrationTest {
     }
 
     @Test
-    public void tryToCreateBookWithInsufficientPermissions() {
+    void tryToCreateBookWithInsufficientPermissions() {
 
         Book testBook = BookRepositoryTest.createTestBook();
 
@@ -118,7 +118,7 @@ public class BookSecureControllerTest extends IntegrationTest {
     }
 
     @Test
-    public void updateBook() {
+    void updateBook() {
 
         // Create Book
         ResponseEntity<Book> response = BookControllerTestUtils.postBookToServer(jwtUtils, testRestTemplate);
@@ -151,7 +151,7 @@ public class BookSecureControllerTest extends IntegrationTest {
     }
 
     @Test
-    public void tryToUpdateBookWithInsufficientPermissions() {
+    void tryToUpdateBookWithInsufficientPermissions() {
 
         ResponseEntity<Book> response = BookControllerTestUtils.postBookToServer(jwtUtils, testRestTemplate);
         HttpHeaders headers = response.getHeaders();
@@ -174,7 +174,7 @@ public class BookSecureControllerTest extends IntegrationTest {
     }
 
     @Test
-    public void tryUpdateActionWhenNoCsrfTokenInRequestHeaders() {
+    void tryUpdateActionWhenNoCsrfTokenInRequestHeaders() {
 
         User user = BookControllerTestUtils.getTestUser();
         String token = jwtUtils.createTokenForUser(user);
@@ -193,7 +193,7 @@ public class BookSecureControllerTest extends IntegrationTest {
     }
 
     @Test
-    public void addAndRemoveCommentFromBook() {
+    void addAndRemoveCommentFromBook() {
         // Create Book
         ResponseEntity<Book> response = BookControllerTestUtils.postBookToServer(jwtUtils, testRestTemplate);
 
@@ -233,7 +233,7 @@ public class BookSecureControllerTest extends IntegrationTest {
     }
     
     @Test
-    public void findBooksByReader() {
+    void findBooksByReader() {
 		User user = BookControllerTestUtils.getTestUser();
         String token = jwtUtils.createTokenForUser(user);
         String xsrfToken = BookControllerTestUtils.getXsrfToken(testRestTemplate);
@@ -254,7 +254,7 @@ public class BookSecureControllerTest extends IntegrationTest {
     }
 
     @Test
-    public void findBookReaders() {
+    void findBookReaders() {
         User user = BookControllerTestUtils.getTestUser();
         String token = jwtUtils.createTokenForUser(user);
         String xsrfToken = BookControllerTestUtils.getXsrfToken(testRestTemplate);
@@ -266,7 +266,7 @@ public class BookSecureControllerTest extends IntegrationTest {
     }
 
     @Test
-    public void testDebugHeaders() {
+    void testDebugHeaders() {
         User user = BookControllerTestUtils.getTestUser();
         String token = jwtUtils.createTokenForUser(user);
 

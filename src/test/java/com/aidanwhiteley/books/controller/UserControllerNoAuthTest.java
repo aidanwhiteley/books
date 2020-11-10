@@ -16,13 +16,13 @@ import static org.junit.Assert.assertEquals;
 // See https://github.com/spring-projects/spring-boot/issues/19788 for why we use the syntax below to set the active profile
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = {"spring.profiles.active=dev-mongo-java-server-no-auth", "books.client.enableCORS=false"})
-public class UserControllerNoAuthTest extends IntegrationTest {
+class UserControllerNoAuthTest extends IntegrationTest {
 
     @Autowired
     private TestRestTemplate testRestTemplate;
 
     @Test
-    public void getUserDetailsNoAuthentication() {
+    void getUserDetailsNoAuthentication() {
         int expectedStatusCode = HttpStatus.OK.value();
 
         ResponseEntity<User> response = testRestTemplate.getForEntity("/secure/api/user", User.class);

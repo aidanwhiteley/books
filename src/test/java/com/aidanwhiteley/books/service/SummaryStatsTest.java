@@ -11,13 +11,13 @@ import com.aidanwhiteley.books.util.IntegrationTest;
 
 import java.util.List;
 
-public class SummaryStatsTest extends IntegrationTest {
+class SummaryStatsTest extends IntegrationTest {
 
 	@Autowired
 	private StatsService statsService;
 
 	@Test
-	public void getSummaryStats() {
+	void getSummaryStats() {
 
 		SummaryStats stats = statsService.getSummaryStats();
 		List<BooksByGenre> books = stats.getBookByGenre();

@@ -12,7 +12,7 @@ import springfox.documentation.spring.web.plugins.Docket;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class SwaggerConfigTest extends IntegrationTest {
+class SwaggerConfigTest extends IntegrationTest {
 
     @Autowired
     private TestRestTemplate testRestTemplate;
@@ -21,7 +21,7 @@ public class SwaggerConfigTest extends IntegrationTest {
     private Docket docket;
 
     @Test
-    public void testSwaggerUiHtml() {
+    void testSwaggerUiHtml() {
         ResponseEntity<String> response = testRestTemplate.exchange("/swagger-ui.html", HttpMethod.GET,
                 null, String.class);
 
@@ -30,7 +30,7 @@ public class SwaggerConfigTest extends IntegrationTest {
     }
 
     @Test
-    public void testSwggaerDocumentationType() {
+    void testSwggaerDocumentationType() {
         DocumentationType docType = docket.getDocumentationType();
         assertEquals(DocumentationType.SWAGGER_2, docType);
     }

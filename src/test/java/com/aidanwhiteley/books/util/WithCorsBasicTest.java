@@ -16,26 +16,26 @@ import static junit.framework.TestCase.assertTrue;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {"books.client.enableCORS=true"})
-public class WithCorsBasicTest {
+class WithCorsBasicTest {
 
     @Value("${books.client.enableCORS}")
     private boolean enableCORS;
 
     @BeforeAll
-    public static void suppressLogging() {
+    static void suppressLogging() {
         // Turn off unwanted logging of CORS warnings to the JUnit logs
         LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
         context.getLogger(WebSecurityConfiguration.class).setLevel(Level.valueOf("OFF"));
     }
 
     @AfterAll
-    public static void reenableLogging() {
+    static void reenableLogging() {
         LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
         context.getLogger(WebSecurityConfiguration.class).setLevel(Level.valueOf("ON"));
     }
 
     @Test
-    public void shamelessCodeCoverageIncreasingTest() {
+    void shamelessCodeCoverageIncreasingTest() {
         assertTrue(enableCORS);
     }
 }

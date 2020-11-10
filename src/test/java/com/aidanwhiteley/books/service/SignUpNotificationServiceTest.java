@@ -22,7 +22,7 @@ import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.GOOGLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class SignUpNotificationServiceTest extends IntegrationTest {
+class SignUpNotificationServiceTest extends IntegrationTest {
 
     // This value must match the value in the corresponding YAML config file.
     // Default port 25 shifted to allow easy use on Unix environments where
@@ -54,7 +54,7 @@ public class SignUpNotificationServiceTest extends IntegrationTest {
     }
 
     @Test
-    public void testNewRegistrationIsVisible() {
+    void testNewRegistrationIsVisible() {
 
         SignUpNotificationService service = new SignUpNotificationService(userRepository, mailClient);
         int currentNewUsers = service.findNewUsers().size();
@@ -69,7 +69,7 @@ public class SignUpNotificationServiceTest extends IntegrationTest {
     }
 
     @Test
-    public void testNewRegistrationEmailedToAdmin() throws IOException, MessagingException {
+    void testNewRegistrationEmailedToAdmin() throws IOException, MessagingException {
         SignUpNotificationService service = new SignUpNotificationService(userRepository, mailClient);
         int currentNewUsers = service.findNewUsers().size();
         service.setRegistrationAdminEmailEnabled(true);

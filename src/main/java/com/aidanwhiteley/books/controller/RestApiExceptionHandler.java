@@ -103,7 +103,7 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
                                                              HttpStatus status, WebRequest request) {
 
         API_LOGGER.error(
-                "The Spring framework rather than the application handled the following exception: " + ex.getMessage(),
+                "The Spring framework rather than the application handled the following exception: {}", ex.getMessage(),
                 ex);
         return super.handleExceptionInternal(ex, body, headers, status, request);
     }

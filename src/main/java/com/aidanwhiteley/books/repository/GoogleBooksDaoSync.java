@@ -58,7 +58,7 @@ public class GoogleBooksDaoSync {
                     googleBooksApiConfig.getCountryCode(), Item.class);
         } catch (HttpStatusCodeException e) {
             String errorpayload = e.getResponseBodyAsString();
-            LOGGER.error("Error calling Google Books API: " + errorpayload, e);
+            LOGGER.error("Error calling Google Books API: {}", errorpayload, e);
             throw e;
         } catch (RestClientException e) {
             LOGGER.error("Rest client error calling Google Books API: ", e);

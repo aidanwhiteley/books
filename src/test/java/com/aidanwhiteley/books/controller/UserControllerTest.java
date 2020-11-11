@@ -20,7 +20,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-public class UserControllerTest extends IntegrationTest {
+class UserControllerTest extends IntegrationTest {
 
     private static final String NO_AUTH_SPRING_PROFILE = "no-auth";
 
@@ -37,7 +37,7 @@ public class UserControllerTest extends IntegrationTest {
     private long expiryInMilliSecondsActuator;
 
     @Test
-    public void getUserDetailsNoAuthentication() {
+    void getUserDetailsNoAuthentication() {
         int expectedStatusCode = (Arrays.stream(this.environment.getActiveProfiles()).anyMatch(s -> s.contains(NO_AUTH_SPRING_PROFILE))) ?
             HttpStatus.OK.value() : HttpStatus.UNAUTHORIZED.value();
 
@@ -46,7 +46,7 @@ public class UserControllerTest extends IntegrationTest {
     }
 
     @Test
-    public void getUserDetailsWithAuthentication() {
+    void getUserDetailsWithAuthentication() {
         ResponseEntity<User> response = getUserDetails();
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -55,7 +55,7 @@ public class UserControllerTest extends IntegrationTest {
     }
     
     @Test
-    public void testLogout() {
+    void testLogout() {
         ResponseEntity<User> response = getUserDetails();
         assertEquals(HttpStatus.OK, response.getStatusCode());
         
@@ -72,7 +72,7 @@ public class UserControllerTest extends IntegrationTest {
     }
     
     @Test
-    public void tryToDeleteUserid() {
+    void tryToDeleteUserid() {
     	ResponseEntity<User> response = getUserDetails();
         assertEquals(HttpStatus.OK, response.getStatusCode());
         
@@ -96,7 +96,7 @@ public class UserControllerTest extends IntegrationTest {
     }
 
     @Test
-    public void tryToPatchOwnUserid() {
+    void tryToPatchOwnUserid() {
         ResponseEntity<User> response = getUserDetails();
         assertEquals(HttpStatus.OK, response.getStatusCode());
 

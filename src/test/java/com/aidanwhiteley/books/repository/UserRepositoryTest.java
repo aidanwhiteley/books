@@ -13,7 +13,7 @@ import static com.aidanwhiteley.books.domain.User.Role.ROLE_ADMIN;
 import static com.aidanwhiteley.books.domain.User.Role.ROLE_EDITOR;
 import static org.junit.Assert.assertEquals;
 
-public class UserRepositoryTest extends IntegrationTest {
+class UserRepositoryTest extends IntegrationTest {
 
     private static final String FULL_NAME = "A test user";
 
@@ -28,7 +28,7 @@ public class UserRepositoryTest extends IntegrationTest {
     }
 
     @Test
-    public void createAndFindUser() {
+    void createAndFindUser() {
         User user = createTestUser();
 
         userRepository.insert(user);
@@ -39,7 +39,7 @@ public class UserRepositoryTest extends IntegrationTest {
     }
 
     @Test
-    public void updateUserRoles() {
+    void updateUserRoles() {
 
         // Tidy up before test
         List<User> oldUsers = userRepository.findAllByAuthenticationServiceIdAndAuthProvider(SERVICE_ID, GOOGLE.toString());

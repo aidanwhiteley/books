@@ -4,10 +4,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class LogDetaintTest {
+class LogDetaintTest {
 
     @Test
-    public void shouldRemoveTaintedChars() {
+    void shouldRemoveTaintedChars() {
         final String input ="abc\ndef\rghi\tjkl";
         final String expectedOutput = "abc_def_ghi_jkl";
 

@@ -6,10 +6,10 @@ import org.springframework.mock.web.MockHttpServletResponse;
 
 import static org.junit.Assert.assertNotNull;
 
-public class JwtAuthenticationServiceTest {
+class JwtAuthenticationServiceTest {
 
     @Test
-    public void testSetAuthenticationData() {
+    void testSetAuthenticationData() {
         MockHttpServletResponse response = new MockHttpServletResponse();
         User aUser = new User();
         final String aFullName = "Marilyn Monroe";

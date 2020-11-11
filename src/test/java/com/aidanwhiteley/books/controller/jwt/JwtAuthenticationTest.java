@@ -4,10 +4,10 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-public class JwtAuthenticationTest {
+class JwtAuthenticationTest {
 	
 	@Test
-	public void testJwtAuthenticationDetails() {
+	void testJwtAuthenticationDetails() {
 		JwtAuthentication auth1 = new JwtAuthentication("Full Name", "AuthProvider", "AuthServiceId");
 		JwtAuthentication auth2 = new JwtAuthentication("Full Name", "AuthProvider", "AuthServiceId");
 		assertEquals(auth1, auth2);

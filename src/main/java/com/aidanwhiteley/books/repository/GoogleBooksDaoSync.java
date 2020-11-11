@@ -13,7 +13,6 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
@@ -59,7 +58,7 @@ public class GoogleBooksDaoSync {
                     googleBooksApiConfig.getCountryCode(), Item.class);
         } catch (HttpStatusCodeException e) {
             String errorpayload = e.getResponseBodyAsString();
-            LOGGER.error("Error calling Google Books API: " + errorpayload, e);
+            LOGGER.error("Error calling Google Books API: {}", errorpayload, e);
             throw e;
         } catch (RestClientException e) {
             LOGGER.error("Rest client error calling Google Books API: ", e);

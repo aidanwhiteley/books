@@ -16,7 +16,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class FeedsControllerTest extends IntegrationTest {
+class FeedsControllerTest extends IntegrationTest {
 
     @Autowired
     private TestRestTemplate testRestTemplate;
@@ -25,7 +25,7 @@ public class FeedsControllerTest extends IntegrationTest {
     private String booksFeedsTitles;
 
     @Test
-    public void checkRssFeedsHasEntries() throws Exception {
+    void checkRssFeedsHasEntries() throws Exception {
 
         // Find the port the test is running on
         String rootUri = this.testRestTemplate.getRootUri();

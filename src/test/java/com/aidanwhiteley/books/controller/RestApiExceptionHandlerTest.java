@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @AutoConfigureMockMvc
-public class RestApiExceptionHandlerTest extends IntegrationTest {
+class RestApiExceptionHandlerTest extends IntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -42,7 +42,7 @@ public class RestApiExceptionHandlerTest extends IntegrationTest {
     private TestRestTemplate testRestTemplate;
 
     @Test
-    public void testExceptionHandlerForResourceNotFound() throws Exception {
+    void testExceptionHandlerForResourceNotFound() throws Exception {
         RequestBuilder requestBuilder = getGetRequestBuilder("/api/books/987654321");
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isNotFound())
@@ -51,7 +51,7 @@ public class RestApiExceptionHandlerTest extends IntegrationTest {
     }
 
     @Test
-    public void testExceptionHandlerIllegalArguments() throws Exception {
+    void testExceptionHandlerIllegalArguments() throws Exception {
         RequestBuilder requestBuilder = getGetRequestBuilder("/api/books/?rating=wibble");
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isBadRequest())
@@ -60,7 +60,7 @@ public class RestApiExceptionHandlerTest extends IntegrationTest {
     }
 
     @Test
-    public void testExceptionHandlerForNoPermissions() throws Exception {
+    void testExceptionHandlerForNoPermissions() throws Exception {
         Book book = new Book();
         RequestBuilder requestBuilder = getPostRequestBuilder("/secure/api/books", book);
         mockMvc.perform(requestBuilder)
@@ -68,7 +68,7 @@ public class RestApiExceptionHandlerTest extends IntegrationTest {
     }
 
     @Test
-    public void testHandleDefaultExceptions() {
+    void testHandleDefaultExceptions() {
         RestApiExceptionHandler raeh = new RestApiExceptionHandler();
         final String errMsg = "Its all gone Pete Tong";
         LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
@@ -79,18 +79,6 @@ public class RestApiExceptionHandlerTest extends IntegrationTest {
         // we dont want the text of the unexpected exception sent to the client.
         assertFalse(aed.getMessage().contains(errMsg));
     }
-//
-//    @Test
-//    public void testExceptionHandlerForRejectingHtml() throws Exception {
-//
-//
-//        Book book = BookRepositoryTest.createTestBook();
-//        //book.setTitle("<b>Html is not allowed</b>");
-//        RequestBuilder requestBuilder = getPostRequestBuilder("/secure/api/books", book);
-//
-//        mockMvc.perform(requestBuilder)
-//                .andExpect(status().isUnsupportedMediaType());
-//    }
 
     private RequestBuilder getGetRequestBuilder(String url) {
         return MockMvcRequestBuilders

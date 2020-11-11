@@ -54,7 +54,7 @@ public class BookControllerTest extends IntegrationTest {
     private int maxPageSize;
 
     @Test
-    public void findBookById() {
+    void findBookById() {
         ResponseEntity<Book> response = BookControllerTestUtils.postBookToServer(jwtUtils, testRestTemplate);
         HttpHeaders headers = response.getHeaders();
         URI uri = headers.getLocation();
@@ -64,7 +64,7 @@ public class BookControllerTest extends IntegrationTest {
     }
 
     @Test
-    public void findByAuthor() {
+    void findByAuthor() {
         BookControllerTestUtils.postBookToServer(jwtUtils, testRestTemplate);
 
         ResponseEntity<String> response = testRestTemplate.exchange("/api/books?author=" + BookRepositoryTest.DR_ZEUSS + "&page=0&size=10", HttpMethod.GET,
@@ -79,7 +79,7 @@ public class BookControllerTest extends IntegrationTest {
     }
 
     @Test
-    public void testSensitiveDataNotReturnedToAnonymousUser() {
+    void testSensitiveDataNotReturnedToAnonymousUser() {
         ResponseEntity<Book> response = BookControllerTestUtils.postBookToServer(jwtUtils, testRestTemplate);
         String location = response.getHeaders().getLocation().toString();
         Book book = testRestTemplate.getForObject(location, Book.class);
@@ -95,7 +95,7 @@ public class BookControllerTest extends IntegrationTest {
     }
 
     @Test
-    public void testSensitiveDataIsReturnedToAdminUser() {
+    void testSensitiveDataIsReturnedToAdminUser() {
         Book testBook = BookRepositoryTest.createTestBook();
         User user = BookControllerTestUtils.getTestUser();
         String token = jwtUtils.createTokenForUser(user);
@@ -116,7 +116,7 @@ public class BookControllerTest extends IntegrationTest {
     }
 
     @Test
-    public void testUserDataIsReturnedToEditorUser() {
+    void testUserDataIsReturnedToEditorUser() {
         Book testBook = BookRepositoryTest.createTestBook();
         User user = BookControllerTestUtils.getEditorTestUser();
         String token = jwtUtils.createTokenForUser(user);
@@ -141,7 +141,7 @@ public class BookControllerTest extends IntegrationTest {
     }
 
     @Test
-    public void findUsingFullTextSearch() {
+    void findUsingFullTextSearch() {
 
         // This test doesnt run with mongo-java-server as it uses weighted full text index
         // against multiple fields - which is not currently supported by mongo-java-server.
@@ -165,7 +165,7 @@ public class BookControllerTest extends IntegrationTest {
     }
 
     @Test
-    public void fullTextSearchShouldntFindStopWord() {
+    void fullTextSearchShouldntFindStopWord() {
 
         // This test doesnt run with mongo-java-server as it uses weighted full text index
         // against multiple fields - which is not currently supported by mongo-java-server.
@@ -194,7 +194,7 @@ public class BookControllerTest extends IntegrationTest {
     }
 
     @Test
-    public void findAllByWhenCreatedDateTimeDesc() {
+    void findAllByWhenCreatedDateTimeDesc() {
         ResponseEntity<String> response = testRestTemplate.exchange("/api/books", HttpMethod.GET, null, String.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
@@ -215,7 +215,7 @@ public class BookControllerTest extends IntegrationTest {
     }
 
     @Test
-    public void testBookDataSummaryApis() {
+    void testBookDataSummaryApis() {
 
         // Summary stats
         ResponseEntity<String> response = testRestTemplate.exchange("/api/books/stats", HttpMethod.GET, null, String.class);
@@ -229,7 +229,7 @@ public class BookControllerTest extends IntegrationTest {
     }
 
     @Test
-    public void findBookByRating() {
+    void findBookByRating() {
         ResponseEntity<String> response = testRestTemplate.exchange("/api/books/?rating=GOOD&page=1&size=2", HttpMethod.GET, null, String.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
@@ -245,7 +245,7 @@ public class BookControllerTest extends IntegrationTest {
     }
 
     @Test
-    public void findBookByRatingPreConditions() {
+    void findBookByRatingPreConditions() {
         ResponseEntity<String> response = testRestTemplate.exchange("/api/books/?rating=invalid=1&size=2", HttpMethod.GET, null, String.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
 
@@ -256,7 +256,7 @@ public class BookControllerTest extends IntegrationTest {
     }
 
     @Test
-    public void askForTooManyDataItems() {
+    void askForTooManyDataItems() {
         final int tooBig = maxPageSize + 1;
 
         ResponseEntity<String> response = testRestTemplate.exchange("/api/books/?author=someone&page=0&size=" + tooBig, HttpMethod.GET, null, String.class);
@@ -277,7 +277,7 @@ public class BookControllerTest extends IntegrationTest {
     }
 
     @Test
-    public void askForEmptySearchCriteria() {
+    void askForEmptySearchCriteria() {
         final String partialErrorMsg = "cannot be empty";
 
         ResponseEntity<String> response = testRestTemplate.exchange("/api/books/?author=&page=0&size=" + maxPageSize, HttpMethod.GET, null, String.class);

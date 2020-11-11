@@ -14,7 +14,7 @@ import static org.junit.Assert.assertNull;
 
 @Profile({"dev-mongo-java-server", "dev-mongo-java-server-no-auth", "dev-mongodb-no-auth", "dev-mongodb", "travis"})
 @AutoConfigureWireMock(port=0)
-public class GoogleBookDaoAsyncTest extends IntegrationTest {
+class GoogleBookDaoAsyncTest extends IntegrationTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GoogleBookDaoAsyncTest.class);
 
@@ -27,7 +27,7 @@ public class GoogleBookDaoAsyncTest extends IntegrationTest {
     private GoogleBooksDaoAsync async;
 
     @Test
-    public void testBookUpdatedWithGoogleBookDetails() {
+    void testBookUpdatedWithGoogleBookDetails() {
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Wiremock Mappings: " + WireMock.listAllStubMappings().getMappings());

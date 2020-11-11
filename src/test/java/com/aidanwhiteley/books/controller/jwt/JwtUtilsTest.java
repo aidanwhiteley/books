@@ -11,12 +11,12 @@ import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertEquals;
 
-public class JwtUtilsTest {
+class JwtUtilsTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtUtilsTest.class);
 
     @Test
-    public void testCreadAndReadGoodToken() {
+    void testCreadAndReadGoodToken() {
         JwtUtils jwt = new JwtUtils();
 
         jwt.setIssuer("A test issuer");
@@ -33,7 +33,7 @@ public class JwtUtilsTest {
     }
 
     @Test
-    public void testTamperedWithToken() {
+    void testTamperedWithToken() {
         JwtUtils jwt = new JwtUtils();
 
         jwt.setIssuer("A test issuer");
@@ -47,15 +47,16 @@ public class JwtUtilsTest {
         int strlength = token.length();
         char aChar = token.charAt(strlength - 1);
         tampered.setCharAt(strlength - 1, (char)( aChar - 1));
+        String tamperedString = tampered.toString();
 
         Assertions.assertThrows(SignatureException.class, () -> {
-            jwt.getUserFromToken(tampered.toString());
+            jwt.getUserFromToken(tamperedString);
         });
 
     }
 
     @Test
-    public void testExpiredToken() {
+    void testExpiredToken() {
         JwtUtils jwt = new JwtUtils();
 
         jwt.setIssuer("A test issuer");

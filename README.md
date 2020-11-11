@@ -7,7 +7,7 @@ actually be useful.
 
 So welcome to the "Cloudy Bookclub" microservice!
 
-[![Build Status](https://travis-ci.org/aidanwhiteley/books.svg?branch=develop)](https://travis-ci.org/aidanwhiteley/books) 
+[![Build Status](https://api.travis-ci.com/aidanwhiteley/books.svg?branch=develop)](https://travis-ci.com/github/aidanwhiteley/books) 
 [![Sonar Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=com.aidanwhiteley%3Abooks&metric=alert_status)](https://sonarcloud.io/dashboard?id=com.aidanwhiteley%3Abooks)
 [![Codacy Code Quality](https://api.codacy.com/project/badge/Grade/0570d8fd3bfa4811a3f10071ad73988f)](https://www.codacy.com/app/Books_Team/books?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=aidanwhiteley/books&amp;utm_campaign=Badge_Grade)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/aidanwhiteley/books.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/aidanwhiteley/books/alerts/)

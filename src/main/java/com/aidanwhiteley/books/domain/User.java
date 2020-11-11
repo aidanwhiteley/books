@@ -122,10 +122,10 @@ public class User implements Serializable {
 
         private static final Map<Integer, Role> map = new HashMap<>();
 
-        private final int role;
+        private final int roleNumber;
 
-        Role(int role) {
-            this.role = role;
+        Role(int roleNumber) {
+            this.roleNumber = roleNumber;
         }
 
         public String getShortName() {
@@ -133,7 +133,7 @@ public class User implements Serializable {
         }
 
         public int getRoleNumber() {
-            return this.role;
+            return this.roleNumber;
         }
 
         static {
@@ -142,8 +142,8 @@ public class User implements Serializable {
             }
         }
 
-        public static Role getRole(int role) {
-            return map.get(role);
+        public static Role getRole(int roleNumber) {
+            return map.get(roleNumber);
         }
 
     }

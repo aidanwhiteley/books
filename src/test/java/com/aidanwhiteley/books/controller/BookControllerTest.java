@@ -205,7 +205,7 @@ public class BookControllerTest extends IntegrationTest {
     }
 
     @Test
-    public void findBooksByGenre() {
+    void findBooksByGenre() {
         ResponseEntity<String> response = testRestTemplate.exchange("/api/books?genre=Novel", HttpMethod.GET, null, String.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
 

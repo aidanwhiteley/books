@@ -3,7 +3,6 @@ package com.aidanwhiteley.books.util;
 import com.aidanwhiteley.books.controller.jwt.JwtAuthentication;
 import com.aidanwhiteley.books.controller.jwt.JwtUtils;
 import com.aidanwhiteley.books.domain.User;
-import lombok.val;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -47,4 +47,10 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    - name: Upload to codecov.io
+      uses: codecov/codecov-action@v1
+      with:
+        file: ./target/site/jacoco/jacoco.xml
+        fail_ci_if_error: true # optional (default = false)
+        verbose: true # optional (default = false)
 

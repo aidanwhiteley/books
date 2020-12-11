@@ -33,7 +33,7 @@ jobs:
         restore-keys: ${{ runner.os }}-m2  
     - name: Build with Maven
       run: >
-        mvn -B clean org.jacoco:jacoco-maven-plugin:prepare-agent sonar:sonar --file pom.xml
+        mvn -B clean package sonar:sonar --file pom.xml
         -Dsonar.host.url=https://sonarcloud.io
         -Dsonar.organization=aidanwhiteley-github
         -Dsonar.projectKey=com.aidanwhiteley:books

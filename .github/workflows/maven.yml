@@ -44,7 +44,6 @@ jobs:
         -Dsonar.branch.name=develop
         -Dsonar.branch.target=develop
         -Dsonar.sourceEncoding=UTF-8
-        -Dsonar.coverage.jacoco.xmlReportPaths=${project.build.directory}/site/jacoco/jacoco.xml
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

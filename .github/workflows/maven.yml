@@ -35,3 +35,5 @@ jobs:
       run: mvn -B clean org.jacoco:jacoco-maven-plugin:prepare-agent sonar:sonar --file pom.xml
       env:
         SONAR_HOST_URL: https://sonarcloud.io
+        SONAR_ORGANIZATION: adanwhiteley-github
+

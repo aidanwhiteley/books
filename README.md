@@ -50,7 +50,7 @@ By default, the tests run against mongo-java-server so there is no need to insta
 MongDb to test most of the application. Functionality not supported by mogo-java-server such as full text indexes results in some tests being skipped when 
 running with the monog-java-server Spring profile.
 
-When running the CI builds, tests run against a real Mongo instance.
+When running the CI builds with Githib Actions, tests run against a real Mongo instance.
 
 Some of the integration tests make use of WireMock - see the /src/test/resources/mappings and __files directories for the configuration details.
 

@@ -13,27 +13,39 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        mongodb-version: [ 4.4 ]
 
     steps:
     - uses: actions/checkout@v2
       with:
         # Disabling shallow clone is recommended by SonarQube for improving relevancy of reporting
         fetch-depth: 0
+
     - name: Set up JDK 11
       uses: actions/setup-java@v1
       with:
         java-version: '11' # The JDK version to make available on the path.
         java-package: jdk # (jre, jdk, or jdk+fx) - defaults to jdk
         architecture: x64 # (x64 or x86) - defaults to x64
+
     - name: Cache Maven packages
       uses: actions/cache@v2
       with:
         path: ~/.m2
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-        restore-keys: ${{ runner.os }}-m2  
+        restore-keys: ${{ runner.os }}-m2
+
+    - name: Start MongoDB
+      uses: supercharge/mongodb-github-action@1.3.0
+      with:
+        mongodb-version: ${{ matrix.mongodb-version }}
+
     - name: Build with Maven
       run: >
         mvn -B clean package sonar:sonar --file pom.xml
+        -Dspring.profiles.active=ci
         -Dsonar.host.url=https://sonarcloud.io
         -Dsonar.organization=aidanwhiteley-github
         -Dsonar.projectKey=com.aidanwhiteley:books
@@ -47,6 +59,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
     - name: Upload to codecov.io
       uses: codecov/codecov-action@v1
       with:

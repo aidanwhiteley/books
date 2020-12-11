@@ -7,7 +7,7 @@ actually be useful.
 
 So welcome to the "Cloudy Bookclub" microservice!
 
-[![Build Status](https://api.travis-ci.com/aidanwhiteley/books.svg?branch=develop)](https://travis-ci.com/github/aidanwhiteley/books) 
+[![Actions CI Build](https://github.com/aidanwhiteley/books/workflows/Actions%20CI%20Build/badge.svg)](https://github.com/aidanwhiteley/books/actions?query=workflow%3A%22Actions+CI+Build%22)
 [![Sonar Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=com.aidanwhiteley%3Abooks&metric=alert_status)](https://sonarcloud.io/dashboard?id=com.aidanwhiteley%3Abooks)
 [![Codacy Code Quality](https://api.codacy.com/project/badge/Grade/0570d8fd3bfa4811a3f10071ad73988f)](https://www.codacy.com/app/Books_Team/books?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=aidanwhiteley/books&amp;utm_campaign=Badge_Grade)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/aidanwhiteley/books.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/aidanwhiteley/books/alerts/)
@@ -50,7 +50,7 @@ By default, the tests run against mongo-java-server so there is no need to insta
 MongDb to test most of the application. Functionality not supported by mogo-java-server such as full text indexes results in some tests being skipped when 
 running with the monog-java-server Spring profile.
 
-When running the Travis builds, tests run against a real Mongo instance.
+When running the CI builds with Githib Actions, tests run against a real Mongo instance.
 
 Some of the integration tests make use of WireMock - see the /src/test/resources/mappings and __files directories for the configuration details.
 
@@ -110,7 +110,7 @@ There are Spring profile files for a range of development and test scenarios.
 	- configured to allow CORS access to APIs
 	- clears down DB and reloads test data on every restart
 	
-#### travis
+#### CI
 	- uses a real MongoDb
 	- configured to allow CORS access to APIs
 	- clears down the DB and reloads test data on every restart
@@ -138,8 +138,7 @@ Check the console log when running in production - you should see **NO** warning
 This project makes use of the excellent Lombok project. So to build in your favourite IDE, if necessary
 head on over to [Lombok](https://projectlombok.org/) and click the appropriate "Install" link (tested with IntelliJ and Eclipse).
 
-The project builds on Travis only on JDK11 (the JDK8 build in .travis.yml is now commented out as SonarQube support for JDK8 
-will be removed later in 2020). Additionally, the project Maven depedencies have been updated to include JAXB depedencies that
+The project CI build uses Github Actions only on JDK11. The project Maven depedencies have been updated to include JAXB depedencies that
 are no longer included by default in the JDK SE. The Maven build also expects JDK11. So really it's JDK11 onwards now.
 
 With appropriate versions of the JDK, Maven and a Mongo installed, start with

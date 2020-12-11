@@ -32,4 +32,4 @@ jobs:
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
         restore-keys: ${{ runner.os }}-m2  
     - name: Build with Maven
-      run: mvn -B clean org.jacoco:jacoco-maven-plugin:prepare-agent package org.sonarsource.scanner.maven:sonar  --file pom.xml
+      run: mvn -B clean org.jacoco:jacoco-maven-plugin:prepare-agent sonar:sonar --file pom.xml

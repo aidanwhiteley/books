@@ -35,7 +35,7 @@ jobs:
       run: >
         mvn -B clean org.jacoco:jacoco-maven-plugin:prepare-agent sonar:sonar --file pom.xml
         -Dsonar.host.url=https://sonarcloud.io
-        -Dsonar.organization=adanwhiteley-github
+        -Dsonar.organization=aidanwhiteley-github
         -Dsonar.projectKey=com.aidanwhiteley:books
         -Dsonar.sources=.
         -Dsonar.projectName=Books Microservice

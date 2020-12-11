@@ -38,7 +38,7 @@ jobs:
         -Dsonar.organization=aidanwhiteley-github
         -Dsonar.projectKey=com.aidanwhiteley:books
         -Dsonar.sources=src/main
-        -Dsonar.java.binaries=**/target/classes
+        -Dsonar.java.binaries=target/classes
         -Dsonar.projectName=Books Microservice
         -Dsonar.projectVersion=1.0
         -Dsonar.branch.name=develop

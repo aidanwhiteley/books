@@ -6,6 +6,6 @@ ______             _         ___  ____                                    _
 | |_/ / (_) | (_) |   <\__ \ | |  | | | (__| | | (_) \__ \  __/ |   \ V /| | (_|  __/
 \____/ \___/ \___/|_|\_\___/ \_|  |_/_|\___|_|  \___/|___/\___|_|    \_/ |_|\___\___|
 
-
+ Running on Spring Boot ${spring-boot.formatted-version}
  Aidan Whiteley - https://github.com/aidanwhiteley/books
  

@@ -31,7 +31,7 @@ making the web application entirely free of http session state (which has its pr
 * and Docker images and a docker-compose file that runs all the tiers of the application with one "docker-compose up --scale api-tier-java=N" command
 
 ### Running in development
-The checked in default Spring profile is "mongo-java-server". This uses mongo-java-server so there is no need to run MongoDb locally. So you 
+The checked in default Spring profile is "mongo-java-server". This uses the in memory mongo-java-server so there is no need to run MongoDb locally. So you 
 should be able to just check out the code and run the application for development purposes with no other dependencies.
 
 To develop Mongo related code you should switch to the "dev" profile which does expect to be able to connect to a real MongoDb instance.
@@ -51,6 +51,8 @@ running with the monog-java-server Spring profile.
 When running the CI builds with Githib Actions, tests run against a real Mongo instance.
 
 Some of the integration tests make use of WireMock - see the /src/test/resources/mappings and __files directories for the configuration details.
+
+The tests are probably about 50/50 between unit and integration tests...
 
 #### Stress Test
 To examine how the WebClient code is behaving there is a Maven plugin configured that runs a basic Gatling load test.
@@ -136,8 +138,8 @@ Check the console log when running in production - you should see **NO** warning
 This project makes use of the excellent Lombok project. So to build in your favourite IDE, if necessary
 head on over to [Lombok](https://projectlombok.org/) and click the appropriate "Install" link (tested with IntelliJ and Eclipse).
 
-The project CI build uses Github Actions only on JDK11. The project Maven depedencies have been updated to include JAXB depedencies that
-are no longer included by default in the JDK SE. The Maven build also expects JDK11. So really it's JDK11 onwards now.
+The project CI build uses Github Actions and currently on runs on JDK11. The project Maven depedencies have been updated to include JAXB depedencies that
+are no longer included by default in the JDK SE. So no JDK8 support any longer I'm afraid.
 
 With appropriate versions of the JDK, Maven and a Mongo installed, start with
 ~~~~
@@ -175,7 +177,7 @@ The code supports five access levels
 * ROLE_ADMIN (logged in with full admin access)
 * ROLE_ACTUATOR (logged in but with no permissions except to access Actuator endpoints)
 
-The application-<env>.yml files can be edited to automatically give a logged on user admin access 
+The application-<profile>.yml files can be edited to automatically give a logged on user admin access 
 by specifying their email on Google / Facebook. See the books:users:default:admin:email setting.
 
 ## Security
@@ -248,7 +250,7 @@ tiers of the overall application.
 The docker-compose file expects there to be a .env file in the same directory to define the environment 
 variables expected by the various Docker images.
 There is an example .env file with comments checked in. This **SHOULD** be edited according to the 
-instructions in the file (noting that the containers will start and run run OK with the checked in values if you are just trying things out).
+instructions in the file (noting that the containers will start and run OK with the checked in values if you are just trying things out).
 Note that the file is marked to be excluded by .gitignore so updates should not be checked back into Github.
 
 ## Docker Compose and running the overall application
@@ -300,4 +302,4 @@ at https://github.com/aidanwhiteley
 
 The running application can be seen at https://cloudybookclub.com/
 
-[![Cloudy Bookclub Screenshot](https://github.com/aidanwhiteley/books-web/blob/master/app/images/cloudy-book-club-screen-grab.jpg)](https://github.com/aidanwhiteley/books-web)
+[![Cloudy Bookclub Screenshot](https://github.com/aidanwhiteley/books-web/blob/master/app/images/cloudy-book-club-screen-grab.jpg)](https://cloudybookclub.com/)

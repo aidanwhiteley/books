@@ -13,6 +13,6 @@
 # The Dockerfile created image is expected to be run from a docker-compose that sets the environment variables
 # and is also in control of setting the overall MongoDb authorisation settings i.e. requiring authorisation!
 #
-FROM mongo:4.2.1-bionic
+FROM mongo:4.4.2-bionic
 COPY db_init/*.sh /docker-entrypoint-initdb.d/
 RUN chmod +x /docker-entrypoint-initdb.d/addUserFromEnvVar.sh

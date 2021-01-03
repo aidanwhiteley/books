@@ -81,8 +81,6 @@ services:
     environment:
       - "SPRING_PROFILES_ACTIVE=default"
       - "SERVICE_REGISTRY=${SERVICE_REGISTRY}"
-    depends_on:
-      - api-tier-java
 
   # This container is built using Google Jib using the maven command for this project of
   # mvn compile jib:dockerBuild (see comments in pom.xml).
@@ -116,6 +114,7 @@ services:
       - "SERVICE_REGISTRY=${SERVICE_REGISTRY}"
     depends_on:
       - data-tier-mongo
+      - service-registry-tier
 
   # This container is built dynamically when the docker-compose up command is issued.
   # The service name is known to the spring-boot application-xxxxx.properties file

@@ -51,4 +51,9 @@
     <logger name="org.eclipse.jetty.util.thread.QueuedThreadPool" level="WARN" />
     <logger name="wiremock.org.eclipse.jetty.util.thread.QueuedThreadPool" level="ERROR" />
     <logger name="org.springframework.cloud.contract.wiremock" level="WARN" />
+
+    <!-- Setting to ERROR to suppress message on CI test platform of
+    WARN <classname> - Acceptors should be <= availableProcessors: NetworkTrafficServerConnector
+    which is from the @AutoConfigureWireMock configured WireMock test stub server -->
+    <logger name="wiremock.org.eclipse.jetty.server.AbstractConnector" level="ERROR" />
 </configuration>

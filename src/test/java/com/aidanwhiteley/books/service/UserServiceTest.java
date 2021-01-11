@@ -156,7 +156,7 @@ class UserServiceTest extends IntegrationTest {
 
         ClientRegistration.Builder builder = ClientRegistration.withRegistrationId(DUMMY);
         builder.clientId(clientId).authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE).
-                clientSecret(DUMMY).redirectUriTemplate(DUMMY).scope(DUMMY).authorizationUri(DUMMY).tokenUri(DUMMY).
+                clientSecret(DUMMY).redirectUri(DUMMY).scope(DUMMY).authorizationUri(DUMMY).tokenUri(DUMMY).
                 clientName(DUMMY);
         ClientRegistration clientReg = builder.build();
         when(client.getClientRegistration()).thenReturn(clientReg);

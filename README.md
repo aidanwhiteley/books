@@ -256,7 +256,7 @@ Note that the file is marked to be excluded by .gitignore so updates should not 
 ## Docker Compose and running the overall application
 The checked in docker-compose.yaml and .env file should result in a deployment as shown on the following diagram.
 
-[![Cloudy Docker Deployment Diagram](https://github.com/aidanwhiteley/books/blob/develop/src/test/resources/images/docker1.png)](https://github.com/aidanwhiteley/books)
+![Cloudy Docker Deployment Diagram](../media/docker1.png?raw=true)
 
 If you have Docker available, from the root of this project type:
 ~~~~
@@ -269,7 +269,7 @@ docker-compose up --scale api-tier-java=2
 |Website|http://localhost/|Accessing this URL, if you left the docker-compose.yaml as is, you will be auto "logged on" as an admin user. Try the "ADD A BOOK" link and, after you have completed the "Title", you should see a list of matching books from Google Books.![Books web tier](../media/application.jpg?raw=true)|
 |Service registry|http://localhost:8761/|The service registry isn't behind logon. You should see registered the API gateway, the service registry itself, two instances of the Books microservice and a Spring Boot Admin instance.![Books service registry](../media/service-registry.jpg?raw=true)|
 |Spring Boot Admin|http://localhost:8888/|If you haven't changed the .env file, logon with anAdminUser-CHANGE_ME / aPassword-CHANGE_ME ![Books Spring Boot Admion](../media/spring-boot-admin.jpg?raw=true)|
-|Mongo data tier|http://localhost:27017/|With the default docker-compose.yml this isn't exposed. Look for the comments in the file around about line 136 if you want to access the database directly (userids and passwords being in the .env file)|
+|Mongo data tier|http://localhost:27017/|With the default docker-compose.yml this isn't exposed. Look for the comments in the file around about line 136 if you want to access the database directly (userids and passwords being in the .env file) ![Mongo](../media/mongo-compass.png?raw=true)|
 
 ### Notes
 * The output from "docker-compose up" should be reasonably error free but sometimes exceptions are thrown/logged. This is most likely because of the difference between a Docker container being "up" and the service within it being available. To start with, when the startup console logon has subsided, try the website (http://localhost/) a few times to see if all depdendencies are now up and running. They should be.

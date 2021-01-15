@@ -266,9 +266,9 @@ docker-compose up --scale api-tier-java=2
 
 |Tier |URL |Notes and screen grab|
 |-----|----|-----|
-|Website|http://localhost/|Accessing this URL, if you left the docker-compose.yaml as is, you will be auto "logged on" as an admin user. Try the "ADD A BOOK" link and, after you have completed the "Title", you should see a list of matching books from Google Books.|
-|Service registry|http://localhost:8761/|The service registry isn't behind logon. You should see registered the API gateway, the service registry itself, two instances of the Books microservice and a Spring Boot Admin instance.|
-|Spring Boot Admin|http://localhost:8888/|If you haven't changed the .env file, logon with anAdminUser-CHANGE_ME / aPassword-CHANGE_ME|
+|Website|http://localhost/|Accessing this URL, if you left the docker-compose.yaml as is, you will be auto "logged on" as an admin user. Try the "ADD A BOOK" link and, after you have completed the "Title", you should see a list of matching books from Google Books.![Books web tier](../media/application.jpg?raw=true)|
+|Service registry|http://localhost:8761/|The service registry isn't behind logon. You should see registered the API gateway, the service registry itself, two instances of the Books microservice and a Spring Boot Admin instance.![Books service registry](../media/service-registry.jpg?raw=true)|
+|Spring Boot Admin|http://localhost:8888/|If you haven't changed the .env file, logon with anAdminUser-CHANGE_ME / aPassword-CHANGE_ME ![Books Spring Boot Admion](../media/spring-boot-admin.jpg?raw=true)|
 |Mongo data tier|http://localhost:27017/|With the default docker-compose.yml this isn't exposed. Look for the comments in the file around about line 136 if you want to access the database directly (userids and passwords being in the .env file)|
 
 ### Notes
@@ -311,9 +311,7 @@ of any other domain names that weren't already taken.
 
 ## Client Side Functionality
 
-There is an Angular 1.x based front end application that consumes the microservice available 
+There is an AngularJS based front end application that consumes the microservice available 
 at https://github.com/aidanwhiteley
 
 The running application can be seen at https://cloudybookclub.com/
-
-[![Cloudy Bookclub Screenshot](https://github.com/aidanwhiteley/books-web/blob/master/app/images/cloudy-book-club-screen-grab.jpg)](https://cloudybookclub.com/)

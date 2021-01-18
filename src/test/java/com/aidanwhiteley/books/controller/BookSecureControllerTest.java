@@ -147,10 +147,7 @@ class BookSecureControllerTest extends IntegrationTest {
 
         // Now update the book - need to supply a JWT / logon token to perform update.
         final String updatedTitle = "An updated book title";
-        ResponseEntity<Book> putResponse = updateBook(user, book, updatedTitle, this.jwtUtils, this.testRestTemplate);
-
-        headers = response.getHeaders();
-        uri = headers.getLocation();
+        updateBook(user, book, updatedTitle, this.jwtUtils, this.testRestTemplate);
 
         // And finally check that the book was actually updated
         Book updatedBook = testRestTemplate.getForObject(uri, Book.class);

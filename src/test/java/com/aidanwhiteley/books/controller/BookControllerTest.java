@@ -8,6 +8,7 @@ import com.aidanwhiteley.books.repository.dtos.BooksByGenre;
 import com.aidanwhiteley.books.repository.dtos.BooksByRating;
 import com.aidanwhiteley.books.util.IntegrationTest;
 import com.jayway.jsonpath.JsonPath;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,11 +88,25 @@ public class BookControllerTest extends IntegrationTest {
         // Title should be available to everyone
         assertEquals(J_UNIT_TESTING_FOR_BEGINNERS, book.getTitle());
 
-        // Email should only be available to admins
+        // Email should only be available to admins - check not runnign a profile where users are "auto logged on"
         boolean noAuthProfile = Arrays.stream(this.environment.getActiveProfiles()).
                 anyMatch(s -> s.contains(NO_AUTH_SPRING_PROFILE));
-        String expected = noAuthProfile ? "joe.dimagio@gmail.com" : "";
+
+        Assertions.assertFalse(noAuthProfile, "Check not running a no auth profile");
+
+        String expected = "";
         assertEquals(expected, book.getCreatedBy().getEmail());
+
+        // Now update the book and check that details about who updated the book are not returned
+        String updatedTitle = "An updated title";
+        User user = BookControllerTestUtils.getTestUser();
+        BookSecureControllerTest.updateBook(user, book, updatedTitle, this.jwtUtils, this.testRestTemplate);
+
+        // Check that the book was actually updated
+        Book updatedBook = testRestTemplate.getForObject(location, Book.class);
+        assertEquals(updatedBook.getTitle(), updatedTitle);
+        // and check that details about who did the update arent returned
+        assertTrue(updatedBook.getLastModifiedBy().getLastName().isEmpty());
     }
 
     @Test
@@ -113,6 +128,17 @@ public class BookControllerTest extends IntegrationTest {
         assertEquals(J_UNIT_TESTING_FOR_BEGINNERS, book.getTitle());
         // Email should only be available to admins
         assertEquals(BookControllerTestUtils.DUMMY_EMAIL, book.getCreatedBy().getEmail());
+
+
+        // Now update the book and check that details about who updated the book are returned to an authorised user
+        String updatedTitle = "Another updated title";
+        BookSecureControllerTest.updateBook(user, book, updatedTitle, this.jwtUtils, this.testRestTemplate);
+
+        Book updatedBook = testRestTemplate
+                .exchange(location, HttpMethod.GET, request, Book.class).getBody();
+        assertEquals(updatedBook.getTitle(), updatedTitle);
+        // Check that details about who did the update ARE returned
+        assertEquals(updatedBook.getLastModifiedBy().getFullName(), user.getFullName());
     }
 
     @Test

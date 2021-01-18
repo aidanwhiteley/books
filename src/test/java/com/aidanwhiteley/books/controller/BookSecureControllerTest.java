@@ -41,6 +41,19 @@ class BookSecureControllerTest extends IntegrationTest {
     @Value("${books.users.max.page.size}")
     private int maxPageSize;
 
+    public static ResponseEntity<Book> updateBook(User user, Book book, String updatedTitle, JwtUtils jwtUtilsLocal, TestRestTemplate testRestTemplateLocal) {
+        book.setTitle(updatedTitle);
+        String token = jwtUtilsLocal.createTokenForUser(user);
+        String xsrfToken = BookControllerTestUtils.getXsrfToken(testRestTemplateLocal);
+        HttpEntity<Book> putData = BookControllerTestUtils.getBookHttpEntity(book, token, xsrfToken);
+        ResponseEntity<Book> putResponse = testRestTemplateLocal.exchange("/secure/api/books", HttpMethod.PUT, putData,
+                Book.class);
+
+        assertEquals(HttpStatus.NO_CONTENT, putResponse.getStatusCode());
+
+        return putResponse;
+    }
+
     @Test
     void createAndDeleteBook() {
         // Create book
@@ -134,14 +147,8 @@ class BookSecureControllerTest extends IntegrationTest {
 
         // Now update the book - need to supply a JWT / logon token to perform update.
         final String updatedTitle = "An updated book title";
-        book.setTitle(updatedTitle);
-        String token = jwtUtils.createTokenForUser(user);
-        String xsrfToken = BookControllerTestUtils.getXsrfToken(testRestTemplate);
-        HttpEntity<Book> putData = BookControllerTestUtils.getBookHttpEntity(book, token, xsrfToken);
-        ResponseEntity<Book> putResponse = testRestTemplate.exchange("/secure/api/books", HttpMethod.PUT, putData,
-                Book.class);
+        ResponseEntity<Book> putResponse = updateBook(user, book, updatedTitle, this.jwtUtils, this.testRestTemplate);
 
-        assertEquals(HttpStatus.NO_CONTENT, putResponse.getStatusCode());
         headers = response.getHeaders();
         uri = headers.getLocation();
 

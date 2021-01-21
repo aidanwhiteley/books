@@ -88,9 +88,10 @@ books:
   google:
     books:
       api:
-        searchUrl: https://www.googleapis.com/books/v1/volumes?maxResults=30&q=
+        searchUrl: https://www.googleapis.com/books/v1/volumes?q=
         getByIdUrl: https://www.googleapis.com/books/v1/volumes/
         countryCode: country=GB
+        maxResults: maxResults=30
         connecTimeout: 2000
         readTimeout: 3000
 

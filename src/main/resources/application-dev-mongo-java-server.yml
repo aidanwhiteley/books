@@ -54,9 +54,10 @@ books:
   google:
     books:
       api:
-        searchUrl: http://localhost:${wiremock.server.port}/books/v1/volumes?maxResults=30&q=
+        searchUrl: http://localhost:${wiremock.server.port}/books/v1/volumes?q=
         getByIdUrl: http://localhost:${wiremock.server.port}/books/v1/volumes/
         countryCode: country=GB
+        maxResults: maxResults=30
         connectTimeout: 500
         readTimeout: 750
 

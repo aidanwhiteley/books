@@ -1,6 +1,6 @@
 {
   "request" : {
-    "url" : "/books/v1/volumes?maxResults=30&q=Design+Patterns&country=GB",
+    "url" : "/books/v1/volumes?q=Design+Patterns&country=GB&maxResults=30",
     "method" : "GET"
   },
   "response" : {

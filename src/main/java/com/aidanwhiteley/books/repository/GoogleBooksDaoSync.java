@@ -45,9 +45,20 @@ public class GoogleBooksDaoSync {
         googleBooksRestTemplate.getMessageConverters().add(0,
                 new StringHttpMessageConverter(StandardCharsets.UTF_8));
 
-        return googleBooksRestTemplate.getForObject(googleBooksApiConfig.getSearchUrl() + encodedTitle + "&" +
-                        googleBooksApiConfig.getCountryCode(),
-                BookSearchResult.class);
+        final String searchString = googleBooksApiConfig.getSearchUrl() + encodedTitle + "&" +
+                googleBooksApiConfig.getCountryCode() + "&" + googleBooksApiConfig.getMaxResults();
+
+        if (LOGGER.isInfoEnabled()) {
+            LOGGER.info("Google Books API called with API called: {}", searchString);
+        }
+
+        BookSearchResult result =  googleBooksRestTemplate.getForObject(searchString, BookSearchResult.class);
+
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Result of Google Books API call: {}", result);
+        }
+
+        return result;
     }
 
     public Item searchGoogleBooksByGoogleBookId(String id) {

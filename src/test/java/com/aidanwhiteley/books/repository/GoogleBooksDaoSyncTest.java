@@ -59,7 +59,6 @@ class GoogleBooksDaoSyncTest extends IntegrationTest {
     void confirmFindbyBookTimesOut() {
 
     	// Turn off unwanted logging for read timeout. Prevents JUnit output having unnecessary stack traces etc.
-        // Set to DEBUG to debug any test failures.
         LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
         context.getLogger(GoogleBooksDaoSync.class).setLevel(Level.valueOf("OFF"));
 
@@ -70,14 +69,13 @@ class GoogleBooksDaoSyncTest extends IntegrationTest {
             LOGGER.debug("Expected exception caught");
         }
 
-        context.getLogger(GoogleBooksDaoSync.class).setLevel(Level.valueOf("ON"));
+        context.getLogger(GoogleBooksDaoSync.class).setLevel(Level.valueOf("WARN"));
     }
 
     @Test
     void confirmFindbyBookIdHandlesServiceUnavailable() {
 
         // Turn off unwanted logging for read timeout. Prevents JUnit output having unnecessary stack traces etc.
-        // Set to DEBUG to debug any test failures.
         LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
         context.getLogger(GoogleBooksDaoSync.class).setLevel(Level.valueOf("OFF"));
 
@@ -88,7 +86,7 @@ class GoogleBooksDaoSyncTest extends IntegrationTest {
             LOGGER.debug("Expected HttpServerErrorException exception caught: " + hsee);
         }
 
-        context.getLogger(GoogleBooksDaoSync.class).setLevel(Level.valueOf("ON"));
+        context.getLogger(GoogleBooksDaoSync.class).setLevel(Level.valueOf("WARN"));
     }
 
 }

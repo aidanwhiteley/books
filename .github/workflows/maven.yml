@@ -48,9 +48,6 @@ jobs:
         -Dsonar.sources=src/main
         -Dsonar.java.binaries=target/classes
         -Dsonar.projectName="Books Microservice"
-        -Dsonar.projectVersion=1.0
-        -Dsonar.branch.name=develop
-        -Dsonar.branch.target=develop
         -Dsonar.sourceEncoding=UTF-8
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

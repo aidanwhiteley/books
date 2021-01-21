@@ -5,7 +5,7 @@ import com.aidanwhiteley.books.controller.jwt.JwtAuthenticationService;
 import com.aidanwhiteley.books.controller.jwt.JwtUtils;
 import com.aidanwhiteley.books.domain.User;
 import com.jayway.jsonpath.JsonPath;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -17,7 +17,7 @@ import org.springframework.http.ResponseEntity;
 
 import static org.junit.Assert.assertEquals;
 
-public class ActuatorTest extends IntegrationTest {
+class ActuatorTest extends IntegrationTest {
 
     @Autowired
     private TestRestTemplate testRestTemplate;
@@ -29,7 +29,7 @@ public class ActuatorTest extends IntegrationTest {
     private String projectName;
 
     @Test
-    public void checkActuatorEndpointsNotAvailableWithoutActuatorRole() {
+    void checkActuatorEndpointsNotAvailableWithoutActuatorRole() {
         // Re-use existing test class functionality to get a user without the ACTUATOR role
         User user = BookControllerTestUtils.getTestUser();
         ResponseEntity<String> response = getResponseStringEntity(user, "/actuator");
@@ -37,7 +37,7 @@ public class ActuatorTest extends IntegrationTest {
     }
 
     @Test
-    public void checkActuatorEndpointsAreAvailableWithActuatorRole() {
+    void checkActuatorEndpointsAreAvailableWithActuatorRole() {
         User user = BookControllerTestUtils.getTestUser();
         user.addRole(User.Role.ROLE_ACTUATOR);
         ResponseEntity<String> response = getResponseStringEntity(user, "/actuator");
@@ -45,7 +45,7 @@ public class ActuatorTest extends IntegrationTest {
     }
 
     @Test
-    public void checkActuatorEndpointsNotAvailableWithAdminRole() {
+    void checkActuatorEndpointsNotAvailableWithAdminRole() {
         // Re-use existing test class functionality to get a user without the ACTUATOR role
         User user = BookControllerTestUtils.getTestUser();
         user.addRole(User.Role.ROLE_ADMIN);
@@ -54,7 +54,7 @@ public class ActuatorTest extends IntegrationTest {
     }
 
     @Test
-    public void checkExpectedEndpointAvailable() {
+    void checkExpectedEndpointAvailable() {
         User user = BookControllerTestUtils.getTestUser();
         user.addRole(User.Role.ROLE_ACTUATOR);
         ResponseEntity<String> response = getResponseStringEntity(user, "/actuator/scheduledtasks");
@@ -62,7 +62,7 @@ public class ActuatorTest extends IntegrationTest {
     }
 
     @Test
-    public void checkUnexpectedEndpointNotAvailable() {
+    void checkUnexpectedEndpointNotAvailable() {
         User user = BookControllerTestUtils.getTestUser();
         user.addRole(User.Role.ROLE_ACTUATOR);
         ResponseEntity<String> response = getResponseStringEntity(user, "/actuator/shutdown");
@@ -70,7 +70,7 @@ public class ActuatorTest extends IntegrationTest {
     }
 
     @Test
-    public void checkSampleActuatorValue() {
+    void checkSampleActuatorValue() {
         User user = BookControllerTestUtils.getTestUser();
         user.addRole(User.Role.ROLE_ACTUATOR);
         ResponseEntity<String> response = getResponseStringEntity(user, "/actuator/info");

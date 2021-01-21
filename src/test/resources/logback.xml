@@ -31,6 +31,7 @@
     <logger name="com.aidanwhiteley" level="WARN"/>
     <logger name="com.aidanwhiteley.books.controller" level="WARN" />
     <logger name="com.aidanwhiteley.books.service.SignUpNotificationService" level="WARN"/>
+    <logger name="com.aidanwhiteley.books.repository.GoogleBooksDaoSync" level="WARN"/>
     <logger name="com.aidanwhiteley.books.repository.GoogleBooksDaoAsync" level="WARN"/>
     <logger name="com.aidanwhiteley.books.repository.GoogleBookDaoAsyncTest" level="WARN"/>
     <logger name="com.aidanwhiteley.books.util.MailClient" level="WARN" />
@@ -51,4 +52,9 @@
     <logger name="org.eclipse.jetty.util.thread.QueuedThreadPool" level="WARN" />
     <logger name="wiremock.org.eclipse.jetty.util.thread.QueuedThreadPool" level="ERROR" />
     <logger name="org.springframework.cloud.contract.wiremock" level="WARN" />
+
+    <!-- Setting to ERROR to suppress message on CI test platform of
+    WARN <classname> - Acceptors should be <= availableProcessors: NetworkTrafficServerConnector
+    which is from the @AutoConfigureWireMock configured WireMock test stub server -->
+    <logger name="wiremock.org.eclipse.jetty.server.AbstractConnector" level="ERROR" />
 </configuration>

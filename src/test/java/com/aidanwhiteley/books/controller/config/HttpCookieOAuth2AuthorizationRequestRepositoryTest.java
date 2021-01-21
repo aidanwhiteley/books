@@ -5,15 +5,15 @@ import static org.junit.Assert.assertEquals;
 
 import javax.servlet.http.Cookie;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 
-public class HttpCookieOAuth2AuthorizationRequestRepositoryTest {
+class HttpCookieOAuth2AuthorizationRequestRepositoryTest {
 
 	@Test
-	public void testSaveAndLoadCookie() {
+	void testSaveAndLoadCookie() {
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		String TEST_CLIENT_ID = "Hello world";
@@ -41,7 +41,7 @@ public class HttpCookieOAuth2AuthorizationRequestRepositoryTest {
 	}
 
 	@Test
-	public void testNoAuthClearsCookie() {
+	void testNoAuthClearsCookie() {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
 

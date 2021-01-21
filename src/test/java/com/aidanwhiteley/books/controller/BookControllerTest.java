@@ -8,7 +8,8 @@ import com.aidanwhiteley.books.repository.dtos.BooksByGenre;
 import com.aidanwhiteley.books.repository.dtos.BooksByRating;
 import com.aidanwhiteley.books.util.IntegrationTest;
 import com.jayway.jsonpath.JsonPath;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +55,7 @@ public class BookControllerTest extends IntegrationTest {
     private int maxPageSize;
 
     @Test
-    public void findBookById() {
+    void findBookById() {
         ResponseEntity<Book> response = BookControllerTestUtils.postBookToServer(jwtUtils, testRestTemplate);
         HttpHeaders headers = response.getHeaders();
         URI uri = headers.getLocation();
@@ -64,7 +65,7 @@ public class BookControllerTest extends IntegrationTest {
     }
 
     @Test
-    public void findByAuthor() {
+    void findByAuthor() {
         BookControllerTestUtils.postBookToServer(jwtUtils, testRestTemplate);
 
         ResponseEntity<String> response = testRestTemplate.exchange("/api/books?author=" + BookRepositoryTest.DR_ZEUSS + "&page=0&size=10", HttpMethod.GET,
@@ -79,7 +80,7 @@ public class BookControllerTest extends IntegrationTest {
     }
 
     @Test
-    public void testSensitiveDataNotReturnedToAnonymousUser() {
+    void testSensitiveDataNotReturnedToAnonymousUser() {
         ResponseEntity<Book> response = BookControllerTestUtils.postBookToServer(jwtUtils, testRestTemplate);
         String location = response.getHeaders().getLocation().toString();
         Book book = testRestTemplate.getForObject(location, Book.class);
@@ -87,15 +88,29 @@ public class BookControllerTest extends IntegrationTest {
         // Title should be available to everyone
         assertEquals(J_UNIT_TESTING_FOR_BEGINNERS, book.getTitle());
 
-        // Email should only be available to admins
+        // Email should only be available to admins - check not runnign a profile where users are "auto logged on"
         boolean noAuthProfile = Arrays.stream(this.environment.getActiveProfiles()).
                 anyMatch(s -> s.contains(NO_AUTH_SPRING_PROFILE));
-        String expected = noAuthProfile ? "joe.dimagio@gmail.com" : "";
+
+        Assertions.assertFalse(noAuthProfile, "Check not running a no auth profile");
+
+        String expected = "";
         assertEquals(expected, book.getCreatedBy().getEmail());
+
+        // Now update the book and check that details about who updated the book are not returned
+        String updatedTitle = "An updated title";
+        User user = BookControllerTestUtils.getTestUser();
+        BookSecureControllerTest.updateBook(user, book, updatedTitle, this.jwtUtils, this.testRestTemplate);
+
+        // Check that the book was actually updated
+        Book updatedBook = testRestTemplate.getForObject(location, Book.class);
+        assertEquals(updatedBook.getTitle(), updatedTitle);
+        // and check that details about who did the update arent returned
+        assertTrue(updatedBook.getLastModifiedBy().getLastName().isEmpty());
     }
 
     @Test
-    public void testSensitiveDataIsReturnedToAdminUser() {
+    void testSensitiveDataIsReturnedToAdminUser() {
         Book testBook = BookRepositoryTest.createTestBook();
         User user = BookControllerTestUtils.getTestUser();
         String token = jwtUtils.createTokenForUser(user);
@@ -113,10 +128,21 @@ public class BookControllerTest extends IntegrationTest {
         assertEquals(J_UNIT_TESTING_FOR_BEGINNERS, book.getTitle());
         // Email should only be available to admins
         assertEquals(BookControllerTestUtils.DUMMY_EMAIL, book.getCreatedBy().getEmail());
+
+
+        // Now update the book and check that details about who updated the book are returned to an authorised user
+        String updatedTitle = "Another updated title";
+        BookSecureControllerTest.updateBook(user, book, updatedTitle, this.jwtUtils, this.testRestTemplate);
+
+        Book updatedBook = testRestTemplate
+                .exchange(location, HttpMethod.GET, request, Book.class).getBody();
+        assertEquals(updatedBook.getTitle(), updatedTitle);
+        // Check that details about who did the update ARE returned
+        assertEquals(updatedBook.getLastModifiedBy().getFullName(), user.getFullName());
     }
 
     @Test
-    public void testUserDataIsReturnedToEditorUser() {
+    void testUserDataIsReturnedToEditorUser() {
         Book testBook = BookRepositoryTest.createTestBook();
         User user = BookControllerTestUtils.getEditorTestUser();
         String token = jwtUtils.createTokenForUser(user);
@@ -141,7 +167,7 @@ public class BookControllerTest extends IntegrationTest {
     }
 
     @Test
-    public void findUsingFullTextSearch() {
+    void findUsingFullTextSearch() {
 
         // This test doesnt run with mongo-java-server as it uses weighted full text index
         // against multiple fields - which is not currently supported by mongo-java-server.
@@ -165,7 +191,7 @@ public class BookControllerTest extends IntegrationTest {
     }
 
     @Test
-    public void fullTextSearchShouldntFindStopWord() {
+    void fullTextSearchShouldntFindStopWord() {
 
         // This test doesnt run with mongo-java-server as it uses weighted full text index
         // against multiple fields - which is not currently supported by mongo-java-server.
@@ -194,7 +220,7 @@ public class BookControllerTest extends IntegrationTest {
     }
 
     @Test
-    public void findAllByWhenCreatedDateTimeDesc() {
+    void findAllByWhenCreatedDateTimeDesc() {
         ResponseEntity<String> response = testRestTemplate.exchange("/api/books", HttpMethod.GET, null, String.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
@@ -205,7 +231,7 @@ public class BookControllerTest extends IntegrationTest {
     }
 
     @Test
-    public void findBooksByGenre() {
+    void findBooksByGenre() {
         ResponseEntity<String> response = testRestTemplate.exchange("/api/books?genre=Novel", HttpMethod.GET, null, String.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
@@ -215,7 +241,7 @@ public class BookControllerTest extends IntegrationTest {
     }
 
     @Test
-    public void testBookDataSummaryApis() {
+    void testBookDataSummaryApis() {
 
         // Summary stats
         ResponseEntity<String> response = testRestTemplate.exchange("/api/books/stats", HttpMethod.GET, null, String.class);
@@ -229,7 +255,7 @@ public class BookControllerTest extends IntegrationTest {
     }
 
     @Test
-    public void findBookByRating() {
+    void findBookByRating() {
         ResponseEntity<String> response = testRestTemplate.exchange("/api/books/?rating=GOOD&page=1&size=2", HttpMethod.GET, null, String.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
@@ -245,7 +271,7 @@ public class BookControllerTest extends IntegrationTest {
     }
 
     @Test
-    public void findBookByRatingPreConditions() {
+    void findBookByRatingPreConditions() {
         ResponseEntity<String> response = testRestTemplate.exchange("/api/books/?rating=invalid=1&size=2", HttpMethod.GET, null, String.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
 
@@ -256,7 +282,7 @@ public class BookControllerTest extends IntegrationTest {
     }
 
     @Test
-    public void askForTooManyDataItems() {
+    void askForTooManyDataItems() {
         final int tooBig = maxPageSize + 1;
 
         ResponseEntity<String> response = testRestTemplate.exchange("/api/books/?author=someone&page=0&size=" + tooBig, HttpMethod.GET, null, String.class);
@@ -277,7 +303,7 @@ public class BookControllerTest extends IntegrationTest {
     }
 
     @Test
-    public void askForEmptySearchCriteria() {
+    void askForEmptySearchCriteria() {
         final String partialErrorMsg = "cannot be empty";
 
         ResponseEntity<String> response = testRestTemplate.exchange("/api/books/?author=&page=0&size=" + maxPageSize, HttpMethod.GET, null, String.class);

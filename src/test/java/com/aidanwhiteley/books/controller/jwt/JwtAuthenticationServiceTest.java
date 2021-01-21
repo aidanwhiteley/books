@@ -1,15 +1,15 @@
 package com.aidanwhiteley.books.controller.jwt;
 
 import com.aidanwhiteley.books.domain.User;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import static org.junit.Assert.assertNotNull;
 
-public class JwtAuthenticationServiceTest {
+class JwtAuthenticationServiceTest {
 
     @Test
-    public void testSetAuthenticationData() {
+    void testSetAuthenticationData() {
         MockHttpServletResponse response = new MockHttpServletResponse();
         User aUser = new User();
         final String aFullName = "Marilyn Monroe";

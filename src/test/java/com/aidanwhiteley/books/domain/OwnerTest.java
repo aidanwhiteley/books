@@ -6,17 +6,18 @@ import static org.junit.Assert.assertFalse;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import com.aidanwhiteley.books.domain.User.AuthenticationProvider;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 
-public class OwnerTest {
+class OwnerTest {
 
 	@Test
-	public void testBoilerPlateMethodsForCoverage() {
+	void testBoilerPlateMethodsForCoverage() {
 		Owner owner1 = new Owner("serviceId", "firstname", "lastName", "fullName", "example@example.com", "a link",
 				"a picture", AuthenticationProvider.FACEBOOK);
 		Owner owner2 = new Owner("serviceId", "firstname", "lastName", "fullName", "example@example.com", "a link",
@@ -27,8 +28,8 @@ public class OwnerTest {
 		assertEquals(owner1.toString(), owner2.toString());
 	}
 
-	@Test(expected = IllegalStateException.class)
-	public void testForInvalidRole() {
+	@Test
+	void testForInvalidRole() {
 		User aUser = new User();
 		aUser.setRoles(Collections.singletonList(User.Role.ROLE_ACTUATOR));
 		Comment aComment = new Comment();
@@ -36,13 +37,15 @@ public class OwnerTest {
 		LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
 		context.getLogger(Comment.class).setLevel(Level.valueOf("OFF"));
 
-		aComment.setPermissionsAndContentForUser(aUser);
+		Assertions.assertThrows(IllegalStateException.class, () -> {
+			aComment.setPermissionsAndContentForUser(aUser);
+		});
 
 		context.getLogger(Comment.class).setLevel(Level.valueOf("OFF"));
 	}
 
 	@Test
-	public void testEditorCanDeleteOwnComment() {
+	void testEditorCanDeleteOwnComment() {
 		User aUser = new User();
 		aUser.setRoles(Collections.singletonList(User.Role.ROLE_EDITOR));
 		aUser.setAuthenticationServiceId("anAuthServId");

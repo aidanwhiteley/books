@@ -24,7 +24,7 @@ public class ThreadPoolConfig {
     private String booksThreadPool1ThreadPrefix;
 
     @Bean(name = "threadPoolExecutor")
-    @Profile(value = "!travis")
+    @Profile(value = "!ci")
     public Executor asyncExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(booksThreadPool1CoreSize);

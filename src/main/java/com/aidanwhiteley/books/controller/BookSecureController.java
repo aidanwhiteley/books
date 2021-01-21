@@ -39,6 +39,8 @@ import javax.validation.Valid;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.security.Principal;
 import java.util.Enumeration;
 import java.util.List;
@@ -234,10 +236,13 @@ public class BookSecureController {
         StringBuilder headersOut = new StringBuilder();
         while (headers.hasMoreElements()) {
             String headerName = headers.nextElement();
-            headersOut.append(headerName).append(": ").append(request.getHeader(headerName)).append("\r\n");
+            headersOut.append(URLEncoder.encode(headerName, StandardCharsets.UTF_8)).
+                    append(": ").append(URLEncoder.encode(request.getHeader(headerName), StandardCharsets.UTF_8)).append("\r\n");
         }
 
-        return "Scheme was: " + request.getScheme() + " servername was: " + request.getServerName()
-                + " and protocol was: " + request.getProtocol() + "\r\n\r\nheaders:\r\n" + headersOut;
+        return "Scheme was: " + URLEncoder.encode(request.getScheme(), StandardCharsets.UTF_8) +
+                " servername was: " + URLEncoder.encode(request.getServerName(), StandardCharsets.UTF_8)
+                + " and protocol was: " + URLEncoder.encode(request.getProtocol(), StandardCharsets.UTF_8) +
+                "\r\n\r\nheaders:\r\n" + headersOut;
     }
 }

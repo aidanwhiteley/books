@@ -13,7 +13,6 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
@@ -41,19 +40,25 @@ public class GoogleBooksDaoSync {
     public BookSearchResult searchGoogBooksByTitle(String title) {
 
         String encodedTitle;
-        try {
-            encodedTitle = URLEncoder.encode(title, GoogleBooksApiConfig.UTF_8);
-        } catch (UnsupportedEncodingException usee) {
-            LOGGER.error("Unable to encode query string - using as is", usee);
-            encodedTitle = title;
-        }
+        encodedTitle = URLEncoder.encode(title, StandardCharsets.UTF_8);
 
         googleBooksRestTemplate.getMessageConverters().add(0,
                 new StringHttpMessageConverter(StandardCharsets.UTF_8));
 
-        return googleBooksRestTemplate.getForObject(googleBooksApiConfig.getSearchUrl() + encodedTitle + "&" +
-                        googleBooksApiConfig.getCountryCode(),
-                BookSearchResult.class);
+        final String searchString = googleBooksApiConfig.getSearchUrl() + encodedTitle + "&" +
+                googleBooksApiConfig.getCountryCode() + "&" + googleBooksApiConfig.getMaxResults();
+
+        if (LOGGER.isInfoEnabled()) {
+            LOGGER.info("Google Books API called with API called: {}", searchString);
+        }
+
+        BookSearchResult result =  googleBooksRestTemplate.getForObject(searchString, BookSearchResult.class);
+
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Result of Google Books API call: {}", result);
+        }
+
+        return result;
     }
 
     public Item searchGoogleBooksByGoogleBookId(String id) {
@@ -64,7 +69,7 @@ public class GoogleBooksDaoSync {
                     googleBooksApiConfig.getCountryCode(), Item.class);
         } catch (HttpStatusCodeException e) {
             String errorpayload = e.getResponseBodyAsString();
-            LOGGER.error("Error calling Google Books API: " + errorpayload, e);
+            LOGGER.error("Error calling Google Books API: {}", errorpayload, e);
             throw e;
         } catch (RestClientException e) {
             LOGGER.error("Rest client error calling Google Books API: ", e);

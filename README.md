@@ -7,13 +7,11 @@ actually be useful.
 
 So welcome to the "Cloudy Bookclub" microservice!
 
-[![Build Status](https://travis-ci.org/aidanwhiteley/books.svg?branch=develop)](https://travis-ci.org/aidanwhiteley/books) 
+[![Actions CI Build](https://github.com/aidanwhiteley/books/workflows/Actions%20CI%20Build/badge.svg)](https://github.com/aidanwhiteley/books/actions?query=workflow%3A%22Actions+CI+Build%22)
 [![Sonar Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=com.aidanwhiteley%3Abooks&metric=alert_status)](https://sonarcloud.io/dashboard?id=com.aidanwhiteley%3Abooks)
 [![Codacy Code Quality](https://api.codacy.com/project/badge/Grade/0570d8fd3bfa4811a3f10071ad73988f)](https://www.codacy.com/app/Books_Team/books?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=aidanwhiteley/books&amp;utm_campaign=Badge_Grade)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/aidanwhiteley/books.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/aidanwhiteley/books/alerts/)
 [![codecov](https://codecov.io/gh/aidanwhiteley/books/branch/develop/graph/badge.svg)](https://codecov.io/gh/aidanwhiteley/books)
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Faidanwhiteley%2Fbooks.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Faidanwhiteley%2Fbooks?ref=badge_shield)
-
 
 
 ## Implementation
@@ -33,7 +31,7 @@ making the web application entirely free of http session state (which has its pr
 * and Docker images and a docker-compose file that runs all the tiers of the application with one "docker-compose up --scale api-tier-java=N" command
 
 ### Running in development
-The checked in default Spring profile is "mongo-java-server". This uses mongo-java-server so there is no need to run MongoDb locally. So you 
+The checked in default Spring profile is "mongo-java-server". This uses the in memory mongo-java-server so there is no need to run MongoDb locally. So you 
 should be able to just check out the code and run the application for development purposes with no other dependencies.
 
 To develop Mongo related code you should switch to the "dev" profile which does expect to be able to connect to a real MongoDb instance.
@@ -50,9 +48,11 @@ By default, the tests run against mongo-java-server so there is no need to insta
 MongDb to test most of the application. Functionality not supported by mogo-java-server such as full text indexes results in some tests being skipped when 
 running with the monog-java-server Spring profile.
 
-When running the Travis builds, tests run against a real Mongo instance.
+When running the CI builds with Githib Actions, tests run against a real Mongo instance.
 
 Some of the integration tests make use of WireMock - see the /src/test/resources/mappings and __files directories for the configuration details.
+
+The tests are probably about 50/50 between unit and integration tests...
 
 #### Stress Test
 To examine how the WebClient code is behaving there is a Maven plugin configured that runs a basic Gatling load test.
@@ -110,7 +110,7 @@ There are Spring profile files for a range of development and test scenarios.
 	- configured to allow CORS access to APIs
 	- clears down DB and reloads test data on every restart
 	
-#### travis
+#### CI
 	- uses a real MongoDb
 	- configured to allow CORS access to APIs
 	- clears down the DB and reloads test data on every restart
@@ -138,8 +138,8 @@ Check the console log when running in production - you should see **NO** warning
 This project makes use of the excellent Lombok project. So to build in your favourite IDE, if necessary
 head on over to [Lombok](https://projectlombok.org/) and click the appropriate "Install" link (tested with IntelliJ and Eclipse).
 
-The project currently builds on Travis only on JDK11 (the JDK8 build in .travis.yml is now commented out as SonarQube support for JDK8 
-will be removed later in 2020)
+The project CI build uses Github Actions and currently on runs on JDK11. The project Maven depedencies have been updated to include JAXB depedencies that
+are no longer included by default in the JDK SE. So no JDK8 support any longer I'm afraid.
 
 With appropriate versions of the JDK, Maven and a Mongo installed, start with
 ~~~~
@@ -177,7 +177,7 @@ The code supports five access levels
 * ROLE_ADMIN (logged in with full admin access)
 * ROLE_ACTUATOR (logged in but with no permissions except to access Actuator endpoints)
 
-The application-<env>.yml files can be edited to automatically give a logged on user admin access 
+The application-<profile>.yml files can be edited to automatically give a logged on user admin access 
 by specifying their email on Google / Facebook. See the books:users:default:admin:email setting.
 
 ## Security
@@ -198,10 +198,10 @@ Don't use this application with CORS in production - it will leave you open to X
 
 ## Swagger API documentation
 
-[![Swagger Documentation](https://github.com/aidanwhiteley/books/blob/develop/src/main/resources/static/swagger-logo.png)](https://cloudybookclub.com/swagger-ui.html#/book-controller)
+[![Swagger Documentation](https://github.com/aidanwhiteley/books/blob/develop/src/main/resources/static/swagger-logo.png)](https://cloudybookclub.com/swagger-ui/index.html#/book-controller)
 
 The public read only part of the application's REST API is automatically documented using the [Springfox](http://springfox.github.io/springfox/)
-tool to auto create Swagger 2 JSON. The API can be explored and tested using the Swagger UI available [here](https://cloudybookclub.com/swagger-ui.html#/book-controller).
+tool to auto create Swagger 2 JSON. The API can be explored and tested using the Swagger UI available [here](https://cloudybookclub.com/swagger-ui/index.html#/book-controller).
 
 ## Stateless Apps
 A lot of the time developing this microservice was spent in making it entirely independant of HTTP session state  - based around issuing a 
@@ -250,18 +250,32 @@ tiers of the overall application.
 The docker-compose file expects there to be a .env file in the same directory to define the environment 
 variables expected by the various Docker images.
 There is an example .env file with comments checked in. This **SHOULD** be edited according to the 
-instructions in the file (noting that the containers will start and run run OK with the checked in values if you are just trying things out).
+instructions in the file (noting that the containers will start and run OK with the checked in values if you are just trying things out).
 Note that the file is marked to be excluded by .gitignore so updates should not be checked back into Github.
 
 ## Docker Compose and running the overall application
-The checked in docker-compose.yaml results in a deployment as shown on the following diagram. The steps are
+The checked in docker-compose.yaml and .env file should result in a deployment as shown on the following diagram.
+
+![Cloudy Docker Deployment Diagram](../media/docker1.png?raw=true)
+
+If you have Docker available, from the root of this project type:
 ~~~~
 docker-compose pull
-edit the .env file appropriately
 docker-compose up --scale api-tier-java=2 
 ~~~~
 
-[![Cloudy Docker Deployment Diagram](https://github.com/aidanwhiteley/books/blob/develop/src/test/resources/images/docker1.png)](https://github.com/aidanwhiteley/books)
+|Tier |URL |Notes and screen grab|
+|-----|----|-----|
+|Website|http://localhost/|Accessing this URL, if you left the docker-compose.yaml as is, you will be auto "logged on" as an admin user. Try the "ADD A BOOK" link and, after you have completed the "Title", you should see a list of matching books from Google Books.![Books web tier](../media/application.jpg?raw=true)|
+|Service registry|http://localhost:8761/|The service registry isn't behind logon. You should see registered the API gateway, the service registry itself, two instances of the Books microservice and a Spring Boot Admin instance.![Books service registry](../media/service-registry.jpg?raw=true)|
+|Spring Boot Admin|http://localhost:8888/|If you haven't changed the .env file, logon with anAdminUser-CHANGE_ME / aPassword-CHANGE_ME ![Books Spring Boot Admion](../media/spring-boot-admin.jpg?raw=true)|
+|Mongo data tier|http://localhost:27017/|With the default docker-compose.yml this isn't exposed. Look for the comments in the file around about line 136 if you want to access the database directly (userids and passwords being in the .env file) ![Mongo](../media/mongo-compass.jpg?raw=true)|
+
+### Notes
+* The output from "docker-compose up" should be reasonably error free but sometimes exceptions are thrown/logged. This is most likely because of the difference between a Docker container being "up" and the service within it being available. To start with, when the startup console logon has subsided, try the website (http://localhost/) a few times to see if all depdendencies are now up and running. They should be.
+* The above setup means the webserver, the API gateway and the service registry all single points of failure but there's only so much RAM on my PC!
+* Oh - and the Docker db is neither shared nor replicated. So that's a SPoF as well.
+* If necessary, subsitute "localhost" in the URLs above for whatever IP your Docker is running on.
 
 ## Spring Boot Admin
 The application supports exposing [Actuator](https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready.html) 
@@ -297,9 +311,7 @@ of any other domain names that weren't already taken.
 
 ## Client Side Functionality
 
-There is an Angular 1.x based front end application that consumes the microservice available 
+There is an AngularJS based front end application that consumes the microservice available 
 at https://github.com/aidanwhiteley
 
 The running application can be seen at https://cloudybookclub.com/
-
-[![Cloudy Bookclub Screenshot](https://github.com/aidanwhiteley/books-web/blob/master/app/images/cloudy-book-club-screen-grab.jpg)](https://github.com/aidanwhiteley/books-web)

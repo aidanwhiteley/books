@@ -3,7 +3,7 @@ package com.aidanwhiteley.books.repository;
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.util.IntegrationTest;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +12,9 @@ import org.springframework.context.annotation.Profile;
 
 import static org.junit.Assert.assertNull;
 
-@Profile({"dev-mongo-java-server", "dev-mongo-java-server-no-auth", "dev-mongodb-no-auth", "dev-mongodb", "travis"})
+@Profile({"dev-mongo-java-server", "dev-mongo-java-server-no-auth", "dev-mongodb-no-auth", "dev-mongodb", "ci"})
 @AutoConfigureWireMock(port=0)
-public class GoogleBookDaoAsyncTest extends IntegrationTest {
+class GoogleBookDaoAsyncTest extends IntegrationTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GoogleBookDaoAsyncTest.class);
 
@@ -27,7 +27,7 @@ public class GoogleBookDaoAsyncTest extends IntegrationTest {
     private GoogleBooksDaoAsync async;
 
     @Test
-    public void testBookUpdatedWithGoogleBookDetails() {
+    void testBookUpdatedWithGoogleBookDetails() {
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Wiremock Mappings: " + WireMock.listAllStubMappings().getMappings());

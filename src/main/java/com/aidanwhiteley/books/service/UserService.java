@@ -255,8 +255,8 @@ public class UserService {
     @Builder
     @Getter
     private static class UpdateUserDetails {
-        private Map<String, Object> userDetails;
-        private User user;
-        private User.AuthenticationProvider provider;
+        private final Map<String, Object> userDetails;
+        private final User user;
+        private final User.AuthenticationProvider provider;
     }
 }

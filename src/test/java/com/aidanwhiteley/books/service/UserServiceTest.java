@@ -5,7 +5,7 @@ import com.aidanwhiteley.books.repository.UserRepository;
 import com.aidanwhiteley.books.util.IntegrationTest;
 import com.aidanwhiteley.books.util.Oauth2AuthenticationUtils;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
@@ -36,7 +36,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.LOCAL;
 
-public class UserServiceTest extends IntegrationTest {
+class UserServiceTest extends IntegrationTest {
 
     private static final String DUMMY = "dummy";
     private static final String NEW_USER_1 = "New User 1";
@@ -61,17 +61,17 @@ public class UserServiceTest extends IntegrationTest {
     private OAuth2AuthorizedClientService authorisedClientService;
 
     @Test
-    public void testCreateGoogleBasedUser() {
+    void testCreateGoogleBasedUser() {
         assertNotNull(testUserCreate(googleClientClientId, NEW_USER_1, User.AuthenticationProvider.GOOGLE));
     }
 
     @Test
-    public void testCreateFacebookBasedUser() {
+    void testCreateFacebookBasedUser() {
         assertNotNull(testUserCreate(facebookClientClientId, NEW_USER_2, User.AuthenticationProvider.FACEBOOK));
     }
 
     @Test
-    public void testUpdateGoogleBasedUser() {
+    void testUpdateGoogleBasedUser() {
         User user = testUserCreate(googleClientClientId, NEW_USER_1, User.AuthenticationProvider.GOOGLE);
 
         configureOauth(googleClientClientId, UPDATED_USER_1);
@@ -84,7 +84,7 @@ public class UserServiceTest extends IntegrationTest {
     }
 
     @Test
-    public void testUpdateFacebookBasedUser() {
+    void testUpdateFacebookBasedUser() {
         User user = testUserCreate(facebookClientClientId, NEW_USER_2, User.AuthenticationProvider.FACEBOOK);
 
         configureOauth(facebookClientClientId, UPDATED_USER_2);
@@ -98,7 +98,7 @@ public class UserServiceTest extends IntegrationTest {
 
     @SuppressWarnings("OptionalGetWithoutIsPresent")
     @Test
-    public void testCreateActuatorUser() {
+    void testCreateActuatorUser() {
         UserService userService = configureUserService();
         userService.setAllowActuatorUserCreation(true);
         User user = userService.createOrUpdateActuatorUser().get();
@@ -113,7 +113,7 @@ public class UserServiceTest extends IntegrationTest {
     }
 
     @Test
-    public void testActuatorUserCreationOff() {
+    void testActuatorUserCreationOff() {
         UserService userService = new UserService(null, null);
         userService.setAllowActuatorUserCreation(false);
         Optional<User> aUser = userService.createOrUpdateActuatorUser();
@@ -156,7 +156,7 @@ public class UserServiceTest extends IntegrationTest {
 
         ClientRegistration.Builder builder = ClientRegistration.withRegistrationId(DUMMY);
         builder.clientId(clientId).authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE).
-                clientSecret(DUMMY).redirectUriTemplate(DUMMY).scope(DUMMY).authorizationUri(DUMMY).tokenUri(DUMMY).
+                clientSecret(DUMMY).redirectUri(DUMMY).scope(DUMMY).authorizationUri(DUMMY).tokenUri(DUMMY).
                 clientName(DUMMY);
         ClientRegistration clientReg = builder.build();
         when(client.getClientRegistration()).thenReturn(clientReg);

@@ -6,9 +6,9 @@ import com.aidanwhiteley.books.util.IntegrationTest;
 import com.aidanwhiteley.books.util.MailClient;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -22,7 +22,7 @@ import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.GOOGLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class SignUpNotificationServiceTest extends IntegrationTest {
+class SignUpNotificationServiceTest extends IntegrationTest {
 
     // This value must match the value in the corresponding YAML config file.
     // Default port 25 shifted to allow easy use on Unix environments where
@@ -42,19 +42,19 @@ public class SignUpNotificationServiceTest extends IntegrationTest {
     @Autowired
     private MailClient mailClient;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         smtpServer = new GreenMail(new ServerSetup(PORT, null, "smtp"));
         smtpServer.start();
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         smtpServer.stop();
     }
 
     @Test
-    public void testNewRegistrationIsVisible() {
+    void testNewRegistrationIsVisible() {
 
         SignUpNotificationService service = new SignUpNotificationService(userRepository, mailClient);
         int currentNewUsers = service.findNewUsers().size();
@@ -69,7 +69,7 @@ public class SignUpNotificationServiceTest extends IntegrationTest {
     }
 
     @Test
-    public void testNewRegistrationEmailedToAdmin() throws IOException, MessagingException {
+    void testNewRegistrationEmailedToAdmin() throws IOException, MessagingException {
         SignUpNotificationService service = new SignUpNotificationService(userRepository, mailClient);
         int currentNewUsers = service.findNewUsers().size();
         service.setRegistrationAdminEmailEnabled(true);

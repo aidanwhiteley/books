@@ -6,7 +6,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +22,9 @@ import com.aidanwhiteley.books.util.IntegrationTest;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 
-@Profile({"dev-mongo-java-server", "dev-mongo-java-server-no-auth", "dev-mongodb-no-auth", "dev-mongodb", "travis"})
+@Profile({"dev-mongo-java-server", "dev-mongo-java-server-no-auth", "dev-mongodb-no-auth", "dev-mongodb", "ci"})
 @AutoConfigureWireMock(port=0, httpsPort = 0)
-public class GoogleBooksDaoSyncTest extends IntegrationTest {
+class GoogleBooksDaoSyncTest extends IntegrationTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GoogleBooksDaoSyncTest.class);
 
@@ -38,7 +38,7 @@ public class GoogleBooksDaoSyncTest extends IntegrationTest {
     private GoogleBooksDaoSync theDao;
 
     @Test
-    public void findByTitle() {
+    void findByTitle() {
         BookSearchResult result = theDao.searchGoogBooksByTitle("Design Patterns");
         assertNotNull(result);
         assertEquals(NUMBER_OF_BOOKS_IN_SEARCH_RESULTS, result.getItems().size());
@@ -47,7 +47,7 @@ public class GoogleBooksDaoSyncTest extends IntegrationTest {
     }
 
     @Test
-    public void findByGoogleBookId() {
+    void findByGoogleBookId() {
         Item result = theDao.searchGoogleBooksByGoogleBookId(SPRING_FRAMEWORK_GOOGLE_BOOK_ID);
         assertNotNull(result);
         assertEquals(SPRING_BOOK_TITLE, result.getVolumeInfo().getTitle());
@@ -56,10 +56,9 @@ public class GoogleBooksDaoSyncTest extends IntegrationTest {
     }
 
     @Test
-    public void confirmFindbyBookTimesOut() {
+    void confirmFindbyBookTimesOut() {
 
     	// Turn off unwanted logging for read timeout. Prevents JUnit output having unnecessary stack traces etc.
-        // Set to DEBUG to debug any test failures.
         LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
         context.getLogger(GoogleBooksDaoSync.class).setLevel(Level.valueOf("OFF"));
 
@@ -70,14 +69,13 @@ public class GoogleBooksDaoSyncTest extends IntegrationTest {
             LOGGER.debug("Expected exception caught");
         }
 
-        context.getLogger(GoogleBooksDaoSync.class).setLevel(Level.valueOf("ON"));
+        context.getLogger(GoogleBooksDaoSync.class).setLevel(Level.valueOf("WARN"));
     }
 
     @Test
-    public void confirmFindbyBookIdHandlesServiceUnavailable() {
+    void confirmFindbyBookIdHandlesServiceUnavailable() {
 
         // Turn off unwanted logging for read timeout. Prevents JUnit output having unnecessary stack traces etc.
-        // Set to DEBUG to debug any test failures.
         LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
         context.getLogger(GoogleBooksDaoSync.class).setLevel(Level.valueOf("OFF"));
 
@@ -88,7 +86,7 @@ public class GoogleBooksDaoSyncTest extends IntegrationTest {
             LOGGER.debug("Expected HttpServerErrorException exception caught: " + hsee);
         }
 
-        context.getLogger(GoogleBooksDaoSync.class).setLevel(Level.valueOf("ON"));
+        context.getLogger(GoogleBooksDaoSync.class).setLevel(Level.valueOf("WARN"));
     }
 
 }

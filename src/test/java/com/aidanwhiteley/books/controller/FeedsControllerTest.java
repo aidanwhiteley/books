@@ -5,7 +5,7 @@ import com.rometools.rome.feed.synd.SyndEntry;
 import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.rome.io.SyndFeedInput;
 import com.rometools.rome.io.XmlReader;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -16,7 +16,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class FeedsControllerTest extends IntegrationTest {
+class FeedsControllerTest extends IntegrationTest {
 
     @Autowired
     private TestRestTemplate testRestTemplate;
@@ -25,7 +25,7 @@ public class FeedsControllerTest extends IntegrationTest {
     private String booksFeedsTitles;
 
     @Test
-    public void checkRssFeedsHasEntries() throws Exception {
+    void checkRssFeedsHasEntries() throws Exception {
 
         // Find the port the test is running on
         String rootUri = this.testRestTemplate.getRootUri();

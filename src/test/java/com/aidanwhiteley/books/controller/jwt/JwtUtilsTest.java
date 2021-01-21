@@ -3,19 +3,20 @@ package com.aidanwhiteley.books.controller.jwt;
 import com.aidanwhiteley.books.controller.BookControllerTestUtils;
 import com.aidanwhiteley.books.domain.User;
 import io.jsonwebtoken.ExpiredJwtException;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import io.jsonwebtoken.SignatureException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertEquals;
 
-public class JwtUtilsTest {
+class JwtUtilsTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtUtilsTest.class);
 
     @Test
-    public void testCreadAndReadGoodToken() {
+    void testCreadAndReadGoodToken() {
         JwtUtils jwt = new JwtUtils();
 
         jwt.setIssuer("A test issuer");
@@ -31,8 +32,8 @@ public class JwtUtilsTest {
         assertEquals(testUser.getFullName(), userFromToken.getFullName());
     }
 
-    @Test(expected = SignatureException.class)
-    public void testTamperedWithToken() {
+    @Test
+    void testTamperedWithToken() {
         JwtUtils jwt = new JwtUtils();
 
         jwt.setIssuer("A test issuer");
@@ -46,12 +47,16 @@ public class JwtUtilsTest {
         int strlength = token.length();
         char aChar = token.charAt(strlength - 1);
         tampered.setCharAt(strlength - 1, (char)( aChar - 1));
+        String tamperedString = tampered.toString();
 
-        jwt.getUserFromToken(tampered.toString());
+        Assertions.assertThrows(SignatureException.class, () -> {
+            jwt.getUserFromToken(tamperedString);
+        });
+
     }
 
-    @Test(expected = ExpiredJwtException.class)
-    public void testExpiredToken() {
+    @Test
+    void testExpiredToken() {
         JwtUtils jwt = new JwtUtils();
 
         jwt.setIssuer("A test issuer");
@@ -61,6 +66,8 @@ public class JwtUtilsTest {
         User testUser = BookControllerTestUtils.getTestUser();
         String token = jwt.createTokenForUser(testUser);
 
-        jwt.getUserFromToken(token);
+        Assertions.assertThrows(ExpiredJwtException.class, () -> {
+            jwt.getUserFromToken(token);
+        });
     }
 }

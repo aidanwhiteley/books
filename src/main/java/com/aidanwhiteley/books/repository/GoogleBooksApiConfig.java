@@ -21,6 +21,8 @@ public class GoogleBooksApiConfig {
 
     private String countryCode;
 
+    private String maxResults;
+
     private int connectTimeout;
 
     private int readTimeout;

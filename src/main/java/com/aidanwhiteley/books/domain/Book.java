@@ -128,8 +128,12 @@ public class Book extends Auditable implements Serializable {
 
         this.comments.forEach(c -> c.setPermissionsAndContentForUser(user));
 
+        // Remove user related data if the caller deosnt have the required level of access
         if (this.getCreatedBy() != null) {
             this.getCreatedBy().setPermissionsAndContentForUser(user);
+        }
+        if (this.getLastModifiedBy() != null) {
+            this.getLastModifiedBy().setPermissionsAndContentForUser(user);
         }
     }
 

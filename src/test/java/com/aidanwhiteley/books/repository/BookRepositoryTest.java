@@ -9,8 +9,8 @@ import com.aidanwhiteley.books.repository.dtos.BooksByGenre;
 import com.aidanwhiteley.books.repository.dtos.BooksByRating;
 import com.aidanwhiteley.books.repository.dtos.BooksByReader;
 import com.aidanwhiteley.books.util.IntegrationTest;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,13 +58,13 @@ public class BookRepositoryTest extends IntegrationTest {
                 .build();
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         bookRepository.insert(createTestBook());
     }
 
     @Test
-    public void findByAuthor() {
+    void findByAuthor() {
         PageRequest pageObj = PageRequest.of(PAGE, PAGE_SIZE);
         Page<Book> books = bookRepository.findAllByAuthorOrderByCreatedDateTimeDesc(pageObj, DR_ZEUSS);
         assertTrue(books.getContent().size() >= 1);
@@ -75,7 +75,7 @@ public class BookRepositoryTest extends IntegrationTest {
     }
 
     @Test
-    public void countBooksByGenre() {
+    void countBooksByGenre() {
         List<BooksByGenre> list = bookRepository.countBooksByGenre();
         assertTrue(list.size() > 0);
         assertTrue(list.get(0).getGenre().length() > 0);
@@ -83,28 +83,28 @@ public class BookRepositoryTest extends IntegrationTest {
     }
 
     @Test
-    public void countBooksByRating() {
+    void countBooksByRating() {
         List<BooksByRating> list = bookRepository.countBooksByRating();
         assertTrue(list.size() > 0);
         assertTrue(list.get(0).getCountOfBooks() > 0);
     }
 
     @Test
-    public void countBooksByAuthor() {
+    void countBooksByAuthor() {
         List<BooksByAuthor> list = bookRepository.countBooksByAuthor();
         assertTrue(list.size() > 0);
         assertTrue(list.get(0).getCountOfBooks() > 0);
     }
 
     @Test
-    public void countBooksByReader() {
+    void countBooksByReader() {
         List<BooksByReader> list = bookRepository.countBooksByReader();
         assertTrue(list.size() > 0);
         assertTrue(list.get(0).getCountOfBooks() > 0);
     }
 
     @Test
-    public void addCommentToBook() {
+    void addCommentToBook() {
         Book book = createTestBook();
 
         Book savedBook = bookRepository.insert(book);
@@ -119,7 +119,7 @@ public class BookRepositoryTest extends IntegrationTest {
     }
 
     @Test
-    public void removeCommentFromBook() {
+    void removeCommentFromBook() {
 
         // Set up a couple of comments
         Book book = createTestBook();
@@ -151,7 +151,7 @@ public class BookRepositoryTest extends IntegrationTest {
     }
 
     @Test
-    public void searchForBooks() {
+    void searchForBooks() {
         // mongo-java-server doesnt support full text indexes across fields
         if (Arrays.stream(this.environment.getActiveProfiles()).anyMatch(s ->
                 s.contains(BookControllerTest.IN_MEMORY_MONGODB_SPRING_PROFILE))) {

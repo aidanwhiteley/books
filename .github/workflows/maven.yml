@@ -2,7 +2,7 @@ name: Actions CI Build
 
 on:
   push:
-    branches: [ develop ]
+    branches: [ develop, master ]
   pull_request:
     branches: [ develop, master ]
   schedule:
@@ -26,6 +26,13 @@ jobs:
         java-package: jdk # (jre, jdk, or jdk+fx) - defaults to jdk
         architecture: x64 # (x64 or x86) - defaults to x64
 
+    - name: Cache SonarCloud packages
+      uses: actions/cache@v1
+      with:
+        path: ~/.sonar/cache
+        key: ${{ runner.os }}-sonar
+        restore-keys: ${{ runner.os }}-sonar
+
     - name: Cache Maven packages
       uses: actions/cache@v2
       with:
@@ -40,11 +47,8 @@ jobs:
 
     - name: Build with Maven
       run: >
-        mvn -B clean package sonar:sonar --file pom.xml
+        mvn -B clean package org.sonarsource.scanner.maven:sonar-maven-plugin:sonar --file pom.xml
         -Dspring.profiles.active=ci
-        -Dsonar.host.url=https://sonarcloud.io
-        -Dsonar.organization=aidanwhiteley-github
-        -Dsonar.projectKey=com.aidanwhiteley:books
         -Dsonar.sources=src/main
         -Dsonar.java.binaries=target/classes
         -Dsonar.projectName="Books Microservice"

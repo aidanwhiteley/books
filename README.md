@@ -3,7 +3,7 @@ This project started as I wanted a simple "microservice" to use when trying out 
 such as Docker, Docker Compose, Spring Cloud, Pivotal Cloud Foundy and AWS.
 
 It has developed a little further such that it is starting to provide some functionality that may 
-actually be useful.
+actually be useful. 
 
 So welcome to the "Cloudy Bookclub" microservice!
 

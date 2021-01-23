@@ -31,7 +31,7 @@
     <logger name="com.aidanwhiteley" level="WARN"/>
     <logger name="com.aidanwhiteley.books.controller" level="WARN" />
     <logger name="com.aidanwhiteley.books.service.SignUpNotificationService" level="WARN"/>
-    <logger name="com.aidanwhiteley.books.repository.GoogleBooksDaoSync" level="WARN"/>
+    <logger name="com.aidanwhiteley.books.repository.GoogleBooksDaoSync" level="INFO"/>
     <logger name="com.aidanwhiteley.books.repository.GoogleBooksDaoAsync" level="WARN"/>
     <logger name="com.aidanwhiteley.books.repository.GoogleBookDaoAsyncTest" level="WARN"/>
     <logger name="com.aidanwhiteley.books.util.MailClient" level="WARN" />

@@ -272,7 +272,7 @@ docker-compose up --scale api-tier-java=2
 |Mongo data tier|http://localhost:27017/|With the default docker-compose.yml this isn't exposed. Look for the comments in the file around about line 136 if you want to access the database directly (userids and passwords being in the .env file) ![Mongo](../media/mongo-compass.jpg?raw=true)|
 
 ### Notes
-* The output from "docker-compose up" should be reasonably error free but sometimes exceptions are thrown/logged. This is most likely because of the difference between a Docker container being "up" and the service within it being available. To start with, when the startup console logon has subsided, try the website (http://localhost/) a few times to see if all depdendencies are now up and running. They should be.
+* The output from "docker-compose up" should be reasonably error free but sometimes exceptions are thrown/logged. This is most likely because of the difference between a Docker container being "up" and the service within it being available. To start with, when the startup console logging has subsided, try the website (http://localhost/) a few times to see if all depdendencies are now up and running. They should be.
 * The above setup means the webserver, the API gateway and the service registry all single points of failure but there's only so much RAM on my PC!
 * Oh - and the Docker db is neither shared nor replicated. So that's a SPoF as well.
 * If necessary, subsitute "localhost" in the URLs above for whatever IP your Docker is running on.

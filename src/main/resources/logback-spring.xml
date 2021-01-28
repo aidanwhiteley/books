@@ -16,7 +16,7 @@
     <logger name="org.springframework.web.servlet.mvc.method.annotation" level="ERROR" />
     <logger name="org.springframework.context" level="WARN" />
 
-    <!-- Temporarily turning off logging - see https://github.com/aidanwhiteley/books/issues/86 -->
+    <!-- See https://github.com/aidanwhiteley/books/issues/86 -->
     <logger name="org.springframework.data.convert.CustomConversions" level="ERROR" />
 
     <logger name="org.apache.catalina" level="WARN" />

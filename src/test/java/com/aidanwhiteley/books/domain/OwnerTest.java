@@ -1,18 +1,17 @@
 package com.aidanwhiteley.books.domain;
 
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
+import com.aidanwhiteley.books.domain.User.AuthenticationProvider;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import com.aidanwhiteley.books.domain.User.AuthenticationProvider;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class OwnerTest {
 
@@ -37,9 +36,7 @@ class OwnerTest {
 		LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
 		context.getLogger(Comment.class).setLevel(Level.valueOf("OFF"));
 
-		Assertions.assertThrows(IllegalStateException.class, () -> {
-			aComment.setPermissionsAndContentForUser(aUser);
-		});
+		Assertions.assertThrows(IllegalStateException.class, () -> aComment.setPermissionsAndContentForUser(aUser));
 
 		context.getLogger(Comment.class).setLevel(Level.valueOf("OFF"));
 	}

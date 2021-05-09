@@ -11,7 +11,7 @@ import java.util.List;
 import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.GOOGLE;
 import static com.aidanwhiteley.books.domain.User.Role.ROLE_ADMIN;
 import static com.aidanwhiteley.books.domain.User.Role.ROLE_EDITOR;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class UserRepositoryTest extends IntegrationTest {
 

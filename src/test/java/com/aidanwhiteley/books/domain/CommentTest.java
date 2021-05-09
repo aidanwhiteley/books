@@ -1,12 +1,11 @@
 package com.aidanwhiteley.books.domain;
 
-import static org.junit.Assert.assertEquals;
+import com.aidanwhiteley.books.domain.User.AuthenticationProvider;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 
-import org.junit.jupiter.api.Test;
-
-import com.aidanwhiteley.books.domain.User.AuthenticationProvider;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class CommentTest {
 

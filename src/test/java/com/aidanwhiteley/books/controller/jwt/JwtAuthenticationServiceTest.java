@@ -4,7 +4,7 @@ import com.aidanwhiteley.books.domain.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class JwtAuthenticationServiceTest {
 

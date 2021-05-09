@@ -22,7 +22,7 @@ import static com.aidanwhiteley.books.controller.RestApiExceptionHandler.MESSAGE
 import static com.aidanwhiteley.books.controller.RestApiExceptionHandler.MESSAGE_NOT_FOUND;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;

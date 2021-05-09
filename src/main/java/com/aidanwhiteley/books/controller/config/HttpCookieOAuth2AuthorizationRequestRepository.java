@@ -53,7 +53,7 @@ class HttpCookieOAuth2AuthorizationRequestRepository implements AuthorizationReq
      * @deprecated Since Spring Boot 2.1.0 and associated Spring Security version
      */
     @Override
-    @Deprecated
+    @Deprecated(since = "From Spring Boot 2.1.0 and associated javax.swing.Spring Security version", forRemoval = true)
     public OAuth2AuthorizationRequest removeAuthorizationRequest(HttpServletRequest request) {
         // Question: How to remove the cookie, because we don't have access to response object here.
         // This seems to be a flaw in the design of the AuthorizationRequestRepository interface

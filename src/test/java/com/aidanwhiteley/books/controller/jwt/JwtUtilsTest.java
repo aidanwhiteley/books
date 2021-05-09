@@ -9,7 +9,7 @@ import io.jsonwebtoken.SignatureException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class JwtUtilsTest {
 
@@ -49,9 +49,7 @@ class JwtUtilsTest {
         tampered.setCharAt(strlength - 1, (char)( aChar - 1));
         String tamperedString = tampered.toString();
 
-        Assertions.assertThrows(SignatureException.class, () -> {
-            jwt.getUserFromToken(tamperedString);
-        });
+        Assertions.assertThrows(SignatureException.class, () -> jwt.getUserFromToken(tamperedString));
 
     }
 
@@ -66,8 +64,6 @@ class JwtUtilsTest {
         User testUser = BookControllerTestUtils.getTestUser();
         String token = jwt.createTokenForUser(testUser);
 
-        Assertions.assertThrows(ExpiredJwtException.class, () -> {
-            jwt.getUserFromToken(token);
-        });
+        Assertions.assertThrows(ExpiredJwtException.class, () -> jwt.getUserFromToken(token));
     }
 }

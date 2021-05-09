@@ -87,7 +87,11 @@ public class JwtAuthenticationUtils {
     	String authenticationServiceId = auth.getAuthenticationServiceId();
         String authenticationProviderId = auth.getAuthProvider();
 
-        LOGGER.debug("Query user repository with id of {} and provider of {}", authenticationServiceId.replaceAll("[\n\r\t]", "_"), authenticationProviderId.replaceAll("[\n\r\t]", "_"));
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Query user repository with service id of {} and provider of {}",
+                    authenticationServiceId.replaceAll("[\n\r\t]", "_"),
+                    authenticationProviderId.replaceAll("[\n\r\t]", "_"));
+        }
         
         List<User> users = userRepository.findAllByAuthenticationServiceIdAndAuthProvider(authenticationServiceId, authenticationProviderId);
         User user = null;

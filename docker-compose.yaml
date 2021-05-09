@@ -37,7 +37,7 @@ services:
   # Change the "depends_on" as appropriate.
   web-tier-angular:
     container_name: books-web-angular-container
-    image: aidanwhiteley/books-web-angular-gateway
+    image: aidanwhiteley/books-web-angular-gateway:v0.1.0
     restart: always
     ports:
       - 80:80
@@ -54,7 +54,7 @@ services:
   # which points to a single books microservice expected to be onm port 8080.
   api-gateway-tier:
     container_name: books-gateway-container
-    image: aidanwhiteley/books-gateway
+    image: aidanwhiteley/books-gateway:0.0.5-RELEASE
     restart: always
     environment:
       - "SPRING_PROFILES_ACTIVE=default"
@@ -73,7 +73,7 @@ services:
   # which points to a single books microservice expected to be onm port 8080.
   service-registry-tier:
     container_name: books-service-registry-container
-    image: aidanwhiteley/books-service-registry
+    image: aidanwhiteley/books-service-registry:0.0.5-RELEASE
     restart: always
     # Uncomment for debugging by viewing Eureka web console
     ports:
@@ -93,7 +93,7 @@ services:
     # The container_name must be commented out if starting multiple containers for this tier e.g.
     # "docker compose up --scale api-tier-java=2"
     # container_name: books-api-java-container
-    image: aidanwhiteley/books-api-java
+    image: aidanwhiteley/books-api-java:0.14.0-RELEASE
     restart: always
     environment:
       - "SPRING_PROFILES_ACTIVE=${JAVA_BOOKS_SPRING_PROFILE}"
@@ -128,7 +128,7 @@ services:
     # This is typically done when also using a Spring profile (for the api tier) that is suffixed -no-auth.
     # To stop this behaviour remove the "-demodata" name from the image and make a couple of edits
     # to the .env environment variables file.
-    image: aidanwhiteley/books-db-mongodb-demodata
+    image: aidanwhiteley/books-db-mongodb-demodata:4.4.5-bionic
     restart: always
     # Uncomment to access the MongoDB dirctly from the host - perhaps for debugging
     # Uncomment ports for local connect and debugging of MongoDB issues.
@@ -150,7 +150,7 @@ services:
   # registered in the Service Registry defined at service-registry-tier.
   boot-admin-tier:
     container_name: books-admin-container
-    image: aidanwhiteley/books-spring-boot-admin
+    image: aidanwhiteley/books-spring-boot-admin:0.0.5-RELEASE
     restart: always
     # Uncomment to view the Spring Boot Admin console directly rather than via the nginx reverse proxy
     ports:

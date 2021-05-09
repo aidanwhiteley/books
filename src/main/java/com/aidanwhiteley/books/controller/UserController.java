@@ -56,9 +56,7 @@ public class UserController {
 		    throw new NotAuthorisedException("No user data available - if you havent authenticated then this is expected.");
         } else {
             if (LOGGER.isDebugEnabled()) {
-				// Adding super cautious replacement of any user input new line characters in what is logged
-                LOGGER.debug("Principal passed in to user method is: {}",
-						principal.toString().replaceAll("[\n\r\t]", "_"));
+                LOGGER.debug("Principal passed in to user method is: {}", principal.toString().replaceAll("[\n\r\t]", "_"));
             }
         }
 

@@ -15,7 +15,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ActuatorTest extends IntegrationTest {
 
@@ -33,7 +33,7 @@ class ActuatorTest extends IntegrationTest {
         // Re-use existing test class functionality to get a user without the ACTUATOR role
         User user = BookControllerTestUtils.getTestUser();
         ResponseEntity<String> response = getResponseStringEntity(user, "/actuator");
-        assertEquals("User without ROLE_ACTUATOR should be forbidden", HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode(), "User without ROLE_ACTUATOR should be forbidden");
     }
 
     @Test
@@ -41,7 +41,7 @@ class ActuatorTest extends IntegrationTest {
         User user = BookControllerTestUtils.getTestUser();
         user.addRole(User.Role.ROLE_ACTUATOR);
         ResponseEntity<String> response = getResponseStringEntity(user, "/actuator");
-        assertEquals("User with ROLE_ACTUATOR should be OK", HttpStatus.OK, response.getStatusCode());
+        assertEquals(HttpStatus.OK, response.getStatusCode(), "User with ROLE_ACTUATOR should be OK");
     }
 
     @Test
@@ -50,7 +50,7 @@ class ActuatorTest extends IntegrationTest {
         User user = BookControllerTestUtils.getTestUser();
         user.addRole(User.Role.ROLE_ADMIN);
         ResponseEntity<String> response = getResponseStringEntity(user, "/actuator");
-        assertEquals("User with only ROLE_ADMIN should be forbidden", HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode(), "User with only ROLE_ADMIN should be forbidden");
     }
 
     @Test
@@ -58,7 +58,7 @@ class ActuatorTest extends IntegrationTest {
         User user = BookControllerTestUtils.getTestUser();
         user.addRole(User.Role.ROLE_ACTUATOR);
         ResponseEntity<String> response = getResponseStringEntity(user, "/actuator/scheduledtasks");
-        assertEquals("User with ROLE_ACTUATOR should be able to see scheduledtasks", HttpStatus.OK, response.getStatusCode());
+        assertEquals(HttpStatus.OK, response.getStatusCode(), "User with ROLE_ACTUATOR should be able to see scheduledtasks");
     }
 
     @Test
@@ -66,7 +66,7 @@ class ActuatorTest extends IntegrationTest {
         User user = BookControllerTestUtils.getTestUser();
         user.addRole(User.Role.ROLE_ACTUATOR);
         ResponseEntity<String> response = getResponseStringEntity(user, "/actuator/shutdown");
-        assertEquals("No user should see shutdown endpoint", HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode(), "No user should see shutdown endpoint");
     }
 
     @Test
@@ -74,10 +74,10 @@ class ActuatorTest extends IntegrationTest {
         User user = BookControllerTestUtils.getTestUser();
         user.addRole(User.Role.ROLE_ACTUATOR);
         ResponseEntity<String> response = getResponseStringEntity(user, "/actuator/info");
-        assertEquals("Should be able to get actuator info", HttpStatus.OK, response.getStatusCode());
+        assertEquals(HttpStatus.OK, response.getStatusCode(), "Should be able to get actuator info");
 
         String actuatorProjectName = JsonPath.read(response.getBody(), "$.build.name");
-        assertEquals("Should to be able see correct project name - set from POM", this.projectName, actuatorProjectName);
+        assertEquals(this.projectName, actuatorProjectName, "Should to be able see correct project name - set from POM");
     }
 
     private ResponseEntity<String> getResponseStringEntity(User user, String path) {

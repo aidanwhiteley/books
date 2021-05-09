@@ -1,11 +1,10 @@
 package com.aidanwhiteley.books.repository;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.LoggerContext;
+import com.aidanwhiteley.books.domain.googlebooks.BookSearchResult;
+import com.aidanwhiteley.books.domain.googlebooks.Item;
+import com.aidanwhiteley.books.util.IntegrationTest;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,12 +14,11 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
-import com.aidanwhiteley.books.domain.googlebooks.BookSearchResult;
-import com.aidanwhiteley.books.domain.googlebooks.Item;
-import com.aidanwhiteley.books.util.IntegrationTest;
-
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.LoggerContext;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @Profile({"dev-mongo-java-server", "dev-mongo-java-server-no-auth", "dev-mongodb-no-auth", "dev-mongodb", "ci"})
 @AutoConfigureWireMock(port=0, httpsPort = 0)
@@ -42,8 +40,8 @@ class GoogleBooksDaoSyncTest extends IntegrationTest {
         BookSearchResult result = theDao.searchGoogBooksByTitle("Design Patterns");
         assertNotNull(result);
         assertEquals(NUMBER_OF_BOOKS_IN_SEARCH_RESULTS, result.getItems().size());
-        assertTrue("Should have found a book id", result.getItems().get(0).getId().length() > 0);
-        assertTrue("Should have found a title", result.getItems().get(0).getVolumeInfo().getTitle().length() > 0);
+        assertTrue(result.getItems().get(0).getId().length() > 0, "Should have found a book id");
+        assertTrue(result.getItems().get(0).getVolumeInfo().getTitle().length() > 0, "Should have found a title");
     }
 
     @Test

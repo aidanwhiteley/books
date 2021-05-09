@@ -28,8 +28,8 @@ import java.util.List;
 
 import static com.aidanwhiteley.books.controller.BookController.PAGE_REQUEST_TOO_BIG_MESSAGE;
 import static com.aidanwhiteley.books.repository.BookRepositoryTest.J_UNIT_TESTING_FOR_BEGINNERS;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SuppressWarnings("ConstantConditions")
 public class BookControllerTest extends IntegrationTest {
@@ -76,7 +76,7 @@ public class BookControllerTest extends IntegrationTest {
         List<Book> books = JsonPath.read(response.getBody(), "$.content");
         LOGGER.debug("Retrieved JSON was: " + response.getBody());
 
-        assertTrue("No books found", books.size() > 0);
+        assertTrue(books.size() > 0, "No books found");
     }
 
     @Test
@@ -88,7 +88,7 @@ public class BookControllerTest extends IntegrationTest {
         // Title should be available to everyone
         assertEquals(J_UNIT_TESTING_FOR_BEGINNERS, book.getTitle());
 
-        // Email should only be available to admins - check not runnign a profile where users are "auto logged on"
+        // Email should only be available to admins - check not running a profile where users are "auto logged on"
         boolean noAuthProfile = Arrays.stream(this.environment.getActiveProfiles()).
                 anyMatch(s -> s.contains(NO_AUTH_SPRING_PROFILE));
 
@@ -169,7 +169,7 @@ public class BookControllerTest extends IntegrationTest {
     @Test
     void findUsingFullTextSearch() {
 
-        // This test doesnt run with mongo-java-server as it uses weighted full text index
+        // This test doesn't run with mongo-java-server as it uses weighted full text index
         // against multiple fields - which is not currently supported by mongo-java-server.
         if (Arrays.stream(this.environment.getActiveProfiles()).anyMatch(s -> s.contains(IN_MEMORY_MONGODB_SPRING_PROFILE))) {
             LOGGER.warn("Test skipped - mongo-java-server doesnt yet support weighted full text indexes on multiple fields");
@@ -187,7 +187,7 @@ public class BookControllerTest extends IntegrationTest {
         LOGGER.debug("Retrieved JSON was: " + response.getBody());
 
 
-        assertTrue("No books found", books.size() >= 1);
+        assertTrue(books.size() >= 1, "No books found");
     }
 
     @Test
@@ -208,7 +208,7 @@ public class BookControllerTest extends IntegrationTest {
                 null, String.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         List<Book> books = JsonPath.read(response.getBody(), "$.content");
-        assertTrue("Search didnt find a book", books.size() >= 1);
+        assertTrue(books.size() >= 1, "Search didnt find a book");
 
         // Then check that we dont get a match when using a "stop" work
         final String aStopWord = "A";
@@ -216,7 +216,7 @@ public class BookControllerTest extends IntegrationTest {
                 null, String.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         books = JsonPath.read(response.getBody(), "$.content");
-        assertEquals("Search unexpectedly found a book", 0, books.size());
+        assertEquals(0, books.size(), "Search unexpectedly found a book");
     }
 
     @Test
@@ -227,7 +227,7 @@ public class BookControllerTest extends IntegrationTest {
         // Returns a "page" of books - so look for the content of the page
         List<Book> books = JsonPath.read(response.getBody(), "$.content");
         LOGGER.debug("Retrieved JSON was: " + response.getBody());
-        assertEquals("Default page size of books expected", books.size(), defaultPageSize);
+        assertEquals(books.size(), defaultPageSize, "Default page size of books expected");
     }
 
     @Test
@@ -237,7 +237,7 @@ public class BookControllerTest extends IntegrationTest {
 
         List<Book> books = JsonPath.read(response.getBody(), "$.content");
         LOGGER.debug("Retrieved JSON was: " + response.getBody());
-        assertTrue("Expected to find novels", books.size() > 0);
+        assertTrue(books.size() > 0, "Expected to find novels");
     }
 
     @Test
@@ -247,11 +247,11 @@ public class BookControllerTest extends IntegrationTest {
         ResponseEntity<String> response = testRestTemplate.exchange("/api/books/stats", HttpMethod.GET, null, String.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         int count = JsonPath.parse(response.getBody()).read("$.count", Integer.class);
-        assertTrue("Should find more than 0 books", count > 0);
+        assertTrue(count > 0, "Should find more than 0 books");
         List<BooksByGenre> genres = JsonPath.read(response.getBody(), "$.bookByGenre");
-        assertTrue("Shoudl find more than 0 genres", genres.size() > 0);
+        assertTrue(genres.size() > 0, "Should find more than 0 genres");
         List<BooksByRating> ratings = JsonPath.read(response.getBody(), "$.booksByRating");
-        assertTrue("Should have found more than 0 ratings", ratings.size() > 0);
+        assertTrue(ratings.size() > 0, "Should have found more than 0 ratings");
     }
 
     @Test
@@ -261,13 +261,13 @@ public class BookControllerTest extends IntegrationTest {
 
         List<Book> booksByRating = JsonPath.read(response.getBody(), "$.content");
         LOGGER.debug("Retrieved JSON was: " + response.getBody());
-        assertTrue("Expected to find novels", booksByRating.size() > 0);
-        assertEquals("Expected to find a page of 2 novels",2, booksByRating.size());
+        assertTrue(booksByRating.size() > 0, "Expected to find novels");
+        assertEquals(2, booksByRating.size(), "Expected to find a page of 2 novels");
 
         // Test defaults
         response = testRestTemplate.exchange("/api/books/?rating=GOOD", HttpMethod.GET, null, String.class);
         booksByRating = JsonPath.read(response.getBody(), "$.content");
-        assertEquals("Expected to find default page size of novels", defaultPageSize, booksByRating.size());
+        assertEquals(defaultPageSize, booksByRating.size(), "Expected to find default page size of novels");
     }
 
     @Test
@@ -277,8 +277,7 @@ public class BookControllerTest extends IntegrationTest {
 
         String bodyContent = response.getBody();
         LOGGER.debug("Retrieved JSON was: " + bodyContent);
-        assertTrue("Expected to find a specified error message",
-                bodyContent.contains(ERROR_MESSAGE_FOR_INVALID_RATING));
+        assertTrue(bodyContent.contains(ERROR_MESSAGE_FOR_INVALID_RATING), "Expected to find a specified error message");
     }
 
     @Test

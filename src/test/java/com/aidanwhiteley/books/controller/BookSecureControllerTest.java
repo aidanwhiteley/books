@@ -22,10 +22,9 @@ import org.springframework.http.ResponseEntity;
 import java.net.URI;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SuppressWarnings("ConstantConditions")
 class BookSecureControllerTest extends IntegrationTest {
@@ -62,7 +61,7 @@ class BookSecureControllerTest extends IntegrationTest {
 
         // Get location of created book
         String location = response.getHeaders().getLocation().toString();
-        assertNotNull("Location of newly created book should have been provided", location);
+        assertTrue(location.length() > 0, "Location of newly created book should have been provided");
         String id = location.substring(location.lastIndexOf("/") + 1);
 
         // Get an admin user and required tokens and then delete the book

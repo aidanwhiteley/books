@@ -22,19 +22,15 @@ import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
+import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.LOCAL;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.LOCAL;
 
 class UserServiceTest extends IntegrationTest {
 
@@ -109,7 +105,7 @@ class UserServiceTest extends IntegrationTest {
         User user2 = userService.createOrUpdateActuatorUser().get();
         String id2 = user.getId();
         assertEquals(id, id2);
-        assertTrue("Logon timestamp should have been updated", user2.getLastLogon().isAfter(user.getFirstLogon()));
+        assertTrue(user2.getLastLogon().isAfter(user.getFirstLogon()), "Logon timestamp should have been updated");
     }
 
     @Test

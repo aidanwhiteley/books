@@ -120,7 +120,7 @@ services:
   # The service name is known to the spring-boot application-xxxxx.properties file
   # used by the active Spring profile specified when starting the api-tier-java service.
   #
-  # To see how the MongoDB is initialised with usert creation and (optional) sample data
+  # To see how the MongoDB is initialised with user creation and (optional) sample data
   # loads, see the src/main/resources/mongo-docker directory in this project.
   data-tier-mongo:
     container_name: books-data-mongodb-container
@@ -130,18 +130,21 @@ services:
     # to the .env environment variables file.
     image: aidanwhiteley/books-db-mongodb-demodata:4.4.5-bionic
     restart: always
-    # Uncomment to access the MongoDB dirctly from the host - perhaps for debugging
-    # Uncomment ports for local connect and debugging of MongoDB issues.
+    # Uncomment to access the MongoDB directly from the host - perhaps for debugging
     #ports:
     #  - 27017:27017
     environment:
       - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
       - MONGO_DATA_DIR=/data/db
-      - MONGO_LOG_DIR=/dev/null
+      # MONGO_LOG_DIR=/dev/null
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
       - MONGO_INITDB_APP_USERNAME=${MONGO_INITDB_APP_USERNAME}
       - MONGO_INITDB_APP_PASSWORD=${MONGO_INITDB_APP_PASSWORD}
+    # Comment out the following lines to debug Mongo issues or for production use.
+    # The default Mongo log level is too verbose - it obscures what is happening in this demo use
+    logging:
+      driver: "none"
 
   # This container is built using Google Jib using the following maven command
   # for the project at https://github.com/aidanwhiteley/books-springbootadmin

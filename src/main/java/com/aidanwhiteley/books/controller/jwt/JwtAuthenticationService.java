@@ -47,6 +47,23 @@ public class JwtAuthenticationService {
         this.jwtUtils = jwtUtils;
     }
 
+    // Setters for testing support outside of a Spring context
+    public void setCookieOverHttpsOnly(boolean val) {
+        this.cookieOverHttpsOnly = val;
+    }
+    public void setCookieAccessedByHttpOnly(boolean val) {
+        this.cookieAccessedByHttpOnly = val;
+    }
+    public void setJwtCookiePath(String val) {
+        this.jwtCookiePath = val;
+    }
+    public void setCookieExpirySeconds(int val) {
+        this.cookieExpirySeconds = val;
+    }
+    public void setCookieSameSiteStrict(boolean val) {
+        this.cookieSameSiteStrict = val;
+    }
+
     public void setAuthenticationData(HttpServletResponse response, User user) {
 
         String token = jwtUtils.createTokenForUser(user);

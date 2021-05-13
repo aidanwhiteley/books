@@ -17,21 +17,41 @@ class JwtAuthenticationServiceTest {
 
         JwtUtils jwtUtils = new JwtUtils();
         jwtUtils.setSecretKey("Blah");
+
         JwtAuthenticationService theService = new JwtAuthenticationService(jwtUtils);
+        theService.setCookieExpirySeconds(Integer.MAX_VALUE);
+        theService.setCookieAccessedByHttpOnly(true);
+        theService.setCookieSameSiteStrict(true);
+        theService.setCookieAccessedByHttpOnly(true);
+        theService.setJwtCookiePath("/dummyPath");
+
         theService.setAuthenticationData(response, aUser);
 
         String cookie = response.getHeaders("Set-Cookie").stream().
                 filter(s -> s.contains(JwtAuthenticationService.JWT_COOKIE_NAME)).findFirst()
                 .orElse(null);
-
         assertNotNull(cookie);
 
         // In v0.14.1 support for SameSite cookie attribute was added. Test that it exists.
-        // Because this test isn't loading a Spring context, it will default to boolean false i.e. Lax.
         String cookieForSameSite = response.getHeaders("Set-Cookie").stream().
-                filter(s -> s.contains("SameSite=Lax")).findFirst()
+                filter(s -> s.contains("SameSite=Strict")).findFirst()
                 .orElse(null);
-
         assertNotNull(cookieForSameSite);
+
+        String cookieHttpOnly = response.getHeaders("Set-Cookie").stream().
+                filter(s -> s.contains("HttpOnly")).findFirst()
+                .orElse(null);
+        assertNotNull(cookieHttpOnly);
+
+        String cookieAge = response.getHeaders("Set-Cookie").stream().
+                filter(s -> s.contains("Max-Age=" + Integer.MAX_VALUE)).findFirst()
+                .orElse(null);
+        assertNotNull(cookieAge);
+
+        String cookiePath = response.getHeaders("Set-Cookie").stream().
+                filter(s -> s.contains("Path=/dummyPath")).findFirst()
+                .orElse(null);
+        assertNotNull(cookiePath);
+
     }
 }

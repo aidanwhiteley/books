@@ -130,6 +130,7 @@ books:
     cookieOverHttpsOnly: true
     cookieAccessedByHttpOnly: true
     cookiePath: /
+    cookieSameSiteStrict: true      # Will set SameSite=Strict. Set to false for SameSite=Lax.
 
   oauth2:
     cookieOverHttpsOnly: true

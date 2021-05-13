@@ -20,6 +20,7 @@ class JwtAuthenticationServiceTest {
 
         JwtAuthenticationService theService = new JwtAuthenticationService(jwtUtils);
         theService.setCookieExpirySeconds(Integer.MAX_VALUE);
+        theService.setCookieOverHttpsOnly(true);
         theService.setCookieAccessedByHttpOnly(true);
         theService.setCookieSameSiteStrict(true);
         theService.setCookieAccessedByHttpOnly(true);

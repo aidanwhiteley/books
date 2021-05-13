@@ -68,12 +68,6 @@ public class JwtAuthenticationService {
 
         String token = jwtUtils.createTokenForUser(user);
 
-//        Cookie cookie = new Cookie(JWT_COOKIE_NAME, token);
-//        cookie.setHttpOnly(cookieAccessedByHttpOnly);
-//        cookie.setSecure(cookieOverHttpsOnly);
-//        cookie.setPath(jwtCookiePath);
-//        cookie.setMaxAge(cookieExpirySeconds);           // lgtm[java/insecure-cookie]
-
         // There is currently no functionality on the javax.servlet.http.Cookie class to set SameSite directly.
         var cookie = new StringBuilder();
         cookie.append(JWT_COOKIE_NAME + "=" + token);

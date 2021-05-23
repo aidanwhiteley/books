@@ -69,6 +69,14 @@ management:
   endpoints:
     enabled-by-default: false
 
+# New in SB 2.5.0 and doesnt work with in memory mongo java server in tests
+  metrics:
+    mongo:
+      command:
+        enabled: false
+      connectionpool:
+        enabled: false
+
 info:
   build:
     artifact: "@project.artifactId@"

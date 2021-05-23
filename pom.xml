@@ -6,7 +6,7 @@
 
     <groupId>com.aidanwhiteley</groupId>
     <artifactId>books</artifactId>
-    <version>0.14.2-SNAPSHOT</version>
+    <version>0.14.3-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Books Microservice</name>
@@ -31,7 +31,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.4.5</version>
+        <version>2.5.0</version>
         <relativePath /> <!-- lookup parent from repository -->
     </parent>
 
@@ -154,7 +154,7 @@
         <dependency>
             <groupId>com.icegreen</groupId>
             <artifactId>greenmail</artifactId>
-            <version>1.6.3</version>
+            <version>1.6.4</version>
             <scope>test</scope>
         </dependency>
         <!-- An easy way to bring in the Wiremock depedendency via Spring Cloud Contract -->
@@ -166,7 +166,7 @@
         <dependency>
             <groupId>io.gatling.highcharts</groupId>
             <artifactId>gatling-charts-highcharts</artifactId>
-            <version>3.5.1</version>
+            <version>3.6.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>

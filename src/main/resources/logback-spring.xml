@@ -15,6 +15,7 @@
     <logger name="org.springframework.web.client.RestTemplate" level="WARN" />
     <logger name="org.springframework.web.servlet.mvc.method.annotation" level="ERROR" />
     <logger name="org.springframework.context" level="WARN" />
+    <logger name="org.springframework.boot.availability.ApplicationAvailabilityBean" level="INFO" />
 
     <!-- See https://github.com/aidanwhiteley/books/issues/86 -->
     <logger name="org.springframework.data.convert.CustomConversions" level="ERROR" />

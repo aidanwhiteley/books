@@ -21,10 +21,10 @@
 #
 
 # This docker-compose file expects to see a .env file in the same directory.
-# This version retrieved from Git must be edited for your usage and edits will not, by default, be
-# checked backed in to Git due to .gitignore settings.
+# This version retrieved from Git must be edited for your usage but will basically work without any edits
+# if you just want to try stuff out (insecurely!).
 
-version: '2'
+version: '3.7'
 
 services:
 

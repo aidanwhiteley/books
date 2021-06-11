@@ -28,7 +28,7 @@ making the web application entirely free of http session state (which has its pr
     * next to no persistence code
     * except for some Mongo aggregation queries added to the Repository implementation
 * accessing the Google Books API with the Spring RestTemplate and, a work in progress, the reactive Spring WebClient
-* and Docker images and a docker-compose file that runs all the tiers of the application with one "docker-compose up --scale api-tier-java=N" command
+* and Docker images and a docker-compose file that runs all the tiers of the application with one "docker-compose up --scale api-tier-java=2" command
 
 ### Running in development
 The checked in default Spring profile is "mongo-java-server". This uses the in memory mongo-java-server so there is no need to run MongoDb locally. So you 
@@ -116,7 +116,7 @@ There are Spring profile files for a range of development and test scenarios.
 	- clears down the DB and reloads test data on every restart
 	
 #### container-demo-no-auth
-    - requires the use of "docker compose up" to start Docker containers - see later
+    - requires the use of "docker-compose up" to start Docker containers - see later
 	- uses a real MongoDb
 	- configured such that all request have admin access and oauth config is not required
 	- does not allow CORS access to APIs
@@ -251,18 +251,24 @@ The docker-compose file expects there to be a .env file in the same directory to
 variables expected by the various Docker images.
 There is an example .env file with comments checked in. This **SHOULD** be edited according to the 
 instructions in the file (noting that the containers will start and run OK with the checked in values if you are just trying things out).
-Note that the file is marked to be excluded by .gitignore so updates should not be checked back into Github.
 
 ## Docker Compose and running the overall application
 The checked in docker-compose.yaml and .env file should result in a deployment as shown on the following diagram.
 
 ![Cloudy Docker Deployment Diagram](../media/docker1.png?raw=true)
 
-If you have Docker available, from the root of this project type:
+If you have a recentish Docker available (>= 18.06.0), from the root of this project type:
 ~~~~
 docker-compose pull
-docker-compose up --scale api-tier-java=2 
+docker-compose up --scale api-tier-java=2
 ~~~~
+
+Then try accessing http://localhost/ If you get 503 errors, you may retry for a few seconds until all the tiers of the
+application are up and running.
+
+Note 1: "docker-compose" is currently preferred compared to the more recently available "docker compose" sub command.
+
+Note 2: Mongo logging is currently turned off as it is quite verbose. Edit the docker-compose.yaml to turn it back on for debugging or for production.
 
 |Tier |URL |Notes and screen grab|
 |-----|----|-----|

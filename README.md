@@ -264,7 +264,11 @@ docker-compose up --scale api-tier-java=2
 ~~~~
 
 Then try accessing http://localhost/ If you get 503 errors, you may retry for a few seconds until all the tiers of the
-application are up and running.
+application are up and running. If you have an older version of Docker installed, try editing 
+docker-compose.yaml to specify an older version e.g.
+~~~~
+version: '2'
+~~~~
 
 Note 1: "docker-compose" is currently preferred compared to the more recently available "docker compose" sub command.
 

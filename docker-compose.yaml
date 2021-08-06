@@ -41,6 +41,12 @@ services:
     restart: always
     ports:
       - 80:80
+    healthcheck:
+      test: "${WEB_HEALTHCHECK_TEST:-curl --fail localhost/#/ || exit 1}"
+      interval: "20s"
+      timeout: "5s"
+      start_period: "30s"
+      retries: 3
     depends_on:
       - api-gateway-tier
 
@@ -51,7 +57,7 @@ services:
   # service registry and then the active instances of the books microservice
   # that have registered with the service registry.
   # Comment out this stanza if using the aidanwhiteley/books-web-angular image
-  # which points to a single books microservice expected to be onm port 8080.
+  # which points to a single books microservice expected to be on port 8080.
   api-gateway-tier:
     container_name: books-gateway-container
     image: aidanwhiteley/books-gateway:0.0.5-RELEASE
@@ -59,6 +65,12 @@ services:
     environment:
       - "SPRING_PROFILES_ACTIVE=default"
       - "SERVICE_REGISTRY=${SERVICE_REGISTRY}"
+    healthcheck:
+      test: "${GATEWAY_HEALTHCHECK_TEST:-curl -Lv --fail http://api-gateway-tier:8000/api/books/?page=0&size=5 || exit 1}"
+      interval: "20s"
+      timeout: "5s"
+      start_period: "30s"
+      retries: 3
     depends_on:
       - service-registry-tier
 

@@ -65,12 +65,7 @@ services:
     environment:
       - "SPRING_PROFILES_ACTIVE=default"
       - "SERVICE_REGISTRY=${SERVICE_REGISTRY}"
-    healthcheck:
-      test: "${GATEWAY_HEALTHCHECK_TEST:-curl -Lv --fail http://api-gateway-tier:8000/api/books/?page=0&size=5 || exit 1}"
-      interval: "20s"
-      timeout: "5s"
-      start_period: "30s"
-      retries: 3
+    # Note - healthchecks not easily supportable on JIB based images as the distroless base image has no shell support
     depends_on:
       - service-registry-tier
 
@@ -153,10 +148,15 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
       - MONGO_INITDB_APP_USERNAME=${MONGO_INITDB_APP_USERNAME}
       - MONGO_INITDB_APP_PASSWORD=${MONGO_INITDB_APP_PASSWORD}
-    # Comment out the following lines to debug Mongo issues or for production use.
     # The default Mongo log level is too verbose - it obscures what is happening in this demo use
-    logging:
-      driver: "none"
+    #logging:
+    #  driver: "none"
+    healthcheck:
+      test: echo 'db.runCommand({serverStatus:1}).ok' | mongo admin -u $MONGO_INITDB_ROOT_USERNAME -p $MONGO_INITDB_ROOT_PASSWORD --quiet | grep 1
+      interval: "20s"
+      timeout: "5s"
+      start_period: "30s"
+      retries: 3
 
   # This container is built using Google Jib using the following maven command
   # for the project at https://github.com/aidanwhiteley/books-springbootadmin

@@ -269,12 +269,15 @@ docker-compose pull
 docker-compose up --scale api-tier-java=2
 ~~~~
 
-Then try accessing http://localhost/ If you get 503 errors to start with, you may retry for a few seconds until all the tiers of the
-application are up and running. If you have an older version of Docker installed, try editing 
-docker-compose.yaml to specify an older version e.g.
-~~~~
-version: '2'
-~~~~
+Then try accessing http://localhost/ If you get 503 errors to start with, you should retry until all the tiers of the
+application are up and running. You can tell when the application should be
+up and running by viewing the status of the docker compose health check for the web tier e.g.
+
+![Docker List Containers](../media/docker-ps.jpg?raw=true)
+the status of books-web-angular-gateway should transition to "healthy" (from "health: starting" or "unhealthy") or
+![Docker log output](../media/health-ok.jpg?raw=true)
+the docker compose log output should start showing HTTP 200s (from 503s) for the calls
+to the API called by the health check (i.e. /api/books).
 
 Note 1: "docker-compose" is currently preferred compared to the more recently available "docker compose" sub command (the log output is preferable if nothing else).
 

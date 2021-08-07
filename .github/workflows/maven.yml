@@ -72,7 +72,8 @@ jobs:
         file: ./target/site/jacoco/jacoco.xml
         fail_ci_if_error: true # optional (default = false)
 
-    - name: Run codacy-coverage-reporter
+    - if: ${{ github.actor != 'dependabot[bot]' }}
+      name: Run codacy-coverage-reporter
       uses: codacy/codacy-coverage-reporter-action@master
       with:
         project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}

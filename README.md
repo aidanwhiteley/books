@@ -263,16 +263,19 @@ docker-compose pull
 docker-compose up --scale api-tier-java=2
 ~~~~
 
-Then try accessing http://localhost/ If you get 503 errors, you may retry for a few seconds until all the tiers of the
+Then try accessing http://localhost/ If you get 503 errors to start with, you may retry for a few seconds until all the tiers of the
 application are up and running. If you have an older version of Docker installed, try editing 
 docker-compose.yaml to specify an older version e.g.
 ~~~~
 version: '2'
 ~~~~
 
-Note 1: "docker-compose" is currently preferred compared to the more recently available "docker compose" sub command.
+Note 1: "docker-compose" is currently preferred compared to the more recently available "docker compose" sub command (the log output is preferable).
 
 Note 2: Mongo logging is currently turned off as it is quite verbose. Edit the docker-compose.yaml to turn it back on for debugging or for production.
+
+Note 3: If you want to persist data in Mongo between restarts of the container, rename the file docker-compose.override.yaml.persistent-data to docker-compose.override.yaml
+If you do this and are running on Windows, make sure to read the Caveats section of https://hub.docker.com/_/mongo/
 
 |Tier |URL |Notes and screen grab|
 |-----|----|-----|

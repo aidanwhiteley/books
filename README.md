@@ -22,7 +22,7 @@ The main functionality included in the microservice includes
     * Google
     * Facebook
 * the oauth2 logon data is transmogrified into locally stored users - with associated roles - and into a JWT token - 
-making the web application entirely free of http session state (which has its pros and cons!)
+making the web application entirely free of http session state (see later for whether using JWTs as session tokens is a good idea)
 * Spring Security for role based method level authorisation
 * Mongo based persistence with the use of Spring Data MongoRepository 
     * next to no persistence code
@@ -48,7 +48,7 @@ By default, the tests run against mongo-java-server so there is no need to insta
 MongDb to test most of the application. Functionality not supported by mogo-java-server such as full text indexes results in some tests being skipped when 
 running with the monog-java-server Spring profile.
 
-When running the CI builds with Githib Actions, tests run against a real Mongo instance.
+When running the CI builds with Github Actions, tests run against a real Mongo instance.
 
 Some of the integration tests make use of WireMock - see the /src/test/resources/mappings and __files directories for the configuration details.
 
@@ -149,7 +149,7 @@ and then try
 ~~~~
 mvn spring-boot:run
 ~~~~
-To run a client to access the microservice, head on over to https://github.com/aidanwhiteley/books-web
+To run a client to access the microservice, head on over to https://github.com/aidanwhiteley/books-web or see the section below on using Docker.
 
 ### Sample data
 There is some sample data provided to make initial understanding of the functionality a bit easier.
@@ -217,6 +217,12 @@ However, it does allow configuration of your own AuthorizationRequestRepository 
 based version. So, finally, this application is completely free of any HTTP session state! Which was the point of originally starting to write this 
 microservice as I wanted to try it out on cloud implementations such as the Pivotal Cloud Foundry and AWS.
 
+### Using JWT for session management
+This demo app uses JWTs as the user's session token. In most cases this is now considered an 
+anti-pattern ([pros and cons discussion](https://news.ycombinator.com/item?id=27136539)).
+For my own usage (where I'm extremely unlikely to need to quickly revoke users) it's fine but I wouldn't use this solution 
+for user session management again in the future.
+
 ## Docker
 Docker images are available for the various tiers that make up the full application.
 ### Docker web tier
@@ -270,9 +276,9 @@ docker-compose.yaml to specify an older version e.g.
 version: '2'
 ~~~~
 
-Note 1: "docker-compose" is currently preferred compared to the more recently available "docker compose" sub command (the log output is preferable).
+Note 1: "docker-compose" is currently preferred compared to the more recently available "docker compose" sub command (the log output is preferable if nothing else).
 
-Note 2: Mongo logging is currently turned off as it is quite verbose. Edit the docker-compose.yaml to turn it back on for debugging or for production.
+Note 2: Mongo logging is currently turned off as it is quite verbose and obscures what this demo is trying to show. Edit the docker-compose.yaml to turn it back on for debugging or for production.
 
 Note 3: If you want to persist data in Mongo between restarts of the container, rename the file docker-compose.override.yaml.persistent-data to docker-compose.override.yaml
 If you do this and are running on Windows, make sure to read the Caveats section of https://hub.docker.com/_/mongo/

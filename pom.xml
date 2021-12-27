@@ -120,7 +120,7 @@
         <dependency>
             <groupId>com.rometools</groupId>
             <artifactId>rome</artifactId>
-            <version>1.16.0</version>
+            <version>1.17.0</version>
         </dependency>
 
         <!-- Cloud related dependencies -->

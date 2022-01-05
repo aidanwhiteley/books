@@ -19,7 +19,7 @@ class StressTestSimulation1 extends Simulation {
 
     val httpProtocol = http
         .baseUrl("http://localhost:8080")
-        .inferHtmlResources(BlackList(""".*\.js""", """.*\.css""", """.*\.gif""", """.*\.jpeg""", """.*\.jpg""", """.*\.ico""", """.*\.woff""", """.*\.(t|o)tf""", """.*\.png"""), WhiteList())
+        .inferHtmlResources(DenyList(""".*\.js""", """.*\.css""", """.*\.gif""", """.*\.jpeg""", """.*\.jpg""", """.*\.ico""", """.*\.woff""", """.*\.(t|o)tf""", """.*\.png"""))
 
     val uri1 = "127.0.0.1"
     

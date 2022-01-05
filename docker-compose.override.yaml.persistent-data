@@ -1,0 +1,15 @@
+# To persist the data in Mongo between container restarts rename this file to
+# docker-compose.override.yaml
+# If running on Windows, make sure to read the Caveats section of https://hub.docker.com/_/mongo/
+
+version: '3.7'
+
+services:
+  data-tier-mongo:
+    volumes:
+      - type: volume
+        source: mongodb_data_volume
+        target: /data/db
+
+volumes:
+  mongodb_data_volume:

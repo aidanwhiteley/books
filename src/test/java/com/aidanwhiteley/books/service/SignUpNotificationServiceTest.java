@@ -28,7 +28,7 @@ class SignUpNotificationServiceTest extends IntegrationTest {
     // Default port 25 shifted to allow easy use on Unix environments where
     // binding to ports less than 1024 requires root permissions.
     @SuppressWarnings("WeakerAccess")
-    public static final int PORT = 3025;
+    public static final int PORT = 3026;
     private static final String TEST_USER = "Test User";
 
     private GreenMail smtpServer;

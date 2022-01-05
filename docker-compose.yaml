@@ -21,10 +21,10 @@
 #
 
 # This docker-compose file expects to see a .env file in the same directory.
-# This version retrieved from Git must be edited for your usage and edits will not, by default, be
-# checked backed in to Git due to .gitignore settings.
+# This version retrieved from Git must be edited for your usage but will basically work without any edits
+# if you just want to try stuff out (insecurely!).
 
-version: '2'
+version: '3.7'
 
 services:
 
@@ -37,10 +37,19 @@ services:
   # Change the "depends_on" as appropriate.
   web-tier-angular:
     container_name: books-web-angular-container
-    image: aidanwhiteley/books-web-angular-gateway
-    restart: always
+    image: aidanwhiteley/books-web-angular-gateway:v0.1.1
+    restart: unless-stopped
     ports:
       - 80:80
+    # The health check is an API call that should traverse the web tier, API gateway tier (using the service registry tier)
+    # to the Java API tier which then makes a call to the Mongo data tier.
+    # "docker ps" should show the health status
+    healthcheck:
+      test: "${WEB_HEALTHCHECK_TEST:-curl --fail localhost/api/books || exit 1}"
+      interval: "30s"
+      timeout: "5s"
+      start_period: "30s"
+      retries: 3
     depends_on:
       - api-gateway-tier
 
@@ -51,14 +60,15 @@ services:
   # service registry and then the active instances of the books microservice
   # that have registered with the service registry.
   # Comment out this stanza if using the aidanwhiteley/books-web-angular image
-  # which points to a single books microservice expected to be onm port 8080.
+  # which points to a single books microservice expected to be on port 8080.
   api-gateway-tier:
     container_name: books-gateway-container
-    image: aidanwhiteley/books-gateway
-    restart: always
+    image: aidanwhiteley/books-gateway:0.0.6-RELEASE
+    restart: unless-stopped
     environment:
       - "SPRING_PROFILES_ACTIVE=default"
       - "SERVICE_REGISTRY=${SERVICE_REGISTRY}"
+    # Note - healthchecks not easily supportable on JIB based images as the distroless base image has no shell support
     depends_on:
       - service-registry-tier
 
@@ -73,8 +83,8 @@ services:
   # which points to a single books microservice expected to be onm port 8080.
   service-registry-tier:
     container_name: books-service-registry-container
-    image: aidanwhiteley/books-service-registry
-    restart: always
+    image: aidanwhiteley/books-service-registry:0.0.6-RELEASE
+    restart: unless-stopped
     # Uncomment for debugging by viewing Eureka web console
     ports:
       - 8761:8761
@@ -93,8 +103,8 @@ services:
     # The container_name must be commented out if starting multiple containers for this tier e.g.
     # "docker compose up --scale api-tier-java=2"
     # container_name: books-api-java-container
-    image: aidanwhiteley/books-api-java
-    restart: always
+    image: aidanwhiteley/books-api-java:0.15.0-RELEASE
+    restart: unless-stopped
     environment:
       - "SPRING_PROFILES_ACTIVE=${JAVA_BOOKS_SPRING_PROFILE}"
       - "MONGO_INITDB_APP_USERNAME=${MONGO_INITDB_APP_USERNAME}"
@@ -120,7 +130,7 @@ services:
   # The service name is known to the spring-boot application-xxxxx.properties file
   # used by the active Spring profile specified when starting the api-tier-java service.
   #
-  # To see how the MongoDB is initialised with usert creation and (optional) sample data
+  # To see how the MongoDB is initialised with user creation and (optional) sample data
   # loads, see the src/main/resources/mongo-docker directory in this project.
   data-tier-mongo:
     container_name: books-data-mongodb-container
@@ -128,20 +138,29 @@ services:
     # This is typically done when also using a Spring profile (for the api tier) that is suffixed -no-auth.
     # To stop this behaviour remove the "-demodata" name from the image and make a couple of edits
     # to the .env environment variables file.
-    image: aidanwhiteley/books-db-mongodb-demodata
-    restart: always
-    # Uncomment to access the MongoDB dirctly from the host - perhaps for debugging
-    # Uncomment ports for local connect and debugging of MongoDB issues.
+    image: aidanwhiteley/books-db-mongodb-demodata:4.4.8-focal
+    restart: unless-stopped
+    # Uncomment to access the MongoDB directly from the host - perhaps for debugging
     #ports:
     #  - 27017:27017
     environment:
       - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
       - MONGO_DATA_DIR=/data/db
-      - MONGO_LOG_DIR=/dev/null
+      # MONGO_LOG_DIR=/dev/null
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
       - MONGO_INITDB_APP_USERNAME=${MONGO_INITDB_APP_USERNAME}
       - MONGO_INITDB_APP_PASSWORD=${MONGO_INITDB_APP_PASSWORD}
+    # The default Mongo log level is too verbose - it obscures what is happening in this demo use
+    # Comment out if using for production
+    logging:
+      driver: "none"
+    healthcheck:
+      test: echo 'db.runCommand({serverStatus:1}).ok' | mongo admin -u $MONGO_INITDB_ROOT_USERNAME -p $MONGO_INITDB_ROOT_PASSWORD --quiet | grep 1
+      interval: "20s"
+      timeout: "5s"
+      start_period: "30s"
+      retries: 3
 
   # This container is built using Google Jib using the following maven command
   # for the project at https://github.com/aidanwhiteley/books-springbootadmin
@@ -150,8 +169,8 @@ services:
   # registered in the Service Registry defined at service-registry-tier.
   boot-admin-tier:
     container_name: books-admin-container
-    image: aidanwhiteley/books-spring-boot-admin
-    restart: always
+    image: aidanwhiteley/books-spring-boot-admin:0.0.6-RELEASE
+    restart: unless-stopped
     # Uncomment to view the Spring Boot Admin console directly rather than via the nginx reverse proxy
     ports:
       - 8888:8888

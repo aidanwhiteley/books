@@ -9,7 +9,6 @@ So welcome to the "Cloudy Bookclub" microservice!
 
 [![Actions CI Build](https://github.com/aidanwhiteley/books/workflows/Actions%20CI%20Build/badge.svg)](https://github.com/aidanwhiteley/books/actions?query=workflow%3A%22Actions+CI+Build%22)
 [![Sonar Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=com.aidanwhiteley%3Abooks&metric=alert_status)](https://sonarcloud.io/dashboard?id=com.aidanwhiteley%3Abooks)
-[![Codacy Code Quality](https://api.codacy.com/project/badge/Grade/0570d8fd3bfa4811a3f10071ad73988f)](https://www.codacy.com/app/Books_Team/books?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=aidanwhiteley/books&amp;utm_campaign=Badge_Grade)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/aidanwhiteley/books.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/aidanwhiteley/books/alerts/)
 [![codecov](https://codecov.io/gh/aidanwhiteley/books/branch/develop/graph/badge.svg)](https://codecov.io/gh/aidanwhiteley/books)
 
@@ -22,13 +21,13 @@ The main functionality included in the microservice includes
     * Google
     * Facebook
 * the oauth2 logon data is transmogrified into locally stored users - with associated roles - and into a JWT token - 
-making the web application entirely free of http session state (which has its pros and cons!)
+making the web application entirely free of http session state (see later for whether using JWTs as session tokens is a good idea)
 * Spring Security for role based method level authorisation
 * Mongo based persistence with the use of Spring Data MongoRepository 
     * next to no persistence code
     * except for some Mongo aggregation queries added to the Repository implementation
 * accessing the Google Books API with the Spring RestTemplate and, a work in progress, the reactive Spring WebClient
-* and Docker images and a docker-compose file that runs all the tiers of the application with one "docker-compose up --scale api-tier-java=N" command
+* and Docker images and a docker-compose file that runs all the tiers of the application with one "docker-compose up --scale api-tier-java=2" command
 
 ### Running in development
 The checked in default Spring profile is "mongo-java-server". This uses the in memory mongo-java-server so there is no need to run MongoDb locally. So you 
@@ -48,7 +47,7 @@ By default, the tests run against mongo-java-server so there is no need to insta
 MongDb to test most of the application. Functionality not supported by mogo-java-server such as full text indexes results in some tests being skipped when 
 running with the monog-java-server Spring profile.
 
-When running the CI builds with Githib Actions, tests run against a real Mongo instance.
+When running the CI builds with Github Actions, tests run against a real Mongo instance.
 
 Some of the integration tests make use of WireMock - see the /src/test/resources/mappings and __files directories for the configuration details.
 
@@ -116,7 +115,7 @@ There are Spring profile files for a range of development and test scenarios.
 	- clears down the DB and reloads test data on every restart
 	
 #### container-demo-no-auth
-    - requires the use of "docker compose up" to start Docker containers - see later
+    - requires the use of "docker-compose up" to start Docker containers - see later
 	- uses a real MongoDb
 	- configured such that all request have admin access and oauth config is not required
 	- does not allow CORS access to APIs
@@ -149,7 +148,7 @@ and then try
 ~~~~
 mvn spring-boot:run
 ~~~~
-To run a client to access the microservice, head on over to https://github.com/aidanwhiteley/books-web
+To run a client to access the microservice, head on over to https://github.com/aidanwhiteley/books-web or see the section below on using Docker.
 
 ### Sample data
 There is some sample data provided to make initial understanding of the functionality a bit easier.
@@ -217,6 +216,12 @@ However, it does allow configuration of your own AuthorizationRequestRepository 
 based version. So, finally, this application is completely free of any HTTP session state! Which was the point of originally starting to write this 
 microservice as I wanted to try it out on cloud implementations such as the Pivotal Cloud Foundry and AWS.
 
+### Using JWT for session management
+This demo app uses JWTs as the user's session token. In most cases this is now considered an 
+anti-pattern ([pros and cons discussion](https://news.ycombinator.com/item?id=27136539)).
+For my own usage (where I'm extremely unlikely to need to quickly revoke users) it's fine but I wouldn't use this solution 
+for user session management again in the future.
+
 ## Docker
 Docker images are available for the various tiers that make up the full application.
 ### Docker web tier
@@ -251,18 +256,34 @@ The docker-compose file expects there to be a .env file in the same directory to
 variables expected by the various Docker images.
 There is an example .env file with comments checked in. This **SHOULD** be edited according to the 
 instructions in the file (noting that the containers will start and run OK with the checked in values if you are just trying things out).
-Note that the file is marked to be excluded by .gitignore so updates should not be checked back into Github.
 
 ## Docker Compose and running the overall application
 The checked in docker-compose.yaml and .env file should result in a deployment as shown on the following diagram.
 
 ![Cloudy Docker Deployment Diagram](../media/docker1.png?raw=true)
 
-If you have Docker available, from the root of this project type:
+If you have a recentish Docker available (>= 18.06.0), from the root of this project type:
 ~~~~
 docker-compose pull
-docker-compose up --scale api-tier-java=2 
+docker-compose up --scale api-tier-java=2
 ~~~~
+
+Then try accessing http://localhost/ If you get 503 errors to start with, you should retry until all the tiers of the
+application are up and running. You can tell when the application should be
+up and running by viewing the status of the docker compose health check for the web tier e.g.
+
+![Docker List Containers](../media/docker-ps.jpg?raw=true)
+the status of books-web-angular-gateway should transition to "healthy" (from "health: starting" or "unhealthy") or
+![Docker log output](../media/health-ok.jpg?raw=true)
+the docker compose log output should start showing HTTP 200s (from 503s) for the calls
+to the API called by the health check (i.e. /api/books).
+
+Note 1: "docker-compose" is currently preferred compared to the more recently available "docker compose" sub command (the log output is preferable if nothing else).
+
+Note 2: Mongo logging is currently turned off as it is quite verbose and obscures what this demo is trying to show. Edit the docker-compose.yaml to turn it back on for debugging or for production.
+
+Note 3: If you want to persist data in Mongo between restarts of the container, rename the file docker-compose.override.yaml.persistent-data to docker-compose.override.yaml
+If you do this and are running on Windows, make sure to read the Caveats section of https://hub.docker.com/_/mongo/
 
 |Tier |URL |Notes and screen grab|
 |-----|----|-----|

@@ -23,9 +23,11 @@ spring:
           google:
             client-id: NotInSCM1
             client-secret: NotInSCM1
+            redirect-uri: https://{baseHost}{basePort}{basePath}/login/oauth2/code/google
           facebook:
             client-id: NotInSCM2
             client-secret: NotInSCM2
+            redirect-uri: https://{baseHost}{basePort}{basePath}/login/oauth2/code/facebook
         provider:
           # Google provides all the info this app needs by default. Facebook needs configuring.
           facebook:
@@ -68,6 +70,14 @@ eureka:
 management:
   endpoints:
     enabled-by-default: false
+
+# New in SB 2.5.0 and doesnt work with in memory mongo java server in tests
+  metrics:
+    mongo:
+      command:
+        enabled: false
+      connectionpool:
+        enabled: false
 
 info:
   build:
@@ -130,6 +140,7 @@ books:
     cookieOverHttpsOnly: true
     cookieAccessedByHttpOnly: true
     cookiePath: /
+    cookieSameSiteStrict: true      # Will set SameSite=Strict. Set to false for SameSite=Lax.
 
   oauth2:
     cookieOverHttpsOnly: true

@@ -45,7 +45,8 @@ jobs:
       with:
         mongodb-version: 4.4
 
-    - name: Build with Maven
+    - if: ${{ github.actor != 'dependabot[bot]' }}
+      name: Build with Maven and run Sonar reports
       run: >
         mvn -B clean package org.sonarsource.scanner.maven:sonar-maven-plugin:sonar --file pom.xml
         -Dspring.profiles.active=ci
@@ -57,15 +58,24 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
+    - if: ${{ github.actor == 'dependabot[bot]' }}
+      name: Build with Maven without Sonar
+      run: >
+        mvn -B clean package --file pom.xml
+        -Dspring.profiles.active=ci
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
     - name: Upload to codecov.io
-      uses: codecov/codecov-action@v1
+      uses: codecov/codecov-action@v2
       with:
         file: ./target/site/jacoco/jacoco.xml
         fail_ci_if_error: true # optional (default = false)
 
-    - name: Run codacy-coverage-reporter
-      uses: codacy/codacy-coverage-reporter-action@master
-      with:
-        project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-        coverage-reports: ./target/site/jacoco/jacoco.xml
+#     - if: ${{ github.actor != 'dependabot[bot]' }}
+#       name: Run codacy-coverage-reporter
+#       uses: codacy/codacy-coverage-reporter-action@master
+#       with:
+#         project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+#         coverage-reports: ./target/site/jacoco/jacoco.xml
 

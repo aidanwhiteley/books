@@ -195,12 +195,12 @@ This works well (or seems to!) when the API and the HTML is on the same domain. 
 doesn't currently work. So only use this application with CORS configured (i.e. with no "front proxy") in development.
 Don't use this application with CORS in production - it will leave you open to XSRF based attacks.
 
-## Swagger API documentation
+## OpenAPI 3 API documentation and swagger-ui
 
-[![Swagger Documentation](https://github.com/aidanwhiteley/books/blob/develop/src/main/resources/static/swagger-logo.png)](https://cloudybookclub.com/swagger-ui/index.html#/book-controller)
+[![API Documentation](https://github.com/aidanwhiteley/books/blob/develop/src/main/resources/static/swagger-logo.png)](https://cloudybookclub.com/swagger-ui/index.html)
 
-The public read only part of the application's REST API is automatically documented using the [Springfox](http://springfox.github.io/springfox/)
-tool to auto create Swagger 2 JSON. The API can be explored and tested using the Swagger UI available [here](https://cloudybookclub.com/swagger-ui/index.html#/book-controller).
+The public read only part of the application's REST API is automatically documented using the [springdoc-openapi](https://springdoc.org/)
+tool to auto create OpenAPI 3 JSON. The API documentation can be explored and tested using the Swagger UI available [here](https://cloudybookclub.com/swagger-ui/index.html).
 
 ## Stateless Apps
 A lot of the time developing this microservice was spent in making it entirely independant of HTTP session state  - based around issuing a 

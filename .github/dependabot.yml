@@ -6,9 +6,6 @@ updates:
     interval: daily
   open-pull-requests-limit: 10
   ignore:
-  - dependency-name: io.springfox:springfox-swagger2
-    versions:
-    - ">= 2.10.a, < 2.11"
   - dependency-name: org.springframework.boot:spring-boot-starter-parent
     versions:
     - 2.4.3

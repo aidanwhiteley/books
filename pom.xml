@@ -66,13 +66,6 @@
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-oauth2-jose</artifactId>
         </dependency>
-        <!-- java.lang.NoSuchMethodError: 'net.minidev.json.JSONObject com.nimbusds.jose.Header.toJSONObject()'
-            https://bitbucket.org/connect2id/nimbus-jose-jwt/issues/375/review-release-process-and-backporting -->
-        <dependency>
-            <groupId>com.nimbusds</groupId>
-            <artifactId>nimbus-jose-jwt</artifactId>
-            <version>8.20.2</version>
-        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>

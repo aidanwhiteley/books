@@ -59,7 +59,7 @@ After starting the Spring Boot application (i.e. mvn spring-boot:run or via your
 
 mvn gatling:test
 
-The (Scala) source code of this test in at test/scala/com/aidanwhiteley/books/loadtest/StressTestSimulation1.scala
+The source code of this test in at test/java/com/aidanwhiteley/books/loadtest/StressTestSimulation.java
 
 This is currently a "work in progress" - the eventual aim being to compare the resource utilisation of the GoogleBooksDaoSync
 and GoogleBooksDaoAsync implementations.

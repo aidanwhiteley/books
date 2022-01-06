@@ -40,6 +40,8 @@ import java.io.IOException;
 import static com.aidanwhiteley.books.domain.User.Role.ROLE_ACTUATOR;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 
+// TODO - understand why this class has a circular dependency with WebMvcAutoConfiguration$EnableWebMvcConfiguration.
+// TODO - With the move to SB 2.6.x, this has meant the (hopefully temporary) addition of spring.main.allow-circular-references = true
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {

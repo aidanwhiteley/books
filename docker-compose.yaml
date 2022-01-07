@@ -63,7 +63,7 @@ services:
   # which points to a single books microservice expected to be on port 8080.
   api-gateway-tier:
     container_name: books-gateway-container
-    image: aidanwhiteley/books-gateway:0.0.6-RELEASE
+    image: aidanwhiteley/books-gateway:0.0.7-RELEASE
     restart: unless-stopped
     environment:
       - "SPRING_PROFILES_ACTIVE=default"
@@ -83,7 +83,7 @@ services:
   # which points to a single books microservice expected to be onm port 8080.
   service-registry-tier:
     container_name: books-service-registry-container
-    image: aidanwhiteley/books-service-registry:0.0.6-RELEASE
+    image: aidanwhiteley/books-service-registry:0.0.7-RELEASE
     restart: unless-stopped
     # Uncomment for debugging by viewing Eureka web console
     ports:
@@ -103,7 +103,7 @@ services:
     # The container_name must be commented out if starting multiple containers for this tier e.g.
     # "docker compose up --scale api-tier-java=2"
     # container_name: books-api-java-container
-    image: aidanwhiteley/books-api-java:0.15.0-RELEASE
+    image: aidanwhiteley/books-api-java:0.16.0-RELEASE
     restart: unless-stopped
     environment:
       - "SPRING_PROFILES_ACTIVE=${JAVA_BOOKS_SPRING_PROFILE}"
@@ -138,7 +138,7 @@ services:
     # This is typically done when also using a Spring profile (for the api tier) that is suffixed -no-auth.
     # To stop this behaviour remove the "-demodata" name from the image and make a couple of edits
     # to the .env environment variables file.
-    image: aidanwhiteley/books-db-mongodb-demodata:4.4.8-focal
+    image: aidanwhiteley/books-db-mongodb-demodata:5.0.5-focal
     restart: unless-stopped
     # Uncomment to access the MongoDB directly from the host - perhaps for debugging
     #ports:
@@ -152,7 +152,7 @@ services:
       - MONGO_INITDB_APP_USERNAME=${MONGO_INITDB_APP_USERNAME}
       - MONGO_INITDB_APP_PASSWORD=${MONGO_INITDB_APP_PASSWORD}
     # The default Mongo log level is too verbose - it obscures what is happening in this demo use
-    # Comment out if using for production
+    # Comment out for debugging / production
     logging:
       driver: "none"
     healthcheck:
@@ -169,7 +169,7 @@ services:
   # registered in the Service Registry defined at service-registry-tier.
   boot-admin-tier:
     container_name: books-admin-container
-    image: aidanwhiteley/books-spring-boot-admin:0.0.6-RELEASE
+    image: aidanwhiteley/books-spring-boot-admin:0.0.7-RELEASE
     restart: unless-stopped
     # Uncomment to view the Spring Boot Admin console directly rather than via the nginx reverse proxy
     ports:

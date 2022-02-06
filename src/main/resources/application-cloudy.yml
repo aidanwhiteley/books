@@ -1,0 +1,91 @@
+spring:
+  data:
+    mongodb:
+      # Username, password and MongoDB database name are expected to be passed in as environment variables
+      uri: mongodb://${CLOUDY_MONGO_APP_USERNAME}:${CLOUDY_MONGO_APP_PASSWORD}@${CLOUDY_MONGO_HOST}:${CLOUDY_MONGO_PORT}/${CLOUDY_MONGO_DATABASE}?safe=true&journal=true&w=majority&connectTimeoutMS=1001&wtimeoutMS=1000&serverSelectionTimeoutMS=10000
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${CLOUDY_OUATH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_ID}
+            client-secret: ${CLOUDY_OUATH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_SECRET}
+          facebook:
+            client-id: ${CLOUDY_OUATH2_CLIENT_REGISTRATION_FACEBOOK_CLIENT_ID}
+            client-secret: ${CLOUDY_OUATH2_CLIENT_REGISTRATION_FACEBOOK_CLIENT_SECRET}
+        provider:
+          # Google provides all the info this app needs by default. Facebook needs configuring.
+          facebook:
+            user-info-uri: https://graph.facebook.com/me?fields=name,first_name,last_name,link,picture,email
+
+  mail:
+    host: localhost
+    properties:
+      mail:
+        smtp:
+          connectiontimeout: 5000
+          timeout: 3000
+          writetimeout: 5000
+    test-connection: false
+
+server:
+  port: ${CLOUDY_SERVER_PORT:8100}
+
+# Enable Eureka client functionality
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+    leaseRenewalIntervalInSeconds: 5
+    lease-expiration-duration-in-seconds: 5
+  client:
+    enabled: false
+    serviceUrl:
+      defaultZone: http://${SERVICE_REGISTRY}:8761/eureka/
+
+management:
+  endpoints:
+    enabled-by-default: ${CLOUDY_ACTUATOR_ENABLED:false}
+    web:
+      exposure:
+        # Exposing only read only items and not large data amounts - so no heapdump, threaddump or shutdown. No project use of flyway, integrationgraph, liquibase, prometheus
+        include: auditevents, beans, caches, conditions, configprops, env, health, httptrace, info, jolokia, logfile, loggers, metrics, mappings, scheduledtasks, sessions
+  info:
+    git:
+      mode: full
+  health:
+    mail:
+      enabled: false
+
+books:
+  autoAuthUser: false
+
+  reload:
+    development:
+      data: false
+
+  client:
+    enableCORS: false
+
+  users:
+    default:
+      admin:
+        email:   # The remote email address for a user that will be automatically made an admin on first logon.
+    registrationAdminEmail:
+      enabled: false
+      emailFrom:
+      emailTo:
+
+    allow:
+      actuator:
+        user:
+          creation: false
+
+  jwt:
+    secretKey: ${CLOUDY_JWT_SECRET_KEY:notARealSecret}
+    cookieOverHttpsOnly: false
+    cookieAccessedByHttpOnly: true
+
+  oauth2:
+    cookieOverHttpsOnly: false
+

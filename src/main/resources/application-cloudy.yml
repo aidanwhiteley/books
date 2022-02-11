@@ -66,6 +66,7 @@ books:
 
   client:
     enableCORS: false
+    postLogonUrl: /
 
   users:
     default:

@@ -6,7 +6,7 @@
 
     <groupId>com.aidanwhiteley</groupId>
     <artifactId>books</artifactId>
-    <version>0.16.1-SNAPSHOT</version>
+    <version>0.16.2-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Books Microservice</name>
@@ -270,7 +270,7 @@
                     <to>
                         <image>aidanwhiteley/books-api-java</image>
                         <tags>
-                            <tag>0.16.0-RELEASE</tag>
+                            <tag>0.16.2-SNAPSHOT</tag>
                         </tags>
                     </to>
                     <container>

@@ -176,7 +176,7 @@
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-ui</artifactId>
-            <version>1.6.5</version>
+            <version>1.6.7</version>
         </dependency>
 
     </dependencies>

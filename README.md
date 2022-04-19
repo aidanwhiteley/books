@@ -327,7 +327,7 @@ public class JwtHeaderProvider implements HttpHeadersProvider {
 
 ## The name
 
-Why "The Cloudy BookClub"? Well - it's gong to run in the cloud innit. And I couldnt think
+Why "The Cloudy BookClub"? Well - it's gong to run in the cloud innit. And I couldn't think
 of any other domain names that weren't already taken.
 
 ## Client Side Functionality

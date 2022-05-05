@@ -151,7 +151,7 @@
         <dependency>
             <groupId>com.icegreen</groupId>
             <artifactId>greenmail</artifactId>
-            <version>1.6.7</version>
+            <version>1.6.9</version>
             <scope>test</scope>
         </dependency>
         <!-- An easy way to bring in the Wiremock depedendency via Spring Cloud Contract -->

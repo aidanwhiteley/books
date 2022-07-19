@@ -68,6 +68,11 @@ books:
     enableCORS: false
     postLogonUrl: /
 
+  google:
+    books:
+      api:
+        countryCode:  ${CLOUDY_LANG_CODE:langRestrict=en}
+
   users:
     default:
       admin:

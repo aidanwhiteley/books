@@ -66,11 +66,11 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Upload to codecov.io
-      uses: codecov/codecov-action@v2
-      with:
-        file: ./target/site/jacoco/jacoco.xml
-        fail_ci_if_error: true # optional (default = false)
+#    - name: Upload to codecov.io
+#      uses: codecov/codecov-action@v2
+#      with:
+#        file: ./target/site/jacoco/jacoco.xml
+#        fail_ci_if_error: true # optional (default = false)
 
 #     - if: ${{ github.actor != 'dependabot[bot]' }}
 #       name: Run codacy-coverage-reporter

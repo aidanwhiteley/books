@@ -89,7 +89,9 @@ public class DataLoader {
             // Clearing and loading data into books collection. We do this _after_ checking for the
             // existence of the file that holds the test data.
             LOGGER.info("Clearing books collection and loading development data for books project");
-            template.dropCollection(BOOKS_COLLECTION);
+            if (template.collectionExists(BOOKS_COLLECTION)) {
+                template.dropCollection(BOOKS_COLLECTION);
+            }
 
             jsons = bufferedReader.lines().collect(Collectors.toList());
             jsons.stream().map(Document::parse).forEach(i -> template.insert(i, BOOKS_COLLECTION));
@@ -104,7 +106,7 @@ public class DataLoader {
              BufferedReader bufferedReader = new BufferedReader(inputStreamReader)) {
 
             // Clearing and loading data into user collection - happens after user creation file found and loaded
-            LOGGER.info("Clearing users collection and loading development data for books project");
+            LOGGER.info("Clearing users collection and loading development data for books project");;
             template.dropCollection(USERS_COLLECTION);
 
             jsons = bufferedReader.lines().collect(Collectors.toList());

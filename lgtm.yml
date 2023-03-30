@@ -1,4 +1,0 @@
-# LGTM config file
-
-queries:
-  - exclude: java/insecure-cookie

@@ -5,20 +5,3 @@ updates:
   schedule:
     interval: daily
   open-pull-requests-limit: 10
-  ignore:
-  - dependency-name: io.springfox:springfox-swagger2
-    versions:
-    - ">= 2.10.a, < 2.11"
-  - dependency-name: org.springframework.boot:spring-boot-starter-parent
-    versions:
-    - 2.4.3
-    - 2.4.4
-  - dependency-name: org.springframework.cloud:spring-cloud-starter-parent
-    versions:
-    - 2020.0.2
-  - dependency-name: de.codecentric:spring-boot-admin-starter-client
-    versions:
-    - 2.4.0
-  - dependency-name: com.google.cloud.tools:jib-maven-plugin
-    versions:
-    - 2.8.0

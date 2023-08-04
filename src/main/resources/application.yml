@@ -2,6 +2,14 @@ spring:
   profiles:
     active: dev-mongo-java-server
 
+  # Temporarily added with migration to SB 2.6.x - see the WebSecurityConfiguration class for more details
+  main:
+    allow-circular-references: true
+
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
+
   application:
     name: BooksApiService
   data:
@@ -159,3 +167,7 @@ books:
     title: The Cloudy Bookclub recent entries
     domain: http://localhost:9000/
     description: Updates from the Cloudy Bookclub application
+
+springdoc:
+  pathsToMatch: /api/**, /feeds/**
+  version: "@project.version@"

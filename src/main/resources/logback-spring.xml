@@ -24,8 +24,8 @@
     <logger name="org.mongodb.driver" level="WARN" />
     <logger name="de.bwaldvogel.mongo.backend" level="WARN" />
     <logger name="de.bwaldvogel.mongo.wire" level="WARN" />
-    <logger name="springfox.documentation" level="WARN"/>
     <logger name="de.codecentric.boot.admin.client" level="WARN" />
+    <logger name="org.springdoc.core.SpringDocAnnotationsUtils" level="ERROR" />
     <!-- Not using Netflix Archaius / config server -->
     <logger name="com.netflix.config.sources.URLConfigurationSource" level="ERROR" />
     <logger name="org.springframework.cloud.netflix.archaius.ArchaiusAutoConfiguration" level="ERROR" />

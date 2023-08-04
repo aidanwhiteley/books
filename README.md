@@ -9,9 +9,6 @@ So welcome to the "Cloudy Bookclub" microservice!
 
 [![Actions CI Build](https://github.com/aidanwhiteley/books/workflows/Actions%20CI%20Build/badge.svg)](https://github.com/aidanwhiteley/books/actions?query=workflow%3A%22Actions+CI+Build%22)
 [![Sonar Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=com.aidanwhiteley%3Abooks&metric=alert_status)](https://sonarcloud.io/dashboard?id=com.aidanwhiteley%3Abooks)
-[![Total alerts](https://img.shields.io/lgtm/alerts/g/aidanwhiteley/books.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/aidanwhiteley/books/alerts/)
-[![codecov](https://codecov.io/gh/aidanwhiteley/books/branch/develop/graph/badge.svg)](https://codecov.io/gh/aidanwhiteley/books)
-
 
 ## Implementation
 
@@ -59,7 +56,7 @@ After starting the Spring Boot application (i.e. mvn spring-boot:run or via your
 
 mvn gatling:test
 
-The (Scala) source code of this test in at test/scala/com/aidanwhiteley/books/loadtest/StressTestSimulation1.scala
+The source code of this test in at test/java/com/aidanwhiteley/books/loadtest/StressTestSimulation.java
 
 This is currently a "work in progress" - the eventual aim being to compare the resource utilisation of the GoogleBooksDaoSync
 and GoogleBooksDaoAsync implementations.
@@ -195,12 +192,12 @@ This works well (or seems to!) when the API and the HTML is on the same domain. 
 doesn't currently work. So only use this application with CORS configured (i.e. with no "front proxy") in development.
 Don't use this application with CORS in production - it will leave you open to XSRF based attacks.
 
-## Swagger API documentation
+## OpenAPI 3 API documentation and swagger-ui
 
-[![Swagger Documentation](https://github.com/aidanwhiteley/books/blob/develop/src/main/resources/static/swagger-logo.png)](https://cloudybookclub.com/swagger-ui/index.html#/book-controller)
+[![API Documentation](https://github.com/aidanwhiteley/books/blob/develop/src/main/resources/static/swagger-logo.png)](https://cloudybookclub.com/swagger-ui/index.html)
 
-The public read only part of the application's REST API is automatically documented using the [Springfox](http://springfox.github.io/springfox/)
-tool to auto create Swagger 2 JSON. The API can be explored and tested using the Swagger UI available [here](https://cloudybookclub.com/swagger-ui/index.html#/book-controller).
+The public read only part of the application's REST API is automatically documented using the [springdoc-openapi](https://springdoc.org/)
+tool to auto create OpenAPI 3 JSON. The API documentation can be explored and tested using the Swagger UI available [here](https://cloudybookclub.com/swagger-ui/index.html).
 
 ## Stateless Apps
 A lot of the time developing this microservice was spent in making it entirely independant of HTTP session state  - based around issuing a 
@@ -327,7 +324,7 @@ public class JwtHeaderProvider implements HttpHeadersProvider {
 
 ## The name
 
-Why "The Cloudy BookClub"? Well - it's gong to run in the cloud innit. And I couldnt think
+Why "The Cloudy BookClub"? Well - it's gong to run in the cloud innit. And I couldn't think
 of any other domain names that weren't already taken.
 
 ## Client Side Functionality

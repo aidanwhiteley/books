@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -133,23 +132,20 @@ public class WebSecurityConfiguration {
         // some of what follows.
 
         http
-
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).enableSessionUrlRewriting(false)
+                .and()
                 .authorizeHttpRequests((authz) -> {
-
-                authz
-
-                .requestMatchers(EndpointRequest.toAnyEndpoint()).hasRole(ROLE_ACTUATOR.getShortName());
+                    authz
+                            .requestMatchers(EndpointRequest.toAnyEndpoint()).hasRole(ROLE_ACTUATOR.getShortName());
                 })
                 .exceptionHandling()
                 .defaultAuthenticationEntryPointFor(forbiddenEntryPoint(), PROTECTED_URLS)
                 .and()
                 .addFilterBefore(jwtAuththenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .oauth2Login()
+                    .oauth2Login()
                     .authorizationEndpoint().baseUri("/login")
                     .authorizationRequestRepository(cookieBasedAuthorizationRequestRepository()).and()
                     .successHandler(new Oauth2AuthenticationSuccessHandler())
-                .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).enableSessionUrlRewriting(false)
                 .and()
                 .formLogin().disable()
                 .httpBasic().disable()
@@ -169,16 +165,16 @@ public class WebSecurityConfiguration {
      * authenticated with the OAuth2 authentication provider.
      */
     class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
-            @Override
-            public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-                                                Authentication authentication) throws IOException, ServletException {
+        @Override
+        public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
+                                            Authentication authentication) throws IOException, ServletException {
 
-                OAuth2AuthenticationToken auth2 = (OAuth2AuthenticationToken) authentication;
-                User user = userService.createOrUpdateUser(auth2);
-                jwtAuthenticationService.setAuthenticationData(response, user);
-                super.setDefaultTargetUrl(postLogonUrl);
-                super.onAuthenticationSuccess(request, response, authentication);
-            }
+            OAuth2AuthenticationToken auth2 = (OAuth2AuthenticationToken) authentication;
+            User user = userService.createOrUpdateUser(auth2);
+            jwtAuthenticationService.setAuthenticationData(response, user);
+            super.setDefaultTargetUrl(postLogonUrl);
+            super.onAuthenticationSuccess(request, response, authentication);
+        }
     }
 
     @Bean
@@ -195,12 +191,12 @@ public class WebSecurityConfiguration {
             public void addCorsMappings(CorsRegistry registry) {
                 if (enableCORS) {
                     registry.addMapping("/api/**").allowedOrigins(allowedCorsOrigin).
-                        allowedMethods("GET").allowedHeaders(ORIGIN, CONTENT_TYPE, X_CSRF_TOKEN, ACCESS_CONTROL_ALLOW_CREDENTIALS).
-                        allowCredentials(true);
+                            allowedMethods("GET").allowedHeaders(ORIGIN, CONTENT_TYPE, X_CSRF_TOKEN, ACCESS_CONTROL_ALLOW_CREDENTIALS).
+                            allowCredentials(true);
                     registry.addMapping("/secure/api/**").allowedOrigins(allowedCorsOrigin).
-                        allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS").
-                        allowedHeaders(ORIGIN, CONTENT_TYPE, X_CSRF_TOKEN, X_REQUESTED_WITH, ACCESS_CONTROL_ALLOW_CREDENTIALS).
-                        allowCredentials(true);
+                            allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS").
+                            allowedHeaders(ORIGIN, CONTENT_TYPE, X_CSRF_TOKEN, X_REQUESTED_WITH, ACCESS_CONTROL_ALLOW_CREDENTIALS).
+                            allowCredentials(true);
                     registry.addMapping("/login/**").allowedOrigins(allowedCorsOrigin).
                             allowedMethods("GET", "POST", "OPTIONS").
                             allowedHeaders(ORIGIN, CONTENT_TYPE, X_CSRF_TOKEN, X_REQUESTED_WITH, ACCESS_CONTROL_ALLOW_CREDENTIALS).

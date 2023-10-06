@@ -3,9 +3,9 @@ package com.aidanwhiteley.books.controller.jwt;
 import com.aidanwhiteley.books.controller.BookControllerTestUtils;
 import com.aidanwhiteley.books.domain.User;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.SignatureException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import io.jsonwebtoken.SignatureException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +21,7 @@ class JwtUtilsTest {
 
         jwt.setIssuer("A test issuer");
         jwt.setExpiryInMilliSeconds(60 * 1000);
-        jwt.setSecretKey("A test secret key");
+        jwt.setSecretKey(JwtUtils.createRandomBase64EncodedSecretKey());
 
         User testUser = BookControllerTestUtils.getTestUser();
         testUser.addRole(User.Role.ROLE_ADMIN);
@@ -38,7 +38,7 @@ class JwtUtilsTest {
 
         jwt.setIssuer("A test issuer");
         jwt.setExpiryInMilliSeconds(60 * 1000);
-        jwt.setSecretKey("A test secret key");
+        jwt.setSecretKey(JwtUtils.createRandomBase64EncodedSecretKey());
 
         User testUser = BookControllerTestUtils.getTestUser();
         String token = jwt.createTokenForUser(testUser);
@@ -59,7 +59,7 @@ class JwtUtilsTest {
 
         jwt.setIssuer("A test issuer");
         jwt.setExpiryInMilliSeconds(-1);
-        jwt.setSecretKey("A test secret key");
+        jwt.setSecretKey(JwtUtils.createRandomBase64EncodedSecretKey());
 
         User testUser = BookControllerTestUtils.getTestUser();
         String token = jwt.createTokenForUser(testUser);

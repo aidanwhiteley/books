@@ -124,4 +124,9 @@ public class JwtUtils {
 
         return claims.getExpiration();
     }
+
+    public static String createRandomBase64EncodedSecretKey() {
+        SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+        return Encoders.BASE64.encode(key.getEncoded());
+    }
 }

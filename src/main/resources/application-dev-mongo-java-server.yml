@@ -80,7 +80,7 @@ books:
           creation: true
 
   jwt:
-    secretKey: "NotARealSecret"
+    secretKey: wMYg4eYtigrQRSrqpI4ugQbK6BwutoAzXZ5jmK4nrybeOYkMbJrScOHmMQvld0RjHWWfyCx+foRk2lL7XbGQMA==
     cookieOverHttpsOnly: false
     cookieAccessedByHttpOnly: true
 

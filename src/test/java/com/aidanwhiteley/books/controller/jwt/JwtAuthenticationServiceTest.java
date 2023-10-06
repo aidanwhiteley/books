@@ -16,7 +16,7 @@ class JwtAuthenticationServiceTest {
         aUser.setFullName(aFullName);
 
         JwtUtils jwtUtils = new JwtUtils();
-        jwtUtils.setSecretKey("Blah");
+        jwtUtils.setSecretKey(JwtUtils.createRandomBase64EncodedSecretKey());
 
         JwtAuthenticationService theService = new JwtAuthenticationService(jwtUtils);
         theService.setCookieExpirySeconds(Integer.MAX_VALUE);

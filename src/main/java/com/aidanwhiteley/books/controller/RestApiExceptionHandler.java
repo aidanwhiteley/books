@@ -6,7 +6,7 @@ import com.aidanwhiteley.books.controller.exceptions.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -18,11 +18,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.FORBIDDEN;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+import static org.springframework.http.HttpStatus.*;
 
 @SuppressWarnings("NullableProblems")
 @RestControllerAdvice
@@ -69,7 +65,7 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
-                                                                  HttpHeaders headers, HttpStatus status, WebRequest request) {
+                                                                  HttpHeaders headers, HttpStatusCode status, WebRequest request) {
 
         return new ResponseEntity<>(
                 new ApiExceptionData(BAD_REQUEST.value(), BAD_REQUEST.getReasonPhrase(),
@@ -100,7 +96,7 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers,
-                                                             HttpStatus status, WebRequest request) {
+                                                             HttpStatusCode status, WebRequest request) {
 
         API_LOGGER.error(
                 "The Spring framework rather than the application handled the following exception: {}", ex.getMessage(),

@@ -3,6 +3,9 @@ package com.aidanwhiteley.books.controller.jwt;
 import java.util.ArrayList;
 import java.util.Date;
 
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.io.Encoders;
+import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +17,8 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+
+import javax.crypto.SecretKey;
 
 @Component
 public class JwtUtils {
@@ -50,9 +55,12 @@ public class JwtUtils {
     }
 
     public User getUserFromToken(String token) {
+        byte[] key = Decoders.BASE64.decode(secretKey);
+        SecretKey secretKeyCrypto = Keys.hmacShaKeyFor(key);
+
         Claims claims = Jwts.parser()
-                .setSigningKey(secretKey)
-                .parseClaimsJws(token)
+                .verifyWith(secretKeyCrypto).build()
+                .parseSignedClaims(token)
                 .getBody();
 
         String authenticationServiceId = claims.getSubject();
@@ -89,6 +97,9 @@ public class JwtUtils {
         long tokenExpiry = (user.getRoles().size() == 1 && user.getRoles().get(0) == User.Role.ROLE_ACTUATOR)
                 ? expiryInMilliSecondsActuator : expiryInMilliSeconds;
 
+        byte[] key = Decoders.BASE64.decode(secretKey);
+        SecretKey secretKeyCrypto = Keys.hmacShaKeyFor(key);
+
         return Jwts.builder()
                 .setSubject(user.getAuthenticationServiceId())
                 .setIssuer(issuer)
@@ -98,13 +109,16 @@ public class JwtUtils {
                 .claim(ROLES, String.join(ROLES_DELIMETER, roles))
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(new Date().getTime() + tokenExpiry))
-                .signWith(SignatureAlgorithm.HS512, secretKey)
+                .signWith(secretKeyCrypto)
                 .compact();
     }
 
     public Date getExpiryFromToken(String token) {
+        byte[] key = Decoders.BASE64.decode(secretKey);
+        SecretKey secretKeyCrypto = Keys.hmacShaKeyFor(key);
+
         Claims claims = Jwts.parser()
-                .setSigningKey(secretKey)
+                .verifyWith(secretKeyCrypto).build()
                 .parseClaimsJws(token)
                 .getBody();
 

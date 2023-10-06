@@ -5,7 +5,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 
-import javax.servlet.http.Cookie;
+import jakarta.servlet.http.Cookie;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;

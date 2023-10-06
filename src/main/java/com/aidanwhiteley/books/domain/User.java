@@ -16,7 +16,7 @@ import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.URL;
 import org.springframework.data.annotation.Id;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -36,6 +36,7 @@ public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    @Builder.Default
     private List<Role> roles = new ArrayList<>();
 
     @Id

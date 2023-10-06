@@ -5,9 +5,9 @@ import org.springframework.security.oauth2.client.web.AuthorizationRequestReposi
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import org.springframework.util.SerializationUtils;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.Base64;
 import java.util.Optional;
 
@@ -43,32 +43,6 @@ class HttpCookieOAuth2AuthorizationRequestRepository implements AuthorizationReq
         cookie.setSecure(cookieOverHttpsOnly);
         cookie.setMaxAge(-1);   // Expire when browser closed - bug in API means explicit removal not possible
         response.addCookie(cookie);     // lgtm[java/insecure-cookie]
-    }
-
-    /**
-     * Removes the outh auth cookie.
-     *
-     * @param request  Thhtp Request
-     * @return an OAuth2AuthorizationRequest
-     * @deprecated Since Spring Boot 2.1.0 and associated Spring Security version
-     */
-    @Override
-    @Deprecated(since = "From Spring Boot 2.1.0 and associated Spring Security version", forRemoval = true)
-    public OAuth2AuthorizationRequest removeAuthorizationRequest(HttpServletRequest request) {
-        // Question: How to remove the cookie, because we don't have access to response object here.
-        // This seems to be a flaw in the design of the AuthorizationRequestRepository interface
-        // as the default behaviour is to remove data from the HTTP session -
-        // which will be accessed via the request object. Here we
-        // want to clear out a cookie for which we need access to the response object.
-        // So, for the time being, another unrelated part of the code base clears the cookie -
-        // see the JwtAuthenticationService class for details.
-        // There was an issue raised on Spring Security for this and the interface may be
-        // uplifted in 5.1 - see https://github.com/spring-projects/spring-security/issues/5313
-
-        // Since Spring Boot 2.1 (Spring Security 5.1) this method is now deprecated and the
-        // version below which provides access to the HttpServletResponse is preferred (as this
-        // allows access to clearing out the cookie).
-        return loadAuthorizationRequest(request);
     }
 
     @Override

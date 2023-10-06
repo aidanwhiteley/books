@@ -4,6 +4,9 @@ import com.aidanwhiteley.books.controller.jwt.JwtAuthenticationFilter;
 import com.aidanwhiteley.books.controller.jwt.JwtAuthenticationService;
 import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.service.UserService;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,14 +15,15 @@ import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointR
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -32,9 +36,6 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static com.aidanwhiteley.books.domain.User.Role.ROLE_ACTUATOR;
@@ -43,8 +44,8 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 // TODO - understand why this class has a circular dependency with WebMvcAutoConfiguration$EnableWebMvcConfiguration.
 // TODO - With the move to SB 2.6.x, this has meant the (hopefully temporary) addition of spring.main.allow-circular-references = true
 @Configuration
-@EnableGlobalMethodSecurity(prePostEnabled = true)
-public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
+@EnableMethodSecurity()
+public class WebSecurityConfiguration {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WebSecurityConfiguration.class);
 
@@ -92,8 +93,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         this.userService = userService;
     }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         // Is CORS to be enabled? If yes, the allowedCorsOrigin config
         // property should also be set.
@@ -123,7 +124,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             LOGGER.warn("**********************************************************************");
             LOGGER.warn("");
         } else {
-            // The CSRF cookie is also read and sent by by Angular - hence it being marked as not "httpOnly".
+            // The CSRF cookie is also read and sent by Angular - hence it being marked as not "httpOnly".
             // The JWT token is stored in a cookie that IS httpOnly.
             http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
         }
@@ -131,13 +132,14 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         // With all due thanks to https://octoperf.com/blog/2018/03/08/securing-rest-api-spring-security/ for
         // some of what follows.
 
-        // @formatter:off
-        http.
-                sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).enableSessionUrlRewriting(false)
-                .and()
-                .authorizeRequests().requestMatchers(EndpointRequest.toAnyEndpoint())
-                    .hasRole(ROLE_ACTUATOR.getShortName())
-                .and()
+        http
+
+                .authorizeHttpRequests((authz) -> {
+
+                authz
+
+                .requestMatchers(EndpointRequest.toAnyEndpoint()).hasRole(ROLE_ACTUATOR.getShortName());
+                })
                 .exceptionHandling()
                 .defaultAuthenticationEntryPointFor(forbiddenEntryPoint(), PROTECTED_URLS)
                 .and()
@@ -147,11 +149,13 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .authorizationRequestRepository(cookieBasedAuthorizationRequestRepository()).and()
                     .successHandler(new Oauth2AuthenticationSuccessHandler())
                 .and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).enableSessionUrlRewriting(false)
+                .and()
                 .formLogin().disable()
                 .httpBasic().disable()
                 .headers().referrerPolicy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN);
-        // @formatter:on
 
+        return http.build();
 
     }
 
@@ -168,7 +172,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             @Override
             public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                                 Authentication authentication) throws IOException, ServletException {
-            	
+
                 OAuth2AuthenticationToken auth2 = (OAuth2AuthenticationToken) authentication;
                 User user = userService.createOrUpdateUser(auth2);
                 jwtAuthenticationService.setAuthenticationData(response, user);
@@ -179,7 +183,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Bean
     public AuthorizationRequestRepository<OAuth2AuthorizationRequest> cookieBasedAuthorizationRequestRepository() {
-    	// Using cookie based repository to avoid data being put into HTTP session
+        // Using cookie based repository to avoid data being put into HTTP session
         return new HttpCookieOAuth2AuthorizationRequestRepository();
     }
 
@@ -198,9 +202,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                         allowedHeaders(ORIGIN, CONTENT_TYPE, X_CSRF_TOKEN, X_REQUESTED_WITH, ACCESS_CONTROL_ALLOW_CREDENTIALS).
                         allowCredentials(true);
                     registry.addMapping("/login/**").allowedOrigins(allowedCorsOrigin).
-	                    allowedMethods("GET", "POST", "OPTIONS").
-	                    allowedHeaders(ORIGIN, CONTENT_TYPE, X_CSRF_TOKEN, X_REQUESTED_WITH, ACCESS_CONTROL_ALLOW_CREDENTIALS).
-	                    allowCredentials(true);
+                            allowedMethods("GET", "POST", "OPTIONS").
+                            allowedHeaders(ORIGIN, CONTENT_TYPE, X_CSRF_TOKEN, X_REQUESTED_WITH, ACCESS_CONTROL_ALLOW_CREDENTIALS).
+                            allowCredentials(true);
                 }
             }
         };

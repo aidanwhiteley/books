@@ -17,6 +17,7 @@ import org.springframework.security.oauth2.client.web.AuthorizationRequestReposi
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import org.springframework.util.SerializationUtils;
 
+import java.io.IOException;
 import java.util.Base64;
 import java.util.Optional;
 
@@ -73,7 +74,7 @@ class HttpCookieOAuth2AuthorizationRequestRepository implements AuthorizationReq
 
         String authReqAsJson;
         try {
-            return mapper.writeValueAsString(authorizationRequest);
+            return Base64.getEncoder().encodeToString(mapper.writeValueAsString(authorizationRequest).getBytes());
         } catch (JsonProcessingException jspe) {;
             var msg = "Failed to serialise OAuth auth to JSON";
             LOGGER.error(msg, jspe);
@@ -119,8 +120,9 @@ class HttpCookieOAuth2AuthorizationRequestRepository implements AuthorizationReq
         mapper.registerModule(new CoreJackson2Module());
 
         try {
-            return mapper.readValue(cookie.getValue(), OAuth2AuthorizationRequest.class);
-        } catch (JsonProcessingException jspe) {
+            return mapper.readValue(new String(Base64.getDecoder().decode(cookie.getValue())),
+                    OAuth2AuthorizationRequest.class);
+        } catch (IOException jspe) {
             var msg = "Failed to deserialise OAuth auth from JSON";
             LOGGER.error(msg, jspe);
             throw new RuntimeException(msg);

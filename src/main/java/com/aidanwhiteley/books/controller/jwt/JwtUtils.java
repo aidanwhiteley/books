@@ -93,7 +93,7 @@ public class JwtUtils {
         long tokenExpiry = (user.getRoles().size() == 1 && user.getRoles().get(0) == User.Role.ROLE_ACTUATOR)
                 ? expiryInMilliSecondsActuator : expiryInMilliSeconds;
 
-        byte[] key = Decoders.BASE64.decode(secretKey);
+         byte[] key = Decoders.BASE64.decode(secretKey);
         SecretKey secretKeyCrypto = Keys.hmacShaKeyFor(key);
 
         return Jwts.builder()

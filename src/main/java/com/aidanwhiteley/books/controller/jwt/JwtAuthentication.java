@@ -13,7 +13,7 @@ import java.util.Objects;
 /**
  * A class that holds a subset of the User class data based on what is read from a JWT.
  * <p>
- * Contains convenience methods to convert between a this and a (partially populated) User
+ * Contains convenience methods to convert between this and a (partially populated) User
  * and vice versa.
  */
 public class JwtAuthentication implements Authentication {
@@ -22,7 +22,7 @@ public class JwtAuthentication implements Authentication {
     private final String fullName;
     private final String authProvider;
     private final String authenticationServiceId;
-    private final List<GrantedAuthority> grantedAuthorities = new LinkedList<>();
+    private final transient List<GrantedAuthority> grantedAuthorities = new LinkedList<>();
     private boolean isAuthenticated = false;
 
 

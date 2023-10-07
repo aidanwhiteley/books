@@ -17,9 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @EqualsAndHashCode
 @ToString
-public class BookSearchResult implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class BookSearchResult {
 
     private int totalItems;
     private List<Item> items = new ArrayList<>();

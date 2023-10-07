@@ -33,9 +33,7 @@ import static com.aidanwhiteley.books.domain.User.Role.ROLE_USER;
 @EqualsAndHashCode(callSuper = false)
 @ToString
 @Document
-public class Book extends Auditable implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class Book extends Auditable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Book.class);
 

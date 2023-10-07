@@ -18,9 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @EqualsAndHashCode
 @ToString
-public class VolumeInfo implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class VolumeInfo {
 
     private String title;
     private String subtitle;

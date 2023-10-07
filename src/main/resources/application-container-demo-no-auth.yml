@@ -76,6 +76,7 @@ books:
           creation: ${JAVA_BOOKS_ALLOW_ACTUATOR_USER_CREATION}
 
   jwt:
+    # Can be set using com.aidanwhiteley.books.controller.jwt.JwtUtils::createRandomBase64EncodedSecretKey
     secretKey: ${JAVA_BOOKS_JWT_SECRET_KEY}
     cookieOverHttpsOnly: false
     cookieAccessedByHttpOnly: true

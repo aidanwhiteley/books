@@ -3,18 +3,16 @@ package com.aidanwhiteley.books.controller;
 import com.aidanwhiteley.books.util.IntegrationTest;
 import com.rometools.rome.feed.synd.SyndEntry;
 import com.rometools.rome.feed.synd.SyndFeed;
+import com.rometools.rome.io.FeedException;
 import com.rometools.rome.io.SyndFeedInput;
 import com.rometools.rome.io.XmlReader;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpMethod;
 
-import java.net.URL;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class FeedsControllerTest extends IntegrationTest {
 
@@ -31,13 +29,21 @@ class FeedsControllerTest extends IntegrationTest {
         String rootUri = this.testRestTemplate.getRootUri();
         String url = rootUri + "/feeds/rss";
 
-        XmlReader reader = new XmlReader(new URL(url));
-        SyndFeed feed = new SyndFeedInput().build(reader);
-        assertEquals(booksFeedsTitles, feed.getTitle());
+        SyndFeed syndFeed = testRestTemplate.execute(url, HttpMethod.GET, null, response -> {
+            SyndFeedInput input = new SyndFeedInput();
+            try {
+                return input.build(new XmlReader(response.getBody()));
+            } catch (FeedException e) {
+                fail("Could not parse response", e);
+            }
+            return null;
+        });
 
-        assertTrue(feed.getEntries().size() > 0);
+        assertEquals(booksFeedsTitles, syndFeed.getTitle());
 
-        for (SyndEntry entry : feed.getEntries()) {
+        assertTrue(syndFeed.getEntries().size() > 0);
+
+        for (SyndEntry entry : syndFeed.getEntries()) {
             assertFalse(entry.getContents().get(0).getValue().isEmpty());
         }
     }

@@ -3,13 +3,13 @@ package com.aidanwhiteley.books.controller.jwt;
 import com.aidanwhiteley.books.controller.BookControllerTestUtils;
 import com.aidanwhiteley.books.domain.User;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.SignatureException;
+import io.jsonwebtoken.JwtException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class JwtUtilsTest {
 
@@ -49,7 +49,13 @@ class JwtUtilsTest {
         tampered.setCharAt(strlength - 1, (char)( aChar - 1));
         String tamperedString = tampered.toString();
 
-        Assertions.assertThrows(SignatureException.class, () -> jwt.getUserFromToken(tamperedString));
+        try {
+            jwt.getUserFromToken(tamperedString);
+            fail("Expected a SecurityException to be thrown " +
+                    "- actually the deprecated SignatureException sub class if before V1.0 jsonwebtoken");
+        } catch (JwtException je) {
+            assertTrue(je instanceof io.jsonwebtoken.security.SecurityException);
+        }
 
     }
 

@@ -42,8 +42,6 @@ import static com.aidanwhiteley.books.domain.User.Role.ROLE_ACTUATOR;
 import static com.aidanwhiteley.books.domain.User.Role.ROLE_USER;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 
-// TODO - understand why this class has a circular dependency with WebMvcAutoConfiguration$EnableWebMvcConfiguration.
-// TODO - With the move to SB 2.6.x, this has meant the (hopefully temporary) addition of spring.main.allow-circular-references = true
 @Configuration
 @EnableMethodSecurity()
 public class WebSecurityConfiguration {
@@ -143,7 +141,8 @@ public class WebSecurityConfiguration {
                     authz
                         // Make sure Actuator endpoints are protected
                         .requestMatchers(EndpointRequest.toAnyEndpoint()).hasRole(ROLE_ACTUATOR.getShortName())
-                        // We permitAll here as we have method level security applied instead
+                        // We permitAll here (getting us back to the Spring Boot 2 default) as we have method level security
+                        // applied rather than request level
                         .anyRequest().permitAll();
                 })
                 .exceptionHandling()

@@ -27,6 +27,7 @@ import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
@@ -38,6 +39,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.io.IOException;
 
 import static com.aidanwhiteley.books.domain.User.Role.ROLE_ACTUATOR;
+import static com.aidanwhiteley.books.domain.User.Role.ROLE_USER;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 
 // TODO - understand why this class has a circular dependency with WebMvcAutoConfiguration$EnableWebMvcConfiguration.
@@ -64,7 +66,6 @@ public class WebSecurityConfiguration {
             new AntPathRequestMatcher("/swagger-ui.html"),
             new AntPathRequestMatcher("/v2/api-docs"),
             new AntPathRequestMatcher("/webjars/**")
-
     );
     private static final RequestMatcher PROTECTED_URLS = new NegatedRequestMatcher(PUBLIC_URLS);
 
@@ -123,29 +124,37 @@ public class WebSecurityConfiguration {
             LOGGER.warn("**********************************************************************");
             LOGGER.warn("");
         } else {
+            // See https://docs.spring.io/spring-security/reference/5.8/migration/servlet/exploits.html#_defer_loading_csrftoken
+            // for why the following becomes necessary with Spring Security >= 5.8 and our use of AngularJS
+            CsrfTokenRequestAttributeHandler requestHandler = new CsrfTokenRequestAttributeHandler();
+            requestHandler.setCsrfRequestAttributeName(null);
+
             // The CSRF cookie is also read and sent by Angular - hence it being marked as not "httpOnly".
             // The JWT token is stored in a cookie that IS httpOnly.
-            http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+            http.csrf().
+                csrfTokenRequestHandler(requestHandler).
+                csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
         }
-
-        // With all due thanks to https://octoperf.com/blog/2018/03/08/securing-rest-api-spring-security/ for
-        // some of what follows.
 
         http
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).enableSessionUrlRewriting(false)
                 .and()
                 .authorizeHttpRequests((authz) -> {
                     authz
-                            .requestMatchers(EndpointRequest.toAnyEndpoint()).hasRole(ROLE_ACTUATOR.getShortName());
+                        // Make sure Actuator endpoints are protected
+                        .requestMatchers(EndpointRequest.toAnyEndpoint()).hasRole(ROLE_ACTUATOR.getShortName())
+                        // We permitAll here as we have method level security applied instead
+                        .anyRequest().permitAll();
                 })
                 .exceptionHandling()
                 .defaultAuthenticationEntryPointFor(forbiddenEntryPoint(), PROTECTED_URLS)
                 .and()
                 .addFilterBefore(jwtAuththenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                    .oauth2Login()
+                .oauth2Login()
                     .authorizationEndpoint().baseUri("/login")
-                    .authorizationRequestRepository(cookieBasedAuthorizationRequestRepository()).and()
-                    .successHandler(new Oauth2AuthenticationSuccessHandler())
+                    .authorizationRequestRepository(cookieBasedAuthorizationRequestRepository())
+                    .and()
+                        .successHandler(new Oauth2AuthenticationSuccessHandler())
                 .and()
                 .formLogin().disable()
                 .httpBasic().disable()
@@ -185,6 +194,7 @@ public class WebSecurityConfiguration {
 
     @Bean
     public WebMvcConfigurer corsConfigurer() {
+
         //noinspection NullableProblems
         return new WebMvcConfigurer() {
             @Override

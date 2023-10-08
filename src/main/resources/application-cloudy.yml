@@ -88,6 +88,7 @@ books:
           creation: false
 
   jwt:
+    # Can be set using com.aidanwhiteley.books.controller.jwt.JwtUtils::createRandomBase64EncodedSecretKey
     secretKey: ${CLOUDY_JWT_SECRET_KEY:notARealSecret}
     cookieOverHttpsOnly: false
     cookieAccessedByHttpOnly: true

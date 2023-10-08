@@ -2,10 +2,6 @@ spring:
   profiles:
     active: dev-mongo-java-server
 
-  # Temporarily added with migration to SB 2.6.x - see the WebSecurityConfiguration class for more details
-  main:
-    allow-circular-references: true
-
   mvc:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
@@ -143,7 +139,7 @@ books:
     expiryInMilliSeconds: 86400000  # One day
     actuatorExpiryInMilliSeconds: 31536000000  # One year
     cookieExpirySeconds: 86400      # One day / not set by cookie so "cookieExpirySeconds" not relevant
-    secretKey:                      # Specify your secret key here
+    secretKey:                      # Can be set using com.aidanwhiteley.books.controller.jwt.JwtUtils::createRandomBase64EncodedSecretKey
     issuer: "CloudyBookClub"
     cookieOverHttpsOnly: true
     cookieAccessedByHttpOnly: true

@@ -1,23 +1,23 @@
 package com.aidanwhiteley.books.controller.jwt;
 
-import java.util.ArrayList;
-import java.util.Date;
-
+import com.aidanwhiteley.books.domain.User;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.io.Encoders;
+import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.aidanwhiteley.books.domain.User;
-
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Header;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import javax.crypto.SecretKey;
+import java.util.ArrayList;
+import java.util.Date;
 
 @Component
 public class JwtUtils {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(JwtUtils.class);
 
     private static final String AUTH_PROVIDER = "provider";
@@ -50,10 +50,13 @@ public class JwtUtils {
     }
 
     public User getUserFromToken(String token) {
+        byte[] key = Decoders.BASE64.decode(secretKey);
+        SecretKey secretKeyCrypto = Keys.hmacShaKeyFor(key);
+
         Claims claims = Jwts.parser()
-                .setSigningKey(secretKey)
-                .parseClaimsJws(token)
-                .getBody();
+                .verifyWith(secretKeyCrypto).build()
+                .parseSignedClaims(token)
+                .getPayload();
 
         String authenticationServiceId = claims.getSubject();
         String extractedIssuer = claims.getIssuer();
@@ -89,25 +92,23 @@ public class JwtUtils {
         long tokenExpiry = (user.getRoles().size() == 1 && user.getRoles().get(0) == User.Role.ROLE_ACTUATOR)
                 ? expiryInMilliSecondsActuator : expiryInMilliSeconds;
 
+         byte[] key = Decoders.BASE64.decode(secretKey);
+        SecretKey secretKeyCrypto = Keys.hmacShaKeyFor(key);
+
         return Jwts.builder()
-                .setSubject(user.getAuthenticationServiceId())
-                .setIssuer(issuer)
-                .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
+                .subject(user.getAuthenticationServiceId())
+                .issuer(issuer)
                 .claim(AUTH_PROVIDER, user.getAuthProvider())
                 .claim(FULL_NAME, user.getFullName())
                 .claim(ROLES, String.join(ROLES_DELIMETER, roles))
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(new Date().getTime() + tokenExpiry))
-                .signWith(SignatureAlgorithm.HS512, secretKey)
+                .issuedAt(new Date())
+                .expiration(new Date(new Date().getTime() + tokenExpiry))
+                .signWith(secretKeyCrypto)
                 .compact();
     }
 
-    public Date getExpiryFromToken(String token) {
-        Claims claims = Jwts.parser()
-                .setSigningKey(secretKey)
-                .parseClaimsJws(token)
-                .getBody();
-
-        return claims.getExpiration();
+    public static String createRandomBase64EncodedSecretKey() {
+        SecretKey key = Jwts.SIG.HS512.key().build();
+        return Encoders.BASE64.encode(key.getEncoded());
     }
 }

@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,9 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @EqualsAndHashCode
 @ToString
-public class VolumeInfo implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class VolumeInfo {
 
     private String title;
     private String subtitle;

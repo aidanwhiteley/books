@@ -7,17 +7,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.io.Serializable;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
 @ToString
-public class Item implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class Item {
 
     private String id;
     private String selfLink;

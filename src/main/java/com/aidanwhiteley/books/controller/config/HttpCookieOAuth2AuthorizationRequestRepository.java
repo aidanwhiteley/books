@@ -3,7 +3,6 @@ package com.aidanwhiteley.books.controller.config;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -15,7 +14,6 @@ import org.springframework.security.jackson2.CoreJackson2Module;
 import org.springframework.security.oauth2.client.jackson2.OAuth2ClientJackson2Module;
 import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
-import org.springframework.util.SerializationUtils;
 
 import java.io.IOException;
 import java.util.Base64;
@@ -72,10 +70,9 @@ class HttpCookieOAuth2AuthorizationRequestRepository implements AuthorizationReq
         // See https://github.com/spring-projects/spring-security/issues/4370
         mapper.registerModule(new CoreJackson2Module());
 
-        String authReqAsJson;
         try {
             return Base64.getEncoder().encodeToString(mapper.writeValueAsString(authorizationRequest).getBytes());
-        } catch (JsonProcessingException jspe) {;
+        } catch (JsonProcessingException jspe) {
             var msg = "Failed to serialise OAuth auth to JSON";
             LOGGER.error(msg, jspe);
             throw new RuntimeException(msg);
@@ -98,7 +95,7 @@ class HttpCookieOAuth2AuthorizationRequestRepository implements AuthorizationReq
 
         Cookie[] cookies = request.getCookies();
 
-        if (cookies != null && cookies.length > 0) {
+        if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals(COOKIE_NAME)) {
                     return Optional.of(cookie);

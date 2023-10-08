@@ -3,7 +3,6 @@ package com.aidanwhiteley.books.controller.jwt;
 import com.aidanwhiteley.books.domain.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.io.Encoders;
 import io.jsonwebtoken.security.Keys;
@@ -106,18 +105,6 @@ public class JwtUtils {
                 .expiration(new Date(new Date().getTime() + tokenExpiry))
                 .signWith(secretKeyCrypto)
                 .compact();
-    }
-
-    public Date getExpiryFromToken(String token) {
-        byte[] key = Decoders.BASE64.decode(secretKey);
-        SecretKey secretKeyCrypto = Keys.hmacShaKeyFor(key);
-
-        Claims claims = Jwts.parser()
-                .verifyWith(secretKeyCrypto).build()
-                .parseSignedClaims(token)
-                .getPayload();
-
-        return claims.getExpiration();
     }
 
     public static String createRandomBase64EncodedSecretKey() {

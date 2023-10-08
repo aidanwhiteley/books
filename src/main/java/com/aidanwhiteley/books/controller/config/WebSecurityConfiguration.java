@@ -39,7 +39,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.io.IOException;
 
 import static com.aidanwhiteley.books.domain.User.Role.ROLE_ACTUATOR;
-import static com.aidanwhiteley.books.domain.User.Role.ROLE_USER;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 
 @Configuration

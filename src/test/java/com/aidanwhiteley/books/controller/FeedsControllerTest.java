@@ -23,7 +23,7 @@ class FeedsControllerTest extends IntegrationTest {
     private String booksFeedsTitles;
 
     @Test
-    void checkRssFeedsHasEntries() throws Exception {
+    void checkRssFeedsHasEntries() {
 
         // Find the port the test is running on
         String rootUri = this.testRestTemplate.getRootUri();

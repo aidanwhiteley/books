@@ -114,8 +114,8 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     private String getPath(WebRequest webRequest) {
-        if (webRequest instanceof ServletWebRequest) {
-            return ((ServletWebRequest) webRequest).getRequest().getServletPath();
+        if (webRequest instanceof ServletWebRequest servletWebRequest) {
+            return servletWebRequest.getRequest().getServletPath();
         } else {
             return "";
         }

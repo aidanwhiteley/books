@@ -4,11 +4,13 @@ import com.aidanwhiteley.books.controller.exceptions.JwtAuthAuzException;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.security.jackson2.CoreJackson2Module;
@@ -30,7 +32,13 @@ class HttpCookieOAuth2AuthorizationRequestRepository implements AuthorizationReq
     @Value("${books.oauth2.cookieOverHttpsOnly}")
     private boolean cookieOverHttpsOnly;
 
+    private final ObjectMapper authRequestJsonMapper;
+
     public static final String COOKIE_NAME = "cloudy-oauth2-auth";
+
+    public HttpCookieOAuth2AuthorizationRequestRepository(@Autowired ObjectMapper authRequestJsonMapper) {
+        this.authRequestJsonMapper = authRequestJsonMapper;
+    }
 
     @Override
     public OAuth2AuthorizationRequest loadAuthorizationRequest(HttpServletRequest request) {
@@ -63,16 +71,8 @@ class HttpCookieOAuth2AuthorizationRequestRepository implements AuthorizationReq
     }
     
     private String fromAuthorizationRequest(OAuth2AuthorizationRequest authorizationRequest) {
-        var mapper = new Jackson2ObjectMapperBuilder().autoDetectFields(true)
-                .autoDetectGettersSetters(true)
-                .modules(new OAuth2ClientJackson2Module())
-                .visibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY)
-                .build();
-        // See https://github.com/spring-projects/spring-security/issues/4370
-        mapper.registerModule(new CoreJackson2Module());
-
         try {
-            return Base64.getEncoder().encodeToString(mapper.writeValueAsString(authorizationRequest).getBytes());
+            return Base64.getEncoder().encodeToString(authRequestJsonMapper.writeValueAsString(authorizationRequest).getBytes());
         } catch (JsonProcessingException jspe) {
             var msg = "Failed to serialise OAuth auth to JSON";
             LOGGER.error(msg, jspe);
@@ -108,17 +108,8 @@ class HttpCookieOAuth2AuthorizationRequestRepository implements AuthorizationReq
     }
 
     private OAuth2AuthorizationRequest toOAuth2AuthorizationRequest(Cookie cookie) {
-
-        var mapper = new Jackson2ObjectMapperBuilder().autoDetectFields(true)
-                .autoDetectGettersSetters(true)
-                .modules(new OAuth2ClientJackson2Module())
-                .visibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY)
-                .build();
-        // See https://github.com/spring-projects/spring-security/issues/4370
-        mapper.registerModule(new CoreJackson2Module());
-
         try {
-            return mapper.readValue(new String(Base64.getDecoder().decode(cookie.getValue())),
+            return authRequestJsonMapper.readValue(new String(Base64.getDecoder().decode(cookie.getValue())),
                     OAuth2AuthorizationRequest.class);
         } catch (IOException jspe) {
             var msg = "Failed to deserialise OAuth auth from JSON";

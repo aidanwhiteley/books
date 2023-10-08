@@ -23,7 +23,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 
-import static java.util.stream.Collectors.toList;
 
 @Component
 public class DataLoader {
@@ -94,7 +93,7 @@ public class DataLoader {
                 template.dropCollection(BOOKS_COLLECTION);
             }
 
-            jsons = bufferedReader.lines().collect(toList());
+            jsons = bufferedReader.lines().toList();
             jsons.stream().map(Document::parse).forEach(i -> template.insert(i, BOOKS_COLLECTION));
         }
     }
@@ -110,7 +109,7 @@ public class DataLoader {
             LOGGER.info("Clearing users collection and loading development data for books project");
             template.dropCollection(USERS_COLLECTION);
 
-            jsons = bufferedReader.lines().collect(toList());
+            jsons = bufferedReader.lines().toList();
         }
         jsons.stream().map(Document::parse).forEach(i -> {
             boolean autoAuthUserServiceId = i.get("authenticationServiceId").toString().contains(AUTO_LOGON_ID);

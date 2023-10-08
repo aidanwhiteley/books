@@ -16,8 +16,6 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Date;
 
-import static java.util.stream.Collectors.toList;
-
 @Component
 public class SiteRssFeed {
 
@@ -72,7 +70,7 @@ public class SiteRssFeed {
             item.setContent(content);
 
             return item;
-		}).collect(toList()));
+		}).toList());
 
         return channel;
 	}

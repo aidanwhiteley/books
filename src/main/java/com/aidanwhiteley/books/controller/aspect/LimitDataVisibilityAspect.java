@@ -108,7 +108,7 @@ public class LimitDataVisibilityAspect {
 		Principal principal = getPrincipal(joinPoint);
 		Optional<User> user = authUtils.extractUserFromPrincipal(principal, true);
 
-		if (retVal instanceof Page page) {
+		if (retVal instanceof Page<?> page) {
 			if (LOGGER.isInfoEnabled()) {
 				LOGGER.info("About to call setPermissionsAndContentForUser for {}", joinPoint.getSignature());
 			}

@@ -202,7 +202,7 @@ public class BookSecureController {
      * has been reviewing books if you are not an authorised user i.e. with at
      * least ROLE_EDITOR
      */
-    @GetMapping(value = "/books")
+    @GetMapping(value = {"/books", "/books/"})
     public Page<Book> findByReader(@RequestParam String reader, @RequestParam(value = "page", defaultValue = "0") int page,
                                    @RequestParam(value = "size", defaultValue = "5") int size, Principal principal) {
 
@@ -218,7 +218,7 @@ public class BookSecureController {
         return bookRepository.findByReaderOrderByCreatedDateTimeDesc(pageObj, reader);
     }
 
-    @GetMapping(value = "/googlebooks", params = "title")
+    @GetMapping(value = {"/googlebooks", "googlebooks/"}, params = "title")
     public BookSearchResult findGoogleBooksByTitle(@RequestParam("title") String title) {
         return googleBooksDaoSync.searchGoogBooksByTitle(title);
     }

@@ -6,7 +6,7 @@
 
     <groupId>com.aidanwhiteley</groupId>
     <artifactId>books</artifactId>
-    <version>0.30.1-SNAPSHOT</version>
+    <version>0.30.2-RELEASE</version>
     <packaging>jar</packaging>
 
     <name>Books Microservice</name>
@@ -118,12 +118,10 @@
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
 
-        <!-- Depedencies moved out of JDK SE -->
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-runtime</artifactId>
         </dependency>
-
 
         <!-- Runtime monitoring depedencies -->
         <dependency>

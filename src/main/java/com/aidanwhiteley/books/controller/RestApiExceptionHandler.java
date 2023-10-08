@@ -1,6 +1,7 @@
 package com.aidanwhiteley.books.controller;
 
 import com.aidanwhiteley.books.controller.dtos.ApiExceptionData;
+import com.aidanwhiteley.books.controller.exceptions.JwtAuthAuzException;
 import com.aidanwhiteley.books.controller.exceptions.NotAuthorisedException;
 import com.aidanwhiteley.books.controller.exceptions.NotFoundException;
 import org.slf4j.Logger;
@@ -61,6 +62,14 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         return new ApiExceptionData(BAD_REQUEST.value(), BAD_REQUEST.getReasonPhrase(),
                 MESSAGE_ILLEGAL_ARGUMENT + " : " + ex.getLocalizedMessage(), getPath(request));
+    }
+
+    @ExceptionHandler({JwtAuthAuzException.class})
+    @ResponseStatus(INTERNAL_SERVER_ERROR)
+    public ApiExceptionData handleJwtAuthAuzException(Exception ex, WebRequest request) {
+
+        return new ApiExceptionData(INTERNAL_SERVER_ERROR.value(), INTERNAL_SERVER_ERROR.getReasonPhrase(),
+                MESSAGE_UNEXPECTED_EXCEPTION + " : " + ex.getLocalizedMessage(), getPath(request));
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.aidanwhiteley.books.controller.config;
 
+import com.aidanwhiteley.books.controller.exceptions.JwtAuthAuzException;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -75,7 +76,7 @@ class HttpCookieOAuth2AuthorizationRequestRepository implements AuthorizationReq
         } catch (JsonProcessingException jspe) {
             var msg = "Failed to serialise OAuth auth to JSON";
             LOGGER.error(msg, jspe);
-            throw new RuntimeException(msg);
+            throw new JwtAuthAuzException(msg);
         }
     }
 
@@ -122,7 +123,7 @@ class HttpCookieOAuth2AuthorizationRequestRepository implements AuthorizationReq
         } catch (IOException jspe) {
             var msg = "Failed to deserialise OAuth auth from JSON";
             LOGGER.error(msg, jspe);
-            throw new RuntimeException(msg);
+            throw new JwtAuthAuzException(msg);
         }
     }
 }

@@ -136,14 +136,14 @@ public class WebSecurityConfiguration {
         http
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).enableSessionUrlRewriting(false)
                 .and()
-                .authorizeHttpRequests((authz) -> {
+                .authorizeHttpRequests(authz ->
                     authz
                         // Make sure Actuator endpoints are protected
                         .requestMatchers(EndpointRequest.toAnyEndpoint()).hasRole(ROLE_ACTUATOR.getShortName())
                         // We permitAll here (getting us back to the Spring Boot 2 default) as we have method level security
                         // applied rather than request level
-                        .anyRequest().permitAll();
-                })
+                        .anyRequest().permitAll()
+                )
                 .exceptionHandling()
                 .defaultAuthenticationEntryPointFor(forbiddenEntryPoint(), PROTECTED_URLS)
                 .and()

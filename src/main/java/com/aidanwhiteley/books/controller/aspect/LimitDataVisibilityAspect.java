@@ -87,11 +87,11 @@ public class LimitDataVisibilityAspect {
 		// only interested in the users roles and they are in the JWT.
 		Optional<User> user = authUtils.extractUserFromPrincipal(principal, true);
 
-		if (retVal instanceof Book) {
+		if (retVal instanceof Book book) {
 			if (LOGGER.isInfoEnabled()) {
 				LOGGER.info("About to call setPermissionsAndContentForUser for {}", joinPoint.getSignature());
 			}
-			((Book) retVal).setPermissionsAndContentForUser(user.orElse(null));
+			book.setPermissionsAndContentForUser(user.orElse(null));
 		} else {
 			LOGGER.error("Unexpected return type found by aspect");
 		}
@@ -108,12 +108,12 @@ public class LimitDataVisibilityAspect {
 		Principal principal = getPrincipal(joinPoint);
 		Optional<User> user = authUtils.extractUserFromPrincipal(principal, true);
 
-		if (retVal instanceof Page) {
+		if (retVal instanceof Page<?> page) {
 			if (LOGGER.isInfoEnabled()) {
 				LOGGER.info("About to call setPermissionsAndContentForUser for {}", joinPoint.getSignature());
 			}
 			User theUser = user.orElse(null);
-			((Page<Book>) retVal).getContent().forEach(s -> s.setPermissionsAndContentForUser(theUser));
+			((Page<Book>) page).getContent().forEach(s -> s.setPermissionsAndContentForUser(theUser));
 		} else {
 			LOGGER.error("Unexpected return type found by aspect");
 		}
@@ -126,11 +126,11 @@ public class LimitDataVisibilityAspect {
 		Principal principal = null;
 		Object[] args = joinPoint.getArgs();
 		for (Object o : args) {
-			if (o instanceof Principal) {
+			if (o instanceof Principal chekedPrincipal) {
 				if (LOGGER.isInfoEnabled()) {
 					LOGGER.info("Found Principal parameter for advised method of {}", joinPoint.getSignature());
 				}
-				principal = (Principal) o;
+				principal = chekedPrincipal;
 			}
 		}
 		return principal;

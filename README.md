@@ -209,7 +209,7 @@ The public read only part of the application's REST API is automatically documen
 tool to auto create OpenAPI 3 JSON. The API documentation can be explored and tested using the Swagger UI available [here](https://cloudybookclub.com/swagger-ui/index.html).
 
 ## Stateless Apps
-A lot of the time developing this microservice was spent in making it entirely independant of HTTP session state  - based around issuing a 
+A lot of the time developing this microservice was spent in making it entirely independent of HTTP session state  - based around issuing a 
 JWT after the user has authenticated via Google / Facebook.
 
 This turned out to be suprisingly difficult - with the cause of the difficulty mainly being in the Spring Boot OAuth2 implementation 

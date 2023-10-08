@@ -22,7 +22,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 @Component
 public class DataLoader {
@@ -93,7 +93,7 @@ public class DataLoader {
                 template.dropCollection(BOOKS_COLLECTION);
             }
 
-            jsons = bufferedReader.lines().collect(Collectors.toList());
+            jsons = bufferedReader.lines().toList();
             jsons.stream().map(Document::parse).forEach(i -> template.insert(i, BOOKS_COLLECTION));
         }
     }
@@ -106,10 +106,10 @@ public class DataLoader {
              BufferedReader bufferedReader = new BufferedReader(inputStreamReader)) {
 
             // Clearing and loading data into user collection - happens after user creation file found and loaded
-            LOGGER.info("Clearing users collection and loading development data for books project");;
+            LOGGER.info("Clearing users collection and loading development data for books project");
             template.dropCollection(USERS_COLLECTION);
 
-            jsons = bufferedReader.lines().collect(Collectors.toList());
+            jsons = bufferedReader.lines().toList();
         }
         jsons.stream().map(Document::parse).forEach(i -> {
             boolean autoAuthUserServiceId = i.get("authenticationServiceId").toString().contains(AUTO_LOGON_ID);

@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Date;
-import java.util.stream.Collectors;
 
 @Component
 public class SiteRssFeed {
@@ -71,7 +70,7 @@ public class SiteRssFeed {
             item.setContent(content);
 
             return item;
-		}).collect(Collectors.toList()));
+		}).toList());
 
         return channel;
 	}

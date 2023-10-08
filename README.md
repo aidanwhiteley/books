@@ -16,7 +16,7 @@ So welcome to the "Cloudy Bookclub" microservice!
 ## Implementation
 
 The main functionality included in the microservice includes
-* being based on latest Spring Boot 2
+* being based on latest Spring Boot 3.x and Java 21
 * Oauth2 based logon using
     * Google
     * Facebook
@@ -144,10 +144,9 @@ Check the console log when running in production - you should see **NO** warning
 This project makes use of the excellent Lombok project. So to build in your favourite IDE, if necessary
 head on over to [Lombok](https://projectlombok.org/) and click the appropriate "Install" link (tested with IntelliJ and Eclipse).
 
-The project CI build uses Github Actions and currently on runs on JDK11. The project Maven depedencies have been updated to include JAXB depedencies that
-are no longer included by default in the JDK SE. So no JDK8 support any longer I'm afraid.
+In preparation for playing with recent Java features such as virtual threads and pattern matching, the build or this project **now requires JDK21**. 
 
-With appropriate versions of the JDK, Maven and a Mongo installed, start with
+With appropriate versions of the JDK, Maven and a (optionally) Mongo installed, start with
 ~~~~
 mvn clean compile test
 ~~~~

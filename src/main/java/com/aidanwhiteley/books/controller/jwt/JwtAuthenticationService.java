@@ -8,9 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Service
 public class JwtAuthenticationService {
@@ -68,7 +68,7 @@ public class JwtAuthenticationService {
 
         String token = jwtUtils.createTokenForUser(user);
 
-        // There is currently no functionality on the javax.servlet.http.Cookie class to set SameSite directly.
+        // There is currently no functionality on the jakarta.servlet.http.Cookie class to set SameSite directly.
         var cookie = new StringBuilder();
         cookie.append(JWT_COOKIE_NAME + "=" + token);
         if (cookieAccessedByHttpOnly) {

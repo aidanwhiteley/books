@@ -1,14 +1,8 @@
 package com.aidanwhiteley.books.domain;
 
 import com.aidanwhiteley.books.domain.googlebooks.Item;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
 import org.hibernate.validator.constraints.Length;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,15 +10,11 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.aidanwhiteley.books.domain.User.Role.ROLE_ADMIN;
-import static com.aidanwhiteley.books.domain.User.Role.ROLE_EDITOR;
-import static com.aidanwhiteley.books.domain.User.Role.ROLE_USER;
+import static com.aidanwhiteley.books.domain.User.Role.*;
 
 @SuppressWarnings("DefaultAnnotationParam")
 @Getter
@@ -33,9 +23,7 @@ import static com.aidanwhiteley.books.domain.User.Role.ROLE_USER;
 @EqualsAndHashCode(callSuper = false)
 @ToString
 @Document
-public class Book extends Auditable implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class Book extends Auditable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Book.class);
 

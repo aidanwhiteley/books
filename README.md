@@ -7,13 +7,16 @@ actually be useful.
 
 So welcome to the "Cloudy Bookclub" microservice!
 
+> [!NOTE]  
+> Now uplifted to the latest Spring Boot 3.x and Java 21.
+
 [![Actions CI Build](https://github.com/aidanwhiteley/books/workflows/Actions%20CI%20Build/badge.svg)](https://github.com/aidanwhiteley/books/actions?query=workflow%3A%22Actions+CI+Build%22)
 [![Sonar Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=com.aidanwhiteley%3Abooks&metric=alert_status)](https://sonarcloud.io/dashboard?id=com.aidanwhiteley%3Abooks)
 
 ## Implementation
 
 The main functionality included in the microservice includes
-* being based on latest Spring Boot 2
+* being based on latest Spring Boot 3.x and Java 21
 * Oauth2 based logon using
     * Google
     * Facebook
@@ -58,8 +61,8 @@ mvn gatling:test
 
 The source code of this test in at test/java/com/aidanwhiteley/books/loadtest/StressTestSimulation.java
 
-This is currently a "work in progress" - the eventual aim being to compare the resource utilisation of the GoogleBooksDaoSync
-and GoogleBooksDaoAsync implementations.
+> [!IMPORTANT]  
+> The reactive WebClient code will be replaced by the use of virtual threads at some point.
 
 ### How to configure application logon security
 A lot of the functionality is protected behind oauth2 authentication (via Google and Facebook). 
@@ -72,6 +75,8 @@ There are lots of other ways to pass in these values e.g. they can be passed as 
 --spring.security.oauth2.client.registration.google.client-id=xxxx --spring.security.oauth2.client.registration.google.client-secret=xxxx --spring.security.oauth2.client.registration.facebook.client-id=xxxx --spring.security.oauth2.client.registration.facebook.client-secret=xxxx 
 ~~~~
 Otherwise, see the Spring documentation for more options.
+
+You must also set a secret key to sign the JWTs (see later).
 
 ### Available Spring profiles
 There are Spring profile files for a range of development and test scenarios. 
@@ -122,8 +127,13 @@ There are Spring profile files for a range of development and test scenarios.
 ### Configuring for production
 "Out of the box" the code runs with the "mongo-java-server" Spring profile - see the first lines of application.yml. None
 of the checked in available Spring profiles are intended for production use. You will need to decide the 
-required functionality for your environment and configure your Spring profile accordingly. For instance, you **WILL** want to 
+required functionality for your environment and configure your Spring profile accordingly. 
+
+For instance, you **WILL** want to 
 set/change the secretKey used for the JWT token signing (see books:jwt:secretKey in the yml files).
+Please see the code in com.aidanwhiteley.books.controller.jwt.JwtUtils::createRandomBase64EncodedSecretKey
+which will allow you to generate a random SecretKey rather than using the default one supplied
+in the non-propduction properties files.
 
 You will also need access to a Mongo instance. The connection URL (in the yml files) will result in the automatic
 creation of a Mongo database and the two required collections (dependant on the security config of your Mongo install).
@@ -134,10 +144,9 @@ Check the console log when running in production - you should see **NO** warning
 This project makes use of the excellent Lombok project. So to build in your favourite IDE, if necessary
 head on over to [Lombok](https://projectlombok.org/) and click the appropriate "Install" link (tested with IntelliJ and Eclipse).
 
-The project CI build uses Github Actions and currently on runs on JDK11. The project Maven depedencies have been updated to include JAXB depedencies that
-are no longer included by default in the JDK SE. So no JDK8 support any longer I'm afraid.
+In preparation for playing with recent Java features such as virtual threads and pattern matching, the build or this project **now requires JDK21**. 
 
-With appropriate versions of the JDK, Maven and a Mongo installed, start with
+With appropriate versions of the JDK, Maven and a (optionally) Mongo installed, start with
 ~~~~
 mvn clean compile test
 ~~~~
@@ -218,6 +227,11 @@ This demo app uses JWTs as the user's session token. In most cases this is now c
 anti-pattern ([pros and cons discussion](https://news.ycombinator.com/item?id=27136539)).
 For my own usage (where I'm extremely unlikely to need to quickly revoke users) it's fine but I wouldn't use this solution 
 for user session management again in the future.
+
+> [!WARNING]  
+> There was an bug in versions of this project prior to those using Spring Boot 3 i.e. 
+> prior to 0.30.0-SNAPSHOT in that random plaintext was being passed to the JWT signing
+> function rather than a SecretKey. Please see [this StackOverflow discussion](https://stackoverflow.com/questions/40252903/static-secret-as-byte-key-or-string/40274325#40274325) for more details.
 
 ## Docker
 Docker images are available for the various tiers that make up the full application.

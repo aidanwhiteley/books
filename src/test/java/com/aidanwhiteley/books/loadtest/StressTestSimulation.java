@@ -15,6 +15,7 @@ import static io.gatling.javaapi.core.CoreDsl.stressPeakUsers;
 import static io.gatling.javaapi.http.HttpDsl.http;
 import static io.gatling.javaapi.http.HttpDsl.status;
 
+@SuppressWarnings("this-escape")
 public class StressTestSimulation extends Simulation {
 
     HttpProtocolBuilder httpProtocol = http

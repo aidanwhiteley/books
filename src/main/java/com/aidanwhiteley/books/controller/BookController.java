@@ -49,7 +49,7 @@ public class BookController {
         return findAllByCreatedDateTimeDesc(0, defaultPageSize, principal);
     }
 
-    @GetMapping(value = "/books", params = {"page", "size"})
+    @GetMapping(value = {"/books", "/books/"}, params = {"page", "size"})
     public Page<Book> findAllByCreatedDateTimeDesc(@RequestParam(value = "page") int page,
                                                    @RequestParam(value = "size") int size, Principal principal) {
 
@@ -62,12 +62,12 @@ public class BookController {
         return bookRepository.findById(id).orElseThrow(() -> new NotFoundException("Book id " + id + " not found"));
     }
 
-    @GetMapping(value = "/books", params = {"author"})
+    @GetMapping(value = {"/books", "/books/"}, params = {"author"})
     public Page<Book> findByAuthor(@RequestParam("author") String author, Principal principal) {
         return findByAuthor(author, 0, defaultPageSize, principal);
     }
 
-    @GetMapping(value = "/books", params = {"author", "page", "size"})
+    @GetMapping(value = {"/books", "books/"}, params = {"author", "page", "size"})
     public Page<Book> findByAuthor(@RequestParam("author") String author, @RequestParam(value = "page") int page,
                                    @RequestParam(value = "size") int size, Principal principal) {
 
@@ -83,12 +83,12 @@ public class BookController {
         return bookRepository.findAllByAuthorOrderByCreatedDateTimeDesc(pageObj, author);
     }
 
-    @GetMapping(value = "/books", params = {"search"})
+    @GetMapping(value = {"/books", "/books/"}, params = {"search"})
     public Page<Book> findBySearch(@RequestParam("search") String search, Principal principal) {
         return findBySearch(search, 0, defaultPageSize, principal);
     }
 
-    @GetMapping(value = "/books", params = {"search", "page", "size"})
+    @GetMapping(value = {"/books", "/books/"}, params = {"search", "page", "size"})
     public Page<Book> findBySearch(@RequestParam("search") String search, @RequestParam(value = "page") int page,
                                    @RequestParam(value = "size") int size, Principal principal) {
 
@@ -104,12 +104,12 @@ public class BookController {
         return bookRepository.searchForBooks(search, pageObj);
     }
 
-    @GetMapping(value = "/books", params = {"genre"})
+    @GetMapping(value = {"/books", "/books/"}, params = {"genre"})
     public Page<Book> findByGenre(@RequestParam("genre") String genre, Principal principal) {
         return findByGenre(genre, 0, defaultPageSize, principal);
     }
 
-    @GetMapping(value = "/books", params = {"genre", "page", "size"})
+    @GetMapping(value = {"/books", "/books/"}, params = {"genre", "page", "size"})
     public Page<Book> findByGenre(@RequestParam("genre") String genre, @RequestParam(value = "page") int page,
                                   @RequestParam(value = "size") int size, Principal principal) {
 
@@ -140,12 +140,12 @@ public class BookController {
         return bookRepository.countBooksByAuthor();
     }
 
-    @GetMapping(value = "/books", params = {"rating"})
+    @GetMapping(value = {"/books", "/books/"}, params = {"rating"})
     public Page<Book> findByRating(@RequestParam("rating") String rating, Principal principal) {
         return findByRating(rating, 0, defaultPageSize, principal);
     }
 
-    @GetMapping(value = "/books", params = {"rating", "page", "size"})
+    @GetMapping(value = {"/books", "/books/"}, params = {"rating", "page", "size"})
     public Page<Book> findByRating(@RequestParam("rating") String rating, @RequestParam(value = "page") int page,
                                    @RequestParam(value = "size") int size, Principal principal) {
 

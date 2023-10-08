@@ -67,7 +67,7 @@ class GoogleBooksDaoSyncTest extends IntegrationTest {
             LOGGER.debug("Expected exception caught");
         }
 
-        context.getLogger(GoogleBooksDaoSync.class).setLevel(Level.valueOf("INFO"));
+        context.getLogger(GoogleBooksDaoSync.class).setLevel(Level.valueOf("WARN"));
     }
 
     @Test
@@ -84,7 +84,7 @@ class GoogleBooksDaoSyncTest extends IntegrationTest {
             LOGGER.debug("Expected HttpServerErrorException exception caught: " + hsee);
         }
 
-        context.getLogger(GoogleBooksDaoSync.class).setLevel(Level.valueOf("INFO"));
+        context.getLogger(GoogleBooksDaoSync.class).setLevel(Level.valueOf("WARN"));
     }
 
 }

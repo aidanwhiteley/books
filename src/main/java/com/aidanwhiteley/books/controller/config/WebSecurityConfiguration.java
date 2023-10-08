@@ -4,6 +4,9 @@ import com.aidanwhiteley.books.controller.jwt.JwtAuthenticationFilter;
 import com.aidanwhiteley.books.controller.jwt.JwtAuthenticationService;
 import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.service.UserService;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,19 +14,20 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
@@ -32,19 +36,14 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static com.aidanwhiteley.books.domain.User.Role.ROLE_ACTUATOR;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 
-// TODO - understand why this class has a circular dependency with WebMvcAutoConfiguration$EnableWebMvcConfiguration.
-// TODO - With the move to SB 2.6.x, this has meant the (hopefully temporary) addition of spring.main.allow-circular-references = true
 @Configuration
-@EnableGlobalMethodSecurity(prePostEnabled = true)
-public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
+@EnableMethodSecurity()
+public class WebSecurityConfiguration {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WebSecurityConfiguration.class);
 
@@ -64,7 +63,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             new AntPathRequestMatcher("/swagger-ui.html"),
             new AntPathRequestMatcher("/v2/api-docs"),
             new AntPathRequestMatcher("/webjars/**")
-
     );
     private static final RequestMatcher PROTECTED_URLS = new NegatedRequestMatcher(PUBLIC_URLS);
 
@@ -92,8 +90,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         this.userService = userService;
     }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         // Is CORS to be enabled? If yes, the allowedCorsOrigin config
         // property should also be set.
@@ -123,35 +121,44 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             LOGGER.warn("**********************************************************************");
             LOGGER.warn("");
         } else {
-            // The CSRF cookie is also read and sent by by Angular - hence it being marked as not "httpOnly".
+            // See https://docs.spring.io/spring-security/reference/5.8/migration/servlet/exploits.html#_defer_loading_csrftoken
+            // for why the following becomes necessary with Spring Security >= 5.8 and our use of AngularJS
+            CsrfTokenRequestAttributeHandler requestHandler = new CsrfTokenRequestAttributeHandler();
+            requestHandler.setCsrfRequestAttributeName(null);
+
+            // The CSRF cookie is also read and sent by Angular - hence it being marked as not "httpOnly".
             // The JWT token is stored in a cookie that IS httpOnly.
-            http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+            http.csrf().
+                csrfTokenRequestHandler(requestHandler).
+                csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
         }
 
-        // With all due thanks to https://octoperf.com/blog/2018/03/08/securing-rest-api-spring-security/ for
-        // some of what follows.
-
-        // @formatter:off
-        http.
-                sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).enableSessionUrlRewriting(false)
+        http
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).enableSessionUrlRewriting(false)
                 .and()
-                .authorizeRequests().requestMatchers(EndpointRequest.toAnyEndpoint())
-                    .hasRole(ROLE_ACTUATOR.getShortName())
-                .and()
+                .authorizeHttpRequests((authz) -> {
+                    authz
+                        // Make sure Actuator endpoints are protected
+                        .requestMatchers(EndpointRequest.toAnyEndpoint()).hasRole(ROLE_ACTUATOR.getShortName())
+                        // We permitAll here (getting us back to the Spring Boot 2 default) as we have method level security
+                        // applied rather than request level
+                        .anyRequest().permitAll();
+                })
                 .exceptionHandling()
                 .defaultAuthenticationEntryPointFor(forbiddenEntryPoint(), PROTECTED_URLS)
                 .and()
                 .addFilterBefore(jwtAuththenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .oauth2Login()
                     .authorizationEndpoint().baseUri("/login")
-                    .authorizationRequestRepository(cookieBasedAuthorizationRequestRepository()).and()
-                    .successHandler(new Oauth2AuthenticationSuccessHandler())
+                    .authorizationRequestRepository(cookieBasedAuthorizationRequestRepository())
+                    .and()
+                        .successHandler(new Oauth2AuthenticationSuccessHandler())
                 .and()
                 .formLogin().disable()
                 .httpBasic().disable()
                 .headers().referrerPolicy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN);
-        // @formatter:on
 
+        return http.build();
 
     }
 
@@ -165,42 +172,43 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
      * authenticated with the OAuth2 authentication provider.
      */
     class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
-            @Override
-            public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-                                                Authentication authentication) throws IOException, ServletException {
-            	
-                OAuth2AuthenticationToken auth2 = (OAuth2AuthenticationToken) authentication;
-                User user = userService.createOrUpdateUser(auth2);
-                jwtAuthenticationService.setAuthenticationData(response, user);
-                super.setDefaultTargetUrl(postLogonUrl);
-                super.onAuthenticationSuccess(request, response, authentication);
-            }
+        @Override
+        public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
+                                            Authentication authentication) throws IOException, ServletException {
+
+            OAuth2AuthenticationToken auth2 = (OAuth2AuthenticationToken) authentication;
+            User user = userService.createOrUpdateUser(auth2);
+            jwtAuthenticationService.setAuthenticationData(response, user);
+            super.setDefaultTargetUrl(postLogonUrl);
+            super.onAuthenticationSuccess(request, response, authentication);
+        }
     }
 
     @Bean
     public AuthorizationRequestRepository<OAuth2AuthorizationRequest> cookieBasedAuthorizationRequestRepository() {
-    	// Using cookie based repository to avoid data being put into HTTP session
+        // Using cookie based repository to avoid data being put into HTTP session
         return new HttpCookieOAuth2AuthorizationRequestRepository();
     }
 
     @Bean
     public WebMvcConfigurer corsConfigurer() {
+
         //noinspection NullableProblems
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 if (enableCORS) {
                     registry.addMapping("/api/**").allowedOrigins(allowedCorsOrigin).
-                        allowedMethods("GET").allowedHeaders(ORIGIN, CONTENT_TYPE, X_CSRF_TOKEN, ACCESS_CONTROL_ALLOW_CREDENTIALS).
-                        allowCredentials(true);
+                            allowedMethods("GET").allowedHeaders(ORIGIN, CONTENT_TYPE, X_CSRF_TOKEN, ACCESS_CONTROL_ALLOW_CREDENTIALS).
+                            allowCredentials(true);
                     registry.addMapping("/secure/api/**").allowedOrigins(allowedCorsOrigin).
-                        allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS").
-                        allowedHeaders(ORIGIN, CONTENT_TYPE, X_CSRF_TOKEN, X_REQUESTED_WITH, ACCESS_CONTROL_ALLOW_CREDENTIALS).
-                        allowCredentials(true);
+                            allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS").
+                            allowedHeaders(ORIGIN, CONTENT_TYPE, X_CSRF_TOKEN, X_REQUESTED_WITH, ACCESS_CONTROL_ALLOW_CREDENTIALS).
+                            allowCredentials(true);
                     registry.addMapping("/login/**").allowedOrigins(allowedCorsOrigin).
-	                    allowedMethods("GET", "POST", "OPTIONS").
-	                    allowedHeaders(ORIGIN, CONTENT_TYPE, X_CSRF_TOKEN, X_REQUESTED_WITH, ACCESS_CONTROL_ALLOW_CREDENTIALS).
-	                    allowCredentials(true);
+                            allowedMethods("GET", "POST", "OPTIONS").
+                            allowedHeaders(ORIGIN, CONTENT_TYPE, X_CSRF_TOKEN, X_REQUESTED_WITH, ACCESS_CONTROL_ALLOW_CREDENTIALS).
+                            allowCredentials(true);
                 }
             }
         };

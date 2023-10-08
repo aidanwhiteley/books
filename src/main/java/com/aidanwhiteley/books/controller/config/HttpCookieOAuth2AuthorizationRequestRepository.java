@@ -1,13 +1,21 @@
 package com.aidanwhiteley.books.controller.config;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+import org.springframework.security.jackson2.CoreJackson2Module;
+import org.springframework.security.oauth2.client.jackson2.OAuth2ClientJackson2Module;
 import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
-import org.springframework.util.SerializationUtils;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Base64;
 import java.util.Optional;
 
@@ -15,6 +23,8 @@ import java.util.Optional;
  * Based on https://stackoverflow.com/questions/49095383/spring-security-5-stateless-oauth2-login-how-to-implement-cookies-based-author
  */
 class HttpCookieOAuth2AuthorizationRequestRepository implements AuthorizationRequestRepository<OAuth2AuthorizationRequest> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(HttpCookieOAuth2AuthorizationRequestRepository.class);
 
     @Value("${books.oauth2.cookieOverHttpsOnly}")
     private boolean cookieOverHttpsOnly;
@@ -45,32 +55,6 @@ class HttpCookieOAuth2AuthorizationRequestRepository implements AuthorizationReq
         response.addCookie(cookie);     // lgtm[java/insecure-cookie]
     }
 
-    /**
-     * Removes the outh auth cookie.
-     *
-     * @param request  Thhtp Request
-     * @return an OAuth2AuthorizationRequest
-     * @deprecated Since Spring Boot 2.1.0 and associated Spring Security version
-     */
-    @Override
-    @Deprecated(since = "From Spring Boot 2.1.0 and associated Spring Security version", forRemoval = true)
-    public OAuth2AuthorizationRequest removeAuthorizationRequest(HttpServletRequest request) {
-        // Question: How to remove the cookie, because we don't have access to response object here.
-        // This seems to be a flaw in the design of the AuthorizationRequestRepository interface
-        // as the default behaviour is to remove data from the HTTP session -
-        // which will be accessed via the request object. Here we
-        // want to clear out a cookie for which we need access to the response object.
-        // So, for the time being, another unrelated part of the code base clears the cookie -
-        // see the JwtAuthenticationService class for details.
-        // There was an issue raised on Spring Security for this and the interface may be
-        // uplifted in 5.1 - see https://github.com/spring-projects/spring-security/issues/5313
-
-        // Since Spring Boot 2.1 (Spring Security 5.1) this method is now deprecated and the
-        // version below which provides access to the HttpServletResponse is preferred (as this
-        // allows access to clearing out the cookie).
-        return loadAuthorizationRequest(request);
-    }
-
     @Override
     public OAuth2AuthorizationRequest removeAuthorizationRequest(HttpServletRequest request, HttpServletResponse response) {
         deleteCookie(request, response);
@@ -78,8 +62,21 @@ class HttpCookieOAuth2AuthorizationRequestRepository implements AuthorizationReq
     }
     
     private String fromAuthorizationRequest(OAuth2AuthorizationRequest authorizationRequest) {
-        return Base64.getUrlEncoder().encodeToString(
-                SerializationUtils.serialize(authorizationRequest));
+        var mapper = new Jackson2ObjectMapperBuilder().autoDetectFields(true)
+                .autoDetectGettersSetters(true)
+                .modules(new OAuth2ClientJackson2Module())
+                .visibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY)
+                .build();
+        // See https://github.com/spring-projects/spring-security/issues/4370
+        mapper.registerModule(new CoreJackson2Module());
+
+        try {
+            return Base64.getEncoder().encodeToString(mapper.writeValueAsString(authorizationRequest).getBytes());
+        } catch (JsonProcessingException jspe) {
+            var msg = "Failed to serialise OAuth auth to JSON";
+            LOGGER.error(msg, jspe);
+            throw new RuntimeException(msg);
+        }
     }
 
     private void deleteCookie(HttpServletRequest request, HttpServletResponse response) {
@@ -98,7 +95,7 @@ class HttpCookieOAuth2AuthorizationRequestRepository implements AuthorizationReq
 
         Cookie[] cookies = request.getCookies();
 
-        if (cookies != null && cookies.length > 0) {
+        if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals(COOKIE_NAME)) {
                     return Optional.of(cookie);
@@ -111,7 +108,21 @@ class HttpCookieOAuth2AuthorizationRequestRepository implements AuthorizationReq
 
     private OAuth2AuthorizationRequest toOAuth2AuthorizationRequest(Cookie cookie) {
 
-        return (OAuth2AuthorizationRequest) SerializationUtils.deserialize(
-                Base64.getUrlDecoder().decode(cookie.getValue()));
+        var mapper = new Jackson2ObjectMapperBuilder().autoDetectFields(true)
+                .autoDetectGettersSetters(true)
+                .modules(new OAuth2ClientJackson2Module())
+                .visibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY)
+                .build();
+        // See https://github.com/spring-projects/spring-security/issues/4370
+        mapper.registerModule(new CoreJackson2Module());
+
+        try {
+            return mapper.readValue(new String(Base64.getDecoder().decode(cookie.getValue())),
+                    OAuth2AuthorizationRequest.class);
+        } catch (IOException jspe) {
+            var msg = "Failed to deserialise OAuth auth from JSON";
+            LOGGER.error(msg, jspe);
+            throw new RuntimeException(msg);
+        }
     }
 }

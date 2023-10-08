@@ -15,9 +15,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @EqualsAndHashCode
 @ToString
-public class Item implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class Item {
 
     private String id;
     private String selfLink;

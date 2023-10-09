@@ -103,7 +103,7 @@ services:
     # The container_name must be commented out if starting multiple containers for this tier e.g.
     # "docker compose up --scale api-tier-java=2"
     # container_name: books-api-java-container
-    image: aidanwhiteley/books-api-java:0.30.2-RELEASE
+    image: aidanwhiteley/books-api-java:0.30.4-RELEASE
     restart: unless-stopped
     environment:
       - "SPRING_PROFILES_ACTIVE=${JAVA_BOOKS_SPRING_PROFILE}"

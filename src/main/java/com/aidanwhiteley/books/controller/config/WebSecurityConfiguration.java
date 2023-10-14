@@ -15,6 +15,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
+import org.springframework.boot.actuate.health.Health;
+import org.springframework.boot.actuate.health.HealthEndpoint;
+import org.springframework.boot.actuate.info.Info;
+import org.springframework.boot.actuate.info.InfoEndpoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
@@ -145,7 +149,8 @@ public class WebSecurityConfiguration {
                 .authorizeHttpRequests(authz ->
                     authz
                         // Make sure Actuator endpoints are protected
-                        .requestMatchers(EndpointRequest.toAnyEndpoint()).hasRole(ROLE_ACTUATOR.getShortName())
+                        .requestMatchers(EndpointRequest.toAnyEndpoint().excluding(HealthEndpoint.class).excluding(InfoEndpoint.class)).
+                            hasRole(ROLE_ACTUATOR.getShortName())
                         // We permitAll here (getting us back to the Spring Boot 2 default) as we have method level security
                         // applied rather than request level
                         .anyRequest().permitAll()

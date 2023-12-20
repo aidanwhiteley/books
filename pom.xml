@@ -161,7 +161,7 @@
         <dependency>
             <groupId>io.gatling.highcharts</groupId>
             <artifactId>gatling-charts-highcharts</artifactId>
-            <version>3.9.5</version>
+            <version>3.10.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>

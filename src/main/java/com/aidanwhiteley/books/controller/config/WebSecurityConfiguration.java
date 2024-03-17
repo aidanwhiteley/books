@@ -47,7 +47,6 @@ import java.io.IOException;
 
 import static com.aidanwhiteley.books.domain.User.Role.ROLE_ACTUATOR;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
-import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableMethodSecurity()
@@ -115,7 +114,7 @@ public class WebSecurityConfiguration {
         //
         // So if using CORS, there's no XSRF protection!
         if (enableCORS) {
-            http.csrf(csrf -> csrf.disable());      // lgtm [java/spring-disabled-csrf-protection]
+            http.csrf(csrf -> csrf.disable());
             LOGGER.warn("");
             LOGGER.warn("**********************************************************************");
             LOGGER.warn("*** WARNING!                                                       ***");

@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class OpenApiConfig {
     @Bean
-    public OpenAPI customOpenAPI(@Value("${springdoc.version}") String appVersion) {
+    OpenAPI customOpenAPI(@Value("${springdoc.version}") String appVersion) {
         Contact contact = new Contact();
         contact.setName("Aidan Whiteley");
         contact.setUrl("https://aidanwhiteley.com");

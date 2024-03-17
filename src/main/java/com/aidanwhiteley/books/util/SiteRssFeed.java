@@ -6,7 +6,6 @@ import com.rometools.rome.feed.rss.Channel;
 import com.rometools.rome.feed.rss.Content;
 import com.rometools.rome.feed.rss.Guid;
 import com.rometools.rome.feed.rss.Item;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -35,7 +34,6 @@ public class SiteRssFeed {
 
 	private final BookRepository bookRepository;
 
-	@Autowired
 	public SiteRssFeed(BookRepository bookRepository) {
 		this.bookRepository = bookRepository;
 	}

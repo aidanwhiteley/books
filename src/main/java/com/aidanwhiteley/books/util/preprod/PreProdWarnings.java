@@ -2,7 +2,6 @@ package com.aidanwhiteley.books.util.preprod;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +12,6 @@ public class PreProdWarnings {
     private static final String SEPARATOR = "**********************************************************************";
     private final Environment environment;
 
-    @Autowired
     public PreProdWarnings(Environment environment) {
         this.environment = environment;
     }
@@ -47,6 +45,6 @@ public class PreProdWarnings {
     }
 
     private String padRight(String s, int n) {
-        return String.format("%-" + n + "s", s);
+        return ("%-" + n + "s").formatted(s);
     }
 }

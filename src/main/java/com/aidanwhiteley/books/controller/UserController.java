@@ -8,7 +8,6 @@ import com.aidanwhiteley.books.repository.UserRepository;
 import com.aidanwhiteley.books.util.JwtAuthenticationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -40,7 +39,6 @@ public class UserController {
 
 	private final JwtAuthenticationService authService;
 
-	@Autowired
 	public UserController(UserRepository userRepository, JwtAuthenticationUtils jwtAuthenticationUtils,
 						  JwtAuthenticationService jwtAuthenticationService) {
 		this.userRepository = userRepository;
@@ -80,7 +78,7 @@ public class UserController {
 
 	@DeleteMapping(value = "/users/{id}")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public ResponseEntity<Object> deleteUserById(@PathVariable("id") String id, Principal principal) {
+	public ResponseEntity<Object> deleteUserById(@PathVariable String id, Principal principal) {
 
 		Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
 		if (user.isPresent()) {
@@ -100,7 +98,7 @@ public class UserController {
 
 	@PatchMapping(value = "/users/{id}")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public ResponseEntity<Object> patchUserRolesById(@PathVariable("id") String id, @RequestBody ClientRoles clientRoles,
+	public ResponseEntity<Object> patchUserRolesById(@PathVariable String id, @RequestBody ClientRoles clientRoles,
 			Principal principal) {
 
 		Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);

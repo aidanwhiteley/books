@@ -3,7 +3,6 @@ package com.aidanwhiteley.books.service;
 import com.aidanwhiteley.books.repository.BookRepository;
 import com.aidanwhiteley.books.repository.dtos.BooksByRating;
 import com.aidanwhiteley.books.service.dtos.SummaryStats;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -15,7 +14,6 @@ public class StatsService {
 
     private final BookRepository bookRepository;
 
-    @Autowired
     public StatsService(BookRepository bookRepository) {
         this.bookRepository = bookRepository;
     }

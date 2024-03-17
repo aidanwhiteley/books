@@ -8,7 +8,6 @@ import com.aidanwhiteley.books.repository.dtos.BooksByAuthor;
 import com.aidanwhiteley.books.repository.dtos.BooksByGenre;
 import com.aidanwhiteley.books.service.StatsService;
 import com.aidanwhiteley.books.service.dtos.SummaryStats;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -38,7 +37,6 @@ public class BookController {
     @Value("${books.users.max.page.size}")
     private int maxPageSize;
 
-    @Autowired
     public BookController(BookRepository bookRepository, StatsService statsService) {
         this.bookRepository = bookRepository;
         this.statsService = statsService;
@@ -50,33 +48,33 @@ public class BookController {
     }
 
     @GetMapping(value = {"/books", "/books/"}, params = {"page", "size"})
-    public Page<Book> findAllByCreatedDateTimeDesc(@RequestParam(value = "page") int page,
-                                                   @RequestParam(value = "size") int size, Principal principal) {
+    public Page<Book> findAllByCreatedDateTimeDesc(@RequestParam int page,
+                                                   @RequestParam int size, Principal principal) {
 
         PageRequest pageObj = PageRequest.of(page, size);
         return bookRepository.findAllByOrderByCreatedDateTimeDesc(pageObj);
     }
 
     @GetMapping(value = "/books/{id}")
-    public Book findBookById(@PathVariable("id") String id, Principal principal) {
+    public Book findBookById(@PathVariable String id, Principal principal) {
         return bookRepository.findById(id).orElseThrow(() -> new NotFoundException("Book id " + id + " not found"));
     }
 
     @GetMapping(value = {"/books", "/books/"}, params = {"author"})
-    public Page<Book> findByAuthor(@RequestParam("author") String author, Principal principal) {
+    public Page<Book> findByAuthor(@RequestParam String author, Principal principal) {
         return findByAuthor(author, 0, defaultPageSize, principal);
     }
 
     @GetMapping(value = {"/books", "books/"}, params = {"author", "page", "size"})
-    public Page<Book> findByAuthor(@RequestParam("author") String author, @RequestParam(value = "page") int page,
-                                   @RequestParam(value = "size") int size, Principal principal) {
+    public Page<Book> findByAuthor(@RequestParam String author, @RequestParam int page,
+                                   @RequestParam int size, Principal principal) {
 
         if (null == author || author.trim().isEmpty()) {
             throw new IllegalArgumentException("Author parameter cannot be empty");
         }
 
         if (size > maxPageSize) {
-            throw new IllegalArgumentException(String.format(PAGE_REQUEST_TOO_BIG_MESSAGE, maxPageSize));
+            throw new IllegalArgumentException(PAGE_REQUEST_TOO_BIG_MESSAGE.formatted(maxPageSize));
         }
 
         PageRequest pageObj = PageRequest.of(page, size);
@@ -84,20 +82,20 @@ public class BookController {
     }
 
     @GetMapping(value = {"/books", "/books/"}, params = {"search"})
-    public Page<Book> findBySearch(@RequestParam("search") String search, Principal principal) {
+    public Page<Book> findBySearch(@RequestParam String search, Principal principal) {
         return findBySearch(search, 0, defaultPageSize, principal);
     }
 
     @GetMapping(value = {"/books", "/books/"}, params = {"search", "page", "size"})
-    public Page<Book> findBySearch(@RequestParam("search") String search, @RequestParam(value = "page") int page,
-                                   @RequestParam(value = "size") int size, Principal principal) {
+    public Page<Book> findBySearch(@RequestParam String search, @RequestParam int page,
+                                   @RequestParam int size, Principal principal) {
 
         if (null == search || search.trim().isEmpty()) {
             throw new IllegalArgumentException("Search query string cannot be empty");
         }
 
         if (size > maxPageSize) {
-            throw new IllegalArgumentException(String.format(PAGE_REQUEST_TOO_BIG_MESSAGE, maxPageSize));
+            throw new IllegalArgumentException(PAGE_REQUEST_TOO_BIG_MESSAGE.formatted(maxPageSize));
         }
 
         PageRequest pageObj = PageRequest.of(page, size);
@@ -105,20 +103,20 @@ public class BookController {
     }
 
     @GetMapping(value = {"/books", "/books/"}, params = {"genre"})
-    public Page<Book> findByGenre(@RequestParam("genre") String genre, Principal principal) {
+    public Page<Book> findByGenre(@RequestParam String genre, Principal principal) {
         return findByGenre(genre, 0, defaultPageSize, principal);
     }
 
     @GetMapping(value = {"/books", "/books/"}, params = {"genre", "page", "size"})
-    public Page<Book> findByGenre(@RequestParam("genre") String genre, @RequestParam(value = "page") int page,
-                                  @RequestParam(value = "size") int size, Principal principal) {
+    public Page<Book> findByGenre(@RequestParam String genre, @RequestParam int page,
+                                  @RequestParam int size, Principal principal) {
 
         if (null == genre || genre.trim().isEmpty()) {
             throw new IllegalArgumentException("Genre parameter cannot be empty");
         }
 
         if (size > maxPageSize) {
-            throw new IllegalArgumentException(String.format(PAGE_REQUEST_TOO_BIG_MESSAGE, maxPageSize));
+            throw new IllegalArgumentException(PAGE_REQUEST_TOO_BIG_MESSAGE.formatted(maxPageSize));
         }
 
         PageRequest pageObj = PageRequest.of(page, size);
@@ -141,13 +139,13 @@ public class BookController {
     }
 
     @GetMapping(value = {"/books", "/books/"}, params = {"rating"})
-    public Page<Book> findByRating(@RequestParam("rating") String rating, Principal principal) {
+    public Page<Book> findByRating(@RequestParam String rating, Principal principal) {
         return findByRating(rating, 0, defaultPageSize, principal);
     }
 
     @GetMapping(value = {"/books", "/books/"}, params = {"rating", "page", "size"})
-    public Page<Book> findByRating(@RequestParam("rating") String rating, @RequestParam(value = "page") int page,
-                                   @RequestParam(value = "size") int size, Principal principal) {
+    public Page<Book> findByRating(@RequestParam String rating, @RequestParam int page,
+                                   @RequestParam int size, Principal principal) {
 
         if (null == rating || rating.trim().isEmpty()) {
             throw new IllegalArgumentException("Rating parameter cannot be empty");
@@ -159,7 +157,7 @@ public class BookController {
         }
 
         if (size > maxPageSize) {
-            throw new IllegalArgumentException(String.format(PAGE_REQUEST_TOO_BIG_MESSAGE, maxPageSize));
+            throw new IllegalArgumentException(PAGE_REQUEST_TOO_BIG_MESSAGE.formatted(maxPageSize));
         }
 
         PageRequest pageObj = PageRequest.of(page, size);

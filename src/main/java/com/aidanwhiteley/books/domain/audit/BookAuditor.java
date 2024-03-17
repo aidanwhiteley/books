@@ -4,7 +4,6 @@ import com.aidanwhiteley.books.domain.Owner;
 import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.repository.UserRepository;
 import com.aidanwhiteley.books.util.JwtAuthenticationUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,7 +19,6 @@ public class BookAuditor implements AuditorAware<Owner> {
 
     private final UserRepository userRepository;
 
-    @Autowired
     public BookAuditor(JwtAuthenticationUtils jwtAuthenticationUtils, UserRepository userRepository) {
         this.jwtAuthenticationUtils = jwtAuthenticationUtils;
         this.userRepository = userRepository;

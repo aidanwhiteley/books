@@ -5,7 +5,6 @@ import com.aidanwhiteley.books.repository.UserRepository;
 import com.aidanwhiteley.books.util.MailClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -24,7 +23,6 @@ public class SignUpNotificationService {
     private final UserRepository userRepository;
     private final MailClient mailClient;
 
-    @Autowired
     public SignUpNotificationService(UserRepository userRepository, MailClient mailClient) {
         this.userRepository = userRepository;
         this.mailClient = mailClient;

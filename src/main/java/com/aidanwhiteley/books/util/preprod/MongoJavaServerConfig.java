@@ -5,7 +5,6 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.lang.NonNull;
 import de.bwaldvogel.mongo.MongoServer;
 import de.bwaldvogel.mongo.backend.memory.MemoryBackend;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
@@ -25,7 +24,6 @@ public class MongoJavaServerConfig extends AbstractMongoClientConfiguration {
     private static final String DB_NAME = "books-mongo-in-memory";
     private final PreProdWarnings preProdWarnings;
 
-    @Autowired
     public MongoJavaServerConfig(PreProdWarnings preProdWarnings) {
         this.preProdWarnings = preProdWarnings;
     }

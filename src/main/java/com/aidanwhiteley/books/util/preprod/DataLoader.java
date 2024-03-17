@@ -107,7 +107,9 @@ public class DataLoader {
 
             // Clearing and loading data into user collection - happens after user creation file found and loaded
             LOGGER.info("Clearing users collection and loading development data for books project");
-            template.dropCollection(USERS_COLLECTION);
+            if (template.collectionExists(USERS_COLLECTION)) {
+                template.dropCollection(USERS_COLLECTION);
+            }
 
             jsons = bufferedReader.lines().toList();
         }

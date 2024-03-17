@@ -52,6 +52,8 @@ management:
       exposure:
         include: ${CLOUDY_ACTUATOR_ENDPOINTS:health, info}
   info:
+    env:
+      enabled: true
     git:
       mode: full
   health:

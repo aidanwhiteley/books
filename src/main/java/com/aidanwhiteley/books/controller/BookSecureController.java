@@ -1,6 +1,7 @@
 package com.aidanwhiteley.books.controller;
 
 import com.aidanwhiteley.books.controller.aspect.LimitDataVisibility;
+import com.aidanwhiteley.books.controller.dtos.CommentRec;
 import com.aidanwhiteley.books.controller.exceptions.NotAuthorisedException;
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.Comment;
@@ -157,13 +158,12 @@ public class BookSecureController {
     }
 
     @PostMapping(value = "/books/{id}/comments")
-    public Book addCommentToBook(@PathVariable String id, @Valid @RequestBody Comment comment,
+    public Book addCommentToBook(@PathVariable String id, @Valid @RequestBody CommentRec commentRec,
                                  Principal principal) {
 
         Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
         if (user.isPresent()) {
-            comment.setOwner(new Owner(user.get()));
-
+            Comment comment = new Comment(commentRec.commentText(), new Owner(user.get()));
             return bookRepository.addCommentToBook(id, comment);
         } else {
             return null;

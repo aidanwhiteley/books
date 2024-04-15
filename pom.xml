@@ -39,7 +39,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>21</java.version>
-        <spring-cloud.version>2023.0.0</spring-cloud.version>
+        <spring-cloud.version>2023.0.1</spring-cloud.version>
         <!-- SonarCloud -->
         <sonar.projectKey>com.aidanwhiteley:books</sonar.projectKey>
         <sonar.organization>aidanwhiteley-github</sonar.organization>
@@ -138,7 +138,7 @@
         <dependency>
             <groupId>de.bwaldvogel</groupId>
             <artifactId>mongo-java-server</artifactId>
-            <version>1.44.0</version>
+            <version>1.45.0</version>
         </dependency>
         <dependency>
             <groupId>com.icegreen</groupId>
@@ -184,7 +184,7 @@
             <!-- For the Spring Cloud Wiremock / Eureka client dependencies -->
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-starter-parent</artifactId>
+                <artifactId>spring-cloud-dependencies</artifactId>
                 <version>${spring-cloud.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
@@ -298,6 +298,28 @@
                         <version>5.7.0</version>
                     </dependency>
                 </dependencies>
+            </plugin>
+
+            <!-- Following two plugins are for Mockito's use of NetBuddy and its dynamic loading of an agent.
+                See https://github.com/mockito/mockito/issues/3037 -->
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.6.1</version>
+                <executions>
+                    <execution>
+                        <id>getClasspathFilenames</id>
+                        <goals>
+                            <goal>properties</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.5</version>
+                <configuration>
+                    <argLine>@{argLine} -javaagent:${net.bytebuddy:byte-buddy-agent:jar}</argLine>
+                </configuration>
             </plugin>
 
         </plugins>

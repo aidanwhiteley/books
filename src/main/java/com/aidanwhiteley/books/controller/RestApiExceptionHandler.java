@@ -110,7 +110,7 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
                                                              HttpStatusCode status, WebRequest request) {
 
         if (ex instanceof NoResourceFoundException) {
-            API_LOGGER.info("Resource not found. This may well be expected: " + ex.getMessage());
+            API_LOGGER.info("Resource not found. This may well be expected: {}", ex.getMessage());
             return new ResponseEntity<>(HttpStatusCode.valueOf(NOT_FOUND.ordinal()));
         }
 

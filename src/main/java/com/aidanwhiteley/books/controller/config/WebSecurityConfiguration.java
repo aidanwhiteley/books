@@ -99,19 +99,11 @@ public class WebSecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        // Is CORS to be enabled? If yes, the allowedCorsOrigin config
-        // property should also be set.
-        // Normally only expected to be used in dev when there is no "front
-        // proxy" of some sort
-        if (enableCORS) {
-        }
-
         // Getting required server side config for enabling Angular to send X-CSRF-TOKEN request header across
         // CORS domains has currently defeated me.
         // Client side this wouldnt work out of the box with Angular either but the following library would
         // probably help if I could get the server side config right.
         // https://github.com/pasupulaphani/angular-csrf-cross-domain
-        //
         // So if using CORS, there's no XSRF protection!
         if (enableCORS) {
             http.csrf(csrf -> csrf.disable());

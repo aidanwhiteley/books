@@ -1,6 +1,7 @@
 package com.aidanwhiteley.books.controller;
 
 import com.aidanwhiteley.books.controller.aspect.LimitDataVisibility;
+import com.aidanwhiteley.books.controller.dtos.CommentRec;
 import com.aidanwhiteley.books.controller.exceptions.NotAuthorisedException;
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.Comment;
@@ -15,7 +16,6 @@ import com.aidanwhiteley.books.repository.dtos.BooksByReader;
 import com.aidanwhiteley.books.util.JwtAuthenticationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -67,7 +67,6 @@ public class BookSecureController {
     @Value("${books.users.max.page.size}")
     private int maxPageSize;
 
-    @Autowired
     public BookSecureController(BookRepository bookRepository, GoogleBooksDaoSync googleBooksDaoSync,
                                 GoogleBooksDaoAsync googleBooksDaoAsync, JwtAuthenticationUtils jwtAuthenticationUtils) {
         this.bookRepository = bookRepository;
@@ -140,7 +139,7 @@ public class BookSecureController {
     }
 
     @DeleteMapping(value = "/books/{id}")
-    public ResponseEntity<Book> deleteBookById(@PathVariable("id") String id, Principal principal) {
+    public ResponseEntity<Book> deleteBookById(@PathVariable String id, Principal principal) {
 
         Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
         if (user.isPresent()) {
@@ -159,13 +158,12 @@ public class BookSecureController {
     }
 
     @PostMapping(value = "/books/{id}/comments")
-    public Book addCommentToBook(@PathVariable("id") String id, @Valid @RequestBody Comment comment,
+    public Book addCommentToBook(@PathVariable String id, @Valid @RequestBody CommentRec commentRec,
                                  Principal principal) {
 
         Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
         if (user.isPresent()) {
-            comment.setOwner(new Owner(user.get()));
-
+            Comment comment = new Comment(commentRec.commentText(), new Owner(user.get()));
             return bookRepository.addCommentToBook(id, comment);
         } else {
             return null;
@@ -173,7 +171,7 @@ public class BookSecureController {
     }
 
     @DeleteMapping(value = "/books/{id}/comments/{commentId}")
-    public Book removeCommentFromBook(@PathVariable("id") String id, @PathVariable("commentId") String commentId,
+    public Book removeCommentFromBook(@PathVariable String id, @PathVariable String commentId,
                                       Principal principal) {
 
         Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
@@ -203,15 +201,15 @@ public class BookSecureController {
      * least ROLE_EDITOR
      */
     @GetMapping(value = {"/books", "/books/"})
-    public Page<Book> findByReader(@RequestParam String reader, @RequestParam(value = "page", defaultValue = "0") int page,
-                                   @RequestParam(value = "size", defaultValue = "5") int size, Principal principal) {
+    public Page<Book> findByReader(@RequestParam String reader, @RequestParam(defaultValue = "0") int page,
+                                   @RequestParam(defaultValue = "5") int size, Principal principal) {
 
         if (null == reader || reader.trim().isEmpty()) {
             throw new IllegalArgumentException("Reader parameter cannot be empty");
         }
 
         if (size > maxPageSize) {
-            throw new IllegalArgumentException(String.format("Cannot request a page of data containing more that %s elements", maxPageSize));
+            throw new IllegalArgumentException("Cannot request a page of data containing more that %s elements".formatted(maxPageSize));
         }
 
         PageRequest pageObj = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdDateTime"));
@@ -219,7 +217,7 @@ public class BookSecureController {
     }
 
     @GetMapping(value = {"/googlebooks", "googlebooks/"}, params = "title")
-    public BookSearchResult findGoogleBooksByTitle(@RequestParam("title") String title) {
+    public BookSearchResult findGoogleBooksByTitle(@RequestParam String title) {
         return googleBooksDaoSync.searchGoogBooksByTitle(title);
     }
 

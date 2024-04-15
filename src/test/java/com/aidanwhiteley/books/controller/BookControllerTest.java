@@ -286,19 +286,19 @@ public class BookControllerTest extends IntegrationTest {
 
         ResponseEntity<String> response = testRestTemplate.exchange("/api/books/?author=someone&page=0&size=" + tooBig, HttpMethod.GET, null, String.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertTrue(response.toString().contains(String.format(PAGE_REQUEST_TOO_BIG_MESSAGE, maxPageSize)));
+        assertTrue(response.toString().contains(PAGE_REQUEST_TOO_BIG_MESSAGE.formatted(maxPageSize)));
 
         response = testRestTemplate.exchange("/api/books/?search=something&page=0&size=" + tooBig, HttpMethod.GET, null, String.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertTrue(response.toString().contains(String.format(PAGE_REQUEST_TOO_BIG_MESSAGE, maxPageSize)));
+        assertTrue(response.toString().contains(PAGE_REQUEST_TOO_BIG_MESSAGE.formatted(maxPageSize)));
 
         response = testRestTemplate.exchange("/api/books/?genre=somegenre&page=0&size=" + tooBig, HttpMethod.GET, null, String.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertTrue(response.toString().contains(String.format(PAGE_REQUEST_TOO_BIG_MESSAGE, maxPageSize)));
+        assertTrue(response.toString().contains(PAGE_REQUEST_TOO_BIG_MESSAGE.formatted(maxPageSize)));
 
         response = testRestTemplate.exchange("/api/books/?rating=great&page=0&size=" + tooBig, HttpMethod.GET, null, String.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertTrue(response.toString().contains(String.format(PAGE_REQUEST_TOO_BIG_MESSAGE, maxPageSize)));
+        assertTrue(response.toString().contains(PAGE_REQUEST_TOO_BIG_MESSAGE.formatted(maxPageSize)));
     }
 
     @Test

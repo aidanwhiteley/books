@@ -4,12 +4,11 @@ import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.repository.UserRepository;
 import com.aidanwhiteley.books.util.IntegrationTest;
 import com.aidanwhiteley.books.util.Oauth2AuthenticationUtils;
-import org.junit.Rule;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
@@ -32,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class UserServiceTest extends IntegrationTest {
 
     private static final String DUMMY = "dummy";
@@ -39,9 +39,6 @@ class UserServiceTest extends IntegrationTest {
     private static final String NEW_USER_2 = "New User 2";
     private static final String UPDATED_USER_1 = "Updated User 1";
     private static final String UPDATED_USER_2 = "Updated User 2";
-
-    @Rule
-    public MockitoRule mockitoRule = MockitoJUnit.rule();
     
     @Autowired
     private UserRepository userRepository;

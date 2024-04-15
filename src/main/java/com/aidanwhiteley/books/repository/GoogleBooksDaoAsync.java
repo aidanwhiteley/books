@@ -4,7 +4,6 @@ import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.googlebooks.Item;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Async;
@@ -26,7 +25,6 @@ public class GoogleBooksDaoAsync extends GoogleBooksApiConfig {
     private final BookRepository bookRepository;
     private final GoogleBooksApiConfig googleBooksApiConfig;
 
-    @Autowired
     public GoogleBooksDaoAsync(BookRepository bookRepository, GoogleBooksApiConfig googleBooksApiConfig) {
         this.webClient = WebClient.builder()
                 .defaultHeader(HttpHeaders.USER_AGENT, BOOKS_WEB_CLIENT)

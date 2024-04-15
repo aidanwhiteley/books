@@ -4,7 +4,6 @@ import com.aidanwhiteley.books.domain.Book;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -43,7 +42,6 @@ public class DataLoader {
     @Value("${books.autoAuthUser}")
     private boolean autoAuthUser;
 
-    @Autowired
     public DataLoader(MongoTemplate mongoTemplate, PreProdWarnings preProdWarnings, Environment environment) {
         this.template = mongoTemplate;
         this.preProdWarnings = preProdWarnings;
@@ -107,7 +105,9 @@ public class DataLoader {
 
             // Clearing and loading data into user collection - happens after user creation file found and loaded
             LOGGER.info("Clearing users collection and loading development data for books project");
-            template.dropCollection(USERS_COLLECTION);
+            if (template.collectionExists(USERS_COLLECTION)) {
+                template.dropCollection(USERS_COLLECTION);
+            }
 
             jsons = bufferedReader.lines().toList();
         }

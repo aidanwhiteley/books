@@ -12,9 +12,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
+import org.springframework.boot.actuate.health.HealthEndpoint;
+import org.springframework.boot.actuate.info.InfoEndpoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
@@ -87,7 +88,6 @@ public class WebSecurityConfiguration {
     @Value("${books.client.postLogonUrl}")
     private String postLogonUrl;
 
-    @Autowired
     public WebSecurityConfiguration(JwtAuthenticationFilter jwtAuthenticationFilter, JwtAuthenticationService jwtAuthenticationService,
                                     UserService userService) {
 
@@ -99,23 +99,14 @@ public class WebSecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        // Is CORS to be enabled? If yes, the allowedCorsOrigin config
-        // property should also be set.
-        // Normally only expected to be used in dev when there is no "front
-        // proxy" of some sort
-        if (enableCORS) {
-            http.cors();
-        }
-
         // Getting required server side config for enabling Angular to send X-CSRF-TOKEN request header across
         // CORS domains has currently defeated me.
         // Client side this wouldnt work out of the box with Angular either but the following library would
         // probably help if I could get the server side config right.
         // https://github.com/pasupulaphani/angular-csrf-cross-domain
-        //
         // So if using CORS, there's no XSRF protection!
         if (enableCORS) {
-            http.csrf().disable();      // lgtm [java/spring-disabled-csrf-protection]
+            http.csrf(csrf -> csrf.disable());
             LOGGER.warn("");
             LOGGER.warn("**********************************************************************");
             LOGGER.warn("*** WARNING!                                                       ***");
@@ -134,35 +125,32 @@ public class WebSecurityConfiguration {
 
             // The CSRF cookie is also read and sent by Angular - hence it being marked as not "httpOnly".
             // The JWT token is stored in a cookie that IS httpOnly.
-            http.csrf().
-                csrfTokenRequestHandler(requestHandler).
-                csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+            http.csrf(csrf -> csrf.
+                    csrfTokenRequestHandler(requestHandler).
+                    csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()));
         }
 
         http
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).enableSessionUrlRewriting(false)
-                .and()
+                .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS).enableSessionUrlRewriting(false))
                 .authorizeHttpRequests(authz ->
-                    authz
-                        // Make sure Actuator endpoints are protected
-                        .requestMatchers(EndpointRequest.toAnyEndpoint()).hasRole(ROLE_ACTUATOR.getShortName())
-                        // We permitAll here (getting us back to the Spring Boot 2 default) as we have method level security
-                        // applied rather than request level
-                        .anyRequest().permitAll()
+                        authz
+                                // Make sure Actuator endpoints are protected
+                                .requestMatchers(EndpointRequest.toAnyEndpoint().excluding(HealthEndpoint.class).excluding(InfoEndpoint.class)).
+                                hasRole(ROLE_ACTUATOR.getShortName())
+                                // We permitAll here (getting us back to the Spring Boot 2 default) as we have method level security
+                                // applied rather than request level
+                                .anyRequest().permitAll()
                 )
-                .exceptionHandling()
-                .defaultAuthenticationEntryPointFor(forbiddenEntryPoint(), PROTECTED_URLS)
-                .and()
+                .exceptionHandling(handling -> handling
+                        .defaultAuthenticationEntryPointFor(forbiddenEntryPoint(), PROTECTED_URLS))
                 .addFilterBefore(jwtAuththenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .oauth2Login()
-                    .authorizationEndpoint().baseUri("/login")
-                    .authorizationRequestRepository(cookieBasedAuthorizationRequestRepository())
-                    .and()
-                        .successHandler(new Oauth2AuthenticationSuccessHandler())
-                .and()
-                .formLogin().disable()
-                .httpBasic().disable()
-                .headers().referrerPolicy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN);
+                .oauth2Login(login -> login
+                        .authorizationEndpoint(endpoint -> endpoint.baseUri("/login")
+                                .authorizationRequestRepository(cookieBasedAuthorizationRequestRepository()))
+                        .successHandler(new Oauth2AuthenticationSuccessHandler()))
+                .formLogin(login -> login.disable())
+                .httpBasic(basic -> basic.disable())
+                .headers(headers -> headers.referrerPolicy(policy -> policy.policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN)));
 
         return http.build();
 

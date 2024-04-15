@@ -8,7 +8,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
@@ -31,7 +30,7 @@ class HttpCookieOAuth2AuthorizationRequestRepository implements AuthorizationReq
 
     public static final String COOKIE_NAME = "cloudy-oauth2-auth";
 
-    public HttpCookieOAuth2AuthorizationRequestRepository(@Autowired ObjectMapper authRequestJsonMapper) {
+    public HttpCookieOAuth2AuthorizationRequestRepository(ObjectMapper authRequestJsonMapper) {
         this.authRequestJsonMapper = authRequestJsonMapper;
     }
 

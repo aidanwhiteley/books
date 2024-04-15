@@ -55,7 +55,10 @@ spring:
         register-management: off
     loadbalancer:
       ribbon:
-        enabled: false    # RibbonLoadBalancerClient deprecated. This setting uses BlockingLoadBalancerClient
+        enabled: false
+  threads:
+    virtual:
+      enabled: true    # RibbonLoadBalancerClient deprecated. This setting uses BlockingLoadBalancerClient
 
 # If running in containers we want to set a random port (i.e. override to set to 0)
 server:

@@ -4,7 +4,6 @@ import com.aidanwhiteley.books.domain.googlebooks.BookSearchResult;
 import com.aidanwhiteley.books.domain.googlebooks.Item;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.stereotype.Repository;
@@ -24,7 +23,6 @@ public class GoogleBooksDaoSync {
     private final GoogleBooksApiConfig googleBooksApiConfig;
     private RestTemplate googleBooksRestTemplate;
 
-    @Autowired
     public GoogleBooksDaoSync(GoogleBooksApiConfig googleBooksApiConfig) {
         this.googleBooksApiConfig = googleBooksApiConfig;
     }

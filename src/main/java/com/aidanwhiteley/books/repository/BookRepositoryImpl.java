@@ -11,7 +11,6 @@ import com.aidanwhiteley.books.repository.exceptions.CommentsStorageException;
 import com.mongodb.client.result.UpdateResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -47,7 +46,6 @@ public class BookRepositoryImpl implements BookRepositoryCustomMethods {
 
     private final MongoTemplate mongoTemplate;
 
-    @Autowired
     public BookRepositoryImpl(MongoTemplate mongoTemplate) {
         this.mongoTemplate = mongoTemplate;
     }

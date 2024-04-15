@@ -7,6 +7,7 @@ import com.aidanwhiteley.books.controller.exceptions.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -18,6 +19,7 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -106,6 +108,11 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers,
                                                              HttpStatusCode status, WebRequest request) {
+
+        if (ex instanceof NoResourceFoundException) {
+            API_LOGGER.info("Resource not found. This may well be expected: {}", ex.getMessage());
+            return new ResponseEntity<>(HttpStatusCode.valueOf(NOT_FOUND.ordinal()));
+        }
 
         API_LOGGER.error(
                 "The Spring framework rather than the application handled the following exception: {}", ex.getMessage(),

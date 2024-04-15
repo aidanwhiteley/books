@@ -103,5 +103,4 @@ class HttpCookieOAuth2AuthorizationRequestRepositoryTest {
 		verify(om, times(1)).writeValueAsString(authorizationRequest);
 	}
 
-
 }

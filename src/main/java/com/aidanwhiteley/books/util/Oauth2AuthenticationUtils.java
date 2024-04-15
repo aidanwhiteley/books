@@ -4,7 +4,6 @@ import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
@@ -34,7 +33,6 @@ public class Oauth2AuthenticationUtils {
     @Value("${spring.security.oauth2.client.registration.facebook.client-id}")
     private String facebookClientClientId;
 
-    @Autowired
     public Oauth2AuthenticationUtils(UserRepository userRepository, OAuth2AuthorizedClientService authorizedClientService) {
         this.userRepository = userRepository;
         this.authorizedClientService = authorizedClientService;

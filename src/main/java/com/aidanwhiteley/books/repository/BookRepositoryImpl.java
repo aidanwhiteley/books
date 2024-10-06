@@ -158,9 +158,11 @@ public class BookRepositoryImpl implements BookRepositoryCustomMethods {
 
         List<Book> books = mongoTemplate.find(query, Book.class);
 
+        Query countQuery = TextQuery.queryText(criteria);
+
         return PageableExecutionUtils.getPage(
                 books,
                 pageable,
-                () -> mongoTemplate.count(query, Book.class));
+                () -> mongoTemplate.count(countQuery, Book.class));
     }
 }

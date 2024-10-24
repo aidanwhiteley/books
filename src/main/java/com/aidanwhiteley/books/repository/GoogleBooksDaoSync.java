@@ -35,16 +35,17 @@ public class GoogleBooksDaoSync {
         this.googleBooksRestTemplate = buildRestTemplate(restTemplateBuilder);
     }
 
-    public BookSearchResult searchGoogBooksByTitle(String title) {
+    public BookSearchResult searchGoogBooksByTitleAndAuthor(String title, String author) {
 
-        String encodedTitle;
-        encodedTitle = URLEncoder.encode(title, StandardCharsets.UTF_8);
+        String encodedTitle = URLEncoder.encode(title, StandardCharsets.UTF_8);
+        String encodedAuthor = URLEncoder.encode(author, StandardCharsets.UTF_8);
 
         googleBooksRestTemplate.getMessageConverters().add(0,
                 new StringHttpMessageConverter(StandardCharsets.UTF_8));
 
-        final String searchString = googleBooksApiConfig.getSearchUrl() + encodedTitle + "&" +
-                googleBooksApiConfig.getCountryCode() + "&" + googleBooksApiConfig.getMaxResults();
+        final String searchString = googleBooksApiConfig.getSearchUrl() + "+intitle:" + encodedTitle +
+                "+inauthor:" + encodedAuthor + "&" + googleBooksApiConfig.getCountryCode() +
+                "&" + googleBooksApiConfig.getMaxResults();
 
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("Google Books API called with API called: {}", searchString);

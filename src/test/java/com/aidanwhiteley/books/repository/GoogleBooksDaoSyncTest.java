@@ -36,8 +36,8 @@ class GoogleBooksDaoSyncTest extends IntegrationTest {
     private GoogleBooksDaoSync theDao;
 
     @Test
-    void findByTitle() {
-        BookSearchResult result = theDao.searchGoogBooksByTitle("Design Patterns");
+    void findByTitleAndAuthor() {
+        BookSearchResult result = theDao.searchGoogBooksByTitleAndAuthor("Design Patterns", "Gamma");
         assertNotNull(result);
         assertEquals(NUMBER_OF_BOOKS_IN_SEARCH_RESULTS, result.getItems().size());
         assertTrue(result.getItems().get(0).getId().length() > 0, "Should have found a book id");

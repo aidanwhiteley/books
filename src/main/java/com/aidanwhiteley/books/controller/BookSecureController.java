@@ -123,12 +123,14 @@ public class BookSecureController {
                 ) {
                     // Retrieve and update Google Book details synchronously
                     Item item = googleBooksDaoSync.searchGoogleBooksByGoogleBookId(book.getGoogleBookId());
-                    book.setGoogleBookDetails(item);
+                    currentBookState.setGoogleBookDetails(item);
                 } else if (book.getGoogleBookId() == null || book.getGoogleBookId().isEmpty()) {
-                    book.setGoogleBookDetails(null);
+                    currentBookState.setGoogleBookDetails(null);
                 }
 
-                bookRepository.save(book);
+                Book mergedBook = mergeUpdatesOntoExistingBook(currentBookState, book);
+
+                bookRepository.save(mergedBook);
                 return ResponseEntity.noContent().build();
             } else {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
@@ -136,6 +138,20 @@ public class BookSecureController {
         } else {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
+    }
+
+    private Book mergeUpdatesOntoExistingBook(Book currentBookState, Book book) {
+
+        // Set the fields the owner / admin is allowed to manually update
+        currentBookState.setSummary(book.getSummary());
+        currentBookState.setGenre(book.getGenre());
+        currentBookState.setTitle(book.getTitle());
+        currentBookState.setSummary(book.getSummary());
+        currentBookState.setGoogleBookId(book.getGoogleBookId());
+        currentBookState.setRating(book.getRating());
+        currentBookState.setAuthor(book.getAuthor());
+
+        return currentBookState;
     }
 
     @DeleteMapping(value = "/books/{id}")
@@ -216,9 +232,9 @@ public class BookSecureController {
         return bookRepository.findByReaderOrderByCreatedDateTimeDesc(pageObj, reader);
     }
 
-    @GetMapping(value = {"/googlebooks", "googlebooks/"}, params = "title")
-    public BookSearchResult findGoogleBooksByTitle(@RequestParam String title) {
-        return googleBooksDaoSync.searchGoogBooksByTitle(title);
+    @GetMapping(value = {"/googlebooks", "googlebooks/"}, params = {"title", "author"})
+    public BookSearchResult findGoogleBooksByTitleAndAuthor(@RequestParam String title, @RequestParam String author) {
+        return googleBooksDaoSync.searchGoogBooksByTitleAndAuthor(title, author);
     }
 
     @GetMapping(value = "/books/readers")

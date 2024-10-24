@@ -42,6 +42,7 @@ public class Book extends Auditable {
 
     @NotNull
     @Length(min = 1, max = 75)
+    @Setter
     private String author;
 
     @NotNull
@@ -51,11 +52,14 @@ public class Book extends Auditable {
 
     @NotNull
     @Length(min = 1, max = 20000)
+    @Setter
     private String summary;
 
     @NotNull
+    @Setter
     private Rating rating;
 
+    @Setter
     private String googleBookId;
 
     @Setter

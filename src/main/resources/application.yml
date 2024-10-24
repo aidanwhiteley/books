@@ -164,7 +164,7 @@ books:
   feeds:
     maxentries: 30
     title: The Cloudy Bookclub recent entries
-    domain: http://localhost:9000/
+    domain: https://cloudybookclub.com/
     description: Updates from the Cloudy Bookclub application
 
 springdoc:

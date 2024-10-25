@@ -27,11 +27,11 @@ spring:
           google:
             client-id: NotInSCM1
             client-secret: NotInSCM1
-            redirect-uri: https://{baseHost}{basePort}{basePath}/login/oauth2/code/google
+            redirect-uri: http://localhost:8080/login/oauth2/code/google
           facebook:
             client-id: NotInSCM2
             client-secret: NotInSCM2
-            redirect-uri: https://{baseHost}{basePort}{basePath}/login/oauth2/code/facebook
+            redirect-uri: http://localhost:8080/login/oauth2/code/facebook
         provider:
           # Google provides all the info this app needs by default. Facebook needs configuring.
           facebook:
@@ -98,8 +98,8 @@ books:
 
   client:
     enableCORS: false       # Setting this to true in production is not supported - leaves app at risk of CSRF
-    allowedCorsOrigin: http://localhost:9000
-    postLogonUrl: http://localhost:9000/
+    allowedCorsOrigin: http://localhost:5173
+    postLogonUrl: http://localhost:5173/?logged-on=y
     xsrfHeader: X-XSRF
 
   google:

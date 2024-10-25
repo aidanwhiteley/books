@@ -21,6 +21,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.jackson2.CoreJackson2Module;
@@ -106,7 +107,7 @@ public class WebSecurityConfiguration {
         // https://github.com/pasupulaphani/angular-csrf-cross-domain
         // So if using CORS, there's no XSRF protection!
         if (enableCORS) {
-            http.csrf(csrf -> csrf.disable());
+            http.csrf(AbstractHttpConfigurer::disable);
             LOGGER.warn("");
             LOGGER.warn("**********************************************************************");
             LOGGER.warn("*** WARNING!                                                       ***");

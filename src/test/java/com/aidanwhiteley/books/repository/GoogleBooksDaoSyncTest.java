@@ -81,7 +81,7 @@ class GoogleBooksDaoSyncTest extends IntegrationTest {
             theDao.searchGoogleBooksByGoogleBookId(SERVICE_UNAVAILABLE_BOOK_ID);
             fail("There should have been a 503 on accessing stubbed http service");
         } catch (HttpServerErrorException hsee) {
-            LOGGER.debug("Expected HttpServerErrorException exception caught: {}", hsee);
+            LOGGER.debug("Expected HttpServerErrorException exception caught: {}", hsee.toString());
         }
 
         context.getLogger(GoogleBooksDaoSync.class).setLevel(Level.valueOf("WARN"));

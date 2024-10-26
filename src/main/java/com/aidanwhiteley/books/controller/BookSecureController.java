@@ -115,11 +115,13 @@ public class BookSecureController {
                     .orElseThrow(() -> new IllegalArgumentException("Didnt find book to update"));
 
             if (currentBookState.isOwner(user.get()) || user.get().getRoles().contains(User.Role.ROLE_ADMIN)) {
+
                 boolean inputHasGoogleBookId = book.getGoogleBookId() != null && (!book.getGoogleBookId().isEmpty());
-                if ((inputHasGoogleBookId && currentBookState.getGoogleBookDetails() == null)
-                        ||
-                        (currentBookState.getGoogleBookId() != null && book.getGoogleBookId() != null &&
-                                (!currentBookState.getGoogleBookId().equalsIgnoreCase(book.getGoogleBookId())))
+                boolean currentBookHasGoogleBookId = currentBookState.getGoogleBookId() != null &&
+                        (!currentBookState.getGoogleBookId().isEmpty());
+
+                if (inputHasGoogleBookId && (currentBookHasGoogleBookId &&
+                                !currentBookState.getGoogleBookId().equalsIgnoreCase(book.getGoogleBookId()))
                 ) {
                     // Retrieve and update Google Book details synchronously
                     Item item = googleBooksDaoSync.searchGoogleBooksByGoogleBookId(book.getGoogleBookId());

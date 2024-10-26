@@ -55,7 +55,8 @@ class BookSecureControllerWithMocksTest {
         BookSecureController controller = new BookSecureController(bookRepository, googleBooksDaoSync, null, jwtAuthenticationUtils);
         controller.updateBook(book, principal);
 
-        verify(googleBooksDaoSync, times(1)).searchGoogleBooksByGoogleBookId(GOOGLE_BOOK_ID_1);
+        // Same googleBookId on existing book as the updated book
+        verify(googleBooksDaoSync, times(0)).searchGoogleBooksByGoogleBookId(GOOGLE_BOOK_ID_1);
         verify(bookRepository, times(1)).save(book);
     }
 

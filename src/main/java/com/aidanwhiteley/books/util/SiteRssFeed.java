@@ -51,11 +51,11 @@ public class SiteRssFeed {
         channel.setItems(recentBooks.stream().map(b -> {
             Item item = new Item();
             item.setTitle(b.getTitle() + " by " + b.getAuthor());
-            item.setLink(booksFeedsDomain + "/book/" + b.getId());
+            item.setLink(booksFeedsDomain + "book/" + b.getId());
 
             Guid guid = new Guid();
             guid.setPermaLink(true);
-            guid.setValue(booksFeedsDomain + "#/book/" + b.getId());
+            guid.setValue(booksFeedsDomain + "book/" + b.getId());
             item.setGuid(guid);
 
             ZonedDateTime zdt = b.getCreatedDateTime().atZone(ZoneId.systemDefault());

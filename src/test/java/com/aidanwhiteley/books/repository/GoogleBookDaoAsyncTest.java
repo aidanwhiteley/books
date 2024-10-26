@@ -30,7 +30,7 @@ class GoogleBookDaoAsyncTest extends IntegrationTest {
     void testBookUpdatedWithGoogleBookDetails() {
 
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Wiremock Mappings: " + WireMock.listAllStubMappings().getMappings());
+            LOGGER.debug("Wiremock Mappings: {}", WireMock.listAllStubMappings().getMappings());
         }
 
         Book book = BookRepositoryTest.createTestBook();
@@ -42,10 +42,6 @@ class GoogleBookDaoAsyncTest extends IntegrationTest {
 
         // TODO - fix such that following call will only take place after async update has completed.
         bookRepository.findById(savedBook.getId()).orElseThrow(() -> new IllegalStateException("Expected book not found"));
-
-        // Commented out until above to do is completed.
-        //assertNotNull(updatedBook.getGoogleBookDetails(),
-        //        "Google book details in Item object should not be null");
     }
 
 }

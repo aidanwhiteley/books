@@ -74,7 +74,7 @@ public class BookControllerTest extends IntegrationTest {
 
         // Returns a "page" of books - so look for the content of the page
         List<Book> books = JsonPath.read(response.getBody(), "$.content");
-        LOGGER.debug("Retrieved JSON was: " + response.getBody());
+        LOGGER.debug("Retrieved JSON was: {}", response.getBody());
 
         assertTrue(books.size() > 0, "No books found");
     }
@@ -184,7 +184,7 @@ public class BookControllerTest extends IntegrationTest {
 
         // Returns a "page" of books - so look for the content of the page
         List<Book> books = JsonPath.read(response.getBody(), "$.content");
-        LOGGER.debug("Retrieved JSON was: " + response.getBody());
+        LOGGER.debug("Retrieved JSON was: {}", response.getBody());
 
 
         assertTrue(books.size() >= 1, "No books found");
@@ -226,7 +226,7 @@ public class BookControllerTest extends IntegrationTest {
 
         // Returns a "page" of books - so look for the content of the page
         List<Book> books = JsonPath.read(response.getBody(), "$.content");
-        LOGGER.debug("Retrieved JSON was: " + response.getBody());
+        LOGGER.debug("Retrieved JSON was: {}", response.getBody());
         assertEquals(books.size(), defaultPageSize, "Default page size of books expected");
     }
 
@@ -236,7 +236,7 @@ public class BookControllerTest extends IntegrationTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
         List<Book> books = JsonPath.read(response.getBody(), "$.content");
-        LOGGER.debug("Retrieved JSON was: " + response.getBody());
+        LOGGER.debug("Retrieved JSON was: {}", response.getBody());
         assertTrue(books.size() > 0, "Expected to find novels");
     }
 
@@ -260,7 +260,7 @@ public class BookControllerTest extends IntegrationTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
         List<Book> booksByRating = JsonPath.read(response.getBody(), "$.content");
-        LOGGER.debug("Retrieved JSON was: " + response.getBody());
+        LOGGER.debug("Retrieved JSON was: {}", response.getBody());
         assertTrue(booksByRating.size() > 0, "Expected to find novels");
         assertEquals(2, booksByRating.size(), "Expected to find a page of 2 novels");
 
@@ -276,7 +276,7 @@ public class BookControllerTest extends IntegrationTest {
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
 
         String bodyContent = response.getBody();
-        LOGGER.debug("Retrieved JSON was: " + bodyContent);
+        LOGGER.debug("Retrieved JSON was: {}", bodyContent);
         assertTrue(bodyContent.contains(ERROR_MESSAGE_FOR_INVALID_RATING), "Expected to find a specified error message");
     }
 

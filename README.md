@@ -263,10 +263,10 @@ The checked in docker-compose.yaml and .env file should result in a deployment a
 
 ![Cloudy Docker Deployment Diagram](../media/docker1.png?raw=true)
 
-If you have a recentish Docker available (>= 18.06.0), from the root of this project type:
+If you have a recentish Docker available, from the root of this project type:
 ~~~~
-docker-compose pull
-docker-compose up --scale api-tier-java=2
+docker compose pull
+docker compose up -d --scale api-tier-java=2
 ~~~~
 
 Then try accessing http://localhost/ If you get 503 errors to start with, you should retry until all the tiers of the

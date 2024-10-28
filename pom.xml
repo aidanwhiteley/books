@@ -291,7 +291,7 @@
                 See https://github.com/mockito/mockito/issues/3037 -->
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
-                <version>3.8.0</version>
+                <version>3.8.1</version>
                 <executions>
                     <execution>
                         <id>getClasspathFilenames</id>

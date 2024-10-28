@@ -47,19 +47,12 @@ logging:
                 ApplicationRegistrator: ERROR
 
 books:
-  client:
-    enableCORS: false      # Note - this value overriden in the IntegrationTest base test class
-    allowedCorsOrigin: http://localhost:9000
-    postLogonUrl: http://localhost:5173/?logged-on=y
-    xsrfHeader: X-XSRF
 
   google:
     books:
       api:
         searchUrl: http://localhost:${wiremock.server.port}/books/v1/volumes?q=
         getByIdUrl: http://localhost:${wiremock.server.port}/books/v1/volumes/
-        countryCode: country=GB
-        maxResults: maxResults=30
         connectTimeout: 2500
         readTimeout: 2000
 

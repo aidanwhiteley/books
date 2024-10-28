@@ -36,8 +36,9 @@ This project runs live under Docker Compose with a React / Typescript [client ap
 
 
 ### Running in development
-The checked in default Spring profile is "mongo-java-server". This uses the in memory mongo-java-server so there is no need to run MongoDb locally. So you 
-should be able to just check out the code and run the application for development purposes with no other dependencies.
+The checked in default Spring profile is "mongo-java-server". This uses an in memory fake Mongo instance - 
+[mongo-java-server](https://github.com/bwaldvogel/mongo-java-server) - so there is no need to run MongoDb locally. So you 
+should be able to just check out the code and run and test the application for development purposes with no other dependencies.
 
 To develop Mongo related code you should switch to the "dev" profile which does expect to be able to connect to a real MongoDb instance.
 
@@ -47,68 +48,64 @@ output to the console.
 To run the application and access the "behind logon" functionality, see the "How to configure application logon security" section below.
 
 ### Tests
-All tests should run fine "out of the box". 
+All tests should run fine "out of the box" i.e. with a clean checkout of the code you should be able to successfully run
+`mvn clean compile test package`
 
 By default, the tests run against mongo-java-server so there is no need to install
 MongDb to test most of the application. Functionality not supported by mogo-java-server such as full text indexes results in some tests being skipped when 
-running with the monog-java-server Spring profile.
+running with the mongo-java-server Spring profile.
 
-When running the CI builds with Github Actions, tests run against a real Mongo instance.
+When running the CI builds with Github Actions, all tests run against a real Mongo instance.
 
 Some of the integration tests make use of WireMock - see the /src/test/resources/mappings and __files directories for the configuration details.
 
 The tests are probably about 50/50 between unit and integration tests...
 
 #### Stress Test
-To examine how the WebClient code is behaving there is a Maven plugin configured that runs a basic Gatling load test.
+To support a simple load test, there is a Maven plugin configured that runs a basic Gatling load test.
 After starting the Spring Boot application (i.e. mvn spring-boot:run or via your IDE) run the command:
 
-mvn gatling:test
+`mvn gatling:test`
 
-The source code of this test in at test/java/com/aidanwhiteley/books/loadtest/StressTestSimulation.java
+The source code of this test in at test/java/com/aidanwhiteley/books/loadtest/StressTestSimulation.java. The checked in config
+ensures that, by default, the number of request per second is low enough not to stress an average PC.
 
-> [!IMPORTANT]  
-> The reactive WebClient code will be replaced by the use of virtual threads at some point.
 
-### How to configure application logon security
-A lot of the functionality is protected behind oauth2 authentication (via Google and Facebook). 
-To use this, you must set up credentials (oauth2 client ids) on Google and Facebook.
-You must then make the clientId and clientSecret available to the running code.
-There are "placeholders" for these in /src/main/resources/application.yml i.e. replace the existing
-"NotInSCMx" (Not In Source Code Management!) values with your own.
-There are lots of other ways to pass in these values e.g. they can be passed as program arguments
+### How to build and run
+This project makes use of the excellent Lombok project. So to build in your favourite IDE, if necessary
+head on over to [Lombok](https://projectlombok.org/) and click the appropriate "Install" link (tested with IntelliJ and Eclipse).
+
+In preparation for playing with recent Java features such as virtual threads and pattern matching, the build or this project **now requires JDK21**.
+
+With appropriate versions of the JDK, Maven and a (optionally) Mongo installed, start with
 ~~~~
---spring.security.oauth2.client.registration.google.client-id=xxxx --spring.security.oauth2.client.registration.google.client-secret=xxxx --spring.security.oauth2.client.registration.facebook.client-id=xxxx --spring.security.oauth2.client.registration.facebook.client-secret=xxxx 
+mvn clean compile test
 ~~~~
-Otherwise, see the Spring documentation for more options.
-
-You must also set a secret key to sign the JWTs (see later).
+and then try
+~~~~
+mvn spring-boot:run
+~~~~
+To run a client to access the microservice, head on over to https://github.com/aidanwhiteley/books-react or see the section below on using Docker.
 
 ### Available Spring profiles
 There are Spring profile files for a range of development and test scenarios. 
 
-#### default 
-	- sets active profile to dev-mongo-java-server - otherwise
-	- requires oauth configured correctly for access to update operations
-	- configured to disallow CORS access to APIs
-	- does not clear down DB or reload test data on every restart
-
-#### dev-mongo-java-server
-	- uses an in memory mongo-java-server rather than a real MongoDb
-	- requires oauth configured correctly for access to update operations
-	- configured to allow CORS access to APIs
-	- clears down the DB and reloads test data on every restart
-	
-#### dev-mongo-java-server-no-auth
+#### dev-mongo-java-server-no-auth (the default selected in application.yml)
 	- uses an in memory mongo-java-server rather than a real MongoDb
 	- configured such that all request have admin access. No oauth set up required and no logon
-	- configured to allow CORS access to APIs
+    - configured to allow CORS access to APIs
+	- clears down the DB and reloads test data on every restart
+
+#### dev-mongo-java-server 
+	- uses an in memory mongo-java-server rather than a real MongoDb
+	- requires oauth configured correctly for access to update operations
+	- doesn't support CORS access to APIs
 	- clears down the DB and reloads test data on every restart
 	
 #### dev-mongodb-no-auth
 	- uses a real MongoDb
 	- configured such that all request have admin access. No oauth set up required and no logon
-	- configured to allow CORS access to APIs
+	- doesn't support CORS access to APIs
 	- clears down the DB and reloads test data on every restart
 	
 #### dev-mongodb
@@ -131,7 +128,7 @@ There are Spring profile files for a range of development and test scenarios.
 	
 
 ### Configuring for production
-"Out of the box" the code runs with the "mongo-java-server" Spring profile - see the first lines of application.yml. None
+"Out of the box" the code runs with the "mongo-java-server-no-auth" Spring profile - see the first lines of application.yml. None
 of the checked in available Spring profiles are intended for production use. You will need to decide the 
 required functionality for your environment and configure your Spring profile accordingly. 
 
@@ -146,21 +143,14 @@ creation of a Mongo database and the two required collections (dependant on the 
 
 Check the console log when running in production - you should see **NO** warning messages!
 
-### How to build and run
-This project makes use of the excellent Lombok project. So to build in your favourite IDE, if necessary
-head on over to [Lombok](https://projectlombok.org/) and click the appropriate "Install" link (tested with IntelliJ and Eclipse).
+### How to configure application logon security
+A lot of the functionality is protected behind oauth2 authentication (via Google and Facebook).
+To use this, you must set up credentials (oauth2 client ids) on Google and/or Facebook.
+You must then make the client-id and client-secret available to the running code.
+There are "placeholders" for these in /src/main/resources/application.yml i.e. replace the existing
+"NotInSCMx" (Not In Source Code Management!) values with your own.
 
-In preparation for playing with recent Java features such as virtual threads and pattern matching, the build or this project **now requires JDK21**. 
-
-With appropriate versions of the JDK, Maven and a (optionally) Mongo installed, start with
-~~~~
-mvn clean compile test
-~~~~
-and then try
-~~~~
-mvn spring-boot:run
-~~~~
-To run a client to access the microservice, head on over to https://github.com/aidanwhiteley/books-web or see the section below on using Docker.
+You should also set the redirect-uri to an appropriate value (and one that you have configured on Google and/or Facebook).
 
 ### Sample data
 There is some sample data provided to make initial understanding of the functionality a bit easier.
@@ -192,16 +182,10 @@ The application-<profile>.yml files can be edited to automatically give a logged
 by specifying their email on Google / Facebook. See the books:users:default:admin:email setting.
 
 ## Security
-Lots of to and froing on this as the two of the main JWT related companies can't seem to agree on where to store a JWT token.
-Stormpath (who joined forces with Okta) [say](https://stormpath.com/blog/where-to-store-your-jwts-cookies-vs-html5-web-storage) use cookies.
-Auth0 [say](https://auth0.com/blog/cookies-vs-tokens-definitive-guide/) use local storage.
+This demo application stores a JWT token in a secure and "httpOnly" cookie. So that hopefully blocks some XSS exploits (as the rogue JavaScript can't read the httpOnly cookie containing the JWT logon token). 
 
-In my mind, it comes down to whether you are more scared of XSS or XSRF. Given the average marketing 
-departments predilection to use their tag managers to include all sorts of random JavaScript, I'm more scared of XSS.
-
-So this demo application stores the JWT token in a secure and "httpOnly" cookie. So that hopefully blocks XSS exploits (as the rogue JavaScript can't read the httpOnly cookie containing the JWT logon token). However, it leaves the application open
-to XSRF exploits. To mitigate that, the application uses an XSRF filter and expects that a (non httpOnly) cookie will be
-re-sent to the server side and, for state changing (non GET) requests, the value of the XSRF token must be added, via JavaScript, as an X-XSRF-TOKEN request header. The application will check that the two values are the same.
+To mitigate XSRF exploits, the application uses an XSRF filter to set an XSRF token in a (non httpOnly) cookie that must be
+re-sent to the server for state changing (non GET) requests as an X-XSRF-TOKEN request header. The application will check that the two values are the same.
 
 This works well (or seems to!) when the API and the HTML is on the same domain. When CORS is needed to call the API, this 
 doesn't currently work. So only use this application with CORS configured (i.e. with no "front proxy") in development.

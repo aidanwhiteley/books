@@ -92,10 +92,10 @@ public class BookControllerTest extends IntegrationTest {
         boolean noAuthProfile = Arrays.stream(this.environment.getActiveProfiles()).
                 anyMatch(s -> s.contains(NO_AUTH_SPRING_PROFILE));
 
-        Assertions.assertFalse(noAuthProfile, "Check not running a no auth profile");
-
-        String expected = "";
-        assertEquals(expected, book.getCreatedBy().getEmail());
+        if (!noAuthProfile) {
+            String expected = "";
+            assertEquals(expected, book.getCreatedBy().getEmail());
+        }
 
         // Now update the book and check that details about who updated the book are not returned
         String updatedTitle = "An updated title";
@@ -105,8 +105,11 @@ public class BookControllerTest extends IntegrationTest {
         // Check that the book was actually updated
         Book updatedBook = testRestTemplate.getForObject(location, Book.class);
         assertEquals(updatedBook.getTitle(), updatedTitle);
-        // and check that details about who did the update arent returned
-        assertTrue(updatedBook.getLastModifiedBy().getLastName().isEmpty());
+
+        if (!noAuthProfile) {
+            // and check that details about who did the update arent returned
+            assertTrue(updatedBook.getLastModifiedBy().getLastName().isEmpty());
+        }
     }
 
     @Test
@@ -256,7 +259,7 @@ public class BookControllerTest extends IntegrationTest {
 
     @Test
     void findBookByRating() {
-        ResponseEntity<String> response = testRestTemplate.exchange("/api/books/?rating=GOOD&page=1&size=2", HttpMethod.GET, null, String.class);
+        ResponseEntity<String> response = testRestTemplate.exchange("/api/books/?rating=GREAT&page=1&size=2", HttpMethod.GET, null, String.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
         List<Book> booksByRating = JsonPath.read(response.getBody(), "$.content");
@@ -265,7 +268,7 @@ public class BookControllerTest extends IntegrationTest {
         assertEquals(2, booksByRating.size(), "Expected to find a page of 2 novels");
 
         // Test defaults
-        response = testRestTemplate.exchange("/api/books/?rating=GOOD", HttpMethod.GET, null, String.class);
+        response = testRestTemplate.exchange("/api/books/?rating=GREAT", HttpMethod.GET, null, String.class);
         booksByRating = JsonPath.read(response.getBody(), "$.content");
         assertEquals(defaultPageSize, booksByRating.size(), "Expected to find default page size of novels");
     }

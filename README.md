@@ -1,6 +1,6 @@
 # books
 This project started as I wanted a simple "microservice" to use when trying out frameworks
-such as Docker, Docker Compose, Spring Cloud, Pivotal Cloud Foundy and AWS.
+such as Docker, Docker Compose and Kubernetes.
 
 It has developed a little further such that it is starting to provide some functionality that may 
 actually be useful. 
@@ -27,7 +27,13 @@ making the web application entirely free of http session state (see later for wh
     * next to no persistence code
     * except for some Mongo aggregation queries added to the Repository implementation
 * accessing the Google Books API with the Spring RestTemplate and, a work in progress, the reactive Spring WebClient
-* and Docker images and a docker-compose file that runs all the tiers of the application with one "docker-compose up --scale api-tier-java=2" command
+* and Docker images and a Docker Compose file that runs all the tiers of the application with one `docker-compose up -d` command
+
+### Live application
+This project runs live under Docker Compose with a React / Typescript [client application](https://github.com/aidanwhiteley/books-react) available at https://cloudybookclub.com/
+
+![The Cloudy Book Club](../media/screengrab.jpg?raw=true)
+
 
 ### Running in development
 The checked in default Spring profile is "mongo-java-server". This uses the in memory mongo-java-server so there is no need to run MongoDb locally. So you 

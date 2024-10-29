@@ -49,7 +49,10 @@ services:
       start_period: "30s"
       retries: 3
     depends_on:
-      - api-gateway-tier
+      api-gateway-tier:
+        condition: service_started
+      api-tier-java:
+        condition: service_healthy
 
   # This container is built using Google Jib using the following maven command
   # for the project at https://github.com/aidanwhiteley/books-gateway
@@ -68,7 +71,8 @@ services:
       - "SERVICE_REGISTRY=${SERVICE_REGISTRY}"
     # Note - healthchecks not easily supportable on JIB based images as the distroless base image has no shell support
     depends_on:
-      - service-registry-tier
+      service-registry-tier:
+        condition: service_started
 
   # This container is built using Google Jib using the following maven command
   # for the project at https://github.com/aidanwhiteley/books-eureka
@@ -120,9 +124,13 @@ services:
       - "SPRING_SECURITY_OUATH2_CLIENT_REGISTRATION_FACEBOOK_CLIENT_ID=${SPRING_SECURITY_OUATH2_CLIENT_REGISTRATION_FACEBOOK_CLIENT_ID}"
       - "SPRING_SECURITY_OUATH2_CLIENT_REGISTRATION_FACEBOOK_CLIENT_SECRET=${SPRING_SECURITY_OUATH2_CLIENT_REGISTRATION_FACEBOOK_CLIENT_SECRET}"
       - "SERVICE_REGISTRY=${SERVICE_REGISTRY}"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
     depends_on:
-      - data-tier-mongo
-      - service-registry-tier
+      data-tier-mongo:
+        condition: service_healthy
+      service-registry-tier:
+        condition: service_started
 
   # This container is built dynamically when the docker-compose up command is issued.
   # The service name is known to the spring-boot application-xxxxx.properties file
@@ -179,4 +187,5 @@ services:
       - "JAVA_BOOKS_ACTUATOR_ONLY_JWT_TOKEN=${JAVA_BOOKS_ACTUATOR_ONLY_JWT_TOKEN}"
       - "SERVICE_REGISTRY=${SERVICE_REGISTRY}"
     depends_on:
-      - service-registry-tier
+      service-registry-tier:
+        condition: service_started

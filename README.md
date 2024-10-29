@@ -27,7 +27,7 @@ making the web application entirely free of http session state (see later for wh
     * next to no persistence code
     * except for some Mongo aggregation queries added to the Repository implementation
 * accessing the Google Books API with the Spring RestTemplate and, a work in progress, the reactive Spring WebClient
-* and Docker images and a Docker Compose file that runs all the tiers of the application with one `docker-compose up -d` command
+* and Docker images and a Docker Compose file that runs all the tiers of the application with one `docker compose up -d` command
 
 ### Live application
 This project runs live under Docker Compose with a React / Typescript [client application](https://github.com/aidanwhiteley/books-react) available at https://cloudybookclub.com/
@@ -269,7 +269,9 @@ docker compose pull
 docker compose up -d --scale api-tier-java=2
 ~~~~
 
-Then try accessing http://localhost/ If you get 503 errors to start with while the whole stack is starting up.
+Then try accessing http://localhost/ 
+
+You may get 503 errors for a short period while the whole stack is starting up.
 
 Note: If you want to persist data in Mongo between restarts of the container, rename the file docker-compose.override.yaml.persistent-data to docker-compose.override.yaml
 If you do this and are running on Windows, make sure to read the Caveats section of https://hub.docker.com/_/mongo/

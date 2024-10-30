@@ -1,6 +1,4 @@
 #!/bin/bash
-# Creates the application Mongo user
-# If editing, ensure file has unix style line endings - use dos2unix after editing on Windows
 mongo <<EOF
 use $MONGO_INITDB_DATABASE;
 db.createUser({

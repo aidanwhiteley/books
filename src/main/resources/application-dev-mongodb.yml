@@ -52,17 +52,12 @@ books:
 
   client:
     enableCORS: true      # Note - this value overriden in the IntegrationTest base test class
-    allowedCorsOrigin: http://localhost:9000
-    postLogonUrl: http://localhost:9000/
-    xsrfHeader: X-XSRF
 
   google:
     books:
       api:
         searchUrl: http://localhost:${wiremock.server.port}/books/v1/volumes?q=
         getByIdUrl: http://localhost:${wiremock.server.port}/books/v1/volumes/
-        countryCode: country=GB
-        maxResults: maxResults=30
         connectTimeout: 500
         readTimeout: 750
 

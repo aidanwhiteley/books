@@ -17,6 +17,9 @@
     <logger name="org.springframework.context" level="WARN" />
     <logger name="org.springframework.boot.availability.ApplicationAvailabilityBean" level="INFO" />
 
+    <!-- Possibly related to https://github.com/spring-cloud/spring-cloud-commons/issues/1315 -->
+    <logger name="org.springframework.context.support.PostProcessorRegistrationDelegate$BeanPostProcessorChecker" level="ERROR" />
+
     <!-- See https://github.com/aidanwhiteley/books/issues/86 -->
     <logger name="org.springframework.data.convert.CustomConversions" level="ERROR" />
 

@@ -69,7 +69,7 @@ books:
 
   client:
     enableCORS: false
-    postLogonUrl: /
+    postLogonUrl: https://cloudybookclub.com/?logged-on=y
 
   google:
     books:

@@ -54,19 +54,11 @@ wiremock:
 books:
   autoAuthUser: false
 
-  client:
-    enableCORS: true      # Note - this value overriden in the IntegrationTest base test class
-    allowedCorsOrigin: http://localhost:9000
-    postLogonUrl: http://localhost:9000/
-    xsrfHeader: X-XSRF
-
   google:
     books:
       api:
         searchUrl: http://localhost:${wiremock.server.port}/books/v1/volumes?q=
         getByIdUrl: http://localhost:${wiremock.server.port}/books/v1/volumes/
-        countryCode: country=GB
-        maxResults: maxResults=30
         connectTimeout: 500
         readTimeout: 750
 
@@ -77,7 +69,7 @@ books:
   users:
     default:
       admin:
-        email: "exmaple@example.com"  # The remote email address for the user that will be automatically made an admin on first logon
+        email: "example@example.com"  # The remote email address for the user that will be automatically made an admin on first logon
     registrationAdminEmail:
       enabled: false
       emailFrom: "exampleFrom@example.com"

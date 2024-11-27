@@ -7,7 +7,7 @@
 
     <groupId>com.aidanwhiteley</groupId>
     <artifactId>books</artifactId>
-    <version>0.50.4-RELEASE</version>
+    <version>0.50.5-RELEASE</version>
     <packaging>jar</packaging>
 
     <name>Books Microservice</name>
@@ -335,7 +335,6 @@
                             <failWhenNoMutations>false</failWhenNoMutations>
                             <timestampedReports>false</timestampedReports>
                             <mutators>STRONGER</mutators>
-                            <theads>2</theads>
                         </configuration>
                         <dependencies>
                             <dependency>

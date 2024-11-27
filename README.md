@@ -69,6 +69,14 @@ After starting the Spring Boot application (i.e. mvn spring-boot:run or via your
 The source code of this test in at test/java/com/aidanwhiteley/books/loadtest/StressTestSimulation.java. The checked in config
 ensures that, by default, the number of request per second is low enough not to stress an average PC.
 
+#### Mutation Tests
+There is support for mutation testing using the [Pitest](https://pitest.org/) library.
+To try it out use something similar to 
+`mvn -Ppitest -DwithHistory=true -DtargetClasses="com.aidanwhiteley.books.service.*" test`
+Be warned, the first run will take a long time (many minutes) - especially if the glob for targetClasses is wide. Subsequent runs should be much quicker.
+Unfortunately, this mutation support wasn't in place when the tests were originally written meaning that the 
+current test suite have some tests that survive too many mutations! The mutation test code is there for any new code.
+
 
 ### How to build and run
 This project makes use of the excellent Lombok project. So to build in your favourite IDE, if necessary

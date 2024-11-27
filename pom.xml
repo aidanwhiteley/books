@@ -7,12 +7,13 @@
 
     <groupId>com.aidanwhiteley</groupId>
     <artifactId>books</artifactId>
-    <version>0.50.4-RELEASE</version>
+    <version>0.50.5-RELEASE</version>
     <packaging>jar</packaging>
 
     <name>Books Microservice</name>
     <description>A simple project to remind myself what books Ive read recently! Also a technology sampler using the
-        latest Spring Boot, oauth based logons, JWTs, stateless in the HTTP layer, Spring Boot admin, Mongo, Docker and docker-compose
+        latest Spring Boot, oauth based logons, JWTs, stateless in the HTTP layer, Spring Boot admin, Mongo, Docker and
+        docker-compose
     </description>
     <developers>
         <developer>
@@ -33,7 +34,7 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.3.5</version>
-        <relativePath /> <!-- lookup parent from repository -->
+        <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
     <properties>
@@ -45,7 +46,8 @@
         <sonar.projectKey>com.aidanwhiteley:books</sonar.projectKey>
         <sonar.organization>aidanwhiteley-github</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-        <sonar.coverage.jacoco.xmlReportPaths>${project.build.directory}/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+        <sonar.coverage.jacoco.xmlReportPaths>${project.build.directory}/site/jacoco/jacoco.xml
+        </sonar.coverage.jacoco.xmlReportPaths>
     </properties>
 
     <dependencies>
@@ -271,7 +273,7 @@
                 <configuration>
                     <from>
                         <image>openjdk:21-jdk</image>
-<!--                    <image>amazoncorretto:21.0.0</image>-->
+                        <!--                    <image>amazoncorretto:21.0.0</image>-->
                     </from>
                     <to>
                         <image>aidanwhiteley/books-api-java</image>
@@ -308,8 +310,43 @@
                     <argLine>@{argLine} -javaagent:${net.bytebuddy:byte-buddy-agent:jar}</argLine>
                 </configuration>
             </plugin>
-
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>pitest</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.pitest</groupId>
+                        <artifactId>pitest-maven</artifactId>
+                        <version>1.15.2</version>
+                        <executions>
+                            <execution>
+                                <id>pitest</id>
+                                <phase>test</phase>
+                                <goals>
+                                    <goal>mutationCoverage</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <failWhenNoMutations>false</failWhenNoMutations>
+                            <timestampedReports>false</timestampedReports>
+                            <mutators>STRONGER</mutators>
+                        </configuration>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.pitest</groupId>
+                                <artifactId>pitest-junit5-plugin</artifactId>
+                                <version>1.2.1</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>

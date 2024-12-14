@@ -15,7 +15,7 @@ spring:
     proxy-target-class: false
   devtools:
     livereload:
-      enabled: false  # off as we already have live reload in the web tier project
+      enabled: true
   jackson:
     serialization:
       write-dates-as-timestamps: true

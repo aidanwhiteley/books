@@ -16,6 +16,7 @@
     <logger name="org.springframework.web.servlet.mvc.method.annotation" level="ERROR" />
     <logger name="org.springframework.context" level="WARN" />
     <logger name="org.springframework.boot.availability.ApplicationAvailabilityBean" level="INFO" />
+    <logger name="org.springframework.boot.devtools" level="INFO" />
 
     <!-- Possibly related to https://github.com/spring-cloud/spring-cloud-commons/issues/1315 -->
     <logger name="org.springframework.context.support.PostProcessorRegistrationDelegate$BeanPostProcessorChecker" level="ERROR" />

@@ -1,22 +1,33 @@
-<nav data-bs-theme="light" class="navbar navbar-expand-xl navbar-light bg-light sticky-top" th:fragment="cloudy-nav">
-    <div class="container">
-        <a class="navbar-brand" href="/">
-            <img alt="Site logo" src="/images/book-club-logo.png" height="30" class="d-inline-block align-top"> The Cloudy Book Club </a>
-        <button aria-controls="basic-navbar-nav" type="button" aria-label="Toggle navigation" class="navbar-toggler collapsed">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="navbar-collapse collapse" id="basic-navbar-nav">
-            <div class="me-auto navbar-nav">
-                <a data-rr-ui-event-key="/home" class="nav-link active" href="/">Home</a>
-                <a data-rr-ui-event-key="/books/recent" class="nav-link" href="/books/recent">Recently Reviewed</a>
-                <a data-rr-ui-event-key="/books/find" class="nav-link" href="/books/find">Find a review</a>
-                <a data-rr-ui-event-key="/logon" class="nav-link" href="/logon">Logon</a>
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>The Nav Bar</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="../../static/css/index-DtXW5y8S.css" th:href="@{/css/index-DtXW5y8S.css}">
+</head>
+    <body>
+        <nav data-bs-theme="light" class="navbar navbar-expand-xl navbar-light bg-light sticky-top" th:fragment="cloudy-nav">
+            <div class="container">
+                <a class="navbar-brand" href="/">
+                    <img alt="Site logo" src="/images/book-club-logo.png" height="30" class="d-inline-block align-top"> The Cloudy Book Club </a>
+                <button aria-controls="basic-navbar-nav" type="button" aria-label="Toggle navigation" class="navbar-toggler collapsed">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse" id="basic-navbar-nav">
+                    <div class="me-auto navbar-nav">
+                        <a data-rr-ui-event-key="/home" class="nav-link active" href="/">Home</a>
+                        <a data-rr-ui-event-key="/books/recent" class="nav-link" href="/books/recent">Recently Reviewed</a>
+                        <a data-rr-ui-event-key="/books/find" class="nav-link" href="/books/find">Find a review</a>
+                        <a data-rr-ui-event-key="/logon" class="nav-link" href="/logon">Logon</a>
+                    </div>
+                    <div id="book-search">
+                        <form method="get" action="/" id="search-form" role="search">
+                            <input id="term" aria-label="Search book reviews" placeholder="Search book reviews" type="search" name="term" value="">
+                        </form>
+                    </div>
+                </div>
             </div>
-            <div id="book-search">
-                <form method="get" action="/" id="search-form" role="search">
-                    <input id="term" aria-label="Search book reviews" placeholder="Search book reviews" type="search" name="term" value="">
-                </form>
-            </div>
-        </div>
-    </div>
-</nav>
+        </nav>
+    </body>
+</html>

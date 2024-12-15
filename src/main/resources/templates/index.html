@@ -14,7 +14,9 @@
 <body>
 <div id="root">
 
-    <section data-bs-theme="light" class="navbar navbar-expand-xl navbar-light bg-light sticky-top" th:replace="~{common/nav::nav}" ></section>
+    <section data-bs-theme="light" class="navbar navbar-expand-xl navbar-light bg-light sticky-top ps-5" th:replace="~{common/nav::nav}" >
+        The <a class="ms-1 me-1" href="./common/nav.html">Nav Bar</a> Goes Here
+    </section>
 
     <section id="main-content" class="">
         <div class="container-fluid">
@@ -122,87 +124,13 @@
             </div>
         </div>
     </section>
+
     <hr>
-    <footer id="footer">
-        <div class="container">
-            <div class="row">
-                <div class="footer-top-area">
-                    <div class="row d-flex flex-wrap justify-content-between">
-                        <div class="col-lg-5 col-sm-6 pb-3">
-                            <div class="footer-menu">
-                                <a class="d-none d-md-block" href="/">
-                                    <img src="/images/book-club-logo.jpeg" alt="logo">
-                                </a>
-                                <p>
-                                    <b>The Cloudy Book Club</b> - <span class="fst-italic">reminding me of what books I have read recently so I don't buy them again!</span>
-                                </p>
-                            </div>
-                        </div>
-                        <div class="col-lg-2 col-sm-6 pb-3">
-                            <div class="footer-menu">
-                                <h5 class="widget-title pb-2">Usual stuff</h5>
-                                <ul class="menu-list list-unstyled">
-                                    <li class="menu-item pb-2">
-                                        <a href="/books/stats">Book review stats</a>
-                                    </li>
-                                    <li class="menu-item pb-2">
-                                        <a href="/tandcs">Help and T&amp;Cs</a>
-                                    </li>
-                                    <li class="menu-item pb-2">
-                                        <a href="/privacy">Privacy</a>
-                                    </li>
-                                    <li class="menu-item pb-2">
-                                        <a href="/feeds/rss">RSS feed</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="col-lg-2 col-sm-6 pb-3">
-                            <div class="footer-menu">
-                                <h5 class="widget-title pb-2">Software</h5>
-                                <ul class="menu-list list-unstyled ">
-                                    <li class="menu-item pb-2">
-                                        <a href="https://github.com/aidanwhiteley/books">Code - server side</a>
-                                    </li>
-                                    <li class="menu-item pb-2">
-                                        <a href="https://github.com/aidanwhiteley/books-react">Code - front end</a>
-                                    </li>
-                                    <li class="menu-item pb-2">
-                                        <a href="https://cloudybookclub.com/swagger-ui/index.html">API - read only</a>
-                                    </li>
-                                    <li class="github-stars">
-                        <span>
-                          <span></span>
-                        </span>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-sm-6 pb-3">
-                            <div class="footer-menu contact-item">
-                                <h5 class="widget-title pb-2">Contact Us</h5>
-                                <p>Do you have any queries or suggestions? <a href="mailto:support@cloudybookclub.com ?subject=The Cloudy Book Club - contact from website">support@cloudybookclub.com</a>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
-    <div id="footer-bottom">
-        <div class="container">
-            <div class="row d-flex flex-wrap justify-content-between">
-                <div class="col-md-4 col-sm-6"></div>
-                <div class="col-md-4 col-sm-6">
-                    <div class="copyright">
-                        <p class="text-center">© Copyright 2024 <a href="https://aidanwhiteley.com/">Aidan Whiteley</a>. </p>
-                    </div>
-                </div>
-                <div class="col-md-4 col-sm-6"></div>
-            </div>
-        </div>
-    </div>
+
+    <section class="container mb-3" th:replace="~{common/footer::footer}" >
+        The <a class="ms-1 me-1" href="./common/footer.html">Footer</a> Goes Here
+    </section>
+
 </div>
 </body>
 </html>

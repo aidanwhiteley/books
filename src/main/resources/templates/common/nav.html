@@ -1,16 +1,17 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>The Nav Bar</title>
-    <meta charset="utf-8">
-    <link rel="stylesheet" href="../../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
-    <link rel="stylesheet" href="../../static/css/index-DtXW5y8S.css" th:href="@{/css/index-DtXW5y8S.css}">
-</head>
+    <head>
+        <title>The Nav Bar</title>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="../../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
+        <link rel="stylesheet" href="../../static/css/index-DtXW5y8S.css" th:href="@{/css/index-DtXW5y8S.css}">
+    </head>
     <body>
         <nav data-bs-theme="light" class="navbar navbar-expand-xl navbar-light bg-light sticky-top" th:fragment="cloudy-nav">
             <div class="container">
                 <a class="navbar-brand" href="/">
-                    <img alt="Site logo" src="/images/book-club-logo.png" height="30" class="d-inline-block align-top"> The Cloudy Book Club </a>
+                    <img alt="Site logo" src="../../static/images/book-club-logo.png"
+                         th:src="@{/images/book-club-logo.png}" height="30" class="d-inline-block align-top"> The Cloudy Book Club </a>
                 <button aria-controls="basic-navbar-nav" type="button" aria-label="Toggle navigation" class="navbar-toggler collapsed">
                     <span class="navbar-toggler-icon"></span>
                 </button>

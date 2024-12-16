@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html th:fragment="layout (title, content, fluid)" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>The Cloudy Bookclub</title>
+    <title th:replace="${title}">The Cloudy Book Club</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,15 +14,17 @@
 <body>
     <div id="root">
 
-        <section data-bs-theme="light" class="navbar navbar-expand-xl navbar-light bg-light sticky-top ps-5" th:replace="~{common/nav :: cloudy-nav}" >
-            <div class="container justify-content-start">The <a class="ms-1 me-1" href="./common/nav.html">Nav Bar</a> Goes Here</div>
+        <section data-bs-theme="light" class="navbar navbar-expand-xl navbar-light bg-light sticky-top" th:replace="~{common/nav :: cloudy-nav}" >
+            <div class="container justify-content-start">The <a class="ms-1 me-1" href="./common/nav.html">Nav Bar</a> goes here</div>
         </section>
 
 
-        <section id="main-content" class="" th:replace="~{home :: cloudy-home}">
-            <div class="container-fluid">
+        <section id="main-content">
+            <div class="container" th:class="${fluid}? 'container-fluid' : 'container'">
                 <div class="row d-flex align-items-center">
-                    <p>The main content will go here</p>
+                    <div id="detail" th:replace="${content}">
+                        <p>The main content will go here</p>
+                    </div>
                 </div>
             </div>
         </section>
@@ -30,7 +32,7 @@
         <hr>
 
         <section class="container mb-3" th:replace="~{common/footer :: cloudy-footer}" >
-            The <a class="ms-1 me-1" href="./common/footer.html">Footer</a> Goes Here
+            The <a class="ms-1 me-1" href="./common/footer.html">Footer</a> goes here
         </section>
 
     </div>

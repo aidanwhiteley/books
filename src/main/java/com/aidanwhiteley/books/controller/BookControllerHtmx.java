@@ -2,7 +2,6 @@ package com.aidanwhiteley.books.controller;
 
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.repository.BookRepository;
-import com.aidanwhiteley.books.service.StatsService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
@@ -20,11 +19,8 @@ public class BookControllerHtmx {
 
     private final BookRepository bookRepository;
 
-    private final StatsService statsService;
-
-    public BookControllerHtmx(BookRepository bookRepository, StatsService statsService) {
+    public BookControllerHtmx(BookRepository bookRepository) {
         this.bookRepository = bookRepository;
-        this.statsService = statsService;
     }
 
     @GetMapping(value = "/index")

@@ -26,7 +26,7 @@
 
                         <script src="../../static/js/swiper-bundle.min.js" th:src="@{/js/swiper-bundle.min.js}"></script>
                         <script>
-                            const swiper = new Swiper('.mySwiper', {
+                            new Swiper('.mySwiper', {
                                 effect: 'coverflow',
                                 grabCursor: true,
                                 centeredSlides: true,
@@ -47,19 +47,23 @@
                         </script>
 
                         <div class="text-center">
-                            <p className="text-center">Books recently reviewed on The Cloudy Book Club with Great rating</p>
+                            <p className="text-center">Books recently reviewed on The Cloudy Book Club with
+                            a <span th:text="${rating}"></span> rating</p>
 
                             <div class="btn-group" role="group" aria-label="Book rating selection button group">
                                 <input type="radio" class="btn-check" name="bookRating" id="greatBooks" autocomplete="off"
-                                    hx-get="/getBooksByRating?rating=great" hx-target="#detail">
+                                    hx-get="/getBooksByRating?rating=great" hx-target="#detail"
+                                       th:checked="${rating=='great'}">
                                 <label class="btn btn-outline-primary" for="greatBooks">Great books</label>
 
                                 <input type="radio" class="btn-check" name="bookRating" id="goodBooks" autocomplete="off"
-                                       hx-get="/getBooksByRating?rating=good" hx-target="#detail">
+                                       hx-get="/getBooksByRating?rating=good" hx-target="#detail"
+                                       th:checked="${rating=='good'}">
                                 <label class="btn btn-outline-primary" for="goodBooks">Good books</label>
 
                                 <input type="radio" class="btn-check" name="bookRating" id="okBooks" autocomplete="off"
-                                       hx-get="/getBooksByRating?rating=ok" hx-target="#detail">
+                                       hx-get="/getBooksByRating?rating=ok" hx-target="#detail"
+                                       th:checked="${rating=='ok'}">
                                 <label class="btn btn-outline-primary" for="okBooks">OK books</label>
                             </div>
                         </div>

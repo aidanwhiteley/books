@@ -1,40 +1,41 @@
 <!DOCTYPE html>
 <html th:fragment="layout (title, content, fluid)" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title th:replace="${title}">The Cloudy Book Club</title>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="author" content="Aidan Whiteley">
-    <meta name="keywords" content="Cloudy Book Club">
-    <meta name="description" content="Books read recently (so I don't buy them again!)">
-    <link rel="stylesheet" href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
-    <link rel="stylesheet" href="../static/css/index-DtXW5y8S.css" th:href="@{/css/index-DtXW5y8S.css}">
-</head>
-<body>
-    <div id="root">
+    <head>
+        <title th:replace="${title}">The Cloudy Book Club</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="Aidan Whiteley">
+        <meta name="keywords" content="Cloudy Book Club">
+        <meta name="description" content="Books read recently (so I don't buy them again!)">
+        <link rel="stylesheet" href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
+        <link rel="stylesheet" href="../static/css/swiper.min.css" th:href="@{/css/swiper.min.css}">
+        <link rel="stylesheet" href="../static/css/index-DtXW5y8S.css" th:href="@{/css/index-DtXW5y8S.css}">
+    </head>
+    <body>
+        <div id="root">
 
-        <section data-bs-theme="light" class="navbar navbar-expand-xl navbar-light bg-light sticky-top" th:replace="~{common/nav :: cloudy-nav}" >
-            <div class="container justify-content-start">The <a class="ms-1 me-1" href="./common/nav.html">Nav Bar</a> goes here</div>
-        </section>
+            <section data-bs-theme="light" class="navbar navbar-expand-xl navbar-light bg-light sticky-top" th:replace="~{common/nav :: cloudy-nav}" >
+                <div class="container justify-content-start">The <a class="ms-1 me-1" href="./common/nav.html">Nav Bar</a> goes here</div>
+            </section>
 
-
-        <section id="main-content">
-            <div class="container" th:class="${fluid}? 'container-fluid' : 'container'">
-                <div class="row d-flex align-items-center">
-                    <div id="detail" th:replace="${content}">
-                        <p>The main content will go here</p>
+            <section id="main-content">
+                <div class="container" th:class="${fluid}? 'container-fluid' : 'container'">
+                    <div class="row d-flex align-items-center">
+                        <div id="detail" th:replace="${content}">
+                            <p>The main content will go here</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <hr>
+            <hr>
 
-        <section class="container mb-3" th:replace="~{common/footer :: cloudy-footer}" >
-            The <a class="ms-1 me-1" href="./common/footer.html">Footer</a> goes here
-        </section>
+            <section class="container mb-3" th:replace="~{common/footer :: cloudy-footer}" >
+                The <a class="ms-1 me-1" href="./common/footer.html">Footer</a> goes here
+            </section>
 
-    </div>
-</body>
+        </div>
+    </body>
+    <script src="../static/js/htmx.min.js" th:src="@{/js/htmx.min.js}"></script>
 </html>

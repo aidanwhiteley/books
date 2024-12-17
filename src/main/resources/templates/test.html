@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Cloudy Book Club - Test Page</title>
+    <meta charset="utf-8">
+</head>
+<body>
+
+<h1>Debug output</h1>
+
+<div th:text="${justtext}"></div>
+
+<div th:each="book : ${books}"><p th:text="${book.title}"></p></div>
+
+</body>
+</html>

@@ -61,9 +61,14 @@
 <!--                                    <li class="page-item"><a class="page-link" href="#">1</a></li>-->
 <!--                                    <li class="page-item"><a class="page-link" href="#">2</a></li>-->
 <!--                                    <li class="page-item"><a class="page-link" href="#">3</a></li>-->
-                                    <li class="page-item" th:classappend="${currentPage == pageOfBooks.number} ? 'active'"
-                                        th:each="page : ${#numbers.sequence(pageOfBooks.number > 2 ? pageOfBooks.number - 2 : 1, pageOfBooks.number + 2 < pageOfBooks.totalPages ? pageOfBooks.number + 2 : pageOfBooks.totalPages)}">
-                                        <a class="page-link" href="#" th:text=${book.number}>1</a>
+
+                                    <li class="page-item" th:classappend="${iterStat.index == pageOfBooks.number} ? 'active'"
+                                        th:each="page,iterStat : ${#numbers.sequence(
+                                                pageOfBooks.number > 2 ?
+                                                pageOfBooks.number - 2 : 1,
+                                                pageOfBooks.number + 2 < pageOfBooks.totalPages ?
+                                                pageOfBooks.number + 2 : pageOfBooks.totalPages)}">
+                                        <a class="page-link" href="#" th:text="${iterStat.index} + 1">1</a>
                                     </li>
 
                                     <li class="page-item disabled" th:if="${pageOfBooks.number - 1 < pageOfBooks.totalPages}">

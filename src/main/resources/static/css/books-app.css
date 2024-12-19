@@ -1041,3 +1041,7 @@ li.comment-entry {
 #users-table .rdt_TableCell {
     font-size: 13px
 }
+
+.firstTableCol {
+    min-width: 120px;
+}

@@ -1,19 +1,86 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Table of books component</title>
-    <meta charset="utf-8">
-    <link rel="stylesheet" href="../../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
-    <link rel="stylesheet" href="../../static/css/books-app.css" th:href="@{/css/books-app.css}">
-</head>
-<body>
+    <head>
+        <title>Table of books component</title>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="../../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
+        <link rel="stylesheet" href="../../static/css/books-app.css" th:href="@{/css/books-app.css}">
+    </head>
+    <body>
 
-    <h3>Table of books the Cloudy Book Club</h3>
+        <h3>Table of books the Cloudy Book Club</h3>
 
-                    <div id="detail" th:fragment="cloudy-table">
+                        <div id="detail" th:fragment="cloudy-books-table">
 
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col" class="firstTableCol">Title</th>
+                                        <th scope="col">Author</th>
+                                        <th scope="col">Rating</th>
+                                        <th scope="col">Review Date</th>
+                                        <th scope="col">Genre</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:remove="all">
+                                            <td class="firstTableCol">The Twelve Caesars</td>
+                                            <td>Michael Grant</td>
+                                            <td>Good</td>
+                                            <td>12-12-2024</td>
+                                            <td>History</td>
+                                        </tr>
+                                        <tr th:each="book : ${pageOfBooks.content}">
+                                            <td th:text=${book.title} class="firstTableCol">Rules Of Civility</td>
+                                            <td th:text=${book.author}>Amor Towles</td>
+                                            <td th:text=${#strings.capitalize(#strings.toLowerCase(book.rating))}>Great</td>
+                                            <td th:text="${#temporals.format(book.createdDateTime, 'dd-MM-yyyy')}">20-7-2024</td>
+                                            <td th:text=${book.genre}>Novel</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
 
+                            <nav th:if="${pageOfBooks.totalPages > 1}" class="d-flex align-items-center justify-content-center mt-4"
+                                 aria-label="bavigation for table of books">
+                                <ul class="pagination">
+                                    <li class="page-item" th:classappend="${pageOfBooks.first} ? 'disabled'">
+                                        <a class="page-link" href="#" aria-label="First">
+                                            <span aria-hidden="true"><<</span>
+                                        </a>
+                                    </li>
+                                    <li class="page-item" th:classappend="${pageOfBooks.first} ? 'disabled'">
+                                        <a class="page-link" href="#" aria-label="Previous">
+                                            <span aria-hidden="true"><</span>
+                                        </a>
+                                    </li>
+                                    <li class="page-item disabled" th:if="${pageOfBooks.number - 1 > 0}">
+                                        <a class="page-link" href="#">...</a>
+                                    </li>
+<!--                                    <li class="page-item"><a class="page-link" href="#">1</a></li>-->
+<!--                                    <li class="page-item"><a class="page-link" href="#">2</a></li>-->
+<!--                                    <li class="page-item"><a class="page-link" href="#">3</a></li>-->
+                                    <li class="page-item" th:classappend="${currentPage == pageOfBooks.number} ? 'active'"
+                                        th:each="page : ${#numbers.sequence(pageOfBooks.number > 2 ? pageOfBooks.number - 2 : 1, pageOfBooks.number + 2 < pageOfBooks.totalPages ? pageOfBooks.number + 2 : pageOfBooks.totalPages)}">
+                                        <a class="page-link" href="#" th:text=${book.number}>1</a>
+                                    </li>
 
-                    </div>
-</body>
+                                    <li class="page-item disabled" th:if="${pageOfBooks.number - 1 < pageOfBooks.totalPages}">
+                                        <a class="page-link" href="#">...</a>
+                                    </li>
+                                    <li class="page-item" th:classappend="${pageOfBooks.last} ? 'disabled'">
+                                        <a class="page-link" href="#" aria-label="Next">
+                                            <span aria-hidden="true">></span>
+                                        </a>
+                                    </li>
+                                    <li class="page-item" th:classappend="${pageOfBooks.last} ? 'disabled'">
+                                        <a class="page-link" href="#" aria-label="Last">
+                                            <span aria-hidden="true">>></span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+    </body>
 </html>

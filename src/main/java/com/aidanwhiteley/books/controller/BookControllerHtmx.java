@@ -23,7 +23,7 @@ public class BookControllerHtmx {
         this.bookRepository = bookRepository;
     }
 
-    @GetMapping(value = "/index")
+    @GetMapping(value = "/home")
     public String index(Model model, Principal principal) {
         PageRequest pageObj = PageRequest.of(0, 30);
         Page<Book> page = bookRepository.findByRatingOrderByCreatedDateTimeDesc(pageObj, GREAT);
@@ -51,6 +51,15 @@ public class BookControllerHtmx {
         model.addAttribute("rating", rating);
 
         return "components/swiper :: cloudy-swiper";
+    }
+
+    @GetMapping(value = "/recent")
+    public String recentlyReviewed(Model model, Principal principal) {
+        int currentPage = 0;
+        PageRequest pageObj = PageRequest.of(currentPage, 7);
+        Page<Book> page = bookRepository.findAllByOrderByCreatedDateTimeDesc(pageObj);
+        model.addAttribute("pageOfBooks", page);
+        return "recently-reviewed.html";
     }
 
     private static List<Book> getBooksWithRequiredImages(Page<Book> page) {

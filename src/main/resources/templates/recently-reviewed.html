@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html th:replace="~{layout :: layout(~{::title}, ~{::#detail}, false)}"
+      xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Cloudy Book Club - Recently Reviewed</title>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
+        <link rel="stylesheet" href="../static/css/books-app.css" th:href="@{/css/books-app.css}">
+    </head>
+    <body>
+
+        <div id="detail">
+            <h2>Recently reviewed books</h2>
+            <p th:replace="~{components/books-table :: cloudy-books-table}">The table of recently reviewed books
+                <a class="ms-1 me-1" href="./components/books-table.html">carousel</a> will go here.</p>
+        </div>
+
+    </body>
+</html>

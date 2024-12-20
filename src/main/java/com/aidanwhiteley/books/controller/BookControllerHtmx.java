@@ -55,8 +55,12 @@ public class BookControllerHtmx {
 
     @GetMapping(value = "/recent")
     public String recentlyReviewed(Model model, Principal principal) {
-        int currentPage = 0;
-        PageRequest pageObj = PageRequest.of(currentPage, 7);
+        return recentlyReviewedByPage(1, model, principal);
+    }
+
+    @GetMapping(value = "/recent", params = {"pagenum"})
+    public String recentlyReviewedByPage(@RequestParam int pagenum, Model model, Principal principal) {
+        PageRequest pageObj = PageRequest.of(pagenum - 1, 7);
         Page<Book> page = bookRepository.findAllByOrderByCreatedDateTimeDesc(pageObj);
         model.addAttribute("pageOfBooks", page);
         return "recently-reviewed.html";

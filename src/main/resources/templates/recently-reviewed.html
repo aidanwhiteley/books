@@ -11,6 +11,7 @@
 
         <div id="detail">
             <h2>Recently reviewed books</h2>
+            <p th:text="${user.roles}">The user</p>
             <p th:replace="~{components/books-table :: cloudy-books-table}">The <a href="./components/books-table.html">table</a> of recently reviewed books will go here.</p>
         </div>
 

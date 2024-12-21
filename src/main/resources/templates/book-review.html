@@ -50,7 +50,7 @@
                         </p>
 
                         <p class="reviewDetail"><b>Reviewer's Summary:</b><span th:text="${book.summary}" class="reviewDetailSummary">A book review summary</span></p>
-                        <p th:if="${book.createdBy != null && book.createdBy.fullName != null}"><b>Reviewer:</b> <span th:text="${book.createdBy.fullName}">Fred Bloggs</span></p>
+                        <p th:if="${book.createdBy != null and book.createdBy.fullName != null and user != null}"><b>Reviewer:</b> <span th:text="${book.createdBy.fullName}">Fred Bloggs</span></p>
                     </div>
                 </div>
                 <div class="tab-pane" id="profile" role="tabpanel" aria-labelledby="profile-tab">

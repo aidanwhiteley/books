@@ -15,8 +15,8 @@
                             <div class="swiper mySwiper">
                                 <div class="swiper-wrapper">
                                     <div class="swiper-slide" th:each="book : ${books}">
-                                        <img th:src="${book.googleBookDetails.volumeInfo.imageLinks.thumbnail}"
-                                             loading="lazy" alt="A book cover" />
+                                        <a href="#" th:href="@{/bookreview(bookId=${book.id})}"><img th:src="${book.googleBookDetails.volumeInfo.imageLinks.thumbnail}"
+                                                                                                     loading="lazy" alt="A book cover" /></a>
                                     </div>
                                 </div>
                                 <div class="swiper-pagination"></div>

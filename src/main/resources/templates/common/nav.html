@@ -9,7 +9,7 @@
     <body>
         <nav data-bs-theme="light" class="navbar navbar-expand-xl navbar-light bg-light sticky-top" th:fragment="cloudy-nav">
             <div class="container">
-                <a class="navbar-brand" href="/home">
+                <a class="navbar-brand" href="/">
                     <img alt="Site logo" src="../../static/images/book-club-logo.png"
                          th:src="@{/images/book-club-logo.png}" height="30" class="d-inline-block align-top"> The Cloudy Book Club </a>
                 <button aria-controls="basic-navbar-nav" type="button" aria-label="Toggle navigation" class="navbar-toggler collapsed">
@@ -17,10 +17,12 @@
                 </button>
                 <div class="navbar-collapse collapse" id="basic-navbar-nav">
                     <div class="me-auto navbar-nav">
-                        <a class="nav-link active" href="/home">Home</a>
+                        <a class="nav-link active" href="/">Home</a>
                         <a class="nav-link" href="/recent">Recently Reviewed</a>
                         <a class="nav-link" href="/books/find">Find a review</a>
-                        <a class="nav-link" href="/logon">Logon</a>
+                        <a th:if="${user != null and user.highestRole == 'ROLE_EDITOR'}" class="nav-link" href="/createreview">Add a book review</a>
+                        <a th:if="${user == null}" class="nav-link" href="/logon">Logon</a>
+                        <a th:if="${user != null}" class="nav-link" href="/logoff">Logoff</a>
                     </div>
                     <div id="book-search">
                         <form method="get" action="/" id="search-form" role="search">

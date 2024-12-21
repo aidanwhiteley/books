@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html th:replace="~{layout :: layout(~{::title}, ~{::#detail}, false)}"
+      xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title th:text="'Cloudy Book Club - ' + ${book.title} + ' Book Review'">Cloudy Book Club - Book Review</title>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
+        <link rel="stylesheet" href="../static/css/books-app.css" th:href="@{/css/books-app.css}">
+    </head>
+    <body>
+
+        <div id="detail">
+
+            <ul class="nav nav-tabs mb-3" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button"
+                            role="tab" aria-controls="home" aria-selected="true">Book Details</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button"
+                            role="tab" aria-controls="profile" aria-selected="false">Google Book Summary</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="messages-tab" data-bs-toggle="tab" data-bs-target="#messages" type="button"
+                            role="tab" aria-controls="messages" aria-selected="false">Review Comments</button>
+                </li>
+            </ul>
+
+            <div class="tab-content">
+                <div class="tab-pane active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                    <div class="bookInfo">
+                        <span th:if="${book.googleBookDetails != null and book.googleBookDetails.volumeInfo != null and book.googleBookDetails.volumeInfo.imageLinks != null}" >
+
+                            <img src="../static/images/book-club-logo.jpeg" alt="A book cover" class="float-start rounded img-thumbnail me-3"
+                                 th:src="${!#strings.isEmpty(book.googleBookDetails.volumeInfo.imageLinks.thumbnail)} ?
+                                    ${book.googleBookDetails.volumeInfo.imageLinks.thumbnail} : ${book.googleBookDetails.volumeInfo.imageLinks.smallThumbnail}" />
+                        </span>
+                        <p><b>Title
+                            : </b><span th:text="${book.title}">A book title</span></p>
+                        <p><b>Author: </b><span th:text="${book.author}">An author</span></p>
+                        <p className="rating"><b>Rating: </b><span th:text="${#strings.capitalize(#strings.toLowerCase(book.rating))}">Good</span></p>
+                        <p th:if="${book.createdDateTime}"><b>Review Date: </b><span th:text="${#temporals.format(book.createdDateTime, 'dd-MM-yyyy')}">20-7-2024</span></p>
+                        <p><b>Genre: </b><span th:text="${book.genre}">Novel</span></p>
+
+                        <p th:if="${book.googleBookDetails != null and book.googleBookDetails.accessInfo.embeddable != null and book.googleBookDetails.accessInfo.viewability != 'NO_PAGES'}">
+                            <b class="me-3">Book Preview:</b>
+                            <a href="@{'https://books.google.co.uk/books?printsec=frontcover#v=onepage&q&f=true&gbpv=1(${id=book.googleBookId}'}" target="_blank">
+                                <img src="/images/gbs_preview_button1.gif" alt="Google book preview button image"/>
+                            </a>
+                        </p>
+
+                        <p class="reviewDetail"><b>Reviewer's Summary:</b><span th:text="${book.summary}" class="reviewDetailSummary">A book review summary</span></p>
+                        <p th:if="${book.createdBy != null && book.createdBy.fullName != null}"><b>Reviewer:</b> <span th:text="${book.createdBy.fullName}">Fred Bloggs</span></p>
+                    </div>
+                </div>
+                <div class="tab-pane" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                    <div className="bookInfo">
+                         <span th:if="${book.googleBookDetails != null and book.googleBookDetails.volumeInfo != null and book.googleBookDetails.volumeInfo.imageLinks != null}" >
+
+                            <img src="../static/images/book-club-logo.jpeg" alt="A book cover" class="float-start rounded img-thumbnail me-3"
+                                 th:src="${!#strings.isEmpty(book.googleBookDetails.volumeInfo.imageLinks.thumbnail)} ?
+                                    ${book.googleBookDetails.volumeInfo.imageLinks.thumbnail} : ${book.googleBookDetails.volumeInfo.imageLinks.smallThumbnail}" />
+                        </span>
+                        <p><b>Google Summary: </b></p>
+                        <div id="googleSummaryDetail" th:utext="${book.googleBookDetails.volumeInfo.description}">This is where the text from the Google book summary will go</div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="messages" role="tabpanel" aria-labelledby="messages-tab">
+                    <p th:if="${#lists.isEmpty(book.comments)}" class="mt-4">No comments have been left yet on this book review</p>
+
+                    <ul th:if="${not #lists.isEmpty(book.comments)}" class="mt-4">
+                        <li th:each="comment : ${book.comments}" class="comment-entry">
+                            <span th:utext="${comment.deleted} ? '<del>Comment deleted by ' + ${comment.deletedBy} + '</del>'
+                                : 'On ' + ${#temporals.format(comment.entered, 'dd-MM-yyyy')} + ' ' + ${comment.owner.fullName} + ' commented - ' + ${comment.commentText}">
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <script src="../static/js/bootstrap.bundle.min.js" th:src="@{/js/bootstrap.bundle.min.js}"></script>
+        </div>
+
+    </body>
+
+</html>

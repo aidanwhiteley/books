@@ -16,7 +16,7 @@
                                 <div class="swiper-wrapper">
                                     <div class="swiper-slide" th:each="book : ${books}">
                                         <a href="#" th:href="@{/bookreview(bookId=${book.id})}"><img th:src="${book.googleBookDetails.volumeInfo.imageLinks.thumbnail}"
-                                                                                                     loading="lazy" alt="A book cover" /></a>
+                                                                                                     loading="lazy" th:alt="${'Book cover for ' + book.title}" /></a>
                                     </div>
                                 </div>
                                 <div class="swiper-pagination"></div>
@@ -26,24 +26,27 @@
 
                             <script src="../../static/js/swiper-bundle.min.js" th:src="@{/js/swiper-bundle.min.js}"></script>
                             <script>
-                                new Swiper('.mySwiper', {
-                                    effect: 'coverflow',
-                                    grabCursor: true,
-                                    centeredSlides: true,
-                                    slidesPerView: 'auto',
-                                    coverflowEffect: {
-                                      rotate: 20,
-                                      stretch: 10,
-                                      depth: 30,
-                                      modifier: 1,
-                                      slideShadows: false,
-                                    },
-                                    loop: true,
-                                    navigation: {
-                                        nextEl: '.swiper-button-next',
-                                        prevEl: '.swiper-button-prev',
-                                    }
-                                });
+                                function initialiseSwiper(evt) {
+                                    new Swiper('.mySwiper', {
+                                        effect: 'coverflow',
+                                        grabCursor: true,
+                                        centeredSlides: true,
+                                        slidesPerView: 'auto',
+                                        coverflowEffect: {
+                                          rotate: 20,
+                                          stretch: 10,
+                                          depth: 30,
+                                          modifier: 1,
+                                          slideShadows: false,
+                                        },
+                                        loop: true,
+                                        navigation: {
+                                            nextEl: '.swiper-button-next',
+                                            prevEl: '.swiper-button-prev',
+                                        }
+                                    });
+                                }
+                                initialiseSwiper();
                             </script>
 
                             <div class="text-center">

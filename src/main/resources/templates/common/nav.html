@@ -20,7 +20,8 @@
                         <a class="nav-link active" href="/">Home</a>
                         <a class="nav-link" href="/recent">Recently Reviewed</a>
                         <a class="nav-link" href="/books/find">Find a review</a>
-                        <a th:if="${(user != null) and (#lists.contains(user.roles, T(com.aidanwhiteley.books.domain.User.Role).ROLE_ADMIN))}" class="nav-link" href="/createreview">Add a book review</a>
+                        <a th:if="${(user != null) and ((highestRole == 'EDITOR' or highestRole == 'ADMIN'))}" class="nav-link" href="/createreview">Add a book review</a>
+                        <a th:if="${(user != null) and (highestRole == 'ADMIN')}" class="nav-link" href="/admin">User Admin</a>
                         <a th:if="${user == null}" class="nav-link" href="/logon">Logon</a>
                         <a th:if="${user != null}" class="nav-link" href="/logoff">Logoff</a>
                     </div>

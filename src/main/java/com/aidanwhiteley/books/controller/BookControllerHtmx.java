@@ -43,7 +43,7 @@ public class BookControllerHtmx {
         List<Book> books = getBooksWithRequiredImages(page);
         model.addAttribute("books", books.stream().toList());
         model.addAttribute("rating", "great");
-        model.addAttribute("user", getUser(principal));
+        addUserToModel(principal, model);
 
         return "home";
     }
@@ -62,7 +62,7 @@ public class BookControllerHtmx {
         List<Book> books = getBooksWithRequiredImages(page);
         model.addAttribute("books", books.stream().toList());
         model.addAttribute("rating", rating);
-        model.addAttribute("user", getUser(principal));
+        addUserToModel(principal, model);
 
         return "components/swiper :: cloudy-swiper";
     }
@@ -77,7 +77,7 @@ public class BookControllerHtmx {
         PageRequest pageObj = PageRequest.of(pagenum - 1, 7);
         Page<Book> page = bookRepository.findAllByOrderByCreatedDateTimeDesc(pageObj);
         model.addAttribute("pageOfBooks", page);
-        model.addAttribute("user", getUser(principal));
+        addUserToModel(principal, model);
 
         return "recently-reviewed.html";
     }
@@ -86,16 +86,17 @@ public class BookControllerHtmx {
     public String bookReview(@RequestParam String bookId, Model model, Principal principal) {
         Book aBook = bookRepository.findById(bookId).orElseThrow(() -> new NotFoundException("Book id " + bookId + " not found"));
         model.addAttribute("book", aBook);
-        model.addAttribute("user", getUser(principal));
+        addUserToModel(principal, model);
 
         return "book-review.html";
     }
 
-    private User getUser(Principal principal) {
+    private void addUserToModel(Principal principal, Model model) {
 
         if (principal == null) {
             LOGGER.debug("Principal passed to user method was null");
-            return null;
+            model.addAttribute("user", null);
+            model.addAttribute("highestRole", null);
         } else {
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Principal passed in to user method is: {}", principal.toString().replaceAll("[\n\r\t]", "_"));
@@ -104,10 +105,13 @@ public class BookControllerHtmx {
 
         Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
         if (user.isPresent()) {
-            return user.get();
+            model.addAttribute("user", user.get());
+            model.addAttribute("highestRole", user.get().getHighestRole().getShortName());
         } else {
             // We've been supplied a valid JWT but the user is no longer in the database.
             LOGGER.warn("No user was found for the given principal - assuming an old JWT supplied for a user removed from data store");
+            model.addAttribute("user", null);
+            model.addAttribute("highestRole", null);
             throw new NotAuthorisedException("No user found in user store for input JWT- please clear your cookies");
         }
     }

@@ -10,67 +10,71 @@
 
         <h3>Swiper carousel component for the Cloudy Book Club</h3>
 
-                        <div id="detail" th:fragment="cloudy-swiper">
+        <div id="detail" th:fragment="cloudy-swiper">
 
-                            <div class="swiper mySwiper">
-                                <div class="swiper-wrapper">
-                                    <div class="swiper-slide" th:each="book : ${books}">
-                                        <a href="#" th:href="@{/bookreview(bookId=${book.id})}"><img th:src="${book.googleBookDetails.volumeInfo.imageLinks.thumbnail}"
-                                                                                                     loading="lazy" th:alt="${'Book cover for ' + book.title}" /></a>
-                                    </div>
-                                </div>
-                                <div class="swiper-pagination"></div>
-                                <div class="swiper-button-prev"></div>
-                                <div class="swiper-button-next"></div>
-                            </div>
+            <div class="swiper mySwiper" th:fragment="cloudy-swiper-slides">
+                <div id="swiper-slides" class="swiper-wrapper">
+                    <div class="swiper-slide" th:each="book : ${books}">
+                        <a href="#" th:href="@{/bookreview(bookId=${book.id})}">
+                            <img src="../../static/images/book-club-logo.jpeg" th:src="${book.googleBookDetails.volumeInfo.imageLinks.thumbnail}"
+                                 loading="lazy" alt="Book cover" th:alt="${'Book cover for ' + book.title}" /></a>
+                    </div>
+                </div>
+                <div class="swiper-pagination"></div>
+                <div class="swiper-button-prev"></div>
+                <div class="swiper-button-next"></div>
+            </div>
 
-                            <script src="../../static/js/swiper-bundle.min.js" th:src="@{/js/swiper-bundle.min.js}"></script>
-                            <script>
-                                function initialiseSwiper(evt) {
-                                    new Swiper('.mySwiper', {
-                                        effect: 'coverflow',
-                                        grabCursor: true,
-                                        centeredSlides: true,
-                                        slidesPerView: 'auto',
-                                        coverflowEffect: {
-                                          rotate: 20,
-                                          stretch: 10,
-                                          depth: 30,
-                                          modifier: 1,
-                                          slideShadows: false,
-                                        },
-                                        loop: true,
-                                        navigation: {
-                                            nextEl: '.swiper-button-next',
-                                            prevEl: '.swiper-button-prev',
-                                        }
-                                    });
-                                }
-                                initialiseSwiper();
-                            </script>
+            <script src="../../static/js/swiper-bundle.min.js" th:src="@{/js/swiper-bundle.min.js}"></script>
+            <script>
+                function initialiseSwiper(evt) {
+                    new Swiper('.mySwiper', {
+                        effect: 'coverflow',
+                        grabCursor: true,
+                        centeredSlides: true,
+                        slidesPerView: 'auto',
+                        coverflowEffect: {
+                          rotate: 20,
+                          stretch: 10,
+                          depth: 30,
+                          modifier: 1,
+                          slideShadows: false,
+                        },
+                        loop: true,
+                        navigation: {
+                            nextEl: '.swiper-button-next',
+                            prevEl: '.swiper-button-prev',
+                        }
+                    });
+                }
+                initialiseSwiper();
+            </script>
 
-                            <div class="text-center">
-                                <p className="text-center">Books recently reviewed on The Cloudy Book Club with
-                                a <span th:text="${rating}"></span> rating</p>
+            <div class="text-center">
+                <p class="text-center">Books recently reviewed on The Cloudy Book Club with
+                a <span th:text="${rating}"></span> rating</p>
 
-                                <div class="btn-group" role="group" aria-label="Book rating selection button group">
-                                    <input type="radio" class="btn-check" name="bookRating" id="greatBooks" autocomplete="off"
-                                        hx-get="/getBooksByRating?rating=great" hx-target="#detail"
-                                           th:checked="${rating=='great'}">
-                                    <label class="btn btn-outline-primary" for="greatBooks">Great books</label>
+                <div class="btn-group" role="group" aria-label="Book rating selection button group">
+                    <input type="radio" class="btn-check" name="bookRating" id="greatBooks" autocomplete="off"
+                        hx-get="/getBooksByRating?rating=great" hx-target="#swiper-slides"
+                           hx-on::after-request="initialiseSwiper()"
+                           th:checked="${rating=='great'}">
+                    <label class="btn btn-outline-primary" for="greatBooks">Great books</label>
 
-                                    <input type="radio" class="btn-check" name="bookRating" id="goodBooks" autocomplete="off"
-                                           hx-get="/getBooksByRating?rating=good" hx-target="#detail"
-                                           th:checked="${rating=='good'}">
-                                    <label class="btn btn-outline-primary" for="goodBooks">Good books</label>
+                    <input type="radio" class="btn-check" name="bookRating" id="goodBooks" autocomplete="off"
+                           hx-get="/getBooksByRating?rating=good" hx-target="#swiper-slides"
+                           hx-on::after-request="initialiseSwiper()"
+                           th:checked="${rating=='good'}">
+                    <label class="btn btn-outline-primary" for="goodBooks">Good books</label>
 
-                                    <input type="radio" class="btn-check" name="bookRating" id="okBooks" autocomplete="off"
-                                           hx-get="/getBooksByRating?rating=ok" hx-target="#detail"
-                                           th:checked="${rating=='ok'}">
-                                    <label class="btn btn-outline-primary" for="okBooks">OK books</label>
-                                </div>
-                            </div>
+                    <input type="radio" class="btn-check" name="bookRating" id="okBooks" autocomplete="off"
+                           hx-get="/getBooksByRating?rating=ok" hx-target="#swiper-slides"
+                           hx-on::after-request="initialiseSwiper()"
+                           th:checked="${rating=='ok'}">
+                    <label class="btn btn-outline-primary" for="okBooks">OK books</label>
+                </div>
+            </div>
 
-                        </div>
+        </div>
     </body>
 </html>

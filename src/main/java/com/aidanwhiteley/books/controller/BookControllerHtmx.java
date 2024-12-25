@@ -64,7 +64,7 @@ public class BookControllerHtmx {
         model.addAttribute("rating", rating);
         addUserToModel(principal, model);
 
-        return "components/swiper :: cloudy-swiper";
+        return "components/swiper :: cloudy-swiper-slides";
     }
 
     @GetMapping(value = "/recent")

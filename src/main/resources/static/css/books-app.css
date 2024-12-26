@@ -393,3 +393,7 @@ li.comment-entry {
 .firstTableCol {
     min-width: 120px;
 }
+
+.finder-header {
+    font-size: 16px;
+}

@@ -91,6 +91,11 @@ public class BookControllerHtmx {
         return "book-review.html";
     }
 
+    @GetMapping(value = "/find")
+    public String findReviews(Model model, Principal principal) {
+        return "find-reviews.html";
+    }
+
     private void addUserToModel(Principal principal, Model model) {
 
         if (principal == null) {

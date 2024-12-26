@@ -15,12 +15,13 @@
             <div classame="row">
                 <div class="col-sm mb-4">
                     <h3 class="finder-header">Find Reviews By Rating</h3>
-                    <select id="select-beast" placeholder="Select a person..." autocomplete="off">
-                        <option value="">Select a person...</option>
-                        <option value="4">Thomas Edison</option>
-                        <option value="1">Nikola</option>
-                        <option value="3">Nikola Tesla</option>
-                        <option value="5">Arnold Schwarzenegger</option>
+                    <select id="select-beast" class="finder-control" placeholder="Select a review rating" autocomplete="off">
+                        <option value="">Select a review rating</option>
+                        <option value="great">Great</option>
+                        <option value="good">Good</option>
+                        <option value="ok">Ok</option>
+                        <option value="poor">Poor</option>
+                        <option value="terrible">Terrible</option>
                     </select>
                 </div>
                 <div class="col-sm mb-4">
@@ -37,11 +38,7 @@
         <script src="../../static/js/tom-select.base.min.js" th:src="@{/js/tom-select.base.min.js}"></script>
         <script>
             new TomSelect("#select-beast",{
-                create: false,
-                sortField: {
-                    field: "text",
-                    direction: "asc"
-                }
+                create: false
             });
         </script>
 

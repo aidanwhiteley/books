@@ -15,13 +15,12 @@
             <div classame="row">
                 <div class="col-sm mb-4">
                     <h3 class="finder-header">Find Reviews By Rating</h3>
-                    <select id="select-beast" class="finder-control" placeholder="Select a review rating" autocomplete="off">
-                        <option value="">Select a review rating</option>
-                        <option value="great">Great</option>
-                        <option value="good">Good</option>
-                        <option value="ok">Ok</option>
-                        <option value="poor">Poor</option>
-                        <option value="terrible">Terrible</option>
+                    <select id="select-by-rating" class="finder-control" data-placeholder="Select a review rating" autocomplete="off"
+                        onChange="window.location.href='/find?page=1&rating=GOOD'" name="rating">
+                        <optgroup id="select-by-rating-options" th:fragment="cloudy-find-by-ratings-options"
+                                  th:each="rating : ${ratings}">
+                            <option th:value="${rating}" th:text="${rating}">Great</option>
+                        </optgroup>
                     </select>
                 </div>
                 <div class="col-sm mb-4">
@@ -32,15 +31,42 @@
 
 
                 </div>
-            </div>
-        </div>
 
-        <script src="../../static/js/tom-select.base.min.js" th:src="@{/js/tom-select.base.min.js}"></script>
-        <script>
-            new TomSelect("#select-beast",{
-                create: false
-            });
-        </script>
+                <hr class="page-separator">
+
+                <div id="cloudy-find-by-results" th:fragment="cloudy-find-by-results">
+                    <div th:if="${pageOfBooks != null}">
+                        <h3>Books matching your selection</h3>
+                        <p th:replace="~{components/books-table :: cloudy-books-table}">
+                            The <a href="./components/books-table.html">table</a> of matching books will go here.</p>
+                    </div>
+                    <div th:if="${pageOfBooks == null}">
+                        <p>Please enter your search criteria into one of the controls above. Matching results will be displayed here.</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <script src="../../static/js/tom-select.complete.min.js" th:src="@{/js/tom-select.complete.min.js}"></script>
+            <script>
+                htmx.onLoad(function(elt) {
+                    // look up all elements with the tomselect class on it within the element
+                    var allSelects = htmx.findAll(elt, ".finder-control");
+                    for ( select of allSelects ) {
+                        new TomSelect("#select-by-rating",{
+                            create: false,
+                            highlight: true,
+                            allowEmptyOption: true,
+                            maxItems: 1,
+                            items: [],
+                            plugins: ['clear_button'],
+                            sortField:[{field:'$order'},{field:'$score'}]
+                        });
+                    }
+                });
+            </script>
+
+        </div>
 
     </body>
 </html>

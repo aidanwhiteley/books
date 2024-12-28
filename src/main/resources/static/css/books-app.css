@@ -405,3 +405,25 @@ li.comment-entry {
     border-width: 1px;
     border-color: rgb(204, 204, 204);
 }
+
+.ts-dropdown-content {
+    font-size: 16px !important;
+}
+
+.ts-control {
+    font-size: 16px !important;
+}
+
+.plugin-clear_button.form-select .clear-button, .plugin-clear_button.single .clear-button {
+    right: 8px;
+}
+
+.ts-control > input {
+    font-size: 16px !important;
+    line-height: 22px !important;
+}
+
+.page-separator {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}

@@ -9,6 +9,7 @@ import com.aidanwhiteley.books.util.JwtAuthenticationUtils;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,10 +28,18 @@ import static com.aidanwhiteley.books.domain.Book.Rating.GREAT;
 @Controller
 public class BookControllerHtmx {
 
+    public static final String PAGE_REQUEST_TOO_BIG_MESSAGE = "Cannot request a page of data containing more than %s elements";
+
     private final BookRepository bookRepository;
     private final JwtAuthenticationUtils authUtils;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BookControllerHtmx.class);
+
+    @Value("${books.users.default.page.size}")
+    private int defaultPageSize;
+
+    @Value("${books.users.max.page.size}")
+    private int maxPageSize;
 
     public BookControllerHtmx(BookRepository bookRepository, JwtAuthenticationUtils jwtAuthenticationUtils) {
         this.bookRepository = bookRepository;
@@ -93,7 +104,52 @@ public class BookControllerHtmx {
 
     @GetMapping(value = "/find")
     public String findReviews(Model model, Principal principal) {
-        return "find-reviews.html";
+        List<Book.Rating> ratings = getRatings("");
+        model.addAttribute("ratings", ratings);
+        addUserToModel(principal, model);
+
+        return "find-reviews";
+    }
+
+//    @GetMapping(value = "/findbookratings", params = {"ratingprefix"})
+//    public String findBookRatings(Model model, Principal principal, @RequestParam String ratingprefix) {
+//        List<Book.Rating> ratings = getRatings(ratingprefix);
+//        model.addAttribute("ratings", ratings);
+//        model.addAttribute("books", null);
+//        return "find-reviews :: cloudy-find-by-ratings-options";
+//    }
+
+    @GetMapping(value = {"/find"}, params = {"rating", "page"})
+    public String findByRating(Model model, Principal principal, @RequestParam String rating, @RequestParam int page) {
+
+        if (null == rating || rating.trim().isEmpty()) {
+            throw new IllegalArgumentException("Rating parameter cannot be empty");
+        }
+
+        Book.Rating aRating = Book.Rating.getRatingByString(rating);
+        if (null == aRating) {
+            throw new IllegalArgumentException("Supplied rating parameter not recognised");
+        }
+
+        if (page < 1) {
+            throw new IllegalArgumentException("Cannot request a page less that 1");
+        }
+
+        PageRequest pageObj = PageRequest.of(page, defaultPageSize);
+        Page<Book> books = bookRepository.findByRatingOrderByCreatedDateTimeDesc(pageObj, aRating);
+
+        model.addAttribute("pageOfBooks", books);
+        addUserToModel(principal, model);
+
+        return "find-reviews";
+    }
+
+    private List getRatings(String prefix) {
+        List<Book.Rating> ratings = Arrays.stream(Book.Rating.values()).toList();
+        if (!prefix.isEmpty()) {
+            ratings = ratings.stream().filter(s -> s.name().startsWith(prefix)).toList();
+        }
+        return ratings.reversed();
     }
 
     private void addUserToModel(Principal principal, Model model) {

@@ -10,16 +10,17 @@
     </head>
     <body>
 
-        <div id="detail">
+        <div id="detail" hx-boost="false">
             <h2>Find a book review</h2>
-            <div classame="row">
+            <div class="row">
                 <div class="col-sm mb-4">
                     <h3 class="finder-header">Find Reviews By Rating</h3>
                     <select id="select-by-rating" class="finder-control" data-placeholder="Select a review rating" autocomplete="off"
-                        onChange="window.location.href='/find?page=1&rating=GOOD'" name="rating">
-                        <optgroup id="select-by-rating-options" th:fragment="cloudy-find-by-ratings-options"
-                                  th:each="rating : ${ratings}">
-                            <option th:value="${rating}" th:text="${rating}">Great</option>
+                        hx-target="#cloudy-find-by-results" hx-get="/find?pagenum=1" name="rating" hx-push-url="true">
+                        <optgroup id="select-by-rating-options" th:fragment="cloudy-find-by-ratings-options">
+                            <option th:each="rating : ${ratings}"
+                                    th:value="${#strings.toLowerCase(rating)}"
+                                    th:text="${#strings.capitalize(#strings.toLowerCase(rating))}">Great</option>
                         </optgroup>
                     </select>
                 </div>
@@ -50,18 +51,28 @@
             <script src="../../static/js/tom-select.complete.min.js" th:src="@{/js/tom-select.complete.min.js}"></script>
             <script>
                 htmx.onLoad(function(elt) {
-                    // look up all elements with the tomselect class on it within the element
+                    // Look up all elements with the tomselect class on it within the element
                     var allSelects = htmx.findAll(elt, ".finder-control");
                     for ( select of allSelects ) {
-                        new TomSelect("#select-by-rating",{
-                            create: false,
-                            highlight: true,
-                            allowEmptyOption: true,
-                            maxItems: 1,
-                            items: [],
-                            plugins: ['clear_button'],
-                            sortField:[{field:'$order'},{field:'$score'}]
-                        });
+                        console.log(select);
+                        if (!select.tomselect) {
+                            console.log('Running TomSelect init');
+                            try {
+                                new TomSelect("#select-by-rating",{
+                                    create: false,
+                                    highlight: true,
+                                    allowEmptyOption: true,
+                                    maxItems: 1,
+                                    items: [],
+                                    plugins: ['clear_button'],
+                                    sortField:[{field:'$order'},{field:'$score'}]
+                                });
+                            } catch (err) {
+                                console.log('Ignoring already initted error');
+                            }
+                        } else {
+                            console.log('Skipping - already TomSelect init');
+                        }
                     }
                 });
             </script>

@@ -398,14 +398,6 @@ li.comment-entry {
     font-size: 16px;
 }
 
-.finder-control {
-    width: 30%;
-    height: 35px;
-    border-radius: 6px;
-    border-width: 1px;
-    border-color: rgb(204, 204, 204);
-}
-
 .ts-dropdown-content {
     font-size: 16px !important;
 }

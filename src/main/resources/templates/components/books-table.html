@@ -12,7 +12,11 @@
 
                         <div id="detail" th:fragment="cloudy-books-table">
 
-                            <div class="table-responsive">
+                            <div th:if="${#lists.isEmpty(pageOfBooks.content)}">
+                                There are no books that match your selection.
+                            </div>
+
+                            <div th:if="${not #lists.isEmpty(pageOfBooks.content)}" class="table-responsive">
                                 <table class="table table-hover">
                                     <thead>
                                     <tr>
@@ -46,12 +50,13 @@
                                  aria-label="bavigation for table of books">
                                 <ul class="pagination">
                                     <li class="page-item" th:classappend="${pageOfBooks.first} ? 'disabled'">
-                                        <a class="page-link" href="/recent?pagenum=1" aria-label="First">
+                                        <a class="page-link" th:href="@{${paginationLink}(pagenum=1)}" aria-label="First">
                                             <span aria-hidden="true"><<</span>
                                         </a>
                                     </li>
                                     <li class="page-item" th:classappend="${pageOfBooks.first} ? 'disabled'">
-                                        <a class="page-link" href="#" th:href="@{/recent(pagenum=${pageOfBooks.number})}" aria-label="Previous">
+                                        <a class="page-link" href="#" th:href="@{${paginationLink}(pagenum=${pageOfBooks.number})}" 
+                                            aria-label="Previous">
                                             <span aria-hidden="true"><</span>
                                         </a>
                                     </li>
@@ -65,7 +70,7 @@
                                                 pageOfBooks.number - 1 : 1,
                                                     pageOfBooks.number + 2 < pageOfBooks.totalPages ?
                                                 pageOfBooks.number + 3 : pageOfBooks.totalPages)}">
-                                        <a class="page-link" href="#" th:href="@{/recent(pagenum=${page})}"
+                                        <a class="page-link" href="#" th:href="@{${paginationLink}(pagenum=${page})}"
                                            th:text="${page}">#</a>
                                     </li>
 
@@ -73,12 +78,12 @@
                                         <a class="page-link" href="#">...</a>
                                     </li>
                                     <li class="page-item" th:classappend="${pageOfBooks.last} ? 'disabled'">
-                                        <a class="page-link" href="#" th:href="@{/recent(pagenum=${pageOfBooks.number + 2})}" aria-label="Next">
+                                        <a class="page-link" href="#" th:href="@{${paginationLink}(pagenum=${pageOfBooks.number + 2})}" aria-label="Next">
                                             <span aria-hidden="true">></span>
                                         </a>
                                     </li>
                                     <li class="page-item" th:classappend="${pageOfBooks.last} ? 'disabled'">
-                                        <a class="page-link" href="#" th:href="@{/recent(pagenum=${pageOfBooks.totalPages})}" aria-label="Last">
+                                        <a class="page-link" href="#" th:href="@{${paginationLink}(pagenum=${pageOfBooks.totalPages})}" aria-label="Last">
                                             <span aria-hidden="true">>></span>
                                         </a>
                                     </li>

@@ -15,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
@@ -89,6 +90,7 @@ public class BookControllerHtmx {
         Page<Book> page = bookRepository.findAllByOrderByCreatedDateTimeDesc(pageObj);
         model.addAttribute("pageOfBooks", page);
         addUserToModel(principal, model);
+        model.addAttribute("paginationLink", "/recent");
 
         return "recently-reviewed.html";
     }
@@ -119,8 +121,9 @@ public class BookControllerHtmx {
 //        return "find-reviews :: cloudy-find-by-ratings-options";
 //    }
 
-    @GetMapping(value = {"/find"}, params = {"rating", "page"})
-    public String findByRating(Model model, Principal principal, @RequestParam String rating, @RequestParam int page) {
+    @GetMapping(value = {"/find"}, params = {"rating", "pagenum"})
+    public String findByRating(Model model, Principal principal, @RequestParam String rating, @RequestParam int pagenum,
+                               @RequestHeader(value="HX-Request", required = false) boolean hxRequest) {
 
         if (null == rating || rating.trim().isEmpty()) {
             throw new IllegalArgumentException("Rating parameter cannot be empty");
@@ -131,20 +134,28 @@ public class BookControllerHtmx {
             throw new IllegalArgumentException("Supplied rating parameter not recognised");
         }
 
-        if (page < 1) {
-            throw new IllegalArgumentException("Cannot request a page less that 1");
+        if (pagenum < 1) {
+            throw new IllegalArgumentException("Cannot request a page less than 1");
         }
 
-        PageRequest pageObj = PageRequest.of(page, defaultPageSize);
+        PageRequest pageObj = PageRequest.of(pagenum - 1, defaultPageSize);
         Page<Book> books = bookRepository.findByRatingOrderByCreatedDateTimeDesc(pageObj, aRating);
+
+        List<Book.Rating> ratings = getRatings("");
+        model.addAttribute("ratings", ratings);
 
         model.addAttribute("pageOfBooks", books);
         addUserToModel(principal, model);
+        model.addAttribute("paginationLink", "find?rating=" + rating);
 
-        return "find-reviews";
+        if (hxRequest) {
+            return "find-reviews :: cloudy-find-by-results";
+        } else {
+            return "find-reviews";
+        }
     }
 
-    private List getRatings(String prefix) {
+    private List<Book.Rating> getRatings(String prefix) {
         List<Book.Rating> ratings = Arrays.stream(Book.Rating.values()).toList();
         if (!prefix.isEmpty()) {
             ratings = ratings.stream().filter(s -> s.name().startsWith(prefix)).toList();

@@ -81,18 +81,23 @@ public class BookControllerHtmx {
 
     @GetMapping(value = "/recent")
     public String recentlyReviewed(Model model, Principal principal) {
-        return recentlyReviewedByPage(1, model, principal);
+        return recentlyReviewedByPage(1, model, principal, false);
     }
 
     @GetMapping(value = "/recent", params = {"pagenum"})
-    public String recentlyReviewedByPage(@RequestParam int pagenum, Model model, Principal principal) {
+    public String recentlyReviewedByPage(@RequestParam int pagenum, Model model, Principal principal,
+                                         @RequestHeader(value="HX-Request", required = false) boolean hxRequest) {
         PageRequest pageObj = PageRequest.of(pagenum - 1, 7);
         Page<Book> page = bookRepository.findAllByOrderByCreatedDateTimeDesc(pageObj);
         model.addAttribute("pageOfBooks", page);
         addUserToModel(principal, model);
         model.addAttribute("paginationLink", "/recent");
 
-        return "recently-reviewed.html";
+        if (hxRequest) {
+            return "find-reviews :: cloudy-find-by-results";
+        } else {
+            return "recently-reviewed.html";
+        }
     }
 
     @GetMapping(value = "/bookreview", params = {"bookId"})

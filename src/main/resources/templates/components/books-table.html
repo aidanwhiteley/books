@@ -10,7 +10,9 @@
 
         <h3>Table of books the Cloudy Book Club</h3>
 
-                        <div id="detail" th:fragment="cloudy-books-table">
+                        <div id="table-detail" th:fragment="cloudy-books-table">
+
+                            <h3>Books matching your selection</h3>
 
                             <div th:if="${#lists.isEmpty(pageOfBooks.content)}">
                                 There are no books that match your selection.
@@ -78,7 +80,9 @@
                                         <a class="page-link" href="#">...</a>
                                     </li>
                                     <li class="page-item" th:classappend="${pageOfBooks.last} ? 'disabled'">
-                                        <a class="page-link" href="#" th:href="@{${paginationLink}(pagenum=${pageOfBooks.number + 2})}" aria-label="Next">
+                                        <a class="page-link" href="" hx-target="#table-detail" hx-push-url="true"
+                                           th:hx-get="@{${paginationLink}(pagenum=${pageOfBooks.number + 2})}" 
+                                           aria-label="Next">
                                             <span aria-hidden="true">></span>
                                         </a>
                                     </li>

@@ -37,7 +37,6 @@
 
                 <div id="cloudy-find-by-results" th:fragment="cloudy-find-by-results">
                     <div th:if="${pageOfBooks != null}">
-                        <h3>Books matching your selection</h3>
                         <p th:replace="~{components/books-table :: cloudy-books-table}">
                             The <a href="./components/books-table.html">table</a> of matching books will go here.</p>
                     </div>

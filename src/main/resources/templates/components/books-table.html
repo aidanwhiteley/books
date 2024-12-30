@@ -49,15 +49,17 @@
                             </div>
 
                             <nav th:if="${pageOfBooks.totalPages > 1}" class="d-flex align-items-center justify-content-center mt-4"
-                                 aria-label="bavigation for table of books">
+                                 aria-label="Page navigation for table of books">
                                 <ul class="pagination">
                                     <li class="page-item" th:classappend="${pageOfBooks.first} ? 'disabled'">
-                                        <a class="page-link" th:href="@{${paginationLink}(pagenum=1)}" aria-label="First">
+                                        <a class="page-link" hx-target="#table-detail" hx-push-url="true"
+                                            th:hx-get="@{${paginationLink}(pagenum=1)}" aria-label="First">
                                             <span aria-hidden="true"><<</span>
                                         </a>
                                     </li>
                                     <li class="page-item" th:classappend="${pageOfBooks.first} ? 'disabled'">
-                                        <a class="page-link" href="#" th:href="@{${paginationLink}(pagenum=${pageOfBooks.number})}" 
+                                        <a class="page-link" href="" hx-target="#table-detail" hx-push-url="true"
+                                            th:hx-get="@{${paginationLink}(pagenum=${pageOfBooks.number})}" 
                                             aria-label="Previous">
                                             <span aria-hidden="true"><</span>
                                         </a>
@@ -72,8 +74,9 @@
                                                 pageOfBooks.number - 1 : 1,
                                                     pageOfBooks.number + 2 < pageOfBooks.totalPages ?
                                                 pageOfBooks.number + 3 : pageOfBooks.totalPages)}">
-                                        <a class="page-link" href="#" th:href="@{${paginationLink}(pagenum=${page})}"
-                                           th:text="${page}">#</a>
+                                        <a class="page-link" href="#" hx-target="#table-detail" hx-push-url="true"
+                                            th:hx-get="@{${paginationLink}(pagenum=${page})}"
+                                            th:text="${page}">#</a>
                                     </li>
 
                                     <li class="page-item disabled" th:if="${pageOfBooks.number < pageOfBooks.totalPages - 3}">
@@ -87,7 +90,8 @@
                                         </a>
                                     </li>
                                     <li class="page-item" th:classappend="${pageOfBooks.last} ? 'disabled'">
-                                        <a class="page-link" href="#" th:href="@{${paginationLink}(pagenum=${pageOfBooks.totalPages})}" aria-label="Last">
+                                        <a class="page-link" href="" hx-target="#table-detail" hx-push-url="true"
+                                            th:hx-get="@{${paginationLink}(pagenum=${pageOfBooks.totalPages})}" aria-label="Last">
                                             <span aria-hidden="true">>></span>
                                         </a>
                                     </li>

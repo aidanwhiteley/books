@@ -5,8 +5,10 @@ import com.aidanwhiteley.books.controller.exceptions.NotFoundException;
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.repository.BookRepository;
+import com.aidanwhiteley.books.repository.dtos.BooksByAuthor;
+import com.aidanwhiteley.books.repository.dtos.BooksByGenre;
+import com.aidanwhiteley.books.repository.dtos.BooksByReader;
 import com.aidanwhiteley.books.util.JwtAuthenticationUtils;
-import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,8 +21,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,8 +30,6 @@ import static com.aidanwhiteley.books.domain.Book.Rating.GREAT;
 
 @Controller
 public class BookControllerHtmx {
-
-    public static final String PAGE_REQUEST_TOO_BIG_MESSAGE = "Cannot request a page of data containing more than %s elements";
 
     private final BookRepository bookRepository;
     private final JwtAuthenticationUtils authUtils;
@@ -113,18 +113,13 @@ public class BookControllerHtmx {
     public String findReviews(Model model, Principal principal) {
         List<Book.Rating> ratings = getRatings("");
         model.addAttribute("ratings", ratings);
+        model.addAttribute("authors", getAuthors());
+        model.addAttribute("genres", getGenres());
+        model.addAttribute("reviewers", getReviewers(principal));
         addUserToModel(principal, model);
 
         return "find-reviews";
     }
-
-//    @GetMapping(value = "/findbookratings", params = {"ratingprefix"})
-//    public String findBookRatings(Model model, Principal principal, @RequestParam String ratingprefix) {
-//        List<Book.Rating> ratings = getRatings(ratingprefix);
-//        model.addAttribute("ratings", ratings);
-//        model.addAttribute("books", null);
-//        return "find-reviews :: cloudy-find-by-ratings-options";
-//    }
 
     @GetMapping(value = {"/find"}, params = {"rating", "pagenum"})
     public String findByRating(Model model, Principal principal, @RequestParam String rating, @RequestParam int pagenum,
@@ -146,12 +141,98 @@ public class BookControllerHtmx {
         PageRequest pageObj = PageRequest.of(pagenum - 1, defaultPageSize);
         Page<Book> books = bookRepository.findByRatingOrderByCreatedDateTimeDesc(pageObj, aRating);
 
-        List<Book.Rating> ratings = getRatings("");
-        model.addAttribute("ratings", ratings);
-
         model.addAttribute("pageOfBooks", books);
+        model.addAttribute("ratings", getRatings(""));
+        model.addAttribute("authors", getAuthors());
+        model.addAttribute("genres", getGenres());
+        model.addAttribute("reviewers", getReviewers(principal));
         addUserToModel(principal, model);
         model.addAttribute("paginationLink", "find?rating=" + rating);
+
+        if (hxRequest) {
+            return "find-reviews :: cloudy-find-by-results";
+        } else {
+            return "find-reviews";
+        }
+    }
+
+    @GetMapping(value = {"/find"}, params = {"author", "pagenum"})
+    public String findByAuthor(Model model, Principal principal, @RequestParam String author, @RequestParam int pagenum,
+                               @RequestHeader(value="HX-Request", required = false) boolean hxRequest) {
+
+        if (author == null || author.trim().isEmpty()) {
+            throw new IllegalArgumentException("Author parameter cannot be empty");
+        }
+
+        if (pagenum < 1) {
+            throw new IllegalArgumentException("Cannot request a page less than 1");
+        }
+
+        PageRequest pageObj = PageRequest.of(pagenum - 1, defaultPageSize);
+        Page<Book> books = bookRepository.findAllByAuthorOrderByCreatedDateTimeDesc(pageObj, author);
+        model.addAttribute("pageOfBooks", books);
+        model.addAttribute("ratings", getRatings(""));
+        model.addAttribute("authors", getAuthors());
+        model.addAttribute("reviewers", getReviewers(principal));
+        if (hxRequest) {
+            return "find-reviews :: cloudy-find-by-results";
+        } else {
+            return "find-reviews";
+        }
+    }
+
+    @GetMapping(value = {"/find"}, params = {"genre", "pagenum"})
+    public String findByGenre(Model model, Principal principal, @RequestParam String genre, @RequestParam int pagenum,
+                               @RequestHeader(value="HX-Request", required = false) boolean hxRequest) {
+
+        if (genre == null || genre.trim().isEmpty()) {
+            throw new IllegalArgumentException("Genre parameter cannot be empty");
+        }
+
+        if (pagenum < 1) {
+            throw new IllegalArgumentException("Cannot request a page less than 1");
+        }
+
+        PageRequest pageObj = PageRequest.of(pagenum - 1, defaultPageSize);
+        Page<Book> books = bookRepository.findAllByGenreOrderByCreatedDateTimeDesc(pageObj, genre);
+        model.addAttribute("pageOfBooks", books);
+        model.addAttribute("ratings", getRatings(""));
+        model.addAttribute("authors", getAuthors());
+        model.addAttribute("genres", getGenres());
+        model.addAttribute("reviewers", getReviewers(principal));
+        addUserToModel(principal, model);
+        model.addAttribute("paginationLink", "find?genre=" + genre);
+
+        if (hxRequest) {
+            return "find-reviews :: cloudy-find-by-results";
+        } else {
+            return "find-reviews";
+        }
+    }
+
+    @GetMapping(value = {"/find"}, params = {"reviewer", "pagenum"})
+    public String findByReviewer(Model model, Principal principal, @RequestParam String reviewer, @RequestParam int pagenum,
+                              @RequestHeader(value="HX-Request", required = false) boolean hxRequest) {
+
+        if (reviewer == null || reviewer.trim().isEmpty()) {
+            throw new IllegalArgumentException("Genre parameter cannot be empty");
+        }
+
+        if (pagenum < 1) {
+            throw new IllegalArgumentException("Cannot request a page less than 1");
+        }
+
+
+            PageRequest pageObj = PageRequest.of(pagenum - 1, defaultPageSize);
+            Page<Book> books = bookRepository.findByReaderOrderByCreatedDateTimeDesc(pageObj, reviewer);
+            model.addAttribute("pageOfBooks", books);
+            model.addAttribute("ratings", getRatings(""));
+            model.addAttribute("authors", getAuthors());
+            model.addAttribute("genres", getGenres());
+            model.addAttribute("reviewers", getReviewers(principal));
+            addUserToModel(principal, model);
+            model.addAttribute("paginationLink", "find?reviewer=" + reviewer);
+
 
         if (hxRequest) {
             return "find-reviews :: cloudy-find-by-results";
@@ -166,6 +247,23 @@ public class BookControllerHtmx {
             ratings = ratings.stream().filter(s -> s.name().startsWith(prefix)).toList();
         }
         return ratings.reversed();
+    }
+
+    private List<BooksByAuthor> getAuthors() {
+        return bookRepository.countBooksByAuthor();
+    }
+
+    private List<BooksByGenre> getGenres() {
+        return bookRepository.countBooksByGenre();
+    }
+
+    private List<BooksByReader> getReviewers(Principal principal) {
+        Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
+        if (user.isPresent() && user.get().getHighestRole().getRoleNumber() >= User.Role.ROLE_EDITOR.getRoleNumber()) {
+            return bookRepository.countBooksByReader();
+        } else {
+            return new ArrayList<BooksByReader>();
+        }
     }
 
     private void addUserToModel(Principal principal, Model model) {

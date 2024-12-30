@@ -13,6 +13,7 @@
         <div id="detail" hx-boost="false">
             <h2>Find a book review</h2>
             <div class="row">
+
                 <div class="col-sm mb-4">
                     <h3 class="finder-header">Find Reviews By Rating</h3>
                     <select id="select-by-rating" class="finder-control" data-placeholder="Select a review rating" autocomplete="off"
@@ -24,13 +25,41 @@
                         </optgroup>
                     </select>
                 </div>
+
                 <div class="col-sm mb-4">
-
-
+                    <h3 class="finder-header">Find Reviews By Author</h3>
+                    <select id="select-by-author" class="finder-control" data-placeholder="Start typing an author's name..." autocomplete="off"
+                        hx-target="#cloudy-find-by-results" hx-get="/find?pagenum=1" name="author" hx-push-url="true">
+                        <optgroup id="select-by-author-options" th:fragment="cloudy-find-by-author-options">
+                            <option th:each="author : ${authors}"
+                                    th:value="${author.author}"
+                                    th:text="${author.author + ' - ' + author.countOfBooks + ' books'}">Joseph Heller - 3</option>
+                        </optgroup>
+                    </select>
                 </div>
+
                 <div class="col-sm mb-4">
+                    <h3 class="finder-header">Find Reviews By Genre</h3>
+                    <select id="select-by-genre" class="finder-control" data-placeholder="Start typing a genre..." autocomplete="off"
+                        hx-target="#cloudy-find-by-results" hx-get="/find?pagenum=1" name="genre" hx-push-url="true">
+                        <optgroup id="select-by-genre-options" th:fragment="cloudy-find-by-genre-options">
+                            <option th:each="genre : ${genres}"
+                                    th:value="${genre.genre}"
+                                    th:text="${genre.genre + ' - ' + genre.countOfBooks + ' books'}">Novel - 20</option>
+                        </optgroup>
+                    </select>
+                </div>
 
-
+                <div th:if="${(user != null) and ((highestRole == 'EDITOR' or highestRole == 'ADMIN'))}" class="col-sm mb-4">
+                    <h3 class="finder-header">Find Reviews By Reviewer</h3>
+                    <select id="select-by-reviewer" class="finder-control" data-placeholder="Start typing a reviewer..." autocomplete="off"
+                        hx-target="#cloudy-find-by-results" hx-get="/find?pagenum=1" name="reviewer" hx-push-url="true">
+                        <optgroup id="select-by-reviewer-options" th:fragment="cloudy-find-by-reviewer-options">
+                            <option th:each="reviewer : ${reviewers}"
+                                    th:value="${reviewer.reader}"
+                                    th:text="${reviewer.reader + ' - ' + reviewer.countOfBooks + ' books'}">Joe Bloggs - 5</option>
+                        </optgroup>
+                    </select>
                 </div>
 
                 <hr class="page-separator">
@@ -47,12 +76,12 @@
 
             </div>
 
-            <script src="../../static/js/tom-select.complete.min.js" th:src="@{/js/tom-select.complete.min.js}"></script>
+            <script src="../../static/js/tom-select.base.min.js" th:src="@{/js/tom-select.base.min.js}"></script>
             <script>
                 htmx.onLoad(function(elt) {
-                    // Look up all elements with the tomselect class on it within the element
-                    var allSelects = htmx.findAll(elt, ".finder-control");
-                    for ( select of allSelects ) {
+                    
+                    const allSelects = htmx.findAll(elt, ".finder-control");
+                    for (select of allSelects) {
                         console.log(select);
                         if (!select.tomselect) {
                             console.log('Running TomSelect init');
@@ -60,12 +89,37 @@
                                 new TomSelect("#select-by-rating",{
                                     create: false,
                                     highlight: true,
-                                    allowEmptyOption: true,
+                                    allowEmptyOption: false,
                                     maxItems: 1,
                                     items: [],
-                                    plugins: ['clear_button'],
-                                    sortField:[{field:'$order'},{field:'$score'}]
-                                });
+                                    sortField:[{field:'$order'},{field:'$score'}]});
+
+                                    new TomSelect("#select-by-author",{
+                                    create: false,
+                                    highlight: true,
+                                    allowEmptyOption: false,
+                                    maxOptions: 50,
+                                    maxItems: 1,
+                                    items: [],
+                                    sortField:[{field:'$order'},{field:'$score'}]});
+
+                                    new TomSelect("#select-by-genre",{
+                                    create: false,
+                                    highlight: true,
+                                    allowEmptyOption: false,
+                                    maxOptions: 50,
+                                    maxItems: 1,
+                                    items: [],
+                                    sortField:[{field:'$order'},{field:'$score'}]});
+
+                                    new TomSelect("#select-by-reviewer",{
+                                    create: false,
+                                    highlight: true,
+                                    allowEmptyOption: false,
+                                    maxOptions: 50,
+                                    maxItems: 1,
+                                    items: [],
+                                    sortField:[{field:'$order'},{field:'$score'}]});
                             } catch (err) {
                                 console.log('Ignoring already initted error');
                             }

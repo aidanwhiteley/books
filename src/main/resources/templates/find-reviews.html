@@ -81,45 +81,19 @@
                 htmx.onLoad(function(elt) {
                     
                     const allSelects = htmx.findAll(elt, ".finder-control");
-                    for (select of allSelects) {
+                    allSelects.forEach((el) => {
                         console.log(select);
                         if (!select.tomselect) {
                             console.log('Running TomSelect init');
                             try {
-                                new TomSelect("#select-by-rating",{
+                                new TomSelect(el, {
                                     create: false,
                                     highlight: true,
                                     allowEmptyOption: false,
                                     maxItems: 1,
                                     items: [],
-                                    sortField:[{field:'$order'},{field:'$score'}]});
-
-                                    new TomSelect("#select-by-author",{
-                                    create: false,
-                                    highlight: true,
-                                    allowEmptyOption: false,
-                                    maxOptions: 50,
-                                    maxItems: 1,
-                                    items: [],
-                                    sortField:[{field:'$order'},{field:'$score'}]});
-
-                                    new TomSelect("#select-by-genre",{
-                                    create: false,
-                                    highlight: true,
-                                    allowEmptyOption: false,
-                                    maxOptions: 50,
-                                    maxItems: 1,
-                                    items: [],
-                                    sortField:[{field:'$order'},{field:'$score'}]});
-
-                                    new TomSelect("#select-by-reviewer",{
-                                    create: false,
-                                    highlight: true,
-                                    allowEmptyOption: false,
-                                    maxOptions: 50,
-                                    maxItems: 1,
-                                    items: [],
-                                    sortField:[{field:'$order'},{field:'$score'}]});
+                                    sortField:[{field:'$order'},{field:'$score'}]
+                                });
                             } catch (err) {
                                 console.log('Ignoring already initted error');
                             }
@@ -127,7 +101,7 @@
                             console.log('Skipping - already TomSelect init');
                         }
                     }
-                });
+                )});
             </script>
 
         </div>

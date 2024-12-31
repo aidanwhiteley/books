@@ -8,6 +8,8 @@ import com.aidanwhiteley.books.repository.BookRepository;
 import com.aidanwhiteley.books.repository.dtos.BooksByAuthor;
 import com.aidanwhiteley.books.repository.dtos.BooksByGenre;
 import com.aidanwhiteley.books.repository.dtos.BooksByReader;
+import com.aidanwhiteley.books.service.StatsService;
+import com.aidanwhiteley.books.service.dtos.SummaryStats;
 import com.aidanwhiteley.books.util.JwtAuthenticationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +35,7 @@ public class BookControllerHtmx {
 
     private final BookRepository bookRepository;
     private final JwtAuthenticationUtils authUtils;
+    private final StatsService statsService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BookControllerHtmx.class);
 
@@ -42,9 +45,11 @@ public class BookControllerHtmx {
     @Value("${books.users.max.page.size}")
     private int maxPageSize;
 
-    public BookControllerHtmx(BookRepository bookRepository, JwtAuthenticationUtils jwtAuthenticationUtils) {
+    public BookControllerHtmx(BookRepository bookRepository, JwtAuthenticationUtils jwtAuthenticationUtils,
+                              StatsService statsService) {
         this.bookRepository = bookRepository;
         this.authUtils = jwtAuthenticationUtils;
+        this.statsService = statsService;
     }
 
     @GetMapping(value = "/")
@@ -270,6 +275,20 @@ public class BookControllerHtmx {
         } else {
             return "search-books";
         }
+    }
+
+    @GetMapping(value = {"/statistics"})
+    public String statistics(Model model, Principal principal) {
+
+        SummaryStats stats = statsService.getSummaryStats();;
+        model.addAttribute("countOfBooks", stats.getCount());
+        model.addAttribute("bookByRating", stats.getBooksByRating());
+        List booksByGenre = stats.getBookByGenre();
+        model.addAttribute("bookByGenre", booksByGenre.subList(0, booksByGenre.size() >= 10 ? 10 :
+                booksByGenre.size()));
+        addUserToModel(principal, model);
+
+        return "book-stats";
     }
 
     private List<Book.Rating> getRatings(String prefix) {

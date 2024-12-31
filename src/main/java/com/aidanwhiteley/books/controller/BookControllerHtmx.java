@@ -96,7 +96,7 @@ public class BookControllerHtmx {
         if (hxRequest) {
             return "find-reviews :: cloudy-find-by-results";
         } else {
-            return "recently-reviewed.html";
+            return "recently-reviewed";
         }
     }
 
@@ -241,6 +241,37 @@ public class BookControllerHtmx {
         }
     }
 
+    @GetMapping(value = {"/search"}, params = {"term"})
+    public String findBySearchFullPage(Model model, Principal principal, @RequestParam String term) {
+        return findBySearch(model, principal, term, 1, false);
+    }
+
+    @GetMapping(value = {"/search"}, params = {"term", "pagenum"})
+    public String findBySearch(Model model, Principal principal, @RequestParam String term, @RequestParam int pagenum,
+                                   @RequestHeader(value="HX-Request", required = false) boolean hxRequest) {
+
+        if (null == term || term.trim().isEmpty()) {
+            throw new IllegalArgumentException("Search query string cannot be empty");
+        }
+
+        if (pagenum < 1) {
+            throw new IllegalArgumentException("Cannot request a page less than 1");
+        }
+
+        PageRequest pageObj = PageRequest.of(pagenum - 1    , defaultPageSize);
+        Page<Book> books = bookRepository.searchForBooks(term, pageObj);
+
+        model.addAttribute("pageOfBooks", books);
+        addUserToModel(principal, model);
+        model.addAttribute("paginationLink", "search?term=" + term);
+
+        if (hxRequest) {
+            return "find-reviews :: cloudy-find-by-results";
+        } else {
+            return "search-books";
+        }
+    }
+
     private List<Book.Rating> getRatings(String prefix) {
         List<Book.Rating> ratings = Arrays.stream(Book.Rating.values()).toList();
         if (!prefix.isEmpty()) {
@@ -283,11 +314,8 @@ public class BookControllerHtmx {
             model.addAttribute("user", user.get());
             model.addAttribute("highestRole", user.get().getHighestRole().getShortName());
         } else {
-            // We've been supplied a valid JWT but the user is no longer in the database.
-            LOGGER.warn("No user was found for the given principal - assuming an old JWT supplied for a user removed from data store");
             model.addAttribute("user", null);
             model.addAttribute("highestRole", null);
-            throw new NotAuthorisedException("No user found in user store for input JWT- please clear your cookies");
         }
     }
 

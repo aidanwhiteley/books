@@ -2,7 +2,7 @@
 <html th:replace="~{layout :: layout(~{::title}, ~{::#detail}, false)}"
       xmlns:th="http://www.thymeleaf.org">
     <head>
-        <title>Cloudy Book Club - Recently Reviewed</title>
+        <title>Cloudy Book Club - Search For Books</title>
         <meta charset="utf-8">
         <link rel="stylesheet" href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
         <link rel="stylesheet" href="../static/css/books-app.css" th:href="@{/css/books-app.css}">
@@ -10,7 +10,7 @@
     <body>
 
         <div id="detail">
-            <p th:replace="~{components/books-table :: cloudy-books-table}">The <a href="./components/books-table.html">table</a> of recently reviewed books will go here.</p>
+            <p th:replace="~{components/books-table :: cloudy-books-table}">The <a href="./components/books-table.html">table</a> of searched for books will go here.</p>
         </div>
 
     </body>

@@ -26,7 +26,7 @@
                         <a th:if="${user != null}" class="nav-link" href="/logoff">Logoff</a>
                     </div>
                     <div id="book-search">
-                        <form method="get" action="/" id="search-form" role="search">
+                        <form action="/search?pagenum=1" method="get" id="search-form" role="search">
                             <input id="term" aria-label="Search book reviews" placeholder="Search book reviews" type="search" name="term" value="">
                         </form>
                     </div>

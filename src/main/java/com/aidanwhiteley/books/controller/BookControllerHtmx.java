@@ -227,17 +227,15 @@ public class BookControllerHtmx {
             throw new IllegalArgumentException("Cannot request a page less than 1");
         }
 
-
-            PageRequest pageObj = PageRequest.of(pagenum - 1, defaultPageSize);
-            Page<Book> books = bookRepository.findByReaderOrderByCreatedDateTimeDesc(pageObj, reviewer);
-            model.addAttribute("pageOfBooks", books);
-            model.addAttribute("ratings", getRatings(""));
-            model.addAttribute("authors", getAuthors());
-            model.addAttribute("genres", getGenres());
-            model.addAttribute("reviewers", getReviewers(principal));
-            addUserToModel(principal, model);
-            model.addAttribute("paginationLink", "find?reviewer=" + reviewer);
-
+        PageRequest pageObj = PageRequest.of(pagenum - 1, defaultPageSize);
+        Page<Book> books = bookRepository.findByReaderOrderByCreatedDateTimeDesc(pageObj, reviewer);
+        model.addAttribute("pageOfBooks", books);
+        model.addAttribute("ratings", getRatings(""));
+        model.addAttribute("authors", getAuthors());
+        model.addAttribute("genres", getGenres());
+        model.addAttribute("reviewers", getReviewers(principal));
+        addUserToModel(principal, model);
+        model.addAttribute("paginationLink", "find?reviewer=" + reviewer);
 
         if (hxRequest) {
             return "find-reviews :: cloudy-find-by-results";
@@ -289,6 +287,16 @@ public class BookControllerHtmx {
         addUserToModel(principal, model);
 
         return "book-stats";
+    }
+
+    @GetMapping(value = {"/createreview"})
+    public String createBookReview(Model model, Principal principal) {
+
+        model.addAttribute("bookData", new Book());
+        model.addAttribute("genres", getGenres());
+        addUserToModel(principal, model);
+
+        return "create-review";
     }
 
     private List<Book.Rating> getRatings(String prefix) {

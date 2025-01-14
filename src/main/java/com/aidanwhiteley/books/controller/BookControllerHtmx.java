@@ -1,5 +1,6 @@
 package com.aidanwhiteley.books.controller;
 
+import com.aidanwhiteley.books.controller.dtos.BookForm;
 import com.aidanwhiteley.books.controller.exceptions.NotAuthorisedException;
 import com.aidanwhiteley.books.controller.exceptions.NotFoundException;
 import com.aidanwhiteley.books.domain.Book;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -297,6 +299,16 @@ public class BookControllerHtmx {
         addUserToModel(principal, model);
 
         return "create-review";
+    }
+
+    @PostMapping(value = {"/createreview"})
+    public String createBookReviewForm(Model model, BookForm book, Principal principal) {
+
+        model.addAttribute("bookData", new Book());
+        model.addAttribute("genres", getGenres());
+        addUserToModel(principal, model);
+
+        return "create-review :: cloudy-book-review-form";
     }
 
     private List<Book.Rating> getRatings(String prefix) {

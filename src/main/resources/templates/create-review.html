@@ -15,7 +15,9 @@
             <div class="container">
                 <h4>Enter your review of a book you have read</h4>
 
-                <form th:object="${bookData}" th:action="@{/createreview}" method="post" class="row g-3" novalidate th:fragment="cloudy-book-review-form"> 
+                <form id="createreviewform" th:object="${bookData}" hx-post="/createreview" 
+                    hx-target="#createreviewform" hx-swap="outerHTML" hx-trigger="submit"
+                    class="row g-3" novalidate th:fragment="cloudy-book-review-form"> 
 
                     <div class="col-md-6">
                         <label for="title">Book Title</label>
@@ -31,13 +33,13 @@
 
                     <div class="col-md-4">
                         <label for="rating">Your Rating Of The Book</label>
-                        <select id="rating" name="rating" class="form-control">
-                            <option value="2">Select a rating...</option>
-                            <option value="4">Great</option>
-                            <option value="3">Good</option>
-                            <option value="2">OK</option>
-                            <option value="1">Poor</option>
-                            <option value="0">Terrible</option>
+                        <select id="rating" th:field="*{rating}" class="form-control">
+                            <option th:value="'99'" th:text="'Select a rating...'"></option>
+                            <option th:value="'4'" th:text="Great"></option>
+                            <option th:value="'3'" th:text="Good"></option>
+                            <option th:value="'2'" th:text="OK"></option>
+                            <option th:value="'1'" th:text="Poor"></option>
+                            <option th:value="'0'" th:text="Terrible"></option>
                         </select>
                         <p th:if="${#fields.hasErrors('rating')}" th:text="${#strings.listJoin(#fields.errors('rating'), ', ')}"></p>
                     </div>
@@ -45,7 +47,7 @@
                     <div class="col-md-8">
                         <label for="genre">Genre</label>
                         <select id="genre" class="" data-placeholder="Start typing a genre..."
-                            autocomplete="off" name="genre">
+                            autocomplete="off" name="genre" th:field="*{genre}">
                             <option th:each="genre : ${genres}" th:value="${genre.genre}"
                                 th:text="${genre.genre + ' - ' + genre.countOfBooks + ' books'}">Novel - 20 books</option>
                         </select>

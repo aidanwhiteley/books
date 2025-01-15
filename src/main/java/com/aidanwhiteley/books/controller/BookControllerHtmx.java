@@ -1,7 +1,7 @@
 package com.aidanwhiteley.books.controller;
 
 import com.aidanwhiteley.books.controller.dtos.BookForm;
-import com.aidanwhiteley.books.controller.exceptions.NotAuthorisedException;
+import com.aidanwhiteley.books.controller.dtos.BookFormRecord;
 import com.aidanwhiteley.books.controller.exceptions.NotFoundException;
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.User;
@@ -19,7 +19,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -294,7 +296,7 @@ public class BookControllerHtmx {
     @GetMapping(value = {"/createreview"})
     public String createBookReview(Model model, Principal principal) {
 
-        model.addAttribute("bookData", new Book());
+        model.addAttribute("bookData", new BookForm());
         model.addAttribute("genres", getGenres());
         addUserToModel(principal, model);
 
@@ -302,9 +304,11 @@ public class BookControllerHtmx {
     }
 
     @PostMapping(value = {"/createreview"})
-    public String createBookReviewForm(Model model, BookForm book, Principal principal) {
+    public String createBookReviewForm(@ModelAttribute BookForm bookData, BindingResult result, Model model, Principal principal) {
 
-        model.addAttribute("bookData", new Book());
+        System.out.println("Input data: " + bookData);
+        System.out.println("Bindingresult: " + result);
+        model.addAttribute("bookData", bookData);
         model.addAttribute("genres", getGenres());
         addUserToModel(principal, model);
 

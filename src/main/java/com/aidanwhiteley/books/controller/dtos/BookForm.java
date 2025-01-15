@@ -1,15 +1,12 @@
 package com.aidanwhiteley.books.controller.dtos;
 
-import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.Comment;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookForm {

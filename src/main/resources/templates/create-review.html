@@ -52,8 +52,9 @@
 
                 <div class="col-md-8">
                     <label for="genre">Genre</label>
-                    <select id="genre" class="" data-placeholder="Start typing a genre..." autocomplete="off"
+                    <select id="genre" class="" placeholder="Start typing a genre..." autocomplete="off"
                         name="genre" th:field="*{genre}">
+                        <option value="">Start typing a genre...</option>
                         <option th:each="genre : ${genres}" th:value="${genre.genre}"
                             th:text="${genre.genre + ' - ' + genre.countOfBooks + ' books'}">Novel - 20 books</option>
                     </select>
@@ -97,10 +98,7 @@
                         console.log('Running TomSelect init');
                         try {
                             selectControls.push(new TomSelect(el, {
-                                highlight: true,
-                                allowEmptyOption: true,
-                                maxItems: 1,
-                                hidePlaceholder: false,
+                                create: true,
                                 sortField: [{ field: '$order' }, { field: '$score' }]
                             }));
                         } catch (err) {

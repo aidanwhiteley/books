@@ -5,7 +5,9 @@ import com.aidanwhiteley.books.controller.dtos.BookFormRecord;
 import com.aidanwhiteley.books.controller.exceptions.NotFoundException;
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.User;
+import com.aidanwhiteley.books.domain.googlebooks.BookSearchResult;
 import com.aidanwhiteley.books.repository.BookRepository;
+import com.aidanwhiteley.books.repository.GoogleBooksDaoSync;
 import com.aidanwhiteley.books.repository.dtos.BooksByAuthor;
 import com.aidanwhiteley.books.repository.dtos.BooksByGenre;
 import com.aidanwhiteley.books.repository.dtos.BooksByReader;
@@ -40,6 +42,7 @@ public class BookControllerHtmx {
     private final BookRepository bookRepository;
     private final JwtAuthenticationUtils authUtils;
     private final StatsService statsService;
+    private final GoogleBooksDaoSync googleBooksDaoSync;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BookControllerHtmx.class);
 
@@ -50,10 +53,11 @@ public class BookControllerHtmx {
     private int maxPageSize;
 
     public BookControllerHtmx(BookRepository bookRepository, JwtAuthenticationUtils jwtAuthenticationUtils,
-                              StatsService statsService) {
+                              StatsService statsService, GoogleBooksDaoSync googleBooksDaoSync) {
         this.bookRepository = bookRepository;
         this.authUtils = jwtAuthenticationUtils;
         this.statsService = statsService;
+        this.googleBooksDaoSync = googleBooksDaoSync;
     }
 
     @GetMapping(value = "/")
@@ -306,13 +310,21 @@ public class BookControllerHtmx {
     @PostMapping(value = {"/createreview"})
     public String createBookReviewForm(@ModelAttribute BookForm bookData, BindingResult result, Model model, Principal principal) {
 
-        System.out.println("Input data: " + bookData);
-        System.out.println("Bindingresult: " + result);
         model.addAttribute("bookData", bookData);
         model.addAttribute("genres", getGenres());
         addUserToModel(principal, model);
 
         return "create-review :: cloudy-book-review-form";
+    }
+
+    @GetMapping(value = {"/googlebooks"}, params = {"title", "author"})
+    public String findGoogleBooksByTitleAndAuthor(@RequestParam String title, @RequestParam String author, Model model, Principal principal) {
+        BookSearchResult result = googleBooksDaoSync.searchGoogBooksByTitleAndAuthor(title, author);
+
+        model.addAttribute("googleBookSearchResult", result);
+        addUserToModel(principal, model);
+
+        return "create-review-google-review :: cloudy-google-book-candidates";
     }
 
     private List<Book.Rating> getRatings(String prefix) {

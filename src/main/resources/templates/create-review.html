@@ -31,7 +31,9 @@
                 <div class="col-md-6">
                     <label for="title">Author</label>
                     <input type="text" id="author" name="author" class="form-control"
-                        placeholder="Enter the author's name" th:field="*{author}" />
+                        placeholder="Enter the author's name" th:field="*{author}" 
+                        hx-get="/googlebooks" hx-trigger="focusout" hx-target="#googleBookCandidatesPlaceholder" 
+                        hx-include="#title" />
                     <p th:if="${#fields.hasErrors('author')}"
                         th:text="${#strings.listJoin(#fields.errors('author'), ', ')}"></p>
                 </div>
@@ -77,6 +79,8 @@
                     <p th:if="${#fields.hasErrors('summary')}"
                         th:text="${#strings.listJoin(#fields.errors('summary'), ', ')}"></p>
                 </div>
+
+                <div id="googleBookCandidatesPlaceholder"></div>
 
                 <div class="text-center">
                     <button type="submit" class="btn btn btn-outline-primary btn-wd me-3">Save book review</button>

@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <head>
     <title>Matching books on Google Books</title>
     <meta charset="utf-8">
@@ -9,44 +10,51 @@
 
 <body>
 
-    <div id="googleBookCandidates" th:fragment="cloudy-google-book-candidates" class="container">
+    <span id="googleBookCandidates" th:fragment="cloudy-google-book-candidates" class="container">
 
         <div th:if="${(googleBookSearchResult != null) and (googleBookSearchResult.totalItems == 0)}">
             <div class="alert alert-warning" role="alert">
-                We didn't find any matching books on Google Books. This may be correct but please do check what is entered
+                We didn't find any matching books on Google Books. This may be correct but please do check what is
+                entered
                 in the <b>Book Title</b> and <b>Author</b> fields above.
             </div>
         </div>
 
         <div class="col-md-8" th:if="${googleBookSearchResult != null and googleBookSearchResult.totalItems > 0}">
-            <h5 th:if="${googleBookSearchResult.items[0].volumeInfo}" th:text="${googleBookSearchResult.items[0].volumeInfo.title}">A book title</h5>
+            <h5 th:if="${googleBookSearchResult.items[0].volumeInfo}"
+                th:text="${googleBookSearchResult.items[0].volumeInfo.title}">A book title</h5>
             <p>
                 <img th:if="${googleBookSearchResult.items[0].volumeInfo != null and googleBookSearchResult.items[0].volumeInfo.imageLinks != null and
                     googleBookSearchResult.items[0].volumeInfo.imageLinks.thumbnail != null}"
-                    src="../../static/images/book-club-logo.jpeg" th:src="${googleBookSearchResult.items[0].volumeInfo.imageLinks.thumbnail}"
-                    alt="A book cover image from Google" 
-                    class="rounded float-start googleBookImageImport" />
-                <span th:text="${googleBookSearchResult.items[0].volumeInfo.description}">Google books description</span>
+                    src="../../static/images/book-club-logo.jpeg"
+                    th:src="${googleBookSearchResult.items[0].volumeInfo.imageLinks.thumbnail}"
+                    alt="A book cover image from Google" class="rounded float-start googleBookImageImport" />
+                <span th:text="${googleBookSearchResult.items[0].volumeInfo.description}">Google books
+                    description</span>
             </p>
             <p th:if="${googleBookSearchResult.items[0].volumeInfo.authors}">
-                By: <span th:text="${#strings.arrayJoin(googleBookSearchResult.items[0].volumeInfo.authors, ',')}">An author</span>
+                By: <span th:text="${#strings.arrayJoin(googleBookSearchResult.items[0].volumeInfo.authors, ',')}">An
+                    author</span>
             </p>
         </div>
 
         <div class="col-md-4" th:if="${googleBookSearchResult != null and googleBookSearchResult.totalItems > 0}">
             <div class="googleBookText card">
                 <h5>Have we found the right book?</h5>
-                <p>Does this look like the book you've read? If not, please try the scroll buttons to see alternatives and then click the check box if you find a good match.</p>
+                <p>Does this look like the book you've read? If not, please try the scroll buttons to see alternatives
+                    and then click the check box if you find a good match.</p>
                 <p>If none of the options look like a good match, please untick the check box.</p>
 
                 <div class="bookMatchControl d-flex align-items-center justify-content-center">
-                    <input class="form-check-input" type="checkbox" th:checked="true" id="checkBoxBookMatch" onClick=doSomething()
-                        aria-label="Click if book matches" />
+                    <input class="form-check-input" type="checkbox" th:checked="true" id="checkBoxBookMatch"
+                        onClick=doSomething() aria-label="Click if book matches" />
                 </div>
 
                 <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
-                    <button type="button" th:disabled="true" onClick=doSomething() class="btn btn-outline-primary previous-button" >&laquo; Previous</button>
-                    <button type="button" th:disabled="false" onClick=doSomething() class="btn btn-outline-primary next-button">Next &raquo;</button>
+                    <button type="button" th:disabled="true" onClick=doSomething()
+                        class="btn btn-outline-primary previous-button">&laquo; Previous</button>
+                    <button type="button" th:disabled="false" onClick=doSomething()
+                        class="btn btn-outline-primary next-button">Next &raquo;</button>
                 </div>
 
                 <input id="googleBookId" name="googleBookId" type="hidden" value="0" />
@@ -54,7 +62,7 @@
         </div>
 
 
-    </div>
+    </span>
 
 </body>
 

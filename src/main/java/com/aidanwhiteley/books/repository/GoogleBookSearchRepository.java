@@ -1,11 +1,11 @@
 package com.aidanwhiteley.books.repository;
 
-import com.aidanwhiteley.books.controller.dtos.GoogleBookSearch;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import com.aidanwhiteley.books.repository.dtos.GoogleBookSearch;
 import org.springframework.data.mongodb.repository.MongoRepository;
+
+import java.util.List;
 
 public interface GoogleBookSearchRepository extends MongoRepository<GoogleBookSearch, String> {
 
-    Page<GoogleBookSearch> findAllByTitleAuthor(Pageable page, String title, String author);
+    List<GoogleBookSearch> findAll();
 }

@@ -8,4 +8,5 @@ import java.util.List;
 public interface GoogleBookSearchRepository extends MongoRepository<GoogleBookSearch, String> {
 
     List<GoogleBookSearch> findAll();
+    List<GoogleBookSearch> findAllByTitleAndAuthor(String title, String author);
 }

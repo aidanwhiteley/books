@@ -16,7 +16,7 @@ public class OpenApiConfigTest extends IntegrationTest {
 
     @Test
     void testOpenApiSwaggerUiHtml() {
-        ResponseEntity<String> response = testRestTemplate.exchange("/swagger-ui/layout.html", HttpMethod.GET,
+        ResponseEntity<String> response = testRestTemplate.exchange("/swagger-ui/index.html", HttpMethod.GET,
                 null, String.class);
 
         assertTrue(response.getBody().contains("swagger"));

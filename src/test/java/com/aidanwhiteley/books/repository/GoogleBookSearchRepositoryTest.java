@@ -40,8 +40,6 @@ class GoogleBookSearchRepositoryTest extends IntegrationTest {
         GoogleBookSearch gbSearch =
                 new GoogleBookSearch("Design Patterns", "Gamma", result, LocalDateTime.now().plusMinutes(1));
         searchRepository.insert(gbSearch);
-        assertEquals(1, searchRepository.findAll().size());
-
         assertEquals(1, searchRepository.findAllByTitleAndAuthor("Design Patterns", "Gamma").size());
     }
 

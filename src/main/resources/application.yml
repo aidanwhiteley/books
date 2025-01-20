@@ -111,6 +111,7 @@ books:
         maxResults: maxResults=30
         connecTimeout: 2000
         readTimeout: 3000
+      cacheTimeoutMinutes: 10
 
   reload:
     development:

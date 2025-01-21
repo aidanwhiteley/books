@@ -10,7 +10,9 @@ import com.aidanwhiteley.books.repository.GoogleBooksDaoSync;
 import com.aidanwhiteley.books.repository.dtos.BooksByAuthor;
 import com.aidanwhiteley.books.repository.dtos.BooksByGenre;
 import com.aidanwhiteley.books.repository.dtos.BooksByReader;
+import com.aidanwhiteley.books.service.GoogleBookSearchService;
 import com.aidanwhiteley.books.service.StatsService;
+import com.aidanwhiteley.books.service.dtos.GoogleBookSearchResult;
 import com.aidanwhiteley.books.service.dtos.SummaryStats;
 import com.aidanwhiteley.books.util.JwtAuthenticationUtils;
 import org.slf4j.Logger;
@@ -37,6 +39,7 @@ public class BookControllerHtmx {
     private final JwtAuthenticationUtils authUtils;
     private final StatsService statsService;
     private final GoogleBooksDaoSync googleBooksDaoSync;
+    private final GoogleBookSearchService googleBookSearchService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BookControllerHtmx.class);
 
@@ -47,11 +50,13 @@ public class BookControllerHtmx {
     private int maxPageSize;
 
     public BookControllerHtmx(BookRepository bookRepository, JwtAuthenticationUtils jwtAuthenticationUtils,
-                              StatsService statsService, GoogleBooksDaoSync googleBooksDaoSync) {
+                              StatsService statsService, GoogleBooksDaoSync googleBooksDaoSync,
+                              GoogleBookSearchService googleBookSearchService) {
         this.bookRepository = bookRepository;
         this.authUtils = jwtAuthenticationUtils;
         this.statsService = statsService;
         this.googleBooksDaoSync = googleBooksDaoSync;
+        this.googleBookSearchService = googleBookSearchService;
     }
 
     @GetMapping(value = "/")
@@ -310,9 +315,11 @@ public class BookControllerHtmx {
         return "create-review :: cloudy-book-review-form";
     }
 
-    @GetMapping(value = {"/googlebooks"}, params = {"title", "author"})
-    public String findGoogleBooksByTitleAndAuthor(@RequestParam String title, @RequestParam String author, Model model, Principal principal) {
-        BookSearchResult result = googleBooksDaoSync.searchGoogBooksByTitleAndAuthor(title, author);
+    @GetMapping(value = {"/googlebooks"}, params = {"title", "author", "index"})
+    public String findGoogleBooksByTitleAndAuthor(@RequestParam String title, @RequestParam String author,
+                                                  @RequestParam int index, Model model, Principal principal) {
+
+        GoogleBookSearchResult result = googleBookSearchService.getGoogleBooks(title, author, index);
 
         model.addAttribute("googleBookSearchResult", result);
         addUserToModel(principal, model);

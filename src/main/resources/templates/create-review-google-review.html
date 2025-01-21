@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <title>Matching books on Google Books</title>
     <meta charset="utf-8">
@@ -12,7 +13,7 @@
 
     <span id="googleBookCandidates" th:fragment="cloudy-google-book-candidates" class="container">
 
-        <div th:if="${(googleBookSearchResult != null) and (googleBookSearchResult.totalItems == 0)}">
+        <div th:if="${(googleBookSearchResult != null) and (googleBookSearchResult.item == null)}">
             <div class="alert alert-warning" role="alert">
                 We didn't find any matching books on Google Books. This may be correct but please do check what is
                 entered
@@ -20,24 +21,24 @@
             </div>
         </div>
 
-        <div class="col-md-8" th:if="${googleBookSearchResult != null and googleBookSearchResult.totalItems > 0}">
-            <h5 th:if="${googleBookSearchResult.items[0].volumeInfo}"
-                th:text="${googleBookSearchResult.items[0].volumeInfo.title}">A book title</h5>
+        <div class="col-md-8" th:if="${googleBookSearchResult != null and googleBookSearchResult.item  != null}">
+            <h5 th:if="${googleBookSearchResult.item.volumeInfo}"
+                th:text="${googleBookSearchResult.item.volumeInfo.title}">A book title</h5>
             <p>
-                <img th:if="${googleBookSearchResult.items[0].volumeInfo?.imageLinks?.thumbnail}"
+                <img th:if="${googleBookSearchResult.item.volumeInfo?.imageLinks?.thumbnail}"
                     src="../../static/images/book-club-logo.jpeg"
-                    th:src="${googleBookSearchResult.items[0].volumeInfo.imageLinks.thumbnail}"
+                    th:src="${googleBookSearchResult.item.volumeInfo.imageLinks.thumbnail}"
                     alt="A book cover image from Google" class="rounded float-start googleBookImageImport" />
-                <span th:text="${googleBookSearchResult.items[0].volumeInfo.description}">Google books
+                <span th:text="${googleBookSearchResult.item.volumeInfo.description}">Google books
                     description</span>
             </p>
-            <p th:if="${googleBookSearchResult.items[0].volumeInfo.authors}">
-                By: <span th:text="${#strings.arrayJoin(googleBookSearchResult.items[0].volumeInfo.authors, ',')}">An
+            <p th:if="${googleBookSearchResult.item.volumeInfo.authors}">
+                By: <span th:text="${#strings.arrayJoin(googleBookSearchResult.item.volumeInfo.authors, ',')}">An
                     author</span>
             </p>
         </div>
 
-        <div class="col-md-4" th:if="${googleBookSearchResult != null and googleBookSearchResult.totalItems > 0}">
+        <div class="col-md-4" th:if="${googleBookSearchResult != null and googleBookSearchResult.item != null}">
             <div class="googleBookText card">
                 <h5>Have we found the right book?</h5>
                 <p>Does this look like the book you've read? If not, please try the scroll buttons to see alternatives

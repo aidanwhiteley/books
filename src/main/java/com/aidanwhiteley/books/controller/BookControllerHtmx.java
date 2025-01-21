@@ -20,12 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.ArrayList;
@@ -285,12 +280,11 @@ public class BookControllerHtmx {
     @GetMapping(value = {"/statistics"})
     public String statistics(Model model, Principal principal) {
 
-        SummaryStats stats = statsService.getSummaryStats();;
+        SummaryStats stats = statsService.getSummaryStats();
         model.addAttribute("countOfBooks", stats.getCount());
         model.addAttribute("bookByRating", stats.getBooksByRating());
-        List booksByGenre = stats.getBookByGenre();
-        model.addAttribute("bookByGenre", booksByGenre.subList(0, booksByGenre.size() >= 10 ? 10 :
-                booksByGenre.size()));
+        List<BooksByGenre> booksByGenre = stats.getBookByGenre();
+        model.addAttribute("bookByGenre", booksByGenre.subList(0, Math.min(booksByGenre.size(), 10)));
         addUserToModel(principal, model);
 
         return "book-stats";
@@ -307,7 +301,7 @@ public class BookControllerHtmx {
     }
 
     @PostMapping(value = {"/createreview"})
-    public String createBookReviewForm(@ModelAttribute BookForm bookData, BindingResult result, Model model, Principal principal) {
+    public String createBookReviewForm(@ModelAttribute BookForm bookData, Model model, Principal principal) {
 
         model.addAttribute("bookData", bookData);
         model.addAttribute("genres", getGenres());
@@ -347,7 +341,7 @@ public class BookControllerHtmx {
         if (user.isPresent() && user.get().getHighestRole().getRoleNumber() >= User.Role.ROLE_EDITOR.getRoleNumber()) {
             return bookRepository.countBooksByReader();
         } else {
-            return new ArrayList<BooksByReader>();
+            return new ArrayList<>();
         }
     }
 

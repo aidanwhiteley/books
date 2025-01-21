@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.context.annotation.Profile;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Profile({"dev-mongo-java-server", "dev-mongo-java-server-no-auth", "dev-mongodb-no-auth", "dev-mongodb", "ci"})
 @AutoConfigureWireMock(port=0, httpsPort = 0)
@@ -19,9 +21,22 @@ public class GoogleBookSearchServiceTest extends IntegrationTest {
 
     @Test
     void testGetGoogleBookDataNotInCache() {
+        GoogleBookSearchResult result = googleBookSearchService.getGoogleBooks("Head First Design Patterns", "Elisabeth Freeman", 0);
+        Item item = result.getItem();
+        assertNotNull(item);
+        assertFalse(result.isFromCache());
+    }
+
+    @Test
+    void testGetGoogleBookDataInCache() throws InterruptedException {
         GoogleBookSearchResult result = googleBookSearchService.getGoogleBooks("Design Patterns", "Gamma", 0);
         Item item = result.getItem();
-        System.out.println("Saw: " + item);
         assertNotNull(item);
+        assertFalse(result.isFromCache());
+
+        GoogleBookSearchResult result2 = googleBookSearchService.getGoogleBooks("Design Patterns", "Gamma", 1);
+        Item item2 = result2.getItem();
+        assertNotNull(item2);
+        assertTrue(result2.isFromCache());
     }
 }

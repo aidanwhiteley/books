@@ -28,6 +28,7 @@ public class DataLoader {
 
     private static final String BOOKS_COLLECTION = "book";
     private static final String USERS_COLLECTION = "user";
+    private static final String BOOKS_API_SEARCH_COLLECTION = "googleBookSearch";
     private static final Logger LOGGER = LoggerFactory.getLogger(DataLoader.class);
     private static final String AUTO_LOGON_ID = "Dummy12345678";
     private static final String IN_MEMORY_MONGODB_SPRING_PROFILE = "mongo-java-server";
@@ -93,6 +94,12 @@ public class DataLoader {
 
             jsons = bufferedReader.lines().toList();
             jsons.stream().map(Document::parse).forEach(i -> template.insert(i, BOOKS_COLLECTION));
+
+            // Clearing books search collection.
+            LOGGER.info("Clearing books search cache collection");
+            if (template.collectionExists(BOOKS_API_SEARCH_COLLECTION)) {
+                template.dropCollection(BOOKS_API_SEARCH_COLLECTION);
+            }
         }
     }
 

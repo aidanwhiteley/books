@@ -14,4 +14,5 @@ public class GoogleBookSearchResult {
     private int index;
     private boolean hasMore;
     private boolean hasPrevious;
+    private boolean fromCache;
 }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Matching books on Google Books</title>
     <meta charset="utf-8">
@@ -24,8 +24,7 @@
             <h5 th:if="${googleBookSearchResult.items[0].volumeInfo}"
                 th:text="${googleBookSearchResult.items[0].volumeInfo.title}">A book title</h5>
             <p>
-                <img th:if="${googleBookSearchResult.items[0].volumeInfo != null and googleBookSearchResult.items[0].volumeInfo.imageLinks != null and
-                    googleBookSearchResult.items[0].volumeInfo.imageLinks.thumbnail != null}"
+                <img th:if="${googleBookSearchResult.items[0].volumeInfo?.imageLinks?.thumbnail}"
                     src="../../static/images/book-club-logo.jpeg"
                     th:src="${googleBookSearchResult.items[0].volumeInfo.imageLinks.thumbnail}"
                     alt="A book cover image from Google" class="rounded float-start googleBookImageImport" />
@@ -51,10 +50,10 @@
                 </div>
 
                 <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
-                    <button type="button" th:disabled="true" onClick=doSomething()
-                        class="btn btn-outline-primary previous-button">&laquo; Previous</button>
-                    <button type="button" th:disabled="false" onClick=doSomething()
-                        class="btn btn-outline-primary next-button">Next &raquo;</button>
+                    <button type="button" th:disabled="true" onClick="doSomething()"
+                        class="btn btn-outline-primary previous-button" aria-label="Previous">&laquo; Previous</button>
+                    <button type="button" th:disabled="false" onClick="doSomething()"
+                        class="btn btn-outline-primary next-button" aria-label="Next">Next &raquo;</button>
                 </div>
 
                 <input id="googleBookId" name="googleBookId" type="hidden" value="0" />

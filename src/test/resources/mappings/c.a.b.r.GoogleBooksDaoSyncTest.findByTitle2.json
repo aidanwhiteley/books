@@ -1,0 +1,13 @@
+{
+  "request" : {
+    "url" : "/books/v1/volumes?q=+intitle:Head+First+Design+Patterns+inauthor:Elisabeth+Freeman&country=GB&maxResults=30",
+    "method" : "GET"
+  },
+  "response" : {
+    "status" : 200,
+    "bodyFileName" : "retrieveMultipleBooksFromGoogleBookApi1.json",
+    "headers" : {
+      "Content-Type" : "application/json"
+    }
+  }
+}

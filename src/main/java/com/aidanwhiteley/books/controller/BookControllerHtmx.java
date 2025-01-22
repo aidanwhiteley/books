@@ -322,6 +322,10 @@ public class BookControllerHtmx {
         GoogleBookSearchResult result = googleBookSearchService.getGoogleBooks(title, author, index);
 
         model.addAttribute("googleBookSearchResult", result);
+        model.addAttribute("title", title);
+        model.addAttribute("author", author);
+        model.addAttribute("index", index);
+        model.addAttribute("googleBookId", result.getItem().getId());
         addUserToModel(principal, model);
 
         return "create-review-google-review :: cloudy-google-book-candidates";

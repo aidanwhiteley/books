@@ -32,13 +32,11 @@
                     <label for="title">Author</label>
                     <input type="text" id="author" name="author" class="form-control"
                         placeholder="Enter the author's name" th:field="*{author}" 
-                        hx-get="/googlebooks" hx-trigger="focusout" hx-target="#googleBookCandidatesPlaceholder" 
-                        hx-include="[name='title'], [name='index']" />
+                        hx-get="/googlebooks?index=0" hx-trigger="focusout" hx-target="#googleBookCandidatesPlaceholder" 
+                        hx-include="#title" />
                     <p th:if="${#fields.hasErrors('author')}"
                         th:text="${#strings.listJoin(#fields.errors('author'), ', ')}"></p>
                 </div>
-
-                <input type="hidden" id="index" name="index" value="0">
 
                 <div class="col-md-4">
                     <label for="rating">Your Rating Of The Book</label>

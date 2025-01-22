@@ -59,10 +59,14 @@ books:
   google:
     books:
       api:
-        searchUrl: http://localhost:${wiremock.server.port}/books/v1/volumes?q=
-        getByIdUrl: http://localhost:${wiremock.server.port}/books/v1/volumes/
-        connecTimeout: 200
-        readTimeout: 300
+        #searchUrl: http://localhost:${wiremock.server.port}/books/v1/volumes?q=
+        #getByIdUrl: http://localhost:${wiremock.server.port}/books/v1/volumes/
+        #connecTimeout: 200
+        #readTimeout: 300
+        #searchUrl: https://www.googleapis.com/books/v1/volumes?q=
+        #getByIdUrl: https://www.googleapis.com/books/v1/volumes/
+        #connecTimeout: 2000
+        #readTimeout: 3000
   reload:
     development:
       data: true    # Whether the contents of the /src/main/resources/sample_data will be reloaded into the database at application startup. Deletes all existing data!!!

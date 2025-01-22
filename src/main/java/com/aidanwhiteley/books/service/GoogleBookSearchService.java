@@ -52,7 +52,7 @@ public class GoogleBookSearchService {
         // A unique index means that there should only be one entry
         GoogleBookSearch googleBookSearch = googleBookSearchList.getFirst();
         Item anItem = googleBookSearch.getBookSearchResult().getItems().get(index);
-        boolean hasMore = index < googleBookSearch.getBookSearchResult().getItems().size();
+        boolean hasMore = index < googleBookSearch.getBookSearchResult().getItems().size() - 1;
         boolean hasPrevious = index > 0;
         return new GoogleBookSearchResult(anItem, index, hasMore, hasPrevious, true);
     }
@@ -75,7 +75,7 @@ public class GoogleBookSearchService {
 
             Item anItem = index < result.getItems().size() ? result.getItems().get(index) :
                     result.getItems().getLast();
-            boolean hasMore = index < result.getItems().size();
+            boolean hasMore = index < result.getItems().size() - 1;
             boolean hasPrevious = index > 0;
             return new GoogleBookSearchResult(anItem, index, hasMore, hasPrevious, false);
         } else {

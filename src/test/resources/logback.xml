@@ -39,7 +39,7 @@
     <logger name="com.aidanwhiteley.books.util.MailClient" level="WARN" />
     <!-- Dont want Actuator user JWT printed to test logs -->
     <logger name="com.aidanwhiteley.books.util.JwtAuthenticationUtils" level="ERROR"/>
-    <logger name="com.aidanwhiteley.books.service.GoogleBookSearchService" level="DEBUG" />
+    <logger name="com.aidanwhiteley.books.service.GoogleBookSearchService" level="WARN" />
 
     <logger name="org.apache.catalina" level="WARN"/>
     <logger name="org.apache.tomcat.util.modeler.Registry" level="ERROR"/>

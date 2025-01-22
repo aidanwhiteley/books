@@ -11,7 +11,7 @@
 
 <body>
 
-    <span id="googleBookCandidates" th:fragment="cloudy-google-book-candidates" class="container">
+    <div id="googleBookCandidates" th:fragment="cloudy-google-book-candidates" class="row mt-5">
 
         <div th:if="${(googleBookSearchResult != null) and (googleBookSearchResult.item == null)}">
             <div class="alert alert-warning" role="alert">
@@ -27,7 +27,7 @@
             <p>
                 <img th:if="${googleBookSearchResult.item.volumeInfo?.imageLinks?.thumbnail}"
                     src="../../static/images/book-club-logo.jpeg"
-                    th:src="${googleBookSearchResult.item.volumeInfo.imageLinks.thumbnail}"
+                    th:src="${#strings.replace(googleBookSearchResult.item.volumeInfo.imageLinks.thumbnail, 'http://', 'https://')}"
                     alt="A book cover image from Google" class="rounded float-start googleBookImageImport" />
                 <span th:text="${googleBookSearchResult.item.volumeInfo.description}">Google books
                     description</span>
@@ -47,15 +47,15 @@
 
                 <div class="bookMatchControl d-flex align-items-center justify-content-center">
                     <input class="form-check-input" type="checkbox" th:checked="true" id="checkBoxBookMatch"
-                        onClick=doSomething() aria-label="Click if book matches" />
+                        aria-label="Click if book matches" />
                 </div>
 
                 <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
-                    <button type="button" th:disabled="${googleBookSearchResult.hasPrevious == false}" 
+                    <button type="button" th:disabled="${googleBookSearchResult.hasPrevious == false}"
                         th:hx-get="@{/googlebooks(index=${index - 1},title=${title},author=${author})}"
                         hx-target="#googleBookCandidates" hx-swap="outerHTML"
                         class="btn btn-outline-primary previous-button" aria-label="Previous">&laquo; Previous</button>
-                    <button type="button" th:disabled="${googleBookSearchResult.hasMore == false}" 
+                    <button type="button" th:disabled="${googleBookSearchResult.hasMore == false}"
                         th:hx-get="@{/googlebooks(index=${index + 1},title=${title},author=${author})}"
                         hx-target="#googleBookCandidates" hx-swap="outerHTML"
                         class="btn btn-outline-primary next-button" aria-label="Next">Next &raquo;</button>
@@ -65,8 +65,7 @@
             </div>
         </div>
 
-
-    </span>
+    </div>
 
 </body>
 

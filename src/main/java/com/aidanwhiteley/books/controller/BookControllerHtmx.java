@@ -302,6 +302,7 @@ public class BookControllerHtmx {
 
         model.addAttribute("bookForm", new BookForm());
         model.addAttribute("genres", getGenres());
+        model.addAttribute("index", -1);
         addUserToModel(principal, model);
 
         return "create-review";
@@ -311,10 +312,6 @@ public class BookControllerHtmx {
     public String createBookReviewForm(@Valid @ModelAttribute BookForm bookForm, BindingResult bindingResult,
                                        Model model, Principal principal) {
 
-        model.addAttribute("bookForm", bookForm);
-        model.addAttribute("genres", getGenres());
-        addUserToModel(principal, model);
-
         if (bookForm.getRating().equals("99")) {
             bindingResult.rejectValue("rating", "error.rating", "You must select your rating for the book");
         }
@@ -323,6 +320,14 @@ public class BookControllerHtmx {
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Following form validation errors occurred: " + bindingResult.toString());
             }
+
+            model.addAttribute("bookForm", bookForm);
+            model.addAttribute("genres", getGenres());
+            addUserToModel(principal, model);
+            if (bookForm.getIndex() != -1) {
+                findGoogleBooksByTitleAndAuthor(bookForm.getTitle(), bookForm.getAuthor(), bookForm.getIndex(), model, principal);
+            }
+
             return "create-review";
         }
 
@@ -333,16 +338,20 @@ public class BookControllerHtmx {
     public String findGoogleBooksByTitleAndAuthor(@RequestParam String title, @RequestParam String author,
                                                   @RequestParam int index, Model model, Principal principal) {
 
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Calling Google Book Search API with title '{}', author '{}' and index '{}'",
+                    title, author, index);
+        }
         GoogleBookSearchResult result = googleBookSearchService.getGoogleBooks(title, author, index);
 
         model.addAttribute("googleBookSearchResult", result);
-        model.addAttribute("title", title);
+        model.addAttribute("booktitle", title);
         model.addAttribute("author", author);
         model.addAttribute("index", index);
         model.addAttribute("googleBookId", result.getItem().getId());
         addUserToModel(principal, model);
 
-        return "create-review-google-review :: cloudy-google-book-candidates";
+        return "create-review :: cloudy-google-book-candidates";
     }
 
     private List<Book.Rating> getRatings(String prefix) {

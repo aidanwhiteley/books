@@ -31,7 +31,7 @@
                     <label for="title">Author</label>
                     <input type="text" id="author" name="author" class="form-control"
                         placeholder="Enter the author's name" th:field="*{author}"
-                        hx-get="/googlebooks?index=0" hx-trigger="focusout" hx-target="#googleBookCandidatesPlaceholder" 
+                        hx-get="/googlebooks?index=0" hx-trigger="focusout" hx-target="#googleBookCandidates" 
                         hx-include="#title" th:errorclass="is-invalid" />
                     <p th:if="${#fields.hasErrors('author')}" class="invalid-feedback"
                         th:text="${#strings.listJoin(#fields.errors('author'), ', ')}"></p>
@@ -65,7 +65,7 @@
 
                 <div class="col-md-12">
                     <label for="summary">Your review / summary</label>
-                    <textarea id="summary" name="summary" rows={8} class="form-control"
+                    <textarea id="summary" name="summary" rows="8" class="form-control"
                             placeholder="What did you think of the book?" aria-describedby="summaryHelpBlock"
                             th:field="*{summary}" th:errorclass="is-invalid"></textarea>
                     <p class="invalid-feedback" th:if="${#fields.hasErrors('summary')}" th:errors="*{summary}">Invalid summary</p>
@@ -78,7 +78,60 @@
                     </small>
                 </div>
 
-                <div id="googleBookCandidatesPlaceholder"></div>
+                <div id="googleBookCandidates" th:fragment="cloudy-google-book-candidates" class="row mt-5">
+
+                    <div th:if="${(googleBookSearchResult != null) and (googleBookSearchResult.item == null)}">
+                        <div class="alert alert-warning" role="alert">
+                            We didn't find any matching books on Google Books. This may be correct but please do check what is
+                            entered
+                            in the <b>Book Title</b> and <b>Author</b> fields above.
+                        </div>
+                    </div>
+
+                    <div class="col-md-8" th:if="${googleBookSearchResult != null and googleBookSearchResult.item  != null}">
+                        <h5 th:if="${googleBookSearchResult.item.volumeInfo}"
+                            th:text="${googleBookSearchResult.item.volumeInfo.title}">A book title</h5>
+                        <p>
+                            <img th:if="${googleBookSearchResult.item.volumeInfo?.imageLinks?.thumbnail}"
+                                 src="../../static/images/book-club-logo.jpeg"
+                                 th:src="${#strings.replace(googleBookSearchResult.item.volumeInfo.imageLinks.thumbnail, 'http://', 'https://')}"
+                                 alt="A book cover image from Google" class="rounded float-start googleBookImageImport" />
+                            <span th:text="${googleBookSearchResult.item.volumeInfo.description}">Google books description</span>
+                        </p>
+                        <p th:if="${googleBookSearchResult.item.volumeInfo.authors}">
+                            By: <span th:text="${#strings.arrayJoin(googleBookSearchResult.item.volumeInfo.authors, ',')}">An author</span>
+                        </p>
+                    </div>
+
+                    <div class="col-md-4" th:if="${googleBookSearchResult != null and googleBookSearchResult.item != null}">
+                        <div class="googleBookText card">
+                            <h5>Have we found the right book?</h5>
+                            <p>Does this look like the book you've read? If not, please try the scroll buttons to see alternatives
+                                and then click the check box if you find a good match.</p>
+                            <p>If none of the options look like a good match, please untick the check box.</p>
+
+                            <div class="bookMatchControl d-flex align-items-center justify-content-center">
+                                <input class="form-check-input" type="checkbox" th:checked="true" id="checkBoxBookMatch"
+                                       aria-label="Click if book matches" />
+                            </div>
+
+                            <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
+                                <button type="button" th:disabled="${googleBookSearchResult.hasPrevious == false}"
+                                        th:hx-get="@{/googlebooks(index=${index - 1},title=${booktitle},author=${author})}"
+                                        hx-target="#googleBookCandidates" hx-swap="outerHTML"
+                                        class="btn btn-outline-primary previous-button" aria-label="Previous">&laquo; Previous</button>
+                                <button type="button" th:disabled="${googleBookSearchResult.hasMore == false}"
+                                        th:hx-get="@{/googlebooks(index=${index + 1},title=${booktitle},author=${author})}"
+                                        hx-target="#googleBookCandidates" hx-swap="outerHTML"
+                                        class="btn btn-outline-primary next-button" aria-label="Next">Next &raquo;</button>
+                            </div>
+
+                            <input type="hidden" th:value="${googleBookId}" name="googleBookId" id="googleBookId">
+                            <input type="hidden" th:value="${index}" name="index" id="index">
+                        </div>
+                    </div>
+
+                </div>
 
                 <div class="text-center">
                     <button type="submit" class="btn btn btn-outline-primary btn-wd me-3">Save book review</button>

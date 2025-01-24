@@ -29,5 +29,6 @@ public class BookForm {
     private String summary;
     @NotBlank(message = "The book must be given a rating")
     private String rating;
+    private int index = -1;
     private String googleBookId;
 }

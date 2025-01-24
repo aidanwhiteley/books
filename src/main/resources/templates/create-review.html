@@ -16,31 +16,30 @@
         <div class="container">
             <h4>Enter your review of a book you have read</h4>
 
-            <form id="createreviewform" th:object="${bookData}" hx-post="/createreview" hx-target="#createreviewform"
-                hx-swap="outerHTML" hx-trigger="submit" class="row g-3" novalidate
-                th:fragment="cloudy-book-review-form">
+            <form id="createreviewform" action="#" th:action="@{/createreview}" th:object="${bookForm}"  class="row g-3" novalidate
+                  method="post" th:fragment="cloudy-book-review-form">
 
                 <div class="col-md-6">
                     <label for="title">Book Title</label>
                     <input type="text" id="title" name="title" class="form-control" placeholder="Enter the book title"
-                        th:field="*{title}" />
-                    <p th:if="${#fields.hasErrors('title')}"
+                        th:field="*{title}" th:errorclass="is-invalid" />
+                    <p th:if="${#fields.hasErrors('title')}" class="invalid-feedback"
                         th:text="${#strings.listJoin(#fields.errors('title'), ', ')}"></p>
                 </div>
 
                 <div class="col-md-6">
                     <label for="title">Author</label>
                     <input type="text" id="author" name="author" class="form-control"
-                        placeholder="Enter the author's name" th:field="*{author}" 
+                        placeholder="Enter the author's name" th:field="*{author}"
                         hx-get="/googlebooks?index=0" hx-trigger="focusout" hx-target="#googleBookCandidatesPlaceholder" 
-                        hx-include="#title" />
-                    <p th:if="${#fields.hasErrors('author')}"
+                        hx-include="#title" th:errorclass="is-invalid" />
+                    <p th:if="${#fields.hasErrors('author')}" class="invalid-feedback"
                         th:text="${#strings.listJoin(#fields.errors('author'), ', ')}"></p>
                 </div>
 
                 <div class="col-md-4">
                     <label for="rating">Your Rating Of The Book</label>
-                    <select id="rating" th:field="*{rating}" class="form-control">
+                    <select id="rating" th:field="*{rating}" class="form-control" th:errorclass="is-invalid">
                         <option th:value="'99'" th:text="'Select a rating...'"></option>
                         <option th:value="'4'" th:text="Great"></option>
                         <option th:value="'3'" th:text="Good"></option>
@@ -48,27 +47,28 @@
                         <option th:value="'1'" th:text="Poor"></option>
                         <option th:value="'0'" th:text="Terrible"></option>
                     </select>
-                    <p th:if="${#fields.hasErrors('rating')}"
+                    <p th:if="${#fields.hasErrors('rating')}" class="invalid-feedback"
                         th:text="${#strings.listJoin(#fields.errors('rating'), ', ')}"></p>
                 </div>
 
                 <div class="col-md-8">
                     <label for="genre">Genre</label>
-                    <select id="genre" class="" placeholder="Start typing a genre..." autocomplete="off"
-                        name="genre" th:field="*{genre}">
+                    <select id="genre" class="form-control" placeholder="Start typing a genre..." autocomplete="off"
+                        name="genre" th:field="*{genre}" th:errorclass="is-invalid">
                         <option value="">Start typing a genre...</option>
                         <option th:each="genre : ${genres}" th:value="${genre.genre}"
                             th:text="${genre.genre + ' - ' + genre.countOfBooks + ' books'}">Novel - 20 books</option>
                     </select>
-                    <p th:if="${#fields.hasErrors('genre')}"
+                    <p th:if="${#fields.hasErrors('genre')}" class="invalid-feedback"
                         th:text="${#strings.listJoin(#fields.errors('genre'), ', ')}"></p>
                 </div>
 
                 <div class="col-md-12">
                     <label for="summary">Your review / summary</label>
                     <textarea id="summary" name="summary" rows={8} class="form-control"
-                        placeholder="What did you think of the book?" aria-describedby="summaryHelpBlock"
-                        th:field="*{summary}"></textarea>
+                            placeholder="What did you think of the book?" aria-describedby="summaryHelpBlock"
+                            th:field="*{summary}" th:errorclass="is-invalid"></textarea>
+                    <p class="invalid-feedback" th:if="${#fields.hasErrors('summary')}" th:errors="*{summary}">Invalid summary</p>
                     <small id="summaryHelpBlock" class="form-text">
                         Enter anything you like that may help someone else to decide whether the book is worth reading
                         or not.
@@ -76,8 +76,6 @@
                         HTML formatting is not supported.<br />
                         Remember: all entries are publicly visible.
                     </small>
-                    <p th:if="${#fields.hasErrors('summary')}"
-                        th:text="${#strings.listJoin(#fields.errors('summary'), ', ')}"></p>
                 </div>
 
                 <div id="googleBookCandidatesPlaceholder"></div>

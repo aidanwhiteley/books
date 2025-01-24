@@ -44,6 +44,7 @@
     <logger name="com.aidanwhiteley.books.service.SignUpNotificationService" level="WARN"/>
     <logger name="com.aidanwhiteley.books.repository.GoogleBooksDaoAsync" level="WARN"/>
     <logger name="com.aidanwhiteley.books.repository.GoogleBooksDaoSync" level="WARN"/>
+    <logger name="com.aidanwhiteley.books.controller.BookControllerHtmx" level="DEBUG"/>
 
 
 </configuration>

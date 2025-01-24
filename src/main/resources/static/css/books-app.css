@@ -418,3 +418,19 @@ li.comment-entry {
     margin-top: 20px;
     margin-bottom: 20px;
 }
+
+#createreviewform .ts-controls {
+    border-width: 0px !important;
+}
+
+#createreviewform .ts-controls {
+    border-width: 0px !important;
+}
+
+.ts-wrapper.form-control {
+    padding: 0px;
+}
+
+.ts-wrapper.form-control .ts-control {
+    border: 0px;
+}

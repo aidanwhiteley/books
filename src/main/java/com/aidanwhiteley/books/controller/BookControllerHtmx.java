@@ -300,7 +300,7 @@ public class BookControllerHtmx {
     @GetMapping(value = {"/createreview"})
     public String createBookReview(Model model, Principal principal) {
 
-        model.addAttribute("bookData", new BookForm());
+        model.addAttribute("bookForm", new BookForm());
         model.addAttribute("genres", getGenres());
         addUserToModel(principal, model);
 
@@ -308,18 +308,25 @@ public class BookControllerHtmx {
     }
 
     @PostMapping(value = {"/createreview"})
-    public String createBookReviewForm(@Valid @ModelAttribute BookForm bookData, BindingResult theBindingResult,
+    public String createBookReviewForm(@Valid @ModelAttribute BookForm bookForm, BindingResult bindingResult,
                                        Model model, Principal principal) {
 
-        if (theBindingResult.hasErrors()) {
-            return "create-review :: cloudy-book-review-form";
-        }
-
-        model.addAttribute("bookData", bookData);
+        model.addAttribute("bookForm", bookForm);
         model.addAttribute("genres", getGenres());
         addUserToModel(principal, model);
 
-        return "create-review :: cloudy-book-review-form";
+        if (bookForm.getRating().equals("99")) {
+            bindingResult.rejectValue("rating", "error.rating", "You must select your rating for the book");
+        }
+
+        if (bindingResult.hasErrors()) {
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Following form validation errors occurred: " + bindingResult.toString());
+            }
+            return "create-review";
+        }
+
+        return recentlyReviewedByPage(1, model, principal, false);
     }
 
     @GetMapping(value = {"/googlebooks"}, params = {"title", "author", "index"})

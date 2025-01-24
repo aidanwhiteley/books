@@ -20,13 +20,12 @@ public class BookForm {
     @Size(min = 1, max = 100, message
             = "A book title between 1 and 100 characters is required")
     private String title;
-    @NotBlank(message = "The name of the author must be specified")
+    @Size(min = 1, max = 100, message = "The name of the author must be specified")
     private String author;
-    @NotBlank(message = "The genre of the book must be specified")
+    @Size(min = 1, max = 30, message = "The book's genre must be specified and be less than 30 characters")
     private String genre;
-    @NotBlank(message = "Some details about the book are mandatory")
     @Size(min = 10, max = 5000, message
-            = "Your review of the book is mandatory. Anything less than 10 character is too brief and more that 5k is too loquacious")
+            = "A review of the book is required. Anything less than 10 character is too brief and more than 5k is too loquacious")
     private String summary;
     @NotBlank(message = "The book must be given a rating")
     private String rating;

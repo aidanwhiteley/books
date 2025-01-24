@@ -15,6 +15,7 @@ import com.aidanwhiteley.books.service.StatsService;
 import com.aidanwhiteley.books.service.dtos.GoogleBookSearchResult;
 import com.aidanwhiteley.books.service.dtos.SummaryStats;
 import com.aidanwhiteley.books.util.JwtAuthenticationUtils;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,6 +23,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -306,7 +308,12 @@ public class BookControllerHtmx {
     }
 
     @PostMapping(value = {"/createreview"})
-    public String createBookReviewForm(@ModelAttribute BookForm bookData, Model model, Principal principal) {
+    public String createBookReviewForm(@Valid @ModelAttribute BookForm bookData, BindingResult theBindingResult,
+                                       Model model, Principal principal) {
+
+        if (theBindingResult.hasErrors()) {
+            return "create-review :: cloudy-book-review-form";
+        }
 
         model.addAttribute("bookData", bookData);
         model.addAttribute("genres", getGenres());

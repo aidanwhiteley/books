@@ -1,6 +1,7 @@
 package com.aidanwhiteley.books.controller;
 
 import com.aidanwhiteley.books.controller.dtos.BookForm;
+import com.aidanwhiteley.books.controller.exceptions.JwtAuthAuzException;
 import com.aidanwhiteley.books.controller.exceptions.NotAuthorisedException;
 import com.aidanwhiteley.books.controller.exceptions.NotFoundException;
 import com.aidanwhiteley.books.domain.Book;
@@ -28,7 +29,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import org.springframework.data.mongodb.UncategorizedMongoDbException;
@@ -463,8 +466,9 @@ public class BookControllerHtmx {
         return addAttributesToErrorPage(description, "mongo-uncategorized", model, principal);
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public String handleIllegalArgumentException(IllegalArgumentException ex, Model model, Principal principal) {
+    @ExceptionHandler({IllegalArgumentException.class, NumberFormatException.class, MethodArgumentTypeMismatchException.class,
+            MethodArgumentNotValidException.class})
+    public String handleIllegalArgumentException(Exception ex, Model model, Principal principal) {
         LOGGER.error("An unacceptable input was received. Either this is an application error or someone manually sending incorrect parameters", ex);
         String description = "Sorry - the values sent to the application are not acceptable.";
         return addAttributesToErrorPage(description, "400", model, principal);
@@ -484,6 +488,13 @@ public class BookControllerHtmx {
         return addAttributesToErrorPage(description, "401", model, principal);
     }
 
+    @ExceptionHandler(JwtAuthAuzException.class)
+    public String handleJwtAuthAuzException(JwtAuthAuzException ex, Model model, Principal principal) {
+        LOGGER.error("There was a problem with the JWT token process - {}", ex.getMessage(), ex);
+        String description = "Sorry - there was problem with processing your logon token";
+        return addAttributesToErrorPage(description, "401", model, principal);
+    }
+
     @ExceptionHandler(AccessDeniedException.class)
     public String handleAccessDeniedException(AccessDeniedException ex, Model model, Principal principal) {
         LOGGER.error("An attempt was made to access a protected resource without the required permission - {}", ex.getMessage(), ex);
@@ -491,9 +502,16 @@ public class BookControllerHtmx {
         return addAttributesToErrorPage(description, "403", model, principal);
     }
 
+    // Exception handler of last resort!
+    @ExceptionHandler(Exception.class)
+    public String handleException(Exception ex, Model model, Principal principal) {
+        LOGGER.error("An unhandled exception was caught be the exception handler of last resort - {}", ex.getMessage(), ex);
+        String description = "Sorry - an unexpected problem occurred in the application.";
+        return addAttributesToErrorPage(description, "500", model, principal);
+    }
+
     private String addAttributesToErrorPage(String description, String code, Model model, Principal principal) {
-        model.addAttribute("description", "Search doesn't work when running against the in-memory Mongo " +
-                "used in development because full text indexes are not supported in that implementation.");
+        model.addAttribute("description", description);
         model.addAttribute("code", code);
         model.addAttribute("dateTime", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         addUserToModel(principal, model);

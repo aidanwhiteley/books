@@ -1,12 +1,12 @@
 package com.aidanwhiteley.books.controller;
 
 import com.aidanwhiteley.books.controller.dtos.BookForm;
+import com.aidanwhiteley.books.controller.exceptions.NotAuthorisedException;
 import com.aidanwhiteley.books.controller.exceptions.NotFoundException;
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.User;
-import com.aidanwhiteley.books.domain.googlebooks.BookSearchResult;
 import com.aidanwhiteley.books.repository.BookRepository;
-import com.aidanwhiteley.books.repository.GoogleBooksDaoSync;
+import com.aidanwhiteley.books.repository.GoogleBooksDaoAsync;
 import com.aidanwhiteley.books.repository.dtos.BooksByAuthor;
 import com.aidanwhiteley.books.repository.dtos.BooksByGenre;
 import com.aidanwhiteley.books.repository.dtos.BooksByReader;
@@ -21,18 +21,29 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import org.springframework.data.mongodb.UncategorizedMongoDbException;
+
+import java.net.URI;
 import java.security.Principal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static com.aidanwhiteley.books.domain.Book.Rating.GREAT;
+import static com.aidanwhiteley.books.util.LogDetaint.logMessageDetaint;
 
 @Controller
 public class BookControllerHtmx {
@@ -40,9 +51,10 @@ public class BookControllerHtmx {
     private final BookRepository bookRepository;
     private final JwtAuthenticationUtils authUtils;
     private final StatsService statsService;
-    private final GoogleBooksDaoSync googleBooksDaoSync;
     private final GoogleBookSearchService googleBookSearchService;
+    private final GoogleBooksDaoAsync googleBooksDaoAsync;
 
+    private static final String NO_VALUE_SELECTED = "NO_VALUE_SELECTED";
     private static final Logger LOGGER = LoggerFactory.getLogger(BookControllerHtmx.class);
 
     @Value("${books.users.default.page.size}")
@@ -52,13 +64,13 @@ public class BookControllerHtmx {
     private int maxPageSize;
 
     public BookControllerHtmx(BookRepository bookRepository, JwtAuthenticationUtils jwtAuthenticationUtils,
-                              StatsService statsService, GoogleBooksDaoSync googleBooksDaoSync,
-                              GoogleBookSearchService googleBookSearchService) {
+                              StatsService statsService, GoogleBookSearchService googleBookSearchService,
+                              GoogleBooksDaoAsync googleBooksDaoAsync) {
         this.bookRepository = bookRepository;
         this.authUtils = jwtAuthenticationUtils;
         this.statsService = statsService;
-        this.googleBooksDaoSync = googleBooksDaoSync;
         this.googleBookSearchService = googleBookSearchService;
+        this.googleBooksDaoAsync = googleBooksDaoAsync;
     }
 
     @GetMapping(value = "/")
@@ -224,6 +236,7 @@ public class BookControllerHtmx {
         }
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_EDITOR', 'ROLE_ADMIN')")
     @GetMapping(value = {"/find"}, params = {"reviewer", "pagenum"})
     public String findByReviewer(Model model, Principal principal, @RequestParam String reviewer, @RequestParam int pagenum,
                               @RequestHeader(value="HX-Request", required = false) boolean hxRequest) {
@@ -297,6 +310,7 @@ public class BookControllerHtmx {
         return "book-stats";
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_EDITOR', 'ROLE_ADMIN')")
     @GetMapping(value = {"/createreview"})
     public String createBookReview(Model model, Principal principal) {
 
@@ -308,17 +322,18 @@ public class BookControllerHtmx {
         return "create-review";
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_EDITOR', 'ROLE_ADMIN')")
     @PostMapping(value = {"/createreview"})
     public String createBookReviewForm(@Valid @ModelAttribute BookForm bookForm, BindingResult bindingResult,
                                        Model model, Principal principal) {
 
-        if (bookForm.getRating().equals("99")) {
+        if (bookForm.getRating().equals(NO_VALUE_SELECTED)) {
             bindingResult.rejectValue("rating", "error.rating", "You must select your rating for the book");
         }
 
         if (bindingResult.hasErrors()) {
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Following form validation errors occurred: " + bindingResult.toString());
+                LOGGER.debug("Following form validation errors occurred: {}", bindingResult);
             }
 
             model.addAttribute("bookForm", bookForm);
@@ -331,9 +346,27 @@ public class BookControllerHtmx {
             return "create-review";
         }
 
-        return recentlyReviewedByPage(1, model, principal, false);
+        Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
+        if (user.isPresent()) {
+
+            Book insertedBook = bookRepository.insert(bookForm.getBookFromBookForm());
+
+            // If there were Google Book details specified, call an async method to
+            // go and get the full details from Google and then update the Mongo document for the book
+            if (bookForm.getGoogleBookId() != null && bookForm.getGoogleBookId().length() > 0) {
+                googleBooksDaoAsync.updateBookWithGoogleBookDetails(insertedBook, bookForm.getGoogleBookId());
+            }
+
+            return recentlyReviewedByPage(1, model, principal, false);
+        } else {
+            LOGGER.error("Couldnt create a book as user to own book not found! Principal: {}", logMessageDetaint(principal));
+            throw new NotAuthorisedException("User trying to create a book review not found in user data store!");
+        }
+
+
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_EDITOR', 'ROLE_ADMIN')")
     @GetMapping(value = {"/googlebooks"}, params = {"title", "author", "index"})
     public String findGoogleBooksByTitleAndAuthor(@RequestParam String title, @RequestParam String author,
                                                   @RequestParam int index, Model model, Principal principal) {
@@ -348,7 +381,11 @@ public class BookControllerHtmx {
         model.addAttribute("booktitle", title);
         model.addAttribute("author", author);
         model.addAttribute("index", index);
-        model.addAttribute("googleBookId", result.getItem().getId());
+        if (result.getItem() != null) {
+            model.addAttribute("googleBookId", result.getItem().getId());
+        } else {
+            model.addAttribute("googleBookId", "");
+        }
         addUserToModel(principal, model);
 
         return "create-review :: cloudy-google-book-candidates";
@@ -409,4 +446,58 @@ public class BookControllerHtmx {
                                 !b.getGoogleBookDetails().getVolumeInfo().getImageLinks().getThumbnail().isBlank()
                         )).toList();
     }
+
+    // The REST API part of this application registers a global @RestControllerAdvice to centrally handle exceptions
+    // and they generally return JSON to the client.
+    // As we want to leave the REST API in place, we handle exceptions locally in this HTMX based controller
+    // so that we can return HTML views for any errors from this controller.
+
+    @ExceptionHandler(UncategorizedMongoDbException.class)
+    public String handleInMemoryMongoFulLTextSearchException(UncategorizedMongoDbException ex, Model model, Principal principal) {
+        LOGGER.error("An UncategorizedMongoDbException occurred. This is normally expected when running in " +
+                "development mode when trying to use the Search as full text indexes aren't supported by " +
+                "the in memory fake Mongo. However, as it is just possible that it could happen for other " +
+                "reasons, the full stack trace is logged", ex);
+        String description = "Search doesn't work when running against the in-memory Mongo " +
+                "used in development because full text indexes are not supported in that implementation.";
+        return addAttributesToErrorPage(description, "mongo-uncategorized", model, principal);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public String handleIllegalArgumentException(IllegalArgumentException ex, Model model, Principal principal) {
+        LOGGER.error("An unacceptable input was received. Either this is an application error or someone manually sending incorrect parameters", ex);
+        String description = "Sorry - the values sent to the application are not acceptable.";
+        return addAttributesToErrorPage(description, "400", model, principal);
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public String handleNotFoundException(NotFoundException ex, Model model, Principal principal) {
+        LOGGER.error("The application couldn't find the resource requested - {}", ex.getMessage(), ex);
+        String description = "Sorry - the application could not find what you wanted";
+        return addAttributesToErrorPage(description, "404", model, principal);
+    }
+
+    @ExceptionHandler(NotAuthorisedException.class)
+    public String handleNotAuthorisedException(NotAuthorisedException ex, Model model, Principal principal) {
+        LOGGER.error("An attempt was made to access a protected resource without the required authorisation - {}", ex.getMessage(), ex);
+        String description = "Sorry - you are not authorised to access this functionality";
+        return addAttributesToErrorPage(description, "401", model, principal);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public String handleAccessDeniedException(AccessDeniedException ex, Model model, Principal principal) {
+        LOGGER.error("An attempt was made to access a protected resource without the required permission - {}", ex.getMessage(), ex);
+        String description = "Sorry - you are not permitted to access this functionality";
+        return addAttributesToErrorPage(description, "403", model, principal);
+    }
+
+    private String addAttributesToErrorPage(String description, String code, Model model, Principal principal) {
+        model.addAttribute("description", "Search doesn't work when running against the in-memory Mongo " +
+                "used in development because full text indexes are not supported in that implementation.");
+        model.addAttribute("code", code);
+        model.addAttribute("dateTime", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        addUserToModel(principal, model);
+        return "error";
+    }
+
 }

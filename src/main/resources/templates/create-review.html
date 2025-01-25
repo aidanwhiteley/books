@@ -40,12 +40,12 @@
                 <div class="col-md-4">
                     <label for="rating">Your Rating Of The Book</label>
                     <select id="rating" th:field="*{rating}" class="form-control" th:errorclass="is-invalid">
-                        <option th:value="'99'" th:text="'Select a rating...'"></option>
-                        <option th:value="'4'" th:text="Great"></option>
-                        <option th:value="'3'" th:text="Good"></option>
-                        <option th:value="'2'" th:text="OK"></option>
-                        <option th:value="'1'" th:text="Poor"></option>
-                        <option th:value="'0'" th:text="Terrible"></option>
+                        <option th:value="'NO_VALUE_SELECTED'" th:text="'Select a rating...'"></option>
+                        <option th:value="'GREAT'" th:text="Great"></option>
+                        <option th:value="'GOOD'" th:text="Good"></option>
+                        <option th:value="'OK'" th:text="OK"></option>
+                        <option th:value="'POOR'" th:text="Poor"></option>
+                        <option th:value="'TERRIBLE'" th:text="Terrible"></option>
                     </select>
                     <p th:if="${#fields.hasErrors('rating')}" class="invalid-feedback"
                         th:text="${#strings.listJoin(#fields.errors('rating'), ', ')}"></p>
@@ -93,7 +93,7 @@
                             th:text="${googleBookSearchResult.item.volumeInfo.title}">A book title</h5>
                         <p>
                             <img th:if="${googleBookSearchResult.item.volumeInfo?.imageLinks?.thumbnail}"
-                                 src="../../static/images/book-club-logo.jpeg"
+                                 src="https://books.google.com/books/content?id=VDRePgAACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
                                  th:src="${#strings.replace(googleBookSearchResult.item.volumeInfo.imageLinks.thumbnail, 'http://', 'https://')}"
                                  alt="A book cover image from Google" class="rounded float-start googleBookImageImport" />
                             <span th:text="${googleBookSearchResult.item.volumeInfo.description}">Google books description</span>

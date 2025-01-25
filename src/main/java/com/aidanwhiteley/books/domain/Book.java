@@ -142,8 +142,7 @@ public class Book extends Auditable {
     public enum Rating {
         // Note Jackson default deserialisation is 0 based - changing values
         // below would mean that that default serialisation / deserialisation
-        // would
-        // need overriding.
+        // would need overriding.
         TERRIBLE(0), POOR(1), OK(2), GOOD(3), GREAT(4);
 
         private final int ratingLevel;

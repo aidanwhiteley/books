@@ -65,6 +65,9 @@ public class WebSecurityConfiguration {
             new AntPathRequestMatcher("/api/**"),
             new AntPathRequestMatcher("/login**"),
             new AntPathRequestMatcher("/feeds/**"),
+            new AntPathRequestMatcher("/css/**"),
+            new AntPathRequestMatcher("/js/**"),
+            new AntPathRequestMatcher("/images/**"),
             new AntPathRequestMatcher("/favicon.ico"),
             // And some paths just for playing with SWAGGER UI within the same app
             new AntPathRequestMatcher("/swagger-resources/**"),

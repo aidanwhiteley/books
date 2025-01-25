@@ -1,5 +1,6 @@
 package com.aidanwhiteley.books.controller.dtos;
 
+import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.Comment;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -31,4 +32,14 @@ public class BookForm {
     private String rating;
     private int index = -1;
     private String googleBookId;
+
+    public Book getBookFromBookForm() {
+        var book = new Book();
+        book.setTitle(title);
+        book.setAuthor(author);
+        book.setGenre(genre);
+        book.setSummary(summary);
+        book.setRating(Book.Rating.getRatingByString(rating));
+        return book;
+    }
 }

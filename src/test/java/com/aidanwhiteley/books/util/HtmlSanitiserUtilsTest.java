@@ -50,7 +50,7 @@ class HtmlSanitiserUtilsTest {
     }
 
     @Test
-    void testTNoTagssAllowed() {
+    void testTNoTagsAllowed() {
         String sanitised = HtmlSanitiserUtils.allowNoHtmlTags(TEST_STRING_3);
         assertEquals("No tags allowed", sanitised.trim());
     }

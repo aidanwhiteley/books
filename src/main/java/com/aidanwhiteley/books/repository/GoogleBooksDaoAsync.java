@@ -2,6 +2,8 @@ package com.aidanwhiteley.books.repository;
 
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.googlebooks.Item;
+import com.aidanwhiteley.books.domain.googlebooks.VolumeInfo;
+import com.aidanwhiteley.books.util.HtmlSanitiserUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -68,6 +70,11 @@ public class GoogleBooksDaoAsync extends GoogleBooksApiConfig {
 
             Item item = monoItem.block(Duration.ofSeconds(googleBooksApiConfig.getReadTimeout()));
             LOGGER.debug("Block completed");
+
+            // Google Books should be safe from CSRF attacks but lets make sure!
+            VolumeInfo vlInfo = item.getVolumeInfo();
+            vlInfo.setDescription(HtmlSanitiserUtils.allowBasicTextFormattingOnly(vlInfo.getDescription()));
+            item.setVolumeInfo(vlInfo);
 
             bookRepository.addGoogleBookItemToBook(book.getId(), item);
             LOGGER.debug("Google Books details added to Mongo for {}", book.getId());

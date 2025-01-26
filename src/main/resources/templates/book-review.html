@@ -83,7 +83,7 @@
 
                     <ul th:if="${not #lists.isEmpty(book.comments)}" class="mt-4">
                         <li th:each="comment : ${book.comments}" class="comment-entry">
-                            <span th:utext="${comment.deleted} ? '<del>Comment deleted by ' + ${comment.deletedBy} + '</del>'
+                            <span th:text="${comment.deleted} ? 'Comment deleted by ' + ${comment.deletedBy}
                                 : 'On ' + ${#temporals.format(comment.entered, 'dd-MM-yyyy')} + ' ' + ${comment.owner.fullName} + ' commented - ' + ${comment.commentText}">
                             </span>
                         </li>

@@ -326,6 +326,36 @@ public class BookControllerHtmx {
     }
 
     @PreAuthorize("hasAnyRole('ROLE_EDITOR', 'ROLE_ADMIN')")
+    @DeleteMapping(value = "/deletereview/{id}")
+    public String deleteBookReview(@PathVariable String id, Model model, Principal principal) {
+
+        Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
+        if (user.isPresent()) {
+            Book currentBookState = bookRepository.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("Couldn't find book id " + id + " to delete"));
+
+            if (currentBookState.isOwner(user.get()) || user.get().getRoles().contains(User.Role.ROLE_ADMIN)) {
+                bookRepository.deleteById(id);
+                model.addAttribute("booktitle", currentBookState.getTitle());
+                model.addAttribute("author", currentBookState.getAuthor());
+                model.addAttribute("reviewer", currentBookState.getCreatedBy().getFullName());
+                addUserToModel(principal, model);
+
+                return "delete-book-confirmation :: cloudy-delete-confirmation";
+            } else {
+                LOGGER.warn("User {} {} tried to delete book id {} '{}' without the necessary permissions", user.get().getFullName(),
+                        user.get().getId(), currentBookState.getId(), currentBookState.getTitle());
+                throw new AccessDeniedException("User tried to delete book without necessary permissions");
+            }
+        } else {
+            LOGGER.error("A user that doesnt exist in the database tried to delete book id {}", id);
+            throw new NotFoundException("User not found when trying to delete a book review");
+        }
+
+    }
+
+
+    @PreAuthorize("hasAnyRole('ROLE_EDITOR', 'ROLE_ADMIN')")
     @PostMapping(value = {"/createreview"})
     public String createBookReviewForm(@Valid @ModelAttribute BookForm bookForm, BindingResult bindingResult,
                                        Model model, Principal principal) {
@@ -463,7 +493,7 @@ public class BookControllerHtmx {
                 "reasons, the full stack trace is logged", ex);
         String description = "Search doesn't work when running against the in-memory Mongo " +
                 "used in development because full text indexes are not supported in that implementation.";
-        return addAttributesToErrorPage(description, "mongo-uncategorized", model, principal);
+        return addAttributesToErrorPage(description, "e-mongo-uncategorized", model, principal);
     }
 
     @ExceptionHandler({IllegalArgumentException.class, NumberFormatException.class, MethodArgumentTypeMismatchException.class,
@@ -471,35 +501,35 @@ public class BookControllerHtmx {
     public String handleIllegalArgumentException(Exception ex, Model model, Principal principal) {
         LOGGER.error("An unacceptable input was received. Either this is an application error or someone manually sending incorrect parameters", ex);
         String description = "Sorry - the values sent to the application are not acceptable.";
-        return addAttributesToErrorPage(description, "400", model, principal);
+        return addAttributesToErrorPage(description, "e-400", model, principal);
     }
 
     @ExceptionHandler(NotFoundException.class)
     public String handleNotFoundException(NotFoundException ex, Model model, Principal principal) {
         LOGGER.error("The application couldn't find the resource requested - {}", ex.getMessage(), ex);
         String description = "Sorry - the application could not find what you wanted";
-        return addAttributesToErrorPage(description, "404", model, principal);
+        return addAttributesToErrorPage(description, "e-404", model, principal);
     }
 
     @ExceptionHandler(NotAuthorisedException.class)
     public String handleNotAuthorisedException(NotAuthorisedException ex, Model model, Principal principal) {
         LOGGER.error("An attempt was made to access a protected resource without the required authorisation - {}", ex.getMessage(), ex);
         String description = "Sorry - you are not authorised to access this functionality";
-        return addAttributesToErrorPage(description, "401", model, principal);
+        return addAttributesToErrorPage(description, "e-401", model, principal);
     }
 
     @ExceptionHandler(JwtAuthAuzException.class)
     public String handleJwtAuthAuzException(JwtAuthAuzException ex, Model model, Principal principal) {
         LOGGER.error("There was a problem with the JWT token process - {}", ex.getMessage(), ex);
         String description = "Sorry - there was problem with processing your logon token";
-        return addAttributesToErrorPage(description, "401", model, principal);
+        return addAttributesToErrorPage(description, "e-401", model, principal);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
     public String handleAccessDeniedException(AccessDeniedException ex, Model model, Principal principal) {
         LOGGER.error("An attempt was made to access a protected resource without the required permission - {}", ex.getMessage(), ex);
         String description = "Sorry - you are not permitted to access this functionality";
-        return addAttributesToErrorPage(description, "403", model, principal);
+        return addAttributesToErrorPage(description, "e-403", model, principal);
     }
 
     // Exception handler of last resort!
@@ -507,7 +537,7 @@ public class BookControllerHtmx {
     public String handleException(Exception ex, Model model, Principal principal) {
         LOGGER.error("An unhandled exception was caught be the exception handler of last resort - {}", ex.getMessage(), ex);
         String description = "Sorry - an unexpected problem occurred in the application.";
-        return addAttributesToErrorPage(description, "500", model, principal);
+        return addAttributesToErrorPage(description, "e-500", model, principal);
     }
 
     private String addAttributesToErrorPage(String description, String code, Model model, Principal principal) {

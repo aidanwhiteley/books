@@ -70,8 +70,8 @@
                             th:field="*{summary}" th:errorclass="is-invalid"></textarea>
                     <p class="invalid-feedback" th:if="${#fields.hasErrors('summary')}" th:errors="*{summary}">Invalid summary</p>
                     <small id="summaryHelpBlock" class="form-text">
-                        Enter anything you like that may help someone else to decide whether the book is worth reading
-                        or not.
+                        Enter anything you like that may help someone else to decide whether the book is
+                        worth reading or not.
                         Probably best not to say what the ending is!
                         HTML formatting is not supported.<br />
                         Remember: all entries are publicly visible.
@@ -82,9 +82,8 @@
 
                     <div th:if="${(googleBookSearchResult != null) and (googleBookSearchResult.item == null)}">
                         <div class="alert alert-warning" role="alert">
-                            We didn't find any matching books on Google Books. This may be correct but please do check what is
-                            entered
-                            in the <b>Book Title</b> and <b>Author</b> fields above.
+                            We didn't find any matching books on Google Books. This may be correct but please do
+                            check what is entered in the <b>Book Title</b> and <b>Author</b> fields above.
                         </div>
                     </div>
 

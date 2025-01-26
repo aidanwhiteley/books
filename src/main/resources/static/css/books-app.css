@@ -434,3 +434,13 @@ li.comment-entry {
 .ts-wrapper.form-control .ts-control {
     border: 0px;
 }
+
+.htmx-indicator{
+    display:none;
+}
+.htmx-request .htmx-indicator{
+    display:inline;
+}
+.htmx-request.htmx-indicator{
+    display:inline;
+}

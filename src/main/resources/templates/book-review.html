@@ -62,9 +62,9 @@
                             <img class="htmx-indicator" width="20" height="20" src="/images/circles.svg">
                         </button>
 
-                        <!-- th:hx-get="@{/googlebooks(index=${index + 1},title=${booktitle},author=${author})}" -->
                     </div>
                 </div>
+
                 <div class="tab-pane" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                     <div className="bookInfo">
                          <span th:if="${book.googleBookDetails != null and book.googleBookDetails.volumeInfo != null and book.googleBookDetails.volumeInfo.imageLinks != null}" >
@@ -74,9 +74,10 @@
                                     ${book.googleBookDetails.volumeInfo.imageLinks.thumbnail} : ${book.googleBookDetails.volumeInfo.imageLinks.smallThumbnail}" />
                         </span>
                         <p><b>Google Summary: </b></p>
-                        <div id="googleSummaryDetail" th:utext="${book.googleBookDetails.volumeInfo.description}">This is where the text from the Google book summary will go</div>
+                        <div hx-disable id="googleSummaryDetail" th:utext="${book.googleBookDetails.volumeInfo.description}">This is where the text from the Google book summary will go</div>
                     </div>
                 </div>
+
                 <div class="tab-pane" id="messages" role="tabpanel" aria-labelledby="messages-tab">
                     <p th:if="${#lists.isEmpty(book.comments)}" class="mt-4">No comments have been left yet on this book review</p>
 

@@ -40,6 +40,7 @@ public class BookForm {
         book.setGenre(genre);
         book.setSummary(summary);
         book.setRating(Book.Rating.getRatingByString(rating));
+        book.setGoogleBookId(googleBookId);
         return book;
     }
 }

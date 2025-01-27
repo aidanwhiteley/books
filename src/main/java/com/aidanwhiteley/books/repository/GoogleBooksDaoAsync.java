@@ -71,10 +71,13 @@ public class GoogleBooksDaoAsync extends GoogleBooksApiConfig {
             Item item = monoItem.block(Duration.ofSeconds(googleBooksApiConfig.getReadTimeout()));
             LOGGER.debug("Block completed");
 
-            // Google Books should be safe from CSRF attacks but lets make sure!
+            // Google Books API data _should_ be safe from CSRF attacks but lets make sure before storing the
+            // description text in the database!
             VolumeInfo vlInfo = item.getVolumeInfo();
-            vlInfo.setDescription(HtmlSanitiserUtils.allowBasicTextFormattingOnly(vlInfo.getDescription()));
-            item.setVolumeInfo(vlInfo);
+            if (vlInfo != null && vlInfo.getDescription() != null) {
+                vlInfo.setDescription(HtmlSanitiserUtils.allowBasicTextFormattingOnly(vlInfo.getDescription()));
+                item.setVolumeInfo(vlInfo);
+            }
 
             bookRepository.addGoogleBookItemToBook(book.getId(), item);
             LOGGER.debug("Google Books details added to Mongo for {}", book.getId());

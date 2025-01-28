@@ -61,8 +61,8 @@ books:
       api:
         searchUrl: http://localhost:${wiremock.server.port}/books/v1/volumes?q=
         getByIdUrl: http://localhost:${wiremock.server.port}/books/v1/volumes/
-        #connecTimeout: 200
-        #readTimeout: 300
+        connecTimeout: 200
+        readTimeout: 300
         #searchUrl: https://www.googleapis.com/books/v1/volumes?q=
         #getByIdUrl: https://www.googleapis.com/books/v1/volumes/
         #connecTimeout: 2000

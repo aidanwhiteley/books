@@ -53,13 +53,13 @@
                                 <ul class="pagination">
                                     <li class="page-item" th:classappend="${pageOfBooks.first} ? 'disabled'">
                                         <a class="page-link" hx-target="#table-detail" hx-push-url="true"
-                                            th:hx-get="@{${paginationLink}(pagenum=1)}" aria-label="First">
+                                            th:hx-get="@{${paginationLink}(pagenum=1)}" hx-target-error="#detail" aria-label="First">
                                             <span aria-hidden="true"><<</span>
                                         </a>
                                     </li>
                                     <li class="page-item" th:classappend="${pageOfBooks.first} ? 'disabled'">
                                         <a class="page-link" href="" hx-target="#table-detail" hx-push-url="true"
-                                            th:hx-get="@{${paginationLink}(pagenum=${pageOfBooks.number})}" 
+                                            th:hx-get="@{${paginationLink}(pagenum=${pageOfBooks.number})}"  hx-target-error="#detail"
                                             aria-label="Previous">
                                             <span aria-hidden="true"><</span>
                                         </a>
@@ -75,7 +75,7 @@
                                                     pageOfBooks.number + 2 < pageOfBooks.totalPages ?
                                                 pageOfBooks.number + 3 : pageOfBooks.totalPages)}">
                                         <a class="page-link" href="#" hx-target="#table-detail" hx-push-url="true"
-                                            th:hx-get="@{${paginationLink}(pagenum=${page})}"
+                                            th:hx-get="@{${paginationLink}(pagenum=${page})}" hx-target-error="#detail"
                                             th:text="${page}">#</a>
                                     </li>
 
@@ -84,14 +84,15 @@
                                     </li>
                                     <li class="page-item" th:classappend="${pageOfBooks.last} ? 'disabled'">
                                         <a class="page-link" href="" hx-target="#table-detail" hx-push-url="true"
-                                           th:hx-get="@{${paginationLink}(pagenum=${pageOfBooks.number + 2})}" 
+                                           th:hx-get="@{${paginationLink}(pagenum=${pageOfBooks.number + 2})}" hx-target-error="#detail"
                                            aria-label="Next">
                                             <span aria-hidden="true">></span>
                                         </a>
                                     </li>
                                     <li class="page-item" th:classappend="${pageOfBooks.last} ? 'disabled'">
                                         <a class="page-link" href="" hx-target="#table-detail" hx-push-url="true"
-                                            th:hx-get="@{${paginationLink}(pagenum=${pageOfBooks.totalPages})}" aria-label="Last">
+                                            th:hx-get="@{${paginationLink}(pagenum=${pageOfBooks.totalPages})}"
+                                            hx-target-error="#detail"aria-label="Last">
                                             <span aria-hidden="true">>></span>
                                         </a>
                                     </li>

@@ -9,16 +9,16 @@
     </head>
     <body>
 
-        <div id="detail">
+        <div id="detail" th:fragment="cloudy-error-detail">
 
             <div class="container">
                 <div class="row">
 
-                    <div class="col-md-5 mt-4">
+                    <div class="col-md-4 mt-4">
                         <img alt="Frustrated computer user" src="../static/images/frustrated-user-small.jpg"
                              th:src="@{/images/frustrated-user-small.jpg}" height="166" width="276" class="d-inline-block align-top">
                     </div>
-                    <div class="col-md-7 mt-4">
+                    <div class="col-md-8 mt-4">
                         <p class="lead">
                             Darn. There's been a problem and we can't currently show what you wanted. Sorry!
                         </p>

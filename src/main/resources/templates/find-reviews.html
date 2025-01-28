@@ -19,7 +19,7 @@
                 <h3 class="finder-header">Find Reviews By Rating</h3>
                 <select id="select-by-rating" class="finder-control" data-placeholder="Select a review rating"
                     autocomplete="off" hx-target="#cloudy-find-by-results" hx-get="/find?pagenum=1" name="rating"
-                    hx-push-url="true" hx-on::after-request="clearSelects(this)">
+                    hx-push-url="true" hx-on::after-request="clearSelects(this)" hx-target-error="#detail">
                     <optgroup id="select-by-rating-options" th:fragment="cloudy-find-by-ratings-options">
                         <option th:each="rating : ${ratings}" th:value="${#strings.toLowerCase(rating)}"
                             th:text="${#strings.capitalize(#strings.toLowerCase(rating))}">Great</option>
@@ -31,7 +31,7 @@
                 <h3 class="finder-header">Find Reviews By Author</h3>
                 <select id="select-by-author" class="finder-control" data-placeholder="Start typing an author's name..."
                     autocomplete="off" hx-target="#cloudy-find-by-results" hx-get="/find?pagenum=1" name="author"
-                    hx-push-url="true" hx-on::after-request="clearSelects(this)">
+                    hx-push-url="true" hx-on::after-request="clearSelects(this)" hx-target-error="#detail">
                     <optgroup id="select-by-author-options" th:fragment="cloudy-find-by-author-options">
                         <option th:each="author : ${authors}" th:value="${author.author}"
                             th:text="${author.author + ' - ' + author.countOfBooks + ' books'}">Joseph Heller - 3
@@ -44,7 +44,7 @@
                 <h3 class="finder-header">Find Reviews By Genre</h3>
                 <select id="select-by-genre" class="finder-control" data-placeholder="Start typing a genre..."
                     autocomplete="off" hx-target="#cloudy-find-by-results" hx-get="/find?pagenum=1" name="genre"
-                    hx-push-url="true" hx-on::after-request="clearSelects(this)">
+                    hx-push-url="true" hx-on::after-request="clearSelects(this)" hx-target-error="#detail">
                     <optgroup id="select-by-genre-options" th:fragment="cloudy-find-by-genre-options">
                         <option th:each="genre : ${genres}" th:value="${genre.genre}"
                             th:text="${genre.genre + ' - ' + genre.countOfBooks + ' books'}">Novel - 20</option>
@@ -57,7 +57,7 @@
                 <h3 class="finder-header">Find Reviews By Reviewer</h3>
                 <select id="select-by-reviewer" class="finder-control" data-placeholder="Start typing a reviewer..."
                     autocomplete="off" hx-target="#cloudy-find-by-results" hx-get="/find?pagenum=1" name="reviewer"
-                    hx-push-url="true" hx-on::after-request="clearSelects(this)">
+                    hx-push-url="true" hx-on::after-request="clearSelects(this)" hx-target-error="#detail">
                     <optgroup id="select-by-reviewer-options" th:fragment="cloudy-find-by-reviewer-options">
                         <option th:each="reviewer : ${reviewers}" th:value="${reviewer.reader}"
                             th:text="${reviewer.reader + ' - ' + reviewer.countOfBooks + ' books'}">Joe Bloggs - 5

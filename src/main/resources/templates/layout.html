@@ -13,9 +13,10 @@
         <link rel="stylesheet" href="../static/css/swiper.min.css" th:href="@{/css/swiper.min.css}">
         <link rel="stylesheet" href="../static/css/tom-select.css" th:href="@{/css/tom-select.css}">
         <link rel="stylesheet" href="../static/css/books-app.css" th:href="@{/css/books-app.css}">
-        <script src="../static/js/htmx.min.js" th:src="@{/js/htmx.min.js}"></script>
+        <script src="../static/js/htmx.js" th:src="@{/js/htmx.js}"></script>
+        <script src="../static/js/htmx-response-targets.js" th:src="@{/js/htmx-response-targets.js}"></script>
     </head>
-    <body hx-boost="false">
+    <body hx-boost="false" hx-ext="response-targets">
         <div id="root">
 
             <section data-bs-theme="light" class="navbar navbar-expand-xl navbar-light bg-light sticky-top" th:replace="~{common/nav :: cloudy-nav}" >
@@ -39,6 +40,8 @@
             </section>
 
         </div>
+
+
     </body>
 
 </html>

@@ -60,17 +60,17 @@
             <div class="btn-group" role="group" aria-label="Book rating selection button group">
                 <input type="radio" class="btn-check" name="bookRating" id="greatBooks" autocomplete="off"
                     hx-get="/getBooksByRating?rating=great" hx-target="#swiper-slides" hx-swap="outerHTML"
-                    hx-on::after-request="initialiseSwiper()" th:checked="${rating=='great'}">
+                    hx-on::after-request="initialiseSwiper()" th:checked="${rating=='great'}" hx-target-error="#detail">
                 <label class="btn btn-outline-primary" for="greatBooks">Great books</label>
 
                 <input type="radio" class="btn-check" name="bookRating" id="goodBooks" autocomplete="off"
                     hx-get="/getBooksByRating?rating=good" hx-target="#swiper-slides" hx-swap="outerHTML"
-                    hx-on::after-request="initialiseSwiper()" th:checked="${rating=='good'}">
+                    hx-on::after-request="initialiseSwiper()" th:checked="${rating=='good'}" hx-target-error="#detail">
                 <label class="btn btn-outline-primary" for="goodBooks">Good books</label>
 
                 <input type="radio" class="btn-check" name="bookRating" id="okBooks" autocomplete="off"
                     hx-get="/getBooksByRating?rating=ok" hx-target="#swiper-slides" hx-swap="outerHTML"
-                    hx-on::after-request="initialiseSwiper()" th:checked="${rating=='ok'}">
+                    hx-on::after-request="initialiseSwiper()" th:checked="${rating=='ok'}" hx-target-error="#detail">
                 <label class="btn btn-outline-primary" for="okBooks">OK books</label>
             </div>
         </div>

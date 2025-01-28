@@ -57,7 +57,7 @@
                         </button>
                         <button type="submit" class="mt-4 btn btn-outline-danger" aria-label="Delete book review"
                             th:hx-delete="@{/deletereview/{id}(id = ${book.id})}" hx-trigger="click" hx-target="#detail"
-                            hx-confirm="Are you sure you wish to delete this book review?">
+                            hx-confirm="Are you sure you wish to delete this book review?" hx-target-error="#detail">
                             Delete this book review
                             <img class="htmx-indicator" width="20" height="20" src="/images/circles.svg">
                         </button>

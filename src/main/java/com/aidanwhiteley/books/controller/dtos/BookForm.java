@@ -46,15 +46,19 @@ public class BookForm {
         return book;
     }
 
-    public BookForm getBookFormFromBook(Book book) {
+    public static BookForm getBookFormFromBook(Book book) {
         var bookForm = new BookForm();
-        comments = book.getComments();
-        title = book.getTitle();
-        author = book.getAuthor();
-        genre = book.getGenre();
-        summary = book.getSummary();
-        rating = book.getRating().toString();
-        googleBookId = book.getGoogleBookId();
+        bookForm.setComments(book.getComments());
+        bookForm.setTitle(book.getTitle());
+        bookForm.setAuthor(book.getAuthor());
+        bookForm.setGenre(book.getGenre());
+        bookForm.setSummary(book.getSummary());
+        bookForm.setRating(book.getRating().toString());
+        bookForm.setGoogleBookId(book.getGoogleBookId());
+
+        var googleBookSearchResult = new GoogleBookSearchResult();
+        googleBookSearchResult.setItem(book.getGoogleBookDetails());
+        bookForm.setGoogleBookSearchResult(googleBookSearchResult);
 
         return bookForm;
     }

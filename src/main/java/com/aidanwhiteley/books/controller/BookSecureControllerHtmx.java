@@ -137,12 +137,25 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
         return "create-review :: cloudy-google-book-candidates";
     }
 
-    @GetMapping(value = {"/updateview"}, params = {"bookId"})
-    public String updateBookReview(@RequestParam String bookId, Model model, Principal principal) {
+    @GetMapping(value = "/updatereview/{bookId}")
+    public String updateBookReview(@PathVariable String bookId, Model model, Principal principal) {
 
-        model.addAttribute("bookForm", new BookForm());
+        var book = bookRepository.findById(bookId);
+        var bookForm = BookForm.getBookFormFromBook(
+                book.orElseThrow(() -> new NotFoundException("Book id " + bookId + " not found")));
+
+        // Get a list of matching books into cache - we are not using the return value here!
+        googleBookSearchService.getGoogleBooks(bookForm.getTitle(), bookForm.getAuthor(), 0);
+
+        var googleBookSearchresult = bookForm.getGoogleBookSearchResult();
+        googleBookSearchresult.setHasMore(true);
+
+        model.addAttribute("bookForm", bookForm);
+        model.addAttribute("googleBookSearchResult", googleBookSearchresult);
         model.addAttribute("genres", getGenres());
-        model.addAttribute("index", -1);
+        model.addAttribute("booktitle", bookForm.getTitle());
+        model.addAttribute("author", bookForm.getAuthor());
+        model.addAttribute("index", 0);
         addUserToModel(principal, model);
 
         return "create-review";

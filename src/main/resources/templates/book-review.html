@@ -52,9 +52,11 @@
                         <p class="reviewDetail"><b>Reviewer's Summary:</b><span th:text="${book.summary}" class="reviewDetailSummary">A book review summary</span></p>
                         <p th:if="${book.createdBy != null and book.createdBy.fullName != null and user != null and (highestRole == 'EDITOR' or highestRole == 'ADMIN')}"><b>Reviewer:</b> <span th:text="${book.createdBy.fullName}">Fred Bloggs</span></p>
 
-                        <button type="button" class="me-4 mt-4 btn btn-outline-primary" aria-label="Update book review">
-                            Update this book review
-                        </button>
+                        <a th:href="@{/updatereview/{id}(id = ${book.id})}">
+                            <button type="button" class="me-4 mt-4 btn btn-outline-primary" aria-label="Update book review">
+                                Update this book review
+                            </button>
+                        </a>
                         <button type="submit" class="mt-4 btn btn-outline-danger" aria-label="Delete book review"
                             th:hx-delete="@{/deletereview/{id}(id = ${book.id})}" hx-trigger="click" hx-target="#detail"
                             hx-confirm="Are you sure you wish to delete this book review?" hx-target-error="#detail">

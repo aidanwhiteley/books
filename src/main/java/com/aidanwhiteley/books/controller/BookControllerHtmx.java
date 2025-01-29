@@ -1,8 +1,5 @@
 package com.aidanwhiteley.books.controller;
 
-import com.aidanwhiteley.books.controller.dtos.BookForm;
-import com.aidanwhiteley.books.controller.exceptions.JwtAuthAuzException;
-import com.aidanwhiteley.books.controller.exceptions.NotAuthorisedException;
 import com.aidanwhiteley.books.controller.exceptions.NotFoundException;
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.User;
@@ -13,40 +10,29 @@ import com.aidanwhiteley.books.repository.dtos.BooksByGenre;
 import com.aidanwhiteley.books.repository.dtos.BooksByReader;
 import com.aidanwhiteley.books.service.GoogleBookSearchService;
 import com.aidanwhiteley.books.service.StatsService;
-import com.aidanwhiteley.books.service.dtos.GoogleBookSearchResult;
 import com.aidanwhiteley.books.service.dtos.SummaryStats;
 import com.aidanwhiteley.books.util.JwtAuthenticationUtils;
-import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.mongodb.UncategorizedMongoDbException;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static com.aidanwhiteley.books.domain.Book.Rating.GREAT;
-import static com.aidanwhiteley.books.util.LogDetaint.logMessageDetaint;
 
 @Controller
-public class BookControllerHtmx {
+public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
 
     private final BookRepository bookRepository;
     private final JwtAuthenticationUtils authUtils;
@@ -54,14 +40,10 @@ public class BookControllerHtmx {
     private final GoogleBookSearchService googleBookSearchService;
     private final GoogleBooksDaoAsync googleBooksDaoAsync;
 
-    private static final String NO_VALUE_SELECTED = "NO_VALUE_SELECTED";
     private static final Logger LOGGER = LoggerFactory.getLogger(BookControllerHtmx.class);
 
     @Value("${books.users.default.page.size}")
     private int defaultPageSize;
-
-    @Value("${books.users.max.page.size}")
-    private int maxPageSize;
 
     public BookControllerHtmx(BookRepository bookRepository, JwtAuthenticationUtils jwtAuthenticationUtils,
                               StatsService statsService, GoogleBookSearchService googleBookSearchService,
@@ -236,36 +218,6 @@ public class BookControllerHtmx {
         }
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_EDITOR', 'ROLE_ADMIN')")
-    @GetMapping(value = {"/find"}, params = {"reviewer", "pagenum"})
-    public String findByReviewer(Model model, Principal principal, @RequestParam String reviewer, @RequestParam int pagenum,
-                              @RequestHeader(value="HX-Request", required = false) boolean hxRequest) {
-
-        if (reviewer == null || reviewer.trim().isEmpty()) {
-            throw new IllegalArgumentException("Genre parameter cannot be empty");
-        }
-
-        if (pagenum < 1) {
-            throw new IllegalArgumentException("Cannot request a page less than 1");
-        }
-
-        PageRequest pageObj = PageRequest.of(pagenum - 1, defaultPageSize);
-        Page<Book> books = bookRepository.findByReaderOrderByCreatedDateTimeDesc(pageObj, reviewer);
-        model.addAttribute("pageOfBooks", books);
-        model.addAttribute("ratings", getRatings(""));
-        model.addAttribute("authors", getAuthors());
-        model.addAttribute("genres", getGenres());
-        model.addAttribute("reviewers", getReviewers(principal));
-        addUserToModel(principal, model);
-        model.addAttribute("paginationLink", "find?reviewer=" + reviewer);
-
-        if (hxRequest) {
-            return "find-reviews :: cloudy-find-by-results";
-        } else {
-            return "find-reviews";
-        }
-    }
-
     @GetMapping(value = {"/search"}, params = {"term"})
     public String findBySearchFullPage(Model model, Principal principal, @RequestParam String term) {
         return findBySearch(model, principal, term, 1, false);
@@ -310,143 +262,8 @@ public class BookControllerHtmx {
         return "book-stats";
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_EDITOR', 'ROLE_ADMIN')")
-    @GetMapping(value = {"/createreview"})
-    public String createBookReview(Model model, Principal principal) {
-
-        model.addAttribute("bookForm", new BookForm());
-        model.addAttribute("genres", getGenres());
-        model.addAttribute("index", -1);
-        addUserToModel(principal, model);
-
-        return "create-review";
-    }
-
-    @PreAuthorize("hasAnyRole('ROLE_EDITOR', 'ROLE_ADMIN')")
-    @DeleteMapping(value = "/deletereview/{id}")
-    public String deleteBookReview(@PathVariable String id, Model model, Principal principal) {
-
-        Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
-        if (user.isPresent()) {
-            Book currentBookState = bookRepository.findById(id)
-                    .orElseThrow(() -> new IllegalArgumentException("Couldn't find book id " + id + " to delete"));
-
-            if (currentBookState.isOwner(user.get()) || user.get().getRoles().contains(User.Role.ROLE_ADMIN)) {
-                bookRepository.deleteById(id);
-                model.addAttribute("booktitle", currentBookState.getTitle());
-                model.addAttribute("author", currentBookState.getAuthor());
-                model.addAttribute("reviewer", currentBookState.getCreatedBy().getFullName());
-                addUserToModel(principal, model);
-
-                return "delete-book-confirmation :: cloudy-delete-confirmation";
-            } else {
-                LOGGER.warn("User {} {} tried to delete book id {} '{}' without the necessary permissions", user.get().getFullName(),
-                        user.get().getId(), currentBookState.getId(), currentBookState.getTitle());
-                throw new AccessDeniedException("User tried to delete book without necessary permissions");
-            }
-        } else {
-            LOGGER.error("A user that doesnt exist in the database tried to delete book id {}", id);
-            throw new NotFoundException("User not found when trying to delete a book review");
-        }
-
-    }
-
-
-    @PreAuthorize("hasAnyRole('ROLE_EDITOR', 'ROLE_ADMIN')")
-    @PostMapping(value = {"/createreview"})
-    public String createBookReviewForm(@Valid @ModelAttribute BookForm bookForm, BindingResult bindingResult,
-                                       Model model, Principal principal) {
-
-        if (bookForm.getRating().equals(NO_VALUE_SELECTED)) {
-            bindingResult.rejectValue("rating", "error.rating", "You must select your rating for the book");
-        }
-
-        if (bindingResult.hasErrors()) {
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Following form validation errors occurred: {}", bindingResult);
-            }
-
-            model.addAttribute("bookForm", bookForm);
-            model.addAttribute("genres", getGenres());
-            addUserToModel(principal, model);
-            if (bookForm.getIndex() != -1) {
-                findGoogleBooksByTitleAndAuthor(bookForm.getTitle(), bookForm.getAuthor(), bookForm.getIndex(), model, principal);
-            }
-
-            return "create-review";
-        }
-
-        Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
-        if (user.isPresent()) {
-
-            Book insertedBook = bookRepository.insert(bookForm.getBookFromBookForm());
-
-            // If there were Google Book details specified, call an async method to
-            // go and get the full details from Google and then update the Mongo document for the book
-            if (bookForm.getGoogleBookId() != null && bookForm.getGoogleBookId().length() > 0) {
-                googleBooksDaoAsync.updateBookWithGoogleBookDetails(insertedBook, bookForm.getGoogleBookId());
-            }
-
-            return recentlyReviewedByPage(1, model, principal, false);
-        } else {
-            LOGGER.error("Couldnt create a book as user to own book not found! Principal: {}", logMessageDetaint(principal));
-            throw new NotAuthorisedException("User trying to create a book review not found in user data store!");
-        }
-
-
-    }
-
-    @PreAuthorize("hasAnyRole('ROLE_EDITOR', 'ROLE_ADMIN')")
-    @GetMapping(value = {"/googlebooks"}, params = {"title", "author", "index"})
-    public String findGoogleBooksByTitleAndAuthor(@RequestParam String title, @RequestParam String author,
-                                                  @RequestParam int index, Model model, Principal principal) {
-
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Calling Google Book Search API with title '{}', author '{}' and index '{}'",
-                    title, author, index);
-        }
-        GoogleBookSearchResult result = googleBookSearchService.getGoogleBooks(title, author, index);
-
-        model.addAttribute("googleBookSearchResult", result);
-        model.addAttribute("booktitle", title);
-        model.addAttribute("author", author);
-        model.addAttribute("index", index);
-        if (result.getItem() != null) {
-            model.addAttribute("googleBookId", result.getItem().getId());
-        } else {
-            model.addAttribute("googleBookId", "");
-        }
-        addUserToModel(principal, model);
-
-        return "create-review :: cloudy-google-book-candidates";
-    }
-
-    private List<Book.Rating> getRatings(String prefix) {
-        List<Book.Rating> ratings = Arrays.stream(Book.Rating.values()).toList();
-        if (!prefix.isEmpty()) {
-            ratings = ratings.stream().filter(s -> s.name().startsWith(prefix)).toList();
-        }
-        return ratings.reversed();
-    }
-
-    private List<BooksByAuthor> getAuthors() {
-        return bookRepository.countBooksByAuthor();
-    }
-
-    private List<BooksByGenre> getGenres() {
-        return bookRepository.countBooksByGenre();
-    }
-
-    private List<BooksByReader> getReviewers(Principal principal) {
-        Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
-        if (user.isPresent() && user.get().getHighestRole().getRoleNumber() >= User.Role.ROLE_EDITOR.getRoleNumber()) {
-            return bookRepository.countBooksByReader();
-        } else {
-            return new ArrayList<>();
-        }
-    }
-
-    private void addUserToModel(Principal principal, Model model) {
+    @Override
+    public void addUserToModel(Principal principal, Model model) {
 
         if (principal == null) {
             LOGGER.debug("Principal passed to user method was null");
@@ -468,7 +285,23 @@ public class BookControllerHtmx {
         }
     }
 
-    private static List<Book> getBooksWithRequiredImages(Page<Book> page) {
+    protected static List<Book.Rating> getRatings(String prefix) {
+        List<Book.Rating> ratings = Arrays.stream(Book.Rating.values()).toList();
+        if (!prefix.isEmpty()) {
+            ratings = ratings.stream().filter(s -> s.name().startsWith(prefix)).toList();
+        }
+        return ratings.reversed();
+    }
+
+    private List<BooksByAuthor> getAuthors() {
+        return bookRepository.countBooksByAuthor();
+    }
+
+    private List<BooksByGenre> getGenres() {
+        return bookRepository.countBooksByGenre();
+    }
+
+    private List<Book> getBooksWithRequiredImages(Page<Book> page) {
         return page.getContent().stream().filter(b ->
                         (b.getGoogleBookId() != null &&
                                 !b.getGoogleBookId().isBlank() &&
@@ -477,83 +310,14 @@ public class BookControllerHtmx {
                         )).toList();
     }
 
-    // The REST API part of this application registers a global @RestControllerAdvice to centrally handle exceptions
-    // and they generally return JSON to the client.
-    // As we want to leave the REST API in place, we handle exceptions locally in this HTMX based controller
-    // so that we can return HTML views for any errors from this controller.
-
-    @ExceptionHandler(UncategorizedMongoDbException.class)
-    public String handleInMemoryMongoFullTextSearchException(UncategorizedMongoDbException ex, Model model,
-                                                             Principal principal, WebRequest request) {
-        LOGGER.error("An UncategorizedMongoDbException occurred. This is normally expected when running in " +
-                "development mode when trying to use the Search as full text indexes aren't supported by " +
-                "the in memory fake Mongo. However, as it is just possible that it could happen for other " +
-                "reasons, the full stack trace is logged", ex);
-        String description = "Search doesn't work when running against the in-memory Mongo " +
-                "used in development because full text indexes are not supported in that implementation.";
-        return addAttributesToErrorPage(description, "e-mongo-uncategorized", model, principal, request);
-    }
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler({IllegalArgumentException.class, NumberFormatException.class, MethodArgumentTypeMismatchException.class,
-            MethodArgumentNotValidException.class})
-    public String handleIllegalArgumentException(Exception ex, Model model, Principal principal, WebRequest request) {
-        LOGGER.error("An unacceptable input was received. Either this is an application error or someone manually sending incorrect parameters", ex);
-        String description = "Sorry - the values sent to the application are not acceptable.";
-        return addAttributesToErrorPage(description, "e-400", model, principal, request);
-    }
-
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(NotFoundException.class)
-    public String handleNotFoundException(NotFoundException ex, Model model, Principal principal, WebRequest request) {
-        LOGGER.error("The application couldn't find the resource requested - {}", ex.getMessage(), ex);
-        String description = "Sorry - the application could not find what you wanted";
-        return addAttributesToErrorPage(description, "e-404", model, principal, request);
-    }
-
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    @ExceptionHandler(NotAuthorisedException.class)
-    public String handleNotAuthorisedException(NotAuthorisedException ex, Model model, Principal principal, WebRequest request) {
-        LOGGER.error("An attempt was made to access a protected resource without the required authorisation - {}", ex.getMessage(), ex);
-        String description = "Sorry - you are not authorised to access this functionality";
-        return addAttributesToErrorPage(description, "e-401", model, principal, request);
-    }
-
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    @ExceptionHandler(JwtAuthAuzException.class)
-    public String handleJwtAuthAuzException(JwtAuthAuzException ex, Model model, Principal principal, WebRequest request) {
-        LOGGER.error("There was a problem with the JWT token process - {}", ex.getMessage(), ex);
-        String description = "Sorry - there was problem with processing your logon token";
-        return addAttributesToErrorPage(description, "e-401", model, principal, request);
-    }
-
-    @ResponseStatus(HttpStatus.FORBIDDEN)
-    @ExceptionHandler(AccessDeniedException.class)
-    public String handleAccessDeniedException(AccessDeniedException ex, Model model, Principal principal, WebRequest request) {
-        LOGGER.error("An attempt was made to access a protected resource without the required permission - {}", ex.getMessage(), ex);
-        String description = "Sorry - you are not permitted to access this functionality";
-        return addAttributesToErrorPage(description, "e-403", model, principal, request);
-    }
-
-    // Exception handler of last resort!
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler(Exception.class)
-    public String handleException(Exception ex, Model model, Principal principal, WebRequest request) {
-        LOGGER.error("An unhandled exception was caught be the exception handler of last resort - {}", ex.getMessage(), ex);
-        String description = "Sorry - an unexpected problem occurred in the application.";
-        return addAttributesToErrorPage(description, "e-500", model, principal, request);
-    }
-
-    private String addAttributesToErrorPage(String description, String code, Model model, Principal principal, WebRequest request) {
-        model.addAttribute("description", description);
-        model.addAttribute("code", code);
-        model.addAttribute("dateTime", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-        addUserToModel(principal, model);
-
-        if (request.getHeader("hx-request") != null && request.getHeader("Hx-request").equals("true")) {
-            return "error :: cloudy-error-detail";
+    private List<BooksByReader> getReviewers(Principal principal) {
+        Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
+        if (user.isPresent() && user.get().getHighestRole().getRoleNumber() >= User.Role.ROLE_EDITOR.getRoleNumber()) {
+            return bookRepository.countBooksByReader();
         } else {
-            return "error";
+            return new ArrayList<>();
         }
     }
+
+
 }

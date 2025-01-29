@@ -2,6 +2,7 @@ package com.aidanwhiteley.books.controller.dtos;
 
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.Comment;
+import com.aidanwhiteley.books.service.dtos.GoogleBookSearchResult;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -32,6 +33,7 @@ public class BookForm {
     private String rating;
     private int index = -1;
     private String googleBookId;
+    private GoogleBookSearchResult googleBookSearchResult;
 
     public Book getBookFromBookForm() {
         var book = new Book();
@@ -42,5 +44,18 @@ public class BookForm {
         book.setRating(Book.Rating.getRatingByString(rating));
         book.setGoogleBookId(googleBookId);
         return book;
+    }
+
+    public BookForm getBookFormFromBook(Book book) {
+        var bookForm = new BookForm();
+        comments = book.getComments();
+        title = book.getTitle();
+        author = book.getAuthor();
+        genre = book.getGenre();
+        summary = book.getSummary();
+        rating = book.getRating().toString();
+        googleBookId = book.getGoogleBookId();
+
+        return bookForm;
     }
 }

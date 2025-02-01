@@ -10,6 +10,9 @@
     <body>
 
         <div id="detail">
+            <div th:if="${param.created}" class="alert alert-success" role="alert">
+                Book review created successfully
+            </div>
             <p th:replace="~{components/books-table :: cloudy-books-table}">The <a href="./components/books-table.html">table</a> of recently reviewed books will go here.</p>
         </div>
 

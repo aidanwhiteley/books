@@ -66,9 +66,11 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
         model.addAttribute("bookForm", new BookForm());
         model.addAttribute("genres", getGenres());
         model.addAttribute("index", -1);
+        model.addAttribute("iscreate", true);
+        model.addAttribute("isupdate", false);
         addUserToModel(principal, model);
 
-        return "create-review";
+        return "create-update-review";
     }
 
     @PostMapping(value = {"/createreview"})
@@ -86,13 +88,15 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
 
             model.addAttribute("bookForm", bookForm);
             model.addAttribute("genres", getGenres());
+            model.addAttribute("iscreate", true);
+            model.addAttribute("isupdate", false);
             addUserToModel(principal, model);
             if (bookForm.getIndex() != -1) {
                 // Ignoring the view string return value - just want the data added to the Model
                 findGoogleBooksByTitleAndAuthor(bookForm.getTitle(), bookForm.getAuthor(), bookForm.getIndex(), model, principal);
             }
 
-            return "create-review";
+            return "create-update-review";
         }
 
         Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
@@ -106,7 +110,7 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
                 googleBooksDaoAsync.updateBookWithGoogleBookDetails(insertedBook, bookForm.getGoogleBookId());
             }
 
-            return "redirect:/recent";
+            return "redirect:/recent?created=y";
         } else {
             LOGGER.error("Couldnt create a book as user to own book not found! Principal: {}", logMessageDetaint(principal));
             throw new NotAuthorisedException("User trying to create a book review not found in user data store!");
@@ -134,7 +138,7 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
         }
         addUserToModel(principal, model);
 
-        return "create-review :: cloudy-google-book-candidates";
+        return "create-update-review :: cloudy-google-book-candidates";
     }
 
     @GetMapping(value = "/updatereview/{bookId}")
@@ -156,9 +160,11 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
         model.addAttribute("booktitle", bookForm.getTitle());
         model.addAttribute("author", bookForm.getAuthor());
         model.addAttribute("index", 0);
+        model.addAttribute("iscreate", false);
+        model.addAttribute("isupdate", true);
         addUserToModel(principal, model);
 
-        return "create-review";
+        return "create-update-review";
     }
 
     @DeleteMapping(value = "/deletereview/{id}")

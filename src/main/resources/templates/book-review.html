@@ -70,13 +70,15 @@
                 <div class="tab-pane" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                     <div className="bookInfo">
                          <span th:if="${book.googleBookDetails != null and book.googleBookDetails.volumeInfo != null and book.googleBookDetails.volumeInfo.imageLinks != null}" >
-
                             <img src="../static/images/book-club-logo.jpeg" alt="A book cover" class="float-start rounded img-thumbnail me-3"
                                  th:src="${!#strings.isEmpty(book.googleBookDetails.volumeInfo.imageLinks.thumbnail)} ?
                                     ${book.googleBookDetails.volumeInfo.imageLinks.thumbnail} : ${book.googleBookDetails.volumeInfo.imageLinks.smallThumbnail}" />
                         </span>
                         <p><b>Google Summary: </b></p>
-                        <div hx-disable id="googleSummaryDetail" th:utext="${book.googleBookDetails.volumeInfo.description}">This is where the text from the Google book summary will go</div>
+                        <div th:if="${book.googleBookDetails != null and book.googleBookDetails.volumeInfo != null}" hx-disable
+                             id="googleSummaryDetail" th:utext="${book.googleBookDetails.volumeInfo.description}">
+                            This is where the text from the Google book summary will go
+                        </div>
                     </div>
                 </div>
 

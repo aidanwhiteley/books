@@ -16,7 +16,7 @@
             <h4 th:if="${iscreate}">Enter your review of a book you have read</h4>
             <h4 th:if="${isupdate}">Update book review</h4>
 
-            <form id="createreviewform" action="#" th:action="@{/createreview}" th:object="${bookForm}"  class="row g-3" novalidate
+            <form id="createreviewform" action="#" th:action="@{${actionUrl}}" th:object="${bookForm}"  class="row g-3" novalidate
                   method="post" th:fragment="cloudy-book-review-form">
 
                 <div class="col-md-6">
@@ -78,6 +78,10 @@
                     </small>
                 </div>
 
+                <input type="hidden" th:value="*{bookId}" name="bookId" id="bookId">
+                <input type="hidden" th:value="*{googleBookId}" name="googleBookId" id="googleBookId">
+                <input type="hidden" th:value="${index}" name="index" id="index">
+
                 <div id="googleBookCandidates" th:fragment="cloudy-google-book-candidates" class="row mt-5">
 
                     <div th:if="${(googleBookSearchResult != null) and (googleBookSearchResult.item == null)}">
@@ -95,7 +99,7 @@
                                  src="https://books.google.com/books/content?id=VDRePgAACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
                                  th:src="${#strings.replace(googleBookSearchResult.item.volumeInfo.imageLinks.thumbnail, 'http://', 'https://')}"
                                  alt="A book cover image from Google" class="rounded float-start googleBookImageImport" />
-                            <span th:text="${googleBookSearchResult.item.volumeInfo.description}">Google books description</span>
+                            <span hx-disable th:utext="${googleBookSearchResult.item.volumeInfo.description}">Google books description</span>
                         </p>
                         <p th:if="${googleBookSearchResult.item.volumeInfo.authors}">
                             By: <span th:text="${#strings.arrayJoin(googleBookSearchResult.item.volumeInfo.authors, ',')}">An author</span>
@@ -125,8 +129,6 @@
                                         class="btn btn-outline-primary next-button" aria-label="Next">Next &raquo;</button>
                             </div>
 
-                            <input type="hidden" th:value="${googleBookId}" name="googleBookId" id="googleBookId">
-                            <input type="hidden" th:value="${index}" name="index" id="index">
                         </div>
                     </div>
 

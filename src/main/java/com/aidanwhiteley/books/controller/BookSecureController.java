@@ -142,7 +142,7 @@ public class BookSecureController {
         }
     }
 
-    private Book mergeUpdatesOntoExistingBook(Book currentBookState, Book book) {
+    protected static Book mergeUpdatesOntoExistingBook(Book currentBookState, Book book) {
 
         // Set the fields the owner / admin is allowed to manually update
         currentBookState.setSummary(book.getSummary());

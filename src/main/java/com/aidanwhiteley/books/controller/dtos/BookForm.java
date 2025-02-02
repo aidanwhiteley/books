@@ -18,6 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 public class BookForm {
 
+    private String bookId;
     private List<Comment> comments = new ArrayList<>();
     @Size(min = 1, max = 100, message
             = "A book title between 1 and 100 characters is required")
@@ -43,11 +44,13 @@ public class BookForm {
         book.setSummary(summary);
         book.setRating(Book.Rating.getRatingByString(rating));
         book.setGoogleBookId(googleBookId);
+        book.setId(bookId);
         return book;
     }
 
     public static BookForm getBookFormFromBook(Book book) {
         var bookForm = new BookForm();
+        bookForm.setBookId(book.getId());
         bookForm.setComments(book.getComments());
         bookForm.setTitle(book.getTitle());
         bookForm.setAuthor(book.getAuthor());

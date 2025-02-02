@@ -68,6 +68,34 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
         model.addAttribute("index", -1);
         model.addAttribute("iscreate", true);
         model.addAttribute("isupdate", false);
+        model.addAttribute("actionUrl", "/createreview");
+        addUserToModel(principal, model);
+
+        return "create-update-review";
+    }
+
+    @GetMapping(value = "/updatereview/{bookId}")
+    public String updateBookReview(@PathVariable String bookId, Model model, Principal principal) {
+
+        var book = bookRepository.findById(bookId);
+        var bookForm = BookForm.getBookFormFromBook(
+                book.orElseThrow(() -> new NotFoundException("Book id " + bookId + " not found")));
+
+        // Get a list of matching books into cache - we are not using the return value here!
+        googleBookSearchService.getGoogleBooks(bookForm.getTitle(), bookForm.getAuthor(), 0);
+
+        var googleBookSearchresult = bookForm.getGoogleBookSearchResult();
+        googleBookSearchresult.setHasMore(true);
+
+        model.addAttribute("bookForm", bookForm);
+        model.addAttribute("googleBookSearchResult", googleBookSearchresult);
+        model.addAttribute("genres", getGenres());
+        model.addAttribute("booktitle", bookForm.getTitle());
+        model.addAttribute("author", bookForm.getAuthor());
+        model.addAttribute("index", 0);
+        model.addAttribute("iscreate", false);
+        model.addAttribute("isupdate", true);
+        model.addAttribute("actionUrl", "/updatereview");
         addUserToModel(principal, model);
 
         return "create-update-review";
@@ -88,8 +116,10 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
 
             model.addAttribute("bookForm", bookForm);
             model.addAttribute("genres", getGenres());
+            model.addAttribute("index", -1);
             model.addAttribute("iscreate", true);
             model.addAttribute("isupdate", false);
+            model.addAttribute("actionUrl", "/createreview");
             addUserToModel(principal, model);
             if (bookForm.getIndex() != -1) {
                 // Ignoring the view string return value - just want the data added to the Model
@@ -102,12 +132,130 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
         Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
         if (user.isPresent()) {
 
-            Book insertedBook = bookRepository.insert(bookForm.getBookFromBookForm());
+            Book aBook = bookRepository.insert(bookForm.getBookFromBookForm());
 
             // If there were Google Book details specified, call an async method to
             // go and get the full details from Google and then update the Mongo document for the book
             if (bookForm.getGoogleBookId() != null && bookForm.getGoogleBookId().length() > 0) {
-                googleBooksDaoAsync.updateBookWithGoogleBookDetails(insertedBook, bookForm.getGoogleBookId());
+                googleBooksDaoAsync.updateBookWithGoogleBookDetails(aBook, bookForm.getGoogleBookId());
+            }
+
+            return "redirect:/recent?created=y";
+        } else {
+            LOGGER.error("Couldnt create a book as user to own book not found! Principal: {}", logMessageDetaint(principal));
+            throw new NotAuthorisedException("User trying to create a book review not found in user data store!");
+        }
+    }
+
+    @PostMapping(value = {"/updatereview"})
+    public String updateBookReviewForm(@Valid @ModelAttribute BookForm bookForm, BindingResult bindingResult,
+                                       Model model, Principal principal) {
+
+        if (bookForm.getRating().equals(NO_VALUE_SELECTED)) {
+            bindingResult.rejectValue("rating", "error.rating", "You must select your rating for the book");
+        }
+
+        if (bindingResult.hasErrors()) {
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Following form validation errors occurred: {}", bindingResult);
+            }
+
+            model.addAttribute("bookForm", bookForm);
+            model.addAttribute("googleBookSearchResult", bookForm.getGoogleBookSearchResult());
+            model.addAttribute("genres", getGenres());
+            model.addAttribute("booktitle", bookForm.getTitle());
+            model.addAttribute("author", bookForm.getAuthor());
+            model.addAttribute("index", 0);
+            model.addAttribute("iscreate", false);
+            model.addAttribute("isupdate", true);
+            model.addAttribute("actionUrl", "/updatereview");
+            addUserToModel(principal, model);
+
+            if (bookForm.getIndex() != -1) {
+                // Ignoring the view string return value - just want the data added to the Model
+                findGoogleBooksByTitleAndAuthor(bookForm.getTitle(), bookForm.getAuthor(), bookForm.getIndex(), model, principal);
+            }
+
+            return "create-update-review";
+        }
+
+        Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
+        if (user.isPresent()) {
+
+            Book aBook;
+
+            Book currentBookState = bookRepository.findById(bookForm.getBookId())
+                    .orElseThrow(() -> new IllegalArgumentException("Didn't find book with id '" + bookForm.getBookId() + "' to update"));
+            if (currentBookState.isOwner(user.get()) || user.get().getRoles().contains(User.Role.ROLE_ADMIN)) {
+                Book inputBook = bookForm.getBookFromBookForm();
+                Book mergedBook = BookSecureController.mergeUpdatesOntoExistingBook(currentBookState, inputBook);
+                aBook = bookRepository.save(mergedBook);
+            } else {
+                LOGGER.error("An attempt to update book id {} was made by {} without the necessary permissions",
+                        bookForm.getBookId(), user.get().getFullName());
+                throw new NotAuthorisedException("User did not have the permission required to update a book review");
+            }
+
+            // If there were Google Book details specified, call an async method to
+            // go and get the full details from Google and then update the Mongo document for the book
+            if (bookForm.getGoogleBookId() != null && bookForm.getGoogleBookId().length() > 0) {
+                googleBooksDaoAsync.updateBookWithGoogleBookDetails(aBook, bookForm.getGoogleBookId());
+            }
+
+            return "redirect:/recent?updated=y";
+        } else {
+            LOGGER.error("Couldn't update a book as user to own book not found! Principal: {}", logMessageDetaint(principal));
+            throw new NotAuthorisedException("User trying to update a book review not found in user data store!");
+        }
+    }
+
+    public String createOrUpdateBookReview(BookForm bookForm, BindingResult bindingResult,
+                                       Model model, Principal principal, boolean isCreate) {
+
+        if (bookForm.getRating().equals(NO_VALUE_SELECTED)) {
+            bindingResult.rejectValue("rating", "error.rating", "You must select your rating for the book");
+        }
+
+        if (bindingResult.hasErrors()) {
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Following form validation errors occurred: {}", bindingResult);
+            }
+
+            model.addAttribute("bookForm", bookForm);
+            model.addAttribute("genres", getGenres());
+            model.addAttribute("iscreate", isCreate);
+            model.addAttribute("isupdate", !isCreate);
+            addUserToModel(principal, model);
+            if (bookForm.getIndex() != -1) {
+                // Ignoring the view string return value - just want the data added to the Model
+                findGoogleBooksByTitleAndAuthor(bookForm.getTitle(), bookForm.getAuthor(), bookForm.getIndex(), model, principal);
+            }
+
+            return "create-update-review";
+        }
+
+        Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
+        if (user.isPresent()) {
+
+            Book aBook;
+            if (isCreate) {
+                aBook = bookRepository.insert(bookForm.getBookFromBookForm());
+            } else {
+                Book currentBookState = bookRepository.findById(bookForm.getBookId())
+                        .orElseThrow(() -> new IllegalArgumentException("Didn't find book with id " + bookForm.getBookId() + " to update"));
+                if (currentBookState.isOwner(user.get()) || user.get().getRoles().contains(User.Role.ROLE_ADMIN)) {
+                    aBook = bookRepository.save(bookForm.getBookFromBookForm());
+                } else {
+                    LOGGER.error("An attempt to update book id {} was made by {} without the necessary permissions",
+                            bookForm.getBookId(), user.get().getFullName());
+                    throw new NotAuthorisedException("User did not have the permission required to update a book review");
+                }
+            }
+
+            // If there were Google Book details specified, call an async method to
+            // go and get the full details from Google and then update the Mongo document for the book
+            if (bookForm.getGoogleBookId() != null && bookForm.getGoogleBookId().length() > 0) {
+                googleBooksDaoAsync.updateBookWithGoogleBookDetails(aBook, bookForm.getGoogleBookId());
             }
 
             return "redirect:/recent?created=y";
@@ -141,31 +289,7 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
         return "create-update-review :: cloudy-google-book-candidates";
     }
 
-    @GetMapping(value = "/updatereview/{bookId}")
-    public String updateBookReview(@PathVariable String bookId, Model model, Principal principal) {
 
-        var book = bookRepository.findById(bookId);
-        var bookForm = BookForm.getBookFormFromBook(
-                book.orElseThrow(() -> new NotFoundException("Book id " + bookId + " not found")));
-
-        // Get a list of matching books into cache - we are not using the return value here!
-        googleBookSearchService.getGoogleBooks(bookForm.getTitle(), bookForm.getAuthor(), 0);
-
-        var googleBookSearchresult = bookForm.getGoogleBookSearchResult();
-        googleBookSearchresult.setHasMore(true);
-
-        model.addAttribute("bookForm", bookForm);
-        model.addAttribute("googleBookSearchResult", googleBookSearchresult);
-        model.addAttribute("genres", getGenres());
-        model.addAttribute("booktitle", bookForm.getTitle());
-        model.addAttribute("author", bookForm.getAuthor());
-        model.addAttribute("index", 0);
-        model.addAttribute("iscreate", false);
-        model.addAttribute("isupdate", true);
-        addUserToModel(principal, model);
-
-        return "create-update-review";
-    }
 
     @DeleteMapping(value = "/deletereview/{id}")
     public String deleteBookReview(@PathVariable String id, Model model, Principal principal) {

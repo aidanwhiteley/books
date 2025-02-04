@@ -12,6 +12,11 @@ import com.aidanwhiteley.books.service.GoogleBookSearchService;
 import com.aidanwhiteley.books.service.StatsService;
 import com.aidanwhiteley.books.service.dtos.SummaryStats;
 import com.aidanwhiteley.books.util.JwtAuthenticationUtils;
+import com.innoq.spring.cookie.flash.CookieFlashMapManager;
+import com.innoq.spring.cookie.flash.codec.jackson.JacksonFlashMapListCodec;
+import com.innoq.spring.cookie.security.CookieValueSigner;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,12 +27,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.FlashMap;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static com.aidanwhiteley.books.domain.Book.Rating.GREAT;
 
@@ -88,7 +92,17 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
     }
 
     @GetMapping(value = "/recent")
-    public String recentlyReviewed(Model model, Principal principal) {
+    public String recentlyReviewed(Model model, Principal principal, HttpServletRequest request, HttpServletResponse response) {
+        CookieFlashMapManager sut = new CookieFlashMapManager(
+                JacksonFlashMapListCodec.create(), CookieValueSigner.hmacSha1("someSecret"), "cloudy-message-flash");
+        FlashMap flashMap = sut.retrieveAndUpdate(request, response);
+
+        System.out.println("flashMap" + flashMap);
+        if (flashMap != null && flashMap.containsKey("message")) {
+            System.out.println("message seen");
+            model.addAttribute("message", flashMap.get("message"));
+        }
+
         return recentlyReviewedByPage(1, model, principal, false);
     }
 

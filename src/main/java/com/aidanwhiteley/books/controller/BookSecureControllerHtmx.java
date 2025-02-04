@@ -14,6 +14,11 @@ import com.aidanwhiteley.books.service.GoogleBookSearchService;
 import com.aidanwhiteley.books.service.StatsService;
 import com.aidanwhiteley.books.service.dtos.GoogleBookSearchResult;
 import com.aidanwhiteley.books.util.JwtAuthenticationUtils;
+import com.innoq.spring.cookie.flash.CookieFlashMapManager;
+import com.innoq.spring.cookie.flash.codec.jackson.JacksonFlashMapListCodec;
+import com.innoq.spring.cookie.security.CookieValueSigner;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +31,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.FlashMap;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
@@ -150,7 +156,7 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
 
     @PostMapping(value = {"/updatereview"})
     public String updateBookReviewForm(@Valid @ModelAttribute BookForm bookForm, BindingResult bindingResult,
-                                       Model model, Principal principal, RedirectAttributes redirectAttributes) {
+                                       Model model, Principal principal, HttpServletRequest request, HttpServletResponse response) {
 
         if (bookForm.getRating().equals(NO_VALUE_SELECTED)) {
             bindingResult.rejectValue("rating", "error.rating", "You must select your rating for the book");
@@ -203,8 +209,15 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
                 googleBooksDaoAsync.updateBookWithGoogleBookDetails(aBook, bookForm.getGoogleBookId());
             }
 
-            redirectAttributes.addFlashAttribute("message", "Book review now updated!");
-            return "redirect:/recent?updated=y";
+            CookieFlashMapManager sut = new CookieFlashMapManager(
+                    JacksonFlashMapListCodec.create(), CookieValueSigner.hmacSha1("someSecret"), "cloudy-message-flash");
+            var flashMap = new FlashMap();
+            //flashMap.setTargetRequestPath("redirect:/recent");
+            flashMap.put("message", "Book review updated successfully");
+            flashMap.startExpirationPeriod(3600);
+            sut.saveOutputFlashMap(flashMap, request, response);
+
+            return "redirect:/recent";
         } else {
             LOGGER.error("Couldn't update a book as user to own book not found! Principal: {}", logMessageDetaint(principal));
             throw new NotAuthorisedException("User trying to update a book review not found in user data store!");

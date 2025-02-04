@@ -96,6 +96,7 @@
             </div>
 
             <script src="../static/js/bootstrap.bundle.min.js" th:src="@{/js/bootstrap.bundle.min.js}"></script>
+            <div th:if="${message}" th:insert="~{components/toast-messages :: cloudy-toast-messages}"></div>
         </div>
 
     </body>

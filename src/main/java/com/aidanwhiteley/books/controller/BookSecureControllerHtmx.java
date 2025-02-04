@@ -212,12 +212,10 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
             CookieFlashMapManager sut = new CookieFlashMapManager(
                     JacksonFlashMapListCodec.create(), CookieValueSigner.hmacSha1("someSecret"), "cloudy-message-flash");
             var flashMap = new FlashMap();
-            //flashMap.setTargetRequestPath("redirect:/recent");
             flashMap.put("message", "Book review updated successfully");
-            flashMap.startExpirationPeriod(3600);
             sut.saveOutputFlashMap(flashMap, request, response);
 
-            return "redirect:/recent";
+            return "redirect:/bookreview?bookId=" + bookForm.getBookId();
         } else {
             LOGGER.error("Couldn't update a book as user to own book not found! Principal: {}", logMessageDetaint(principal));
             throw new NotAuthorisedException("User trying to update a book review not found in user data store!");

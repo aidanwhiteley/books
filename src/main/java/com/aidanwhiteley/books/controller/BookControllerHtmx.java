@@ -92,16 +92,7 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
     }
 
     @GetMapping(value = "/recent")
-    public String recentlyReviewed(Model model, Principal principal, HttpServletRequest request, HttpServletResponse response) {
-        CookieFlashMapManager sut = new CookieFlashMapManager(
-                JacksonFlashMapListCodec.create(), CookieValueSigner.hmacSha1("someSecret"), "cloudy-message-flash");
-        FlashMap flashMap = sut.retrieveAndUpdate(request, response);
-
-        System.out.println("flashMap" + flashMap);
-        if (flashMap != null && flashMap.containsKey("message")) {
-            System.out.println("message seen");
-            model.addAttribute("message", flashMap.get("message"));
-        }
+    public String recentlyReviewed(Model model, Principal principal) {
 
         return recentlyReviewedByPage(1, model, principal, false);
     }
@@ -123,10 +114,18 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
     }
 
     @GetMapping(value = "/bookreview", params = {"bookId"})
-    public String bookReview(@RequestParam String bookId, Model model, Principal principal) {
+    public String bookReview(@RequestParam String bookId, Model model, Principal principal,
+                             HttpServletRequest request, HttpServletResponse response) {
         Book aBook = bookRepository.findById(bookId).orElseThrow(() -> new NotFoundException("Book id " + bookId + " not found"));
         model.addAttribute("book", aBook);
         addUserToModel(principal, model);
+
+        CookieFlashMapManager sut = new CookieFlashMapManager(
+                JacksonFlashMapListCodec.create(), CookieValueSigner.hmacSha1("someSecret"), "cloudy-message-flash");
+        FlashMap flashMap = sut.retrieveAndUpdate(request, response);
+        if (flashMap != null && flashMap.containsKey("message")) {
+            model.addAttribute("message", flashMap.get("message"));
+        }
 
         return "book-review.html";
     }

@@ -30,8 +30,8 @@ public class FlashMessages {
 
     public String retrieveFlashMessage(String key, HttpServletRequest request, HttpServletResponse response) {
         FlashMap flashMap = cookieFlashMapManager.retrieveAndUpdate(request, response);
-        if (flashMap != null && flashMap.containsKey("message")) {
-            return flashMap.get("message").toString();
+        if (flashMap != null && flashMap.containsKey(key)) {
+            return flashMap.get(key).toString();
         } else {
             return "";
         }

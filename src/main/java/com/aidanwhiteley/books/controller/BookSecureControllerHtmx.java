@@ -13,6 +13,7 @@ import com.aidanwhiteley.books.repository.dtos.BooksByReader;
 import com.aidanwhiteley.books.service.GoogleBookSearchService;
 import com.aidanwhiteley.books.service.StatsService;
 import com.aidanwhiteley.books.service.dtos.GoogleBookSearchResult;
+import com.aidanwhiteley.books.util.FlashMessages;
 import com.aidanwhiteley.books.util.JwtAuthenticationUtils;
 import com.innoq.spring.cookie.flash.CookieFlashMapManager;
 import com.innoq.spring.cookie.flash.codec.jackson.JacksonFlashMapListCodec;
@@ -50,6 +51,7 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
     private final StatsService statsService;
     private final GoogleBookSearchService googleBookSearchService;
     private final GoogleBooksDaoAsync googleBooksDaoAsync;
+    private final FlashMessages flashMessages;
 
     private static final String NO_VALUE_SELECTED = "NO_VALUE_SELECTED";
     private static final Logger LOGGER = LoggerFactory.getLogger(BookSecureControllerHtmx.class);
@@ -59,12 +61,13 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
 
     public BookSecureControllerHtmx(BookRepository bookRepository, JwtAuthenticationUtils jwtAuthenticationUtils,
                                     StatsService statsService, GoogleBookSearchService googleBookSearchService,
-                                    GoogleBooksDaoAsync googleBooksDaoAsync) {
+                                    GoogleBooksDaoAsync googleBooksDaoAsync, FlashMessages flashMessages) {
         this.bookRepository = bookRepository;
         this.authUtils = jwtAuthenticationUtils;
         this.statsService = statsService;
         this.googleBookSearchService = googleBookSearchService;
         this.googleBooksDaoAsync = googleBooksDaoAsync;
+        this.flashMessages = flashMessages;
     }
 
     @GetMapping(value = {"/createreview"})
@@ -110,6 +113,7 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
 
     @PostMapping(value = {"/createreview"})
     public String createBookReviewForm(@Valid @ModelAttribute BookForm bookForm, BindingResult bindingResult,
+                                       HttpServletRequest request, HttpServletResponse response,
                                        Model model, Principal principal) {
 
         if (bookForm.getRating().equals(NO_VALUE_SELECTED)) {
@@ -147,7 +151,9 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
                 googleBooksDaoAsync.updateBookWithGoogleBookDetails(aBook, bookForm.getGoogleBookId());
             }
 
-            return "redirect:/recent?created=y";
+            flashMessages.storeFlashMessage("message", "Book review added successfully", request, response);
+
+            return "redirect:/bookreview?bookId=" + aBook.getId();
         } else {
             LOGGER.error("Couldnt create a book as user to own book not found! Principal: {}", logMessageDetaint(principal));
             throw new NotAuthorisedException("User trying to create a book review not found in user data store!");
@@ -209,11 +215,7 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
                 googleBooksDaoAsync.updateBookWithGoogleBookDetails(aBook, bookForm.getGoogleBookId());
             }
 
-            CookieFlashMapManager sut = new CookieFlashMapManager(
-                    JacksonFlashMapListCodec.create(), CookieValueSigner.hmacSha1("someSecret"), "cloudy-message-flash");
-            var flashMap = new FlashMap();
-            flashMap.put("message", "Book review updated successfully");
-            sut.saveOutputFlashMap(flashMap, request, response);
+            flashMessages.storeFlashMessage("message", "Book review updated successfully", request, response);
 
             return "redirect:/bookreview?bookId=" + bookForm.getBookId();
         } else {

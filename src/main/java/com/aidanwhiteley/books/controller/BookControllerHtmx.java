@@ -11,6 +11,7 @@ import com.aidanwhiteley.books.repository.dtos.BooksByReader;
 import com.aidanwhiteley.books.service.GoogleBookSearchService;
 import com.aidanwhiteley.books.service.StatsService;
 import com.aidanwhiteley.books.service.dtos.SummaryStats;
+import com.aidanwhiteley.books.util.FlashMessages;
 import com.aidanwhiteley.books.util.JwtAuthenticationUtils;
 import com.innoq.spring.cookie.flash.CookieFlashMapManager;
 import com.innoq.spring.cookie.flash.codec.jackson.JacksonFlashMapListCodec;
@@ -43,6 +44,7 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
     private final StatsService statsService;
     private final GoogleBookSearchService googleBookSearchService;
     private final GoogleBooksDaoAsync googleBooksDaoAsync;
+    private final FlashMessages flashMessages;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BookControllerHtmx.class);
 
@@ -51,12 +53,13 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
 
     public BookControllerHtmx(BookRepository bookRepository, JwtAuthenticationUtils jwtAuthenticationUtils,
                               StatsService statsService, GoogleBookSearchService googleBookSearchService,
-                              GoogleBooksDaoAsync googleBooksDaoAsync) {
+                              GoogleBooksDaoAsync googleBooksDaoAsync, FlashMessages flashMessages) {
         this.bookRepository = bookRepository;
         this.authUtils = jwtAuthenticationUtils;
         this.statsService = statsService;
         this.googleBookSearchService = googleBookSearchService;
         this.googleBooksDaoAsync = googleBooksDaoAsync;
+        this.flashMessages = flashMessages;
     }
 
     @GetMapping(value = "/")
@@ -120,11 +123,9 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
         model.addAttribute("book", aBook);
         addUserToModel(principal, model);
 
-        CookieFlashMapManager sut = new CookieFlashMapManager(
-                JacksonFlashMapListCodec.create(), CookieValueSigner.hmacSha1("someSecret"), "cloudy-message-flash");
-        FlashMap flashMap = sut.retrieveAndUpdate(request, response);
-        if (flashMap != null && flashMap.containsKey("message")) {
-            model.addAttribute("message", flashMap.get("message"));
+        String aFlashMessage = flashMessages.retrieveFlashMessage("message", request, response);
+        if (!aFlashMessage.isBlank()) {
+            model.addAttribute("message", aFlashMessage);
         }
 
         return "book-review.html";

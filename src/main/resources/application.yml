@@ -168,6 +168,10 @@ books:
     domain: https://cloudybookclub.com/
     description: Updates from the Cloudy Bookclub application
 
+  flashmessages:
+    hmacKey: somesecretkey
+    cookieName: cloudy-message-flash
+
 springdoc:
   pathsToMatch: /api/**, /feeds/**
   version: "@project.version@"

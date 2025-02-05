@@ -28,7 +28,7 @@ public class Book extends Auditable {
     private static final Logger LOGGER = LoggerFactory.getLogger(Book.class);
 
     @Id
-    @Setter
+    @Setter(AccessLevel.PROTECTED)
     private String id;
 
     // Setter added for Mongo serialisation problems with Spring Boot 2.1.0

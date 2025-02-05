@@ -37,15 +37,9 @@ public class BookForm {
     private GoogleBookSearchResult googleBookSearchResult;
 
     public Book getBookFromBookForm() {
-        var book = new Book();
-        book.setTitle(title);
-        book.setAuthor(author);
-        book.setGenre(genre);
-        book.setSummary(summary);
-        book.setRating(Book.Rating.getRatingByString(rating));
-        book.setGoogleBookId(googleBookId);
-        book.setId(bookId);
-        return book;
+        return Book.builder().title(title).author(author).genre(genre).summary(summary).
+                rating(Book.Rating.getRatingByString(rating)).googleBookId(googleBookId).id(bookId).
+                build();
     }
 
     public static BookForm getBookFormFromBook(Book book) {

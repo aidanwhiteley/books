@@ -37,9 +37,16 @@ public class BookForm {
     private GoogleBookSearchResult googleBookSearchResult;
 
     public Book getBookFromBookForm() {
-        return Book.builder().title(title).author(author).genre(genre).summary(summary).
-                rating(Book.Rating.getRatingByString(rating)).googleBookId(googleBookId).id(bookId).
-                build();
+        var buildingBook =  Book.builder().title(title).author(author).genre(genre).summary(summary).
+                rating(Book.Rating.getRatingByString(rating)).googleBookId(googleBookId);
+
+        // Its important that we don't set an empty string for the id of the Book as that
+        // could result inserting a Book with an id of "" rather than creating a new entry.
+        if (bookId == null || bookId.isBlank()) {
+            return buildingBook.build();
+        } else {
+            return buildingBook.id(bookId).build();
+        }
     }
 
     public static BookForm getBookFormFromBook(Book book) {

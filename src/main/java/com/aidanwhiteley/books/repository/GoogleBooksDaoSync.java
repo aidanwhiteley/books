@@ -1,7 +1,11 @@
 package com.aidanwhiteley.books.repository;
 
+import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.googlebooks.BookSearchResult;
 import com.aidanwhiteley.books.domain.googlebooks.Item;
+import com.aidanwhiteley.books.domain.googlebooks.VolumeInfo;
+import com.aidanwhiteley.books.util.HtmlSanitiserUtils;
+import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -11,7 +15,6 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import jakarta.annotation.PostConstruct;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
@@ -22,9 +25,11 @@ public class GoogleBooksDaoSync {
     private static final Logger LOGGER = LoggerFactory.getLogger(GoogleBooksDaoSync.class);
     private final GoogleBooksApiConfig googleBooksApiConfig;
     private RestTemplate googleBooksRestTemplate;
+    private final BookRepository bookRepository;
 
-    public GoogleBooksDaoSync(GoogleBooksApiConfig googleBooksApiConfig) {
+    public GoogleBooksDaoSync(GoogleBooksApiConfig googleBooksApiConfig, BookRepository bookRepository) {
         this.googleBooksApiConfig = googleBooksApiConfig;
+        this.bookRepository = bookRepository;
     }
 
     @PostConstruct
@@ -75,6 +80,22 @@ public class GoogleBooksDaoSync {
             throw e;
         }
     }
+
+    public void updateBookWithGoogleBookDetails(Book book, String googleBookId) {
+        Item item = searchGoogleBooksByGoogleBookId(googleBookId);
+
+        // Google Books API data _should_ be safe from CSRF attacks but lets make sure before storing the
+        // description text in the database!
+        VolumeInfo vlInfo = item.getVolumeInfo();
+        if (vlInfo != null && vlInfo.getDescription() != null) {
+            vlInfo.setDescription(HtmlSanitiserUtils.allowBasicTextFormattingOnly(vlInfo.getDescription()));
+            item.setVolumeInfo(vlInfo);
+        }
+
+        bookRepository.addGoogleBookItemToBook(book.getId(), item);
+        LOGGER.debug("Google Books details added to Mongo for {}", book.getId());
+    }
+
 
     private RestTemplate buildRestTemplate(RestTemplateBuilder builder) {
 

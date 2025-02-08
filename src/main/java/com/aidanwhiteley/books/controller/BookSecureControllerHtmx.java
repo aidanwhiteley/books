@@ -6,7 +6,7 @@ import com.aidanwhiteley.books.controller.exceptions.NotFoundException;
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.repository.BookRepository;
-import com.aidanwhiteley.books.repository.GoogleBooksDaoAsync;
+import com.aidanwhiteley.books.repository.GoogleBooksDaoSync;
 import com.aidanwhiteley.books.repository.dtos.BooksByAuthor;
 import com.aidanwhiteley.books.repository.dtos.BooksByGenre;
 import com.aidanwhiteley.books.repository.dtos.BooksByReader;
@@ -15,9 +15,6 @@ import com.aidanwhiteley.books.service.StatsService;
 import com.aidanwhiteley.books.service.dtos.GoogleBookSearchResult;
 import com.aidanwhiteley.books.util.FlashMessages;
 import com.aidanwhiteley.books.util.JwtAuthenticationUtils;
-import com.innoq.spring.cookie.flash.CookieFlashMapManager;
-import com.innoq.spring.cookie.flash.codec.jackson.JacksonFlashMapListCodec;
-import com.innoq.spring.cookie.security.CookieValueSigner;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -32,8 +29,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.FlashMap;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.util.ArrayList;
@@ -50,7 +45,7 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
     private final JwtAuthenticationUtils authUtils;
     private final StatsService statsService;
     private final GoogleBookSearchService googleBookSearchService;
-    private final GoogleBooksDaoAsync googleBooksDaoAsync;
+    private final GoogleBooksDaoSync googleBooksDaoSync;
     private final FlashMessages flashMessages;
 
     private static final String NO_VALUE_SELECTED = "NO_VALUE_SELECTED";
@@ -61,12 +56,12 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
 
     public BookSecureControllerHtmx(BookRepository bookRepository, JwtAuthenticationUtils jwtAuthenticationUtils,
                                     StatsService statsService, GoogleBookSearchService googleBookSearchService,
-                                    GoogleBooksDaoAsync googleBooksDaoAsync, FlashMessages flashMessages) {
+                                    GoogleBooksDaoSync googleBooksDaoSync, FlashMessages flashMessages) {
         this.bookRepository = bookRepository;
         this.authUtils = jwtAuthenticationUtils;
         this.statsService = statsService;
         this.googleBookSearchService = googleBookSearchService;
-        this.googleBooksDaoAsync = googleBooksDaoAsync;
+        this.googleBooksDaoSync = googleBooksDaoSync;
         this.flashMessages = flashMessages;
     }
 
@@ -145,10 +140,10 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
 
             Book aBook = bookRepository.insert(bookForm.getBookFromBookForm());
 
-            // If there were Google Book details specified, call an async method to
-            // go and get the full details from Google and then update the Mongo document for the book
+            // If there were Google Book details specified, go and get the full details from Google
+            // and then update the Mongo document for the book
             if (bookForm.getGoogleBookId() != null && bookForm.getGoogleBookId().length() > 0) {
-                googleBooksDaoAsync.updateBookWithGoogleBookDetails(aBook, bookForm.getGoogleBookId());
+                googleBooksDaoSync.updateBookWithGoogleBookDetails(aBook, bookForm.getGoogleBookId());
             }
 
             flashMessages.storeFlashMessage("message", "Book review added successfully", request, response);
@@ -209,10 +204,10 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
                 throw new NotAuthorisedException("User did not have the permission required to update a book review");
             }
 
-            // If there were Google Book details specified, call an async method to
-            // go and get the full details from Google and then update the Mongo document for the book
+            // If there were Google Book details specified, go and get the full details from Google
+            // and then update the Mongo document for the book
             if (bookForm.getGoogleBookId() != null && bookForm.getGoogleBookId().length() > 0) {
-                googleBooksDaoAsync.updateBookWithGoogleBookDetails(aBook, bookForm.getGoogleBookId());
+                googleBooksDaoSync.updateBookWithGoogleBookDetails(aBook, bookForm.getGoogleBookId());
             }
 
             flashMessages.storeFlashMessage("message", "Book review updated successfully", request, response);

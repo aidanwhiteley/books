@@ -9,6 +9,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.FlashMap;
 
+/**
+ * A component to support the display of "flash" messages (i.e. messages displayed on the next http request only).
+ * It uses the com.innoq.spring-cookie package to override the Spring built in support for flash messages
+ * such that the flash message is not stored in an HTTP Session but in a cookie. We want this as this
+ * microservice doesn't make any use of an HTTP Session.
+ */
 @Component
 public class FlashMessages {
 

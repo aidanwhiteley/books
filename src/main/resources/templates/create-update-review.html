@@ -79,10 +79,11 @@
                 </div>
 
                 <input type="hidden" th:value="*{bookId}" name="bookId" id="bookId">
-                <input type="hidden" th:value="*{googleBookId}" name="googleBookId" id="googleBookId">
-                <input type="hidden" th:value="${index}" name="index" id="index">
 
                 <div id="googleBookCandidates" th:fragment="cloudy-google-book-candidates" class="row mt-5">
+
+                    <input type="hidden" th:value="${googleBookId}" name="googleBookId" id="googleBookId">
+                    <input type="hidden" th:value="${index}" name="index" id="index">
 
                     <div th:if="${(googleBookSearchResult != null) and (googleBookSearchResult.item == null)}">
                         <div class="alert alert-warning" role="alert">

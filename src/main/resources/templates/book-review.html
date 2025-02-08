@@ -75,7 +75,8 @@
                         hx-target="#detail" hx-target-error="#detail" hx-trigger="click"
                         th:hx-delete="@{/deletereview/{id}(id = ${book.id})}" type="submit">
                     Delete this book review
-                    <img class="htmx-indicator" height="20" src="/images/circles.svg" width="20">
+                    <img class="htmx-indicator" height="20" src="/images/circles.svg" width="20"
+                        alt="Waiting...">
                 </button>
 
             </div>

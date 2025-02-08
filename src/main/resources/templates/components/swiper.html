@@ -60,13 +60,13 @@
 
         <div aria-label="Book rating selection button group" class="btn-group" role="group">
             <input autocomplete="off" class="btn-check" hx-get="/getBooksByRating?rating=great"
-                   hx-on::after-request="initialiseSwiper()" hx-swap="outerHTML"
+                   hx-on-after-request="initialiseSwiper()" hx-swap="outerHTML"
                    hx-target="#swiper-slides" hx-target-error="#detail" id="greatBooks"
                    name="bookRating" th:checked="${rating=='great'}" type="radio">
             <label class="btn btn-outline-primary" for="greatBooks">Great books</label>
 
             <input autocomplete="off" class="btn-check" hx-get="/getBooksByRating?rating=good"
-                   hx-on::after-request="initialiseSwiper()" hx-swap="outerHTML"
+                   hx-on-after-request="initialiseSwiper()" hx-swap="outerHTML"
                    hx-target="#swiper-slides" hx-target-error="#detail" id="goodBooks"
                    name="bookRating" th:checked="${rating=='good'}" type="radio">
             <label class="btn btn-outline-primary" for="goodBooks">Good books</label>

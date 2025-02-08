@@ -100,12 +100,24 @@ public class WebSecurityConfiguration {
         this.userService = userService;
     }
 
+    public static ObjectMapper getAuthRequestJsonMapper() {
+        var mapper = new Jackson2ObjectMapperBuilder().autoDetectFields(true)
+                .autoDetectGettersSetters(true)
+                .modules(new OAuth2ClientJackson2Module())
+                .visibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY)
+                .build();
+        // See https://github.com/spring-projects/spring-security/issues/4370
+        mapper.registerModule(new CoreJackson2Module());
+
+        return mapper;
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         // Getting required server side config for enabling Angular to send X-CSRF-TOKEN request header across
         // CORS domains has currently defeated me.
-        // Client side this wouldnt work out of the box with Angular either but the following library would
+        // Client side this wouldn't work out of the box with Angular either but the following library would
         // probably help if I could get the server side config right.
         // https://github.com/pasupulaphani/angular-csrf-cross-domain
         // So if using CORS, there's no XSRF protection!
@@ -152,8 +164,8 @@ public class WebSecurityConfiguration {
                         .authorizationEndpoint(endpoint -> endpoint.baseUri("/login")
                                 .authorizationRequestRepository(cookieBasedAuthorizationRequestRepository()))
                         .successHandler(new Oauth2AuthenticationSuccessHandler()))
-                .formLogin(login -> login.disable())
-                .httpBasic(basic -> basic.disable())
+                .formLogin(AbstractHttpConfigurer::disable)
+                .httpBasic(AbstractHttpConfigurer::disable)
                 .headers(headers -> headers.referrerPolicy(policy -> policy.policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN)));
 
         return http.build();
@@ -163,36 +175,6 @@ public class WebSecurityConfiguration {
     @Bean
     protected AuthenticationEntryPoint forbiddenEntryPoint() {
         return new HttpStatusEntryPoint(FORBIDDEN);
-    }
-
-    /**
-     * This is where we trigger the work to store local details for the user after they have successfully
-     * authenticated with the OAuth2 authentication provider.
-     */
-    class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
-        @Override
-        public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-                                            Authentication authentication) throws IOException, ServletException {
-
-            OAuth2AuthenticationToken auth2 = (OAuth2AuthenticationToken) authentication;
-            User user = userService.createOrUpdateUser(auth2);
-            jwtAuthenticationService.setAuthenticationData(response, user);
-            super.setDefaultTargetUrl(postLogonUrl);
-            super.onAuthenticationSuccess(request, response, authentication);
-        }
-    }
-
-
-    public static ObjectMapper getAuthRequestJsonMapper() {
-        var mapper = new Jackson2ObjectMapperBuilder().autoDetectFields(true)
-                .autoDetectGettersSetters(true)
-                .modules(new OAuth2ClientJackson2Module())
-                .visibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY)
-                .build();
-        // See https://github.com/spring-projects/spring-security/issues/4370
-        mapper.registerModule(new CoreJackson2Module());
-
-        return mapper;
     }
 
     @Bean
@@ -223,5 +205,22 @@ public class WebSecurityConfiguration {
                 }
             }
         };
+    }
+
+    /**
+     * This is where we trigger the work to store local details for the user after they have successfully
+     * authenticated with the OAuth2 authentication provider.
+     */
+    class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+        @Override
+        public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
+                                            Authentication authentication) throws IOException, ServletException {
+
+            OAuth2AuthenticationToken auth2 = (OAuth2AuthenticationToken) authentication;
+            User user = userService.createOrUpdateUser(auth2);
+            jwtAuthenticationService.setAuthenticationData(response, user);
+            super.setDefaultTargetUrl(postLogonUrl);
+            super.onAuthenticationSuccess(request, response, authentication);
+        }
     }
 }

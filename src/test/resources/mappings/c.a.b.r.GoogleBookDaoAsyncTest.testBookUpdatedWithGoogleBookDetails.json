@@ -1,13 +1,13 @@
 {
-  "request" : {
-    "url" : "/books/v1/volumes/oMVIzzKjJCcC/?country=GB",
-    "method" : "GET"
+  "request": {
+    "url": "/books/v1/volumes/oMVIzzKjJCcC/?country=GB",
+    "method": "GET"
   },
-  "response" : {
-    "status" : 200,
-    "bodyFileName" : "retrieveOneBookFromGoogleBookApi1.json",
-    "headers" : {
-      "Content-Type" : "application/json"
+  "response": {
+    "status": 200,
+    "bodyFileName": "retrieveOneBookFromGoogleBookApi1.json",
+    "headers": {
+      "Content-Type": "application/json"
     }
   }
 }

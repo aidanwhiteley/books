@@ -8,12 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.context.annotation.Profile;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Profile({"dev-mongo-java-server", "dev-mongo-java-server-no-auth", "dev-mongodb-no-auth", "dev-mongodb", "ci"})
-@AutoConfigureWireMock(port=0, httpsPort = 0)
+@AutoConfigureWireMock(port = 0, httpsPort = 0)
 public class GoogleBookSearchServiceTest extends IntegrationTest {
 
     @Autowired
@@ -28,7 +26,7 @@ public class GoogleBookSearchServiceTest extends IntegrationTest {
     }
 
     @Test
-    void testGetGoogleBookDataInCache() throws InterruptedException {
+    void testGetGoogleBookDataInCache() {
         GoogleBookSearchResult result = googleBookSearchService.getGoogleBooks("Design Patterns", "Gamma", 0);
         Item item = result.getItem();
         assertNotNull(item);

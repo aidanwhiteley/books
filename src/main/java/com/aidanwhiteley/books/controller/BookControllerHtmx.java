@@ -13,9 +13,6 @@ import com.aidanwhiteley.books.service.StatsService;
 import com.aidanwhiteley.books.service.dtos.SummaryStats;
 import com.aidanwhiteley.books.util.FlashMessages;
 import com.aidanwhiteley.books.util.JwtAuthenticationUtils;
-import com.innoq.spring.cookie.flash.CookieFlashMapManager;
-import com.innoq.spring.cookie.flash.codec.jackson.JacksonFlashMapListCodec;
-import com.innoq.spring.cookie.security.CookieValueSigner;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
@@ -28,26 +25,25 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.FlashMap;
-import org.springframework.web.servlet.support.RequestContextUtils;
 
 import java.security.Principal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 import static com.aidanwhiteley.books.domain.Book.Rating.GREAT;
 
 @Controller
 public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(BookControllerHtmx.class);
     private final BookRepository bookRepository;
     private final JwtAuthenticationUtils authUtils;
     private final StatsService statsService;
     private final GoogleBookSearchService googleBookSearchService;
     private final GoogleBooksDaoAsync googleBooksDaoAsync;
     private final FlashMessages flashMessages;
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(BookControllerHtmx.class);
-
     @Value("${books.users.default.page.size}")
     private int defaultPageSize;
 
@@ -60,6 +56,14 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
         this.googleBookSearchService = googleBookSearchService;
         this.googleBooksDaoAsync = googleBooksDaoAsync;
         this.flashMessages = flashMessages;
+    }
+
+    protected static List<Book.Rating> getRatings(String prefix) {
+        List<Book.Rating> ratings = Arrays.stream(Book.Rating.values()).toList();
+        if (!prefix.isEmpty()) {
+            ratings = ratings.stream().filter(s -> s.name().startsWith(prefix)).toList();
+        }
+        return ratings.reversed();
     }
 
     @GetMapping(value = "/")
@@ -102,7 +106,7 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
 
     @GetMapping(value = "/recent", params = {"pagenum"})
     public String recentlyReviewedByPage(@RequestParam int pagenum, Model model, Principal principal,
-                                         @RequestHeader(value="HX-Request", required = false) boolean hxRequest) {
+                                         @RequestHeader(value = "HX-Request", required = false) boolean hxRequest) {
         PageRequest pageObj = PageRequest.of(pagenum - 1, 7);
         Page<Book> page = bookRepository.findAllByOrderByCreatedDateTimeDesc(pageObj);
         model.addAttribute("pageOfBooks", page);
@@ -145,7 +149,7 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
 
     @GetMapping(value = {"/find"}, params = {"rating", "pagenum"})
     public String findByRating(Model model, Principal principal, @RequestParam String rating, @RequestParam int pagenum,
-                               @RequestHeader(value="HX-Request", required = false) boolean hxRequest) {
+                               @RequestHeader(value = "HX-Request", required = false) boolean hxRequest) {
 
         if (null == rating || rating.trim().isEmpty()) {
             throw new IllegalArgumentException("Rating parameter cannot be empty");
@@ -180,7 +184,7 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
 
     @GetMapping(value = {"/find"}, params = {"author", "pagenum"})
     public String findByAuthor(Model model, Principal principal, @RequestParam String author, @RequestParam int pagenum,
-                               @RequestHeader(value="HX-Request", required = false) boolean hxRequest) {
+                               @RequestHeader(value = "HX-Request", required = false) boolean hxRequest) {
 
         if (author == null || author.trim().isEmpty()) {
             throw new IllegalArgumentException("Author parameter cannot be empty");
@@ -205,7 +209,7 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
 
     @GetMapping(value = {"/find"}, params = {"genre", "pagenum"})
     public String findByGenre(Model model, Principal principal, @RequestParam String genre, @RequestParam int pagenum,
-                               @RequestHeader(value="HX-Request", required = false) boolean hxRequest) {
+                              @RequestHeader(value = "HX-Request", required = false) boolean hxRequest) {
 
         if (genre == null || genre.trim().isEmpty()) {
             throw new IllegalArgumentException("Genre parameter cannot be empty");
@@ -239,7 +243,7 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
 
     @GetMapping(value = {"/search"}, params = {"term", "pagenum"})
     public String findBySearch(Model model, Principal principal, @RequestParam String term, @RequestParam int pagenum,
-                                   @RequestHeader(value="HX-Request", required = false) boolean hxRequest) {
+                               @RequestHeader(value = "HX-Request", required = false) boolean hxRequest) {
 
         if (null == term || term.trim().isEmpty()) {
             throw new IllegalArgumentException("Search query string cannot be empty");
@@ -249,7 +253,7 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
             throw new IllegalArgumentException("Cannot request a page less than 1");
         }
 
-        PageRequest pageObj = PageRequest.of(pagenum - 1    , defaultPageSize);
+        PageRequest pageObj = PageRequest.of(pagenum - 1, defaultPageSize);
         Page<Book> books = bookRepository.searchForBooks(term, pageObj);
 
         model.addAttribute("pageOfBooks", books);
@@ -299,14 +303,6 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
         }
     }
 
-    protected static List<Book.Rating> getRatings(String prefix) {
-        List<Book.Rating> ratings = Arrays.stream(Book.Rating.values()).toList();
-        if (!prefix.isEmpty()) {
-            ratings = ratings.stream().filter(s -> s.name().startsWith(prefix)).toList();
-        }
-        return ratings.reversed();
-    }
-
     private List<BooksByAuthor> getAuthors() {
         return bookRepository.countBooksByAuthor();
     }
@@ -317,11 +313,11 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
 
     private List<Book> getBooksWithRequiredImages(Page<Book> page) {
         return page.getContent().stream().filter(b ->
-                        (b.getGoogleBookId() != null &&
-                                !b.getGoogleBookId().isBlank() &&
-                                (b.getGoogleBookDetails().getVolumeInfo().getImageLinks().getThumbnail() != null) &&
-                                !b.getGoogleBookDetails().getVolumeInfo().getImageLinks().getThumbnail().isBlank()
-                        )).toList();
+                (b.getGoogleBookId() != null &&
+                        !b.getGoogleBookId().isBlank() &&
+                        (b.getGoogleBookDetails().getVolumeInfo().getImageLinks().getThumbnail() != null) &&
+                        !b.getGoogleBookDetails().getVolumeInfo().getImageLinks().getThumbnail().isBlank()
+                )).toList();
     }
 
     private List<BooksByReader> getReviewers(Principal principal) {

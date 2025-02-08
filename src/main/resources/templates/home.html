@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html th:replace="~{layout :: layout(~{::title}, ~{::#detail}, true)}"
       xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <title>Cloudy Book Club - Home</title>
-        <meta charset="utf-8">
-        <link rel="stylesheet" href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
-        <link rel="stylesheet" href="../static/css/books-app.css" th:href="@{/css/books-app.css}">
-    </head>
-    <body>
+<head>
+    <title>Cloudy Book Club - Home</title>
+    <meta charset="utf-8">
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link href="../static/css/books-app.css" rel="stylesheet" th:href="@{/css/books-app.css}">
+</head>
+<body>
 
-        <div id="detail" th:replace="~{components/swiper :: cloudy-swiper}">
-            <p>The Swiper based <a class="ms-1 me-1" href="./components/swiper.html">carousel</a> will go here.</p>
-        </div>
+<div id="detail" th:replace="~{components/swiper :: cloudy-swiper}">
+    <p>The Swiper based <a class="ms-1 me-1" href="./components/swiper.html">carousel</a> will go here.</p>
+</div>
 
-    </body>
+</body>
 </html>

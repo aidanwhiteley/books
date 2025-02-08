@@ -23,7 +23,7 @@ public class FlashMessages {
     public FlashMessages(@Value("${books.flashmessages.hmacKey}") String flashMessagesHmacKey,
                          @Value("${books.flashmessages.cookieName}") String flashMessagesCookieName) {
         this.cookieFlashMapManager = new CookieFlashMapManager(
-            JacksonFlashMapListCodec.create(),
+                JacksonFlashMapListCodec.create(),
                 CookieValueSigner.hmacSha1(flashMessagesHmacKey),
                 flashMessagesCookieName);
     }

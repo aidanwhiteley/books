@@ -7,6 +7,8 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Objects;
+
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class OpenApiConfigTest extends IntegrationTest {
@@ -19,6 +21,6 @@ public class OpenApiConfigTest extends IntegrationTest {
         ResponseEntity<String> response = testRestTemplate.exchange("/swagger-ui/index.html", HttpMethod.GET,
                 null, String.class);
 
-        assertTrue(response.getBody().contains("swagger"));
+        assertTrue(Objects.requireNonNull(response.getBody()).contains("swagger"));
     }
 }

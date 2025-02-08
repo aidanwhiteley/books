@@ -24,8 +24,8 @@ public class GoogleBooksDaoSync {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GoogleBooksDaoSync.class);
     private final GoogleBooksApiConfig googleBooksApiConfig;
-    private RestTemplate googleBooksRestTemplate;
     private final BookRepository bookRepository;
+    private RestTemplate googleBooksRestTemplate;
 
     public GoogleBooksDaoSync(GoogleBooksApiConfig googleBooksApiConfig, BookRepository bookRepository) {
         this.googleBooksApiConfig = googleBooksApiConfig;
@@ -45,7 +45,7 @@ public class GoogleBooksDaoSync {
         String encodedTitle = URLEncoder.encode(title, StandardCharsets.UTF_8);
         String encodedAuthor = URLEncoder.encode(author, StandardCharsets.UTF_8);
 
-        googleBooksRestTemplate.getMessageConverters().add(0,
+        googleBooksRestTemplate.getMessageConverters().addFirst(
                 new StringHttpMessageConverter(StandardCharsets.UTF_8));
 
         final String searchString = googleBooksApiConfig.getSearchUrl() + "+intitle:" + encodedTitle +
@@ -56,7 +56,7 @@ public class GoogleBooksDaoSync {
             LOGGER.info("Google Books API called with API called: {}", searchString);
         }
 
-        BookSearchResult result =  googleBooksRestTemplate.getForObject(searchString, BookSearchResult.class);
+        BookSearchResult result = googleBooksRestTemplate.getForObject(searchString, BookSearchResult.class);
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Result of Google Books API call: {}", result);
@@ -67,7 +67,7 @@ public class GoogleBooksDaoSync {
 
     public Item searchGoogleBooksByGoogleBookId(String id) {
 
-        googleBooksRestTemplate.getMessageConverters().add(0, new StringHttpMessageConverter(StandardCharsets.UTF_8));
+        googleBooksRestTemplate.getMessageConverters().addFirst(new StringHttpMessageConverter(StandardCharsets.UTF_8));
         try {
             return googleBooksRestTemplate.getForObject(googleBooksApiConfig.getGetByIdUrl() + id + "/?" +
                     googleBooksApiConfig.getCountryCode(), Item.class);

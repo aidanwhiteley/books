@@ -16,7 +16,6 @@ import java.util.List;
 
 import static com.aidanwhiteley.books.domain.User.Role.*;
 
-@SuppressWarnings("DefaultAnnotationParam")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -139,6 +138,7 @@ public class Book extends Auditable {
         }
     }
 
+    @Getter
     public enum Rating {
         // Note Jackson default deserialisation is 0 based - changing values
         // below would mean that that default serialisation / deserialisation
@@ -160,8 +160,5 @@ public class Book extends Auditable {
             return null;
         }
 
-        public int getRatingLevel() {
-            return this.ratingLevel;
-        }
     }
 }

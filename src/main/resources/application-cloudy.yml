@@ -74,7 +74,7 @@ books:
   google:
     books:
       api:
-        countryCode:  ${CLOUDY_LANG_CODE:langRestrict=en}
+        countryCode: ${CLOUDY_LANG_CODE:langRestrict=en}
 
   users:
     default:

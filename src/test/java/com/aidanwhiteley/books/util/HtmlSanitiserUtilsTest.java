@@ -7,17 +7,23 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class HtmlSanitiserUtilsTest {
 
-    private final String TEST_STRING_1 =
-            """
+
+    @Test
+    void testTagsExpectedInGoogleBookDescriptionsAllowed() {
+        String TEST_STRING_1 = """
                 <p>Here is some text in a para</p>
                 <p><b>Bold text</b></p>
                 <p>Text with <em>em</em> and <i>i</i></p>
                 <p>Text with a <br>
                   line break</p>
                 """;
+        String sanitised = HtmlSanitiserUtils.allowBasicTextFormattingOnly(TEST_STRING_1);
+        assertEquals(TEST_STRING_1.trim(), sanitised.trim());
+    }
 
-    private final String TEST_STRING_2 =
-            """
+    @Test
+    void testTagsNotExpectedInGoogleBookDescriptionsAllowed() {
+        String TEST_STRING_2 = """
                 <p>Here is some text in a para</p>
                 <p><b>Bold text</b></p>
                 <p>Text with <em>em</em> and <i>i</i></p>
@@ -27,21 +33,6 @@ class HtmlSanitiserUtilsTest {
                 <p>&#60&#115&#99&#114&#105&#112&#116&#62&#97&#108&#101&#114&#116&#40&#49&#41&#60&#47&#115&#99&#114&#105&#112&#116&#62</p>
                   line break</p>
                 """;
-
-    private final String TEST_STRING_3 =
-            """
-            <p>No tags allowed</p>
-            """;
-
-
-    @Test
-    void testTagsExpectedInGoogleBookDescriptionsAllowed() {
-        String sanitised = HtmlSanitiserUtils.allowBasicTextFormattingOnly(TEST_STRING_1);
-        assertEquals(TEST_STRING_1.trim(), sanitised.trim());
-    }
-
-    @Test
-    void testTagsNotExpectedInGoogleBookDescriptionsAllowed() {
         String sanitised = HtmlSanitiserUtils.allowBasicTextFormattingOnly(TEST_STRING_2);
         assertFalse(sanitised.contains("<a"));
         assertFalse(sanitised.contains("onmouseover"));
@@ -51,6 +42,9 @@ class HtmlSanitiserUtilsTest {
 
     @Test
     void testTNoTagsAllowed() {
+        String TEST_STRING_3 = """
+                <p>No tags allowed</p>
+                """;
         String sanitised = HtmlSanitiserUtils.allowNoHtmlTags(TEST_STRING_3);
         assertEquals("No tags allowed", sanitised.trim());
     }

@@ -9,7 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,19 +35,6 @@ public class BookForm {
     private String googleBookId;
     private GoogleBookSearchResult googleBookSearchResult;
 
-    public Book getBookFromBookForm() {
-        var buildingBook =  Book.builder().title(title).author(author).genre(genre).summary(summary).
-                rating(Book.Rating.getRatingByString(rating)).googleBookId(googleBookId);
-
-        // Its important that we don't set an empty string for the id of the Book as that
-        // could result inserting a Book with an id of "" rather than creating a new entry.
-        if (bookId == null || bookId.isBlank()) {
-            return buildingBook.build();
-        } else {
-            return buildingBook.id(bookId).build();
-        }
-    }
-
     public static BookForm getBookFormFromBook(Book book) {
         var bookForm = new BookForm();
         bookForm.setBookId(book.getId());
@@ -65,5 +51,18 @@ public class BookForm {
         bookForm.setGoogleBookSearchResult(googleBookSearchResult);
 
         return bookForm;
+    }
+
+    public Book getBookFromBookForm() {
+        var buildingBook = Book.builder().title(title).author(author).genre(genre).summary(summary).
+                rating(Book.Rating.getRatingByString(rating)).googleBookId(googleBookId);
+
+        // Its important that we don't set an empty string for the id of the Book as that
+        // could result inserting a Book with an id of "" rather than creating a new entry.
+        if (bookId == null || bookId.isBlank()) {
+            return buildingBook.build();
+        } else {
+            return buildingBook.id(bookId).build();
+        }
     }
 }

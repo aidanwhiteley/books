@@ -44,9 +44,8 @@ public class GoogleBookSearchService {
     }
 
 
-
     private GoogleBookSearchResult getGoogleBookSearchResultFromCache(String title, String author, int index,
-                                                                             List<GoogleBookSearch> googleBookSearchList) {
+                                                                      List<GoogleBookSearch> googleBookSearchList) {
         LOGGER.debug("Using Google books search cache for title {}, author {} and index {} ",
                 title, author, index);
         // A unique index means that there should only be one entry
@@ -67,7 +66,7 @@ public class GoogleBookSearchService {
         }
 
         BookSearchResult result = googleBooksDaoSync.searchGoogBooksByTitleAndAuthor(title, author);
-        if (result.getItems().size() > 0) {
+        if (!result.getItems().isEmpty()) {
             LOGGER.debug("Inserting an entry into the Google books search cache for title {}, author {} and index {} ",
                     title, author, index);
             googleBookSearchRepository.insert(

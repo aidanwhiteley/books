@@ -3,7 +3,6 @@ package com.aidanwhiteley.books.controller;
 import com.aidanwhiteley.books.controller.exceptions.JwtAuthAuzException;
 import com.aidanwhiteley.books.controller.exceptions.NotAuthorisedException;
 import com.aidanwhiteley.books.controller.exceptions.NotFoundException;
-import com.aidanwhiteley.books.domain.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.UncategorizedMongoDbException;
@@ -19,11 +18,10 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Optional;
 
 public interface BookControllerHtmxExceptionHandling {
 
-    public static final Logger LOGGER = LoggerFactory.getLogger(BookControllerHtmxExceptionHandling.class);
+    Logger LOGGER = LoggerFactory.getLogger(BookControllerHtmxExceptionHandling.class);
 
     // The REST API part of this application registers a global @RestControllerAdvice to centrally handle exceptions
     // and they generally return JSON to the client.
@@ -31,8 +29,8 @@ public interface BookControllerHtmxExceptionHandling {
     // so that we can return HTML views for any errors from this controller.
 
     @ExceptionHandler(UncategorizedMongoDbException.class)
-    public default String handleInMemoryMongoFullTextSearchException(UncategorizedMongoDbException ex, Model model,
-                                                             Principal principal, WebRequest request) {
+    default String handleInMemoryMongoFullTextSearchException(UncategorizedMongoDbException ex, Model model,
+                                                              Principal principal, WebRequest request) {
         LOGGER.error("An UncategorizedMongoDbException occurred. This is normally expected when running in " +
                 "development mode when trying to use the Search as full text indexes aren't supported by " +
                 "the in memory fake Mongo. However, as it is just possible that it could happen for other " +
@@ -45,7 +43,7 @@ public interface BookControllerHtmxExceptionHandling {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({IllegalArgumentException.class, NumberFormatException.class, MethodArgumentTypeMismatchException.class,
             MethodArgumentNotValidException.class})
-    public default String handleIllegalArgumentException(Exception ex, Model model, Principal principal, WebRequest request) {
+    default String handleIllegalArgumentException(Exception ex, Model model, Principal principal, WebRequest request) {
         LOGGER.error("An unacceptable input was received. Either this is an application error or someone manually sending incorrect parameters", ex);
         String description = "Sorry - the values sent to the application are not acceptable.";
         return addAttributesToErrorPage(description, "e-400", model, principal, request);
@@ -53,7 +51,7 @@ public interface BookControllerHtmxExceptionHandling {
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(NotFoundException.class)
-    public default String handleNotFoundException(NotFoundException ex, Model model, Principal principal, WebRequest request) {
+    default String handleNotFoundException(NotFoundException ex, Model model, Principal principal, WebRequest request) {
         LOGGER.error("The application couldn't find the resource requested - {}", ex.getMessage(), ex);
         String description = "Sorry - the application could not find what you wanted";
         return addAttributesToErrorPage(description, "e-404", model, principal, request);
@@ -61,7 +59,7 @@ public interface BookControllerHtmxExceptionHandling {
 
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(NotAuthorisedException.class)
-    public default String handleNotAuthorisedException(NotAuthorisedException ex, Model model, Principal principal, WebRequest request) {
+    default String handleNotAuthorisedException(NotAuthorisedException ex, Model model, Principal principal, WebRequest request) {
         LOGGER.error("An attempt was made to access a protected resource without the required authorisation - {}", ex.getMessage(), ex);
         String description = "Sorry - you are not authorised to access this functionality";
         return addAttributesToErrorPage(description, "e-401", model, principal, request);
@@ -69,7 +67,7 @@ public interface BookControllerHtmxExceptionHandling {
 
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(JwtAuthAuzException.class)
-    public default String handleJwtAuthAuzException(JwtAuthAuzException ex, Model model, Principal principal, WebRequest request) {
+    default String handleJwtAuthAuzException(JwtAuthAuzException ex, Model model, Principal principal, WebRequest request) {
         LOGGER.error("There was a problem with the JWT token process - {}", ex.getMessage(), ex);
         String description = "Sorry - there was problem with processing your logon token";
         return addAttributesToErrorPage(description, "e-401", model, principal, request);
@@ -77,7 +75,7 @@ public interface BookControllerHtmxExceptionHandling {
 
     @ResponseStatus(HttpStatus.FORBIDDEN)
     @ExceptionHandler(AccessDeniedException.class)
-    public default String handleAccessDeniedException(AccessDeniedException ex, Model model, Principal principal, WebRequest request) {
+    default String handleAccessDeniedException(AccessDeniedException ex, Model model, Principal principal, WebRequest request) {
         LOGGER.error("An attempt was made to access a protected resource without the required permission - {}", ex.getMessage(), ex);
         String description = "Sorry - you are not permitted to access this functionality";
         return addAttributesToErrorPage(description, "e-403", model, principal, request);
@@ -86,7 +84,7 @@ public interface BookControllerHtmxExceptionHandling {
     // Exception handler of last resort!
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
-    public default String handleException(Exception ex, Model model, Principal principal, WebRequest request) {
+    default String handleException(Exception ex, Model model, Principal principal, WebRequest request) {
         LOGGER.error("An unhandled exception was caught be the exception handler of last resort - {}", ex.getMessage(), ex);
         String description = "Sorry - an unexpected problem occurred in the application.";
         return addAttributesToErrorPage(description, "e-500", model, principal, request);
@@ -105,7 +103,7 @@ public interface BookControllerHtmxExceptionHandling {
         }
     }
 
-    void addUserToModel(Principal principal,Model model);
+    void addUserToModel(Principal principal, Model model);
 
 
 }

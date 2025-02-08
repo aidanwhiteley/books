@@ -1,46 +1,49 @@
 <!DOCTYPE html>
 <html th:fragment="layout (title, content, fluid)" xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <title th:replace="${title}">The Cloudy Book Club</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="author" content="Aidan Whiteley">
-        <meta name="keywords" content="Cloudy Book Club">
-        <meta name="description" content="Books read recently (so I don't buy them again!)">
-        <meta name="htmx-config" content='{"selfRequestsOnly":"true"}'>
-        <link rel="stylesheet" href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
-        <link rel="stylesheet" href="../static/css/swiper.min.css" th:href="@{/css/swiper.min.css}">
-        <link rel="stylesheet" href="../static/css/tom-select.css" th:href="@{/css/tom-select.css}">
-        <link rel="stylesheet" href="../static/css/books-app.css" th:href="@{/css/books-app.css}">
-        <script src="../static/js/htmx.js" th:src="@{/js/htmx.js}"></script>
-        <script src="../static/js/htmx-response-targets.js" th:src="@{/js/htmx-response-targets.js}"></script>
-    </head>
-    <body hx-boost="false" hx-ext="response-targets">
-        <div id="root">
+<head>
+    <title th:replace="${title}">The Cloudy Book Club</title>
+    <meta charset="utf-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Aidan Whiteley" name="author">
+    <meta content="Cloudy Book Club" name="keywords">
+    <meta content="Books read recently (so I don't buy them again!)" name="description">
+    <meta content='{"selfRequestsOnly":"true"}' name="htmx-config">
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link href="../static/css/swiper.min.css" rel="stylesheet" th:href="@{/css/swiper.min.css}">
+    <link href="../static/css/tom-select.css" rel="stylesheet" th:href="@{/css/tom-select.css}">
+    <link href="../static/css/books-app.css" rel="stylesheet" th:href="@{/css/books-app.css}">
+    <script src="../static/js/htmx.js" th:src="@{/js/htmx.js}"></script>
+    <script src="../static/js/htmx-response-targets.js" th:src="@{/js/htmx-response-targets.js}"></script>
+</head>
+<body hx-boost="false" hx-ext="response-targets">
+<div id="root">
 
-            <section data-bs-theme="light" class="navbar navbar-expand-xl navbar-light bg-light sticky-top" th:replace="~{common/nav :: cloudy-nav}" >
-                <div class="container justify-content-start">The <a class="ms-1 me-1" href="./common/nav.html">Nav Bar</a> goes here</div>
-            </section>
-
-            <section id="main-content">
-                <div class="container" th:class="${fluid}? 'container-fluid' : 'container'">
-                    <div class="row d-flex align-items-center">
-                        <div id="detail" th:replace="${content}">
-                            <p>The main content will go here</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <hr>
-
-            <section class="container mb-3" th:replace="~{common/footer :: cloudy-footer}" >
-                The <a class="ms-1 me-1" href="./common/footer.html">Footer</a> goes here
-            </section>
-
+    <section class="navbar navbar-expand-xl navbar-light bg-light sticky-top" data-bs-theme="light"
+             th:replace="~{common/nav :: cloudy-nav}">
+        <div class="container justify-content-start">The <a class="ms-1 me-1" href="./common/nav.html">Nav Bar</a> goes
+            here
         </div>
+    </section>
 
-    </body>
+    <section id="main-content">
+        <div class="container" th:class="${fluid}? 'container-fluid' : 'container'">
+            <div class="row d-flex align-items-center">
+                <div id="detail" th:replace="${content}">
+                    <p>The main content will go here</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <hr>
+
+    <section class="container mb-3" th:replace="~{common/footer :: cloudy-footer}">
+        The <a class="ms-1 me-1" href="./common/footer.html">Footer</a> goes here
+    </section>
+
+</div>
+
+</body>
 
 </html>

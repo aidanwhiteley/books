@@ -8,7 +8,6 @@ import com.aidanwhiteley.books.repository.dtos.BooksByGenre;
 import com.aidanwhiteley.books.repository.dtos.BooksByRating;
 import com.aidanwhiteley.books.util.IntegrationTest;
 import com.jayway.jsonpath.JsonPath;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,11 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 
 import java.net.URI;
 import java.util.Arrays;
@@ -28,8 +23,7 @@ import java.util.List;
 
 import static com.aidanwhiteley.books.controller.BookController.PAGE_REQUEST_TOO_BIG_MESSAGE;
 import static com.aidanwhiteley.books.repository.BookRepositoryTest.J_UNIT_TESTING_FOR_BEGINNERS;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("ConstantConditions")
 public class BookControllerTest extends IntegrationTest {
@@ -76,7 +70,7 @@ public class BookControllerTest extends IntegrationTest {
         List<Book> books = JsonPath.read(response.getBody(), "$.content");
         LOGGER.debug("Retrieved JSON was: {}", response.getBody());
 
-        assertTrue(books.size() > 0, "No books found");
+        assertFalse(books.isEmpty(), "No books found");
     }
 
     @Test
@@ -104,7 +98,7 @@ public class BookControllerTest extends IntegrationTest {
 
         // Check that the book was actually updated
         Book updatedBook = testRestTemplate.getForObject(location, Book.class);
-        assertEquals(updatedBook.getTitle(), updatedTitle);
+        assertEquals(updatedTitle, updatedBook.getTitle());
 
         if (!noAuthProfile) {
             // and check that details about who did the update arent returned
@@ -139,7 +133,7 @@ public class BookControllerTest extends IntegrationTest {
 
         Book updatedBook = testRestTemplate
                 .exchange(location, HttpMethod.GET, request, Book.class).getBody();
-        assertEquals(updatedBook.getTitle(), updatedTitle);
+        assertEquals(updatedTitle, updatedBook.getTitle());
         // Check that details about who did the update ARE returned
         assertEquals(updatedBook.getLastModifiedBy().getFullName(), user.getFullName());
     }

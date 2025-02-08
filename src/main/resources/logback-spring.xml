@@ -6,41 +6,42 @@
 
     <logger name="org.springframework.web" level="WARN"/>
     <logger name="org.springframework.data" level="WARN"/>
-    <logger name="org.springframework.boot.autoconfigure.security.oauth2" level="WARN" />
-    <logger name="org.springframework.boot" level="WARN" />
-    <logger name="org.springframework.boot.web.embedded.tomcat" level="INFO" />
-    <logger name="org.springframework.security" level="WARN" />
-    <logger name="org.springframework.jmx" level="WARN" />
-    <logger name="org.springframework.scheduling" level="WARN" />
-    <logger name="org.springframework.web.client.RestTemplate" level="WARN" />
-    <logger name="org.springframework.web.servlet.mvc.method.annotation" level="ERROR" />
-    <logger name="org.springframework.context" level="WARN" />
-    <logger name="org.springframework.boot.availability.ApplicationAvailabilityBean" level="INFO" />
-    <logger name="org.springframework.boot.devtools" level="INFO" />
-    <logger name="org.thymeleaf" level="INFO" />
+    <logger name="org.springframework.boot.autoconfigure.security.oauth2" level="WARN"/>
+    <logger name="org.springframework.boot" level="WARN"/>
+    <logger name="org.springframework.boot.web.embedded.tomcat" level="INFO"/>
+    <logger name="org.springframework.security" level="WARN"/>
+    <logger name="org.springframework.jmx" level="WARN"/>
+    <logger name="org.springframework.scheduling" level="WARN"/>
+    <logger name="org.springframework.web.client.RestTemplate" level="WARN"/>
+    <logger name="org.springframework.web.servlet.mvc.method.annotation" level="ERROR"/>
+    <logger name="org.springframework.context" level="WARN"/>
+    <logger name="org.springframework.boot.availability.ApplicationAvailabilityBean" level="INFO"/>
+    <logger name="org.springframework.boot.devtools" level="INFO"/>
+    <logger name="org.thymeleaf" level="INFO"/>
 
     <!-- Possibly related to https://github.com/spring-cloud/spring-cloud-commons/issues/1315 -->
-    <logger name="org.springframework.context.support.PostProcessorRegistrationDelegate$BeanPostProcessorChecker" level="ERROR" />
+    <logger name="org.springframework.context.support.PostProcessorRegistrationDelegate$BeanPostProcessorChecker"
+            level="ERROR"/>
 
     <!-- See https://github.com/aidanwhiteley/books/issues/86 -->
-    <logger name="org.springframework.data.convert.CustomConversions" level="ERROR" />
+    <logger name="org.springframework.data.convert.CustomConversions" level="ERROR"/>
 
-    <logger name="org.apache.catalina" level="WARN" />
-    <logger name="org.mongodb.driver" level="WARN" />
-    <logger name="de.bwaldvogel.mongo.backend" level="WARN" />
-    <logger name="de.bwaldvogel.mongo.wire" level="WARN" />
-    <logger name="de.codecentric.boot.admin.client" level="WARN" />
-    <logger name="org.springdoc.core.SpringDocAnnotationsUtils" level="ERROR" />
+    <logger name="org.apache.catalina" level="WARN"/>
+    <logger name="org.mongodb.driver" level="WARN"/>
+    <logger name="de.bwaldvogel.mongo.backend" level="WARN"/>
+    <logger name="de.bwaldvogel.mongo.wire" level="WARN"/>
+    <logger name="de.codecentric.boot.admin.client" level="WARN"/>
+    <logger name="org.springdoc.core.SpringDocAnnotationsUtils" level="ERROR"/>
     <!-- Not using Netflix Archaius / config server -->
-    <logger name="com.netflix.config.sources.URLConfigurationSource" level="ERROR" />
-    <logger name="org.springframework.cloud.netflix.archaius.ArchaiusAutoConfiguration" level="ERROR" />
+    <logger name="com.netflix.config.sources.URLConfigurationSource" level="ERROR"/>
+    <logger name="org.springframework.cloud.netflix.archaius.ArchaiusAutoConfiguration" level="ERROR"/>
     <!-- Not worried about using the default load balancer cache -->
-    <logger name="org.springframework.cloud.loadbalancer.config.LoadBalancerCacheAutoConfiguration" level="ERROR" />
+    <logger name="org.springframework.cloud.loadbalancer.config.LoadBalancerCacheAutoConfiguration" level="ERROR"/>
 
-    <logger name="com.aidanwhiteley.books" level="WARN" />
+    <logger name="com.aidanwhiteley.books" level="WARN"/>
     <logger name="com.aidanwhiteley.books.controller" level="WARN"/>
-    <logger name="com.aidanwhiteley.books.controller.aspect" level="WARN" />
-    <logger name="com.aidanwhiteley.books.controller.BookSecureController" level="WARN" />
+    <logger name="com.aidanwhiteley.books.controller.aspect" level="WARN"/>
+    <logger name="com.aidanwhiteley.books.controller.BookSecureController" level="WARN"/>
     <logger name="com.aidanwhiteley.books.service.SignUpNotificationService" level="WARN"/>
     <logger name="com.aidanwhiteley.books.repository.GoogleBooksDaoAsync" level="WARN"/>
     <logger name="com.aidanwhiteley.books.repository.GoogleBooksDaoSync" level="WARN"/>

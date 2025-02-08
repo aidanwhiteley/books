@@ -45,7 +45,7 @@ public class User {
 
     @Length(max = 200)
     private String fullName;
-    
+
     private String email;
 
     @URL
@@ -113,10 +113,20 @@ public class User {
 
         private static final Map<Integer, Role> map = new HashMap<>();
 
+        static {
+            for (Role aRole : Role.values()) {
+                map.put(aRole.getRoleNumber(), aRole);
+            }
+        }
+
         private final int roleNumber;
 
         Role(int roleNumber) {
             this.roleNumber = roleNumber;
+        }
+
+        public static Role getRole(int roleNumber) {
+            return map.get(roleNumber);
         }
 
         public String getShortName() {
@@ -125,16 +135,6 @@ public class User {
 
         public int getRoleNumber() {
             return this.roleNumber;
-        }
-
-        static {
-            for (Role aRole : Role.values()) {
-                map.put(aRole.getRoleNumber(), aRole);
-            }
-        }
-
-        public static Role getRole(int roleNumber) {
-            return map.get(roleNumber);
         }
 
     }
@@ -149,9 +149,9 @@ public class User {
         AuthenticationProvider(int provider) {
             this.provider = provider;
         }
-        
+
         public int getAuthProvider() {
-        	return this.provider;
+            return this.provider;
         }
     }
 }

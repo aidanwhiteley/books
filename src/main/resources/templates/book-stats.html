@@ -1,55 +1,59 @@
 <!DOCTYPE html>
 <html th:replace="~{layout :: layout(~{::title}, ~{::#detail}, false)}"
       xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <title>Cloudy Book Club - Book Review Statistics</title>
-        <meta charset="utf-8">
-        <link rel="stylesheet" href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
-        <link rel="stylesheet" href="../static/css/books-app.css" th:href="@{/css/books-app.css}">
-    </head>
-    <body>
+<head>
+    <title>Cloudy Book Club - Book Review Statistics</title>
+    <meta charset="utf-8">
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link href="../static/css/books-app.css" rel="stylesheet" th:href="@{/css/books-app.css}">
+</head>
+<body>
 
-        <div id="detail">
-            <p class="lead mt-3 mb-4 ms-2">
-                There are currently <span th:text="${countOfBooks}">100</span> book reviews on The Cloudy Book Club.
-            </p>
+<div id="detail">
+    <p class="lead mt-3 mb-4 ms-2">
+        There are currently <span th:text="${countOfBooks}">100</span> book reviews on The Cloudy Book Club.
+    </p>
 
-            <div class="container">
-                <div class="row">
+    <div class="container">
+        <div class="row">
 
-                    <div class="col-sm mb-4">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title">Books By Rating</h5>
-                                <h6 class="card-subtitle mb-2 text-muted fst-italic">A count of book reviews by review rating</h6>
-                                <ul class="card-text list-unstyled">
-                                    <li th:each="rating : ${bookByRating}"
-                                        th:text="${#strings.capitalize(#strings.toLowerCase(rating.rating)) + ' - ' + rating.countOfBooks + ' books'}">
-                                            Great - 27 books</li>
-                                </ul>
-                            </div>
-                        </div>
+            <div class="col-sm mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Books By Rating</h5>
+                        <h6 class="card-subtitle mb-2 text-muted fst-italic">A count of book reviews by review
+                            rating</h6>
+                        <ul class="card-text list-unstyled">
+                            <li th:each="rating : ${bookByRating}"
+                                th:text="${#strings.capitalize(#strings.toLowerCase(rating.rating)) + ' - ' + rating.countOfBooks + ' books'}">
+                                Great - 27 books
+                            </li>
+                        </ul>
                     </div>
+                </div>
+            </div>
 
-                    <div class="col-sm mb-4">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title">Books By Genre</h5>
-                                <h6 class="card-subtitle mb-2 text-muted fst-italic">A count of book reviews by most popular book genres</h6>
-                                <ul class="card-text list-unstyled">
-                                    <li th:each="genre : ${bookByGenre}"
-                                        th:text="${genre.genre + ' - ' + genre.countOfBooks + ' books'}">
-                                        Novel - 43 books</li>
-                                </ul>
-                            </div>
-                        </div>
+            <div class="col-sm mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Books By Genre</h5>
+                        <h6 class="card-subtitle mb-2 text-muted fst-italic">A count of book reviews by most popular
+                            book genres</h6>
+                        <ul class="card-text list-unstyled">
+                            <li th:each="genre : ${bookByGenre}"
+                                th:text="${genre.genre + ' - ' + genre.countOfBooks + ' books'}">
+                                Novel - 43 books
+                            </li>
+                        </ul>
                     </div>
-
                 </div>
             </div>
 
         </div>
+    </div>
 
-    </body>
+</div>
+
+</body>
 
 </html>

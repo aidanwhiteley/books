@@ -12,16 +12,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class SummaryStatsTest extends IntegrationTest {
 
-	@Autowired
-	private StatsService statsService;
+    @Autowired
+    private StatsService statsService;
 
-	@Test
-	void getSummaryStats() {
+    @Test
+    void getSummaryStats() {
 
-		SummaryStats stats = statsService.getSummaryStats();
-		List<BooksByGenre> books = stats.getBookByGenre();
-		long count = books.stream().mapToLong(BooksByGenre::getCountOfBooks).sum();
+        SummaryStats stats = statsService.getSummaryStats();
+        List<BooksByGenre> books = stats.getBookByGenre();
+        long count = books.stream().mapToLong(BooksByGenre::getCountOfBooks).sum();
 
-		assertEquals(stats.getCount(), count);
-	}
+        assertEquals(stats.getCount(), count);
+    }
 }

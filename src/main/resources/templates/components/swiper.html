@@ -4,78 +4,82 @@
 <head>
     <title>Swiper carousel component</title>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="../../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
-    <link rel="stylesheet" href="../../static/css/books-app.css" th:href="@{/css/books-app.css}">
+    <link href="../../static/css/bootstrap.min.css" rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link href="../../static/css/books-app.css" rel="stylesheet" th:href="@{/css/books-app.css}">
 </head>
 
 <body>
 
-    <h3>Swiper carousel component for the Cloudy Book Club</h3>
+<h3>Swiper carousel component for the Cloudy Book Club</h3>
 
-    <div id="detail" th:fragment="cloudy-swiper">
+<div id="detail" th:fragment="cloudy-swiper">
 
-        <div class="swiper mySwiper">
-            <div id="swiper-slides" class="swiper-wrapper" th:fragment="cloudy-swiper-slides">
-                <div class="swiper-slide" th:each="book : ${books}">
-                    <a href="#" th:href="@{/bookreview(bookId=${book.id})}">
-                        <img src="../../static/images/book-club-logo.jpeg"
-                            th:src="${#strings.replace(book.googleBookDetails.volumeInfo.imageLinks.thumbnail, 'http://', 'https://')}"
-                            loading="lazy" alt="Book cover" th:alt="${'Book cover for ' + book.title}" /></a>
-                </div>
-            </div>
-            <div class="swiper-pagination"></div>
-            <div class="swiper-button-prev"></div>
-            <div class="swiper-button-next"></div>
-        </div>
-
-        <script src="../../static/js/swiper-bundle.min.js" th:src="@{/js/swiper-bundle.min.js}"></script>
-        <script>
-            function initialiseSwiper(evt) {
-                new Swiper('.mySwiper', {
-                    effect: 'coverflow',
-                    grabCursor: true,
-                    centeredSlides: true,
-                    slidesPerView: 'auto',
-                    coverflowEffect: {
-                        rotate: 20,
-                        stretch: 10,
-                        depth: 30,
-                        modifier: 1,
-                        slideShadows: false,
-                    },
-                    loop: true,
-                    navigation: {
-                        nextEl: '.swiper-button-next',
-                        prevEl: '.swiper-button-prev',
-                    }
-                });
-            }
-            initialiseSwiper();
-        </script>
-
-        <div class="text-center">
-            <p class="text-center carousel-info">Books recently reviewed on The Cloudy Book Club with
-                a <span th:text="${rating}"></span> rating</p>
-
-            <div class="btn-group" role="group" aria-label="Book rating selection button group">
-                <input type="radio" class="btn-check" name="bookRating" id="greatBooks" autocomplete="off"
-                    hx-get="/getBooksByRating?rating=great" hx-target="#swiper-slides" hx-swap="outerHTML"
-                    hx-on::after-request="initialiseSwiper()" th:checked="${rating=='great'}" hx-target-error="#detail">
-                <label class="btn btn-outline-primary" for="greatBooks">Great books</label>
-
-                <input type="radio" class="btn-check" name="bookRating" id="goodBooks" autocomplete="off"
-                    hx-get="/getBooksByRating?rating=good" hx-target="#swiper-slides" hx-swap="outerHTML"
-                    hx-on::after-request="initialiseSwiper()" th:checked="${rating=='good'}" hx-target-error="#detail">
-                <label class="btn btn-outline-primary" for="goodBooks">Good books</label>
-
-                <input type="radio" class="btn-check" name="bookRating" id="okBooks" autocomplete="off"
-                    hx-get="/getBooksByRating?rating=ok" hx-target="#swiper-slides" hx-swap="outerHTML"
-                    hx-on::after-request="initialiseSwiper()" th:checked="${rating=='ok'}" hx-target-error="#detail">
-                <label class="btn btn-outline-primary" for="okBooks">OK books</label>
+    <div class="swiper mySwiper">
+        <div class="swiper-wrapper" id="swiper-slides" th:fragment="cloudy-swiper-slides">
+            <div class="swiper-slide" th:each="book : ${books}">
+                <a href="#" th:href="@{/bookreview(bookId=${book.id})}">
+                    <img alt="Book cover"
+                         loading="lazy"
+                         src="../../static/images/book-club-logo.jpeg" th:alt="${'Book cover for ' + book.title}"
+                         th:src="${#strings.replace(book.googleBookDetails.volumeInfo.imageLinks.thumbnail, 'http://', 'https://')}"/></a>
             </div>
         </div>
-
+        <div class="swiper-pagination"></div>
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
     </div>
+
+    <script src="../../static/js/swiper-bundle.min.js" th:src="@{/js/swiper-bundle.min.js}"></script>
+    <script>
+        function initialiseSwiper(evt) {
+            new Swiper('.mySwiper', {
+                effect: 'coverflow',
+                grabCursor: true,
+                centeredSlides: true,
+                slidesPerView: 'auto',
+                coverflowEffect: {
+                    rotate: 20,
+                    stretch: 10,
+                    depth: 30,
+                    modifier: 1,
+                    slideShadows: false,
+                },
+                loop: true,
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                }
+            });
+        }
+        initialiseSwiper();
+    </script>
+
+    <div class="text-center">
+        <p class="text-center carousel-info">Books recently reviewed on The Cloudy Book Club with
+            a <span th:text="${rating}"></span> rating</p>
+
+        <div aria-label="Book rating selection button group" class="btn-group" role="group">
+            <input autocomplete="off" class="btn-check" hx-get="/getBooksByRating?rating=great"
+                   hx-on::after-request="initialiseSwiper()" hx-swap="outerHTML"
+                   hx-target="#swiper-slides" hx-target-error="#detail" id="greatBooks"
+                   name="bookRating" th:checked="${rating=='great'}" type="radio">
+            <label class="btn btn-outline-primary" for="greatBooks">Great books</label>
+
+            <input autocomplete="off" class="btn-check" hx-get="/getBooksByRating?rating=good"
+                   hx-on::after-request="initialiseSwiper()" hx-swap="outerHTML"
+                   hx-target="#swiper-slides" hx-target-error="#detail" id="goodBooks"
+                   name="bookRating" th:checked="${rating=='good'}" type="radio">
+            <label class="btn btn-outline-primary" for="goodBooks">Good books</label>
+
+            <input autocomplete="off" class="btn-check" hx-get="/getBooksByRating?rating=ok"
+                   hx-on::after-request="initialiseSwiper()" hx-swap="outerHTML"
+                   hx-target="#swiper-slides" hx-target-error="#detail" id="okBooks"
+                   name="bookRating" th:checked="${rating=='ok'}" type="radio">
+            <label class="btn btn-outline-primary" for="okBooks">OK books</label>
+        </div>
+    </div>
+
+</div>
 </body>
 
 </html>

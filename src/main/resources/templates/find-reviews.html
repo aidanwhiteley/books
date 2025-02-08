@@ -4,127 +4,135 @@
 <head>
     <title>Cloudy Book Club - Find A Book Review</title>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
-    <link rel="stylesheet" href="../static/css/tom-select.css" th:href="@{/css/tom-select.css}">
-    <link rel="stylesheet" href="../static/css/books-app.css" th:href="@{/css/books-app.css}">
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link href="../static/css/tom-select.css" rel="stylesheet" th:href="@{/css/tom-select.css}">
+    <link href="../static/css/books-app.css" rel="stylesheet" th:href="@{/css/books-app.css}">
 </head>
 
 <body>
 
-    <div id="detail">
-        <h2>Find a book review</h2>
-        <div class="row">
+<div id="detail">
+    <h2>Find a book review</h2>
+    <div class="row">
 
-            <div class="col-sm mb-4">
-                <h3 class="finder-header">Find Reviews By Rating</h3>
-                <select id="select-by-rating" class="finder-control" data-placeholder="Select a review rating"
-                    autocomplete="off" hx-target="#cloudy-find-by-results" hx-get="/find?pagenum=1" name="rating"
-                    hx-push-url="true" hx-on::after-request="clearSelects(this)" hx-target-error="#detail">
-                    <optgroup id="select-by-rating-options" th:fragment="cloudy-find-by-ratings-options">
-                        <option th:each="rating : ${ratings}" th:value="${#strings.toLowerCase(rating)}"
-                            th:text="${#strings.capitalize(#strings.toLowerCase(rating))}">Great</option>
-                    </optgroup>
-                </select>
-            </div>
-
-            <div class="col-sm mb-4">
-                <h3 class="finder-header">Find Reviews By Author</h3>
-                <select id="select-by-author" class="finder-control" data-placeholder="Start typing an author's name..."
-                    autocomplete="off" hx-target="#cloudy-find-by-results" hx-get="/find?pagenum=1" name="author"
-                    hx-push-url="true" hx-on::after-request="clearSelects(this)" hx-target-error="#detail">
-                    <optgroup id="select-by-author-options" th:fragment="cloudy-find-by-author-options">
-                        <option th:each="author : ${authors}" th:value="${author.author}"
-                            th:text="${author.author + ' - ' + author.countOfBooks + ' books'}">Joseph Heller - 3
-                        </option>
-                    </optgroup>
-                </select>
-            </div>
-
-            <div class="col-sm mb-4">
-                <h3 class="finder-header">Find Reviews By Genre</h3>
-                <select id="select-by-genre" class="finder-control" data-placeholder="Start typing a genre..."
-                    autocomplete="off" hx-target="#cloudy-find-by-results" hx-get="/find?pagenum=1" name="genre"
-                    hx-push-url="true" hx-on::after-request="clearSelects(this)" hx-target-error="#detail">
-                    <optgroup id="select-by-genre-options" th:fragment="cloudy-find-by-genre-options">
-                        <option th:each="genre : ${genres}" th:value="${genre.genre}"
-                            th:text="${genre.genre + ' - ' + genre.countOfBooks + ' books'}">Novel - 20</option>
-                    </optgroup>
-                </select>
-            </div>
-
-            <div th:if="${(user != null) and ((highestRole == 'EDITOR' or highestRole == 'ADMIN'))}"
-                class="col-sm mb-4">
-                <h3 class="finder-header">Find Reviews By Reviewer</h3>
-                <select id="select-by-reviewer" class="finder-control" data-placeholder="Start typing a reviewer..."
-                    autocomplete="off" hx-target="#cloudy-find-by-results" hx-get="/find?pagenum=1" name="reviewer"
-                    hx-push-url="true" hx-on::after-request="clearSelects(this)" hx-target-error="#detail">
-                    <optgroup id="select-by-reviewer-options" th:fragment="cloudy-find-by-reviewer-options">
-                        <option th:each="reviewer : ${reviewers}" th:value="${reviewer.reader}"
-                            th:text="${reviewer.reader + ' - ' + reviewer.countOfBooks + ' books'}">Joe Bloggs - 5
-                        </option>
-                    </optgroup>
-                </select>
-            </div>
-
-            <hr class="page-separator">
-
-            <div id="cloudy-find-by-results" th:fragment="cloudy-find-by-results">
-                <div th:if="${pageOfBooks != null}">
-                    <p th:replace="~{components/books-table :: cloudy-books-table}">
-                        The <a href="./components/books-table.html">table</a> of matching books will go here.</p>
-                </div>
-                <div th:if="${pageOfBooks == null}">
-                    <p>Please enter your search criteria into one of the controls above. Matching results will be
-                        displayed here.</p>
-                </div>
-            </div>
-
+        <div class="col-sm mb-4">
+            <h3 class="finder-header">Find Reviews By Rating</h3>
+            <select autocomplete="off" class="finder-control" data-placeholder="Select a review rating"
+                    hx-get="/find?pagenum=1" hx-on::after-request="clearSelects(this)" hx-push-url="true"
+                    hx-target="#cloudy-find-by-results"
+                    hx-target-error="#detail" id="select-by-rating" name="rating">
+                <optgroup id="select-by-rating-options" th:fragment="cloudy-find-by-ratings-options">
+                    <option th:each="rating : ${ratings}" th:text="${#strings.capitalize(#strings.toLowerCase(rating))}"
+                            th:value="${#strings.toLowerCase(rating)}">Great
+                    </option>
+                </optgroup>
+            </select>
         </div>
 
-        <script src="../../static/js/tom-select.base.min.js" th:src="@{/js/tom-select.base.min.js}"></script>
-        <script>
-            let selectControls = [];
-            htmx.onLoad(function (elt) {
-                const allSelects = htmx.findAll(elt, ".finder-control");
-                allSelects.forEach((el) => {
-                    console.log(el);
-                    if (!el.tomselect) {
-                        console.log('Running TomSelect init');
-                        try {
-                            selectControls.push(new TomSelect(el, {
-                                create: false,
-                                highlight: true,
-                                allowEmptyOption: false,
-                                maxItems: 1,
-                                items: [],
-                                sortField: [{ field: '$order' }, { field: '$score' }]
-                            }));
-                        } catch (err) {
-                            console.log('Ignoring already initted error');
-                        }
-                    } else {
-                        console.log('Skipping - already TomSelect init');
-                    }
-                }
-                )
-            });
+        <div class="col-sm mb-4">
+            <h3 class="finder-header">Find Reviews By Author</h3>
+            <select autocomplete="off" class="finder-control" data-placeholder="Start typing an author's name..."
+                    hx-get="/find?pagenum=1" hx-on::after-request="clearSelects(this)" hx-push-url="true"
+                    hx-target="#cloudy-find-by-results"
+                    hx-target-error="#detail" id="select-by-author" name="author">
+                <optgroup id="select-by-author-options" th:fragment="cloudy-find-by-author-options">
+                    <option th:each="author : ${authors}"
+                            th:text="${author.author + ' - ' + author.countOfBooks + ' books'}"
+                            th:value="${author.author}">Joseph Heller - 3
+                    </option>
+                </optgroup>
+            </select>
+        </div>
 
-            function clearSelects(evt) {
-                console.log('In the select ' + evt.id);
-                console.log(selectControls);
-                selectControls.forEach((el) => {
-                    console.log(el);
-                    if (el.inputId === evt.id) {
-                        console.log('NOT CLEARING el.inputId ' + el.inputId + ' evt.id ' + evt.id);
-                    } else {
-                        console.log('CLEARING el.id ' + el.inputId + ' evt.id ' + evt.id);
-                        el.clear(true);
-                    }
-                });
-            }
-        </script>
+        <div class="col-sm mb-4">
+            <h3 class="finder-header">Find Reviews By Genre</h3>
+            <select autocomplete="off" class="finder-control" data-placeholder="Start typing a genre..."
+                    hx-get="/find?pagenum=1" hx-on::after-request="clearSelects(this)" hx-push-url="true"
+                    hx-target="#cloudy-find-by-results"
+                    hx-target-error="#detail" id="select-by-genre" name="genre">
+                <optgroup id="select-by-genre-options" th:fragment="cloudy-find-by-genre-options">
+                    <option th:each="genre : ${genres}" th:text="${genre.genre + ' - ' + genre.countOfBooks + ' books'}"
+                            th:value="${genre.genre}">Novel - 20
+                    </option>
+                </optgroup>
+            </select>
+        </div>
+
+        <div class="col-sm mb-4"
+             th:if="${(user != null) and ((highestRole == 'EDITOR' or highestRole == 'ADMIN'))}">
+            <h3 class="finder-header">Find Reviews By Reviewer</h3>
+            <select autocomplete="off" class="finder-control" data-placeholder="Start typing a reviewer..."
+                    hx-get="/find?pagenum=1" hx-on::after-request="clearSelects(this)" hx-push-url="true"
+                    hx-target="#cloudy-find-by-results"
+                    hx-target-error="#detail" id="select-by-reviewer" name="reviewer">
+                <optgroup id="select-by-reviewer-options" th:fragment="cloudy-find-by-reviewer-options">
+                    <option th:each="reviewer : ${reviewers}"
+                            th:text="${reviewer.reader + ' - ' + reviewer.countOfBooks + ' books'}"
+                            th:value="${reviewer.reader}">Joe Bloggs - 5
+                    </option>
+                </optgroup>
+            </select>
+        </div>
+
+        <hr class="page-separator">
+
+        <div id="cloudy-find-by-results" th:fragment="cloudy-find-by-results">
+            <div th:if="${pageOfBooks != null}">
+                <p th:replace="~{components/books-table :: cloudy-books-table}">
+                    The <a href="./components/books-table.html">table</a> of matching books will go here.</p>
+            </div>
+            <div th:if="${pageOfBooks == null}">
+                <p>Please enter your search criteria into one of the controls above. Matching results will be
+                    displayed here.</p>
+            </div>
+        </div>
 
     </div>
+
+    <script src="../../static/js/tom-select.base.min.js" th:src="@{/js/tom-select.base.min.js}"></script>
+    <script>
+        let selectControls = [];
+        htmx.onLoad(function (elt) {
+            const allSelects = htmx.findAll(elt, ".finder-control");
+            allSelects.forEach((el) => {
+                console.log(el);
+                if (!el.tomselect) {
+                    console.log('Running TomSelect init');
+                    try {
+                        selectControls.push(new TomSelect(el, {
+                            create: false,
+                            highlight: true,
+                            allowEmptyOption: false,
+                            maxItems: 1,
+                            items: [],
+                            sortField: [{ field: '$order' }, { field: '$score' }]
+                        }));
+                    } catch (err) {
+                        console.log('Ignoring already initted error');
+                    }
+                } else {
+                    console.log('Skipping - already TomSelect init');
+                }
+            }
+            )
+        });
+
+        function clearSelects(evt) {
+            console.log('In the select ' + evt.id);
+            console.log(selectControls);
+            selectControls.forEach((el) => {
+                console.log(el);
+                if (el.inputId === evt.id) {
+                    console.log('NOT CLEARING el.inputId ' + el.inputId + ' evt.id ' + evt.id);
+                } else {
+                    console.log('CLEARING el.id ' + el.inputId + ' evt.id ' + evt.id);
+                    el.clear(true);
+                }
+            });
+        }
+    </script>
+
+</div>
 
 </body>
 

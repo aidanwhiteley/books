@@ -4,176 +4,197 @@
 <head>
     <title>Cloudy Book Club - Write a book review</title>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
-    <link rel="stylesheet" href="../static/css/books-app.css" th:href="@{/css/books-app.css}">
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link href="../static/css/books-app.css" rel="stylesheet" th:href="@{/css/books-app.css}">
 </head>
 
 <body>
 
-    <div id="detail">
+<div id="detail">
 
-        <div class="container" >
-            <h4 th:if="${iscreate}">Enter your review of a book you have read</h4>
-            <h4 th:if="${isupdate}">Update book review</h4>
+    <div class="container">
+        <h4 th:if="${iscreate}">Enter your review of a book you have read</h4>
+        <h4 th:if="${isupdate}">Update book review</h4>
 
-            <form id="createreviewform" action="#" th:action="@{${actionUrl}}" th:object="${bookForm}"  class="row g-3" novalidate
-                  method="post" th:fragment="cloudy-book-review-form">
+        <form action="#" class="row g-3" id="createreviewform" method="post" novalidate
+              th:action="@{${actionUrl}}"
+              th:fragment="cloudy-book-review-form" th:object="${bookForm}">
 
-                <div class="col-md-6">
-                    <label for="title">Book Title</label>
-                    <input type="text" id="title" name="title" class="form-control" placeholder="Enter the book title"
-                        th:field="*{title}" th:errorclass="is-invalid" />
-                    <p th:if="${#fields.hasErrors('title')}" class="invalid-feedback"
-                        th:text="${#strings.listJoin(#fields.errors('title'), ', ')}"></p>
+            <div class="col-md-6">
+                <label for="title">Book Title</label>
+                <input class="form-control" id="title" name="title" placeholder="Enter the book title"
+                       th:errorclass="is-invalid"
+                       th:field="*{title}" type="text"/>
+                <p class="invalid-feedback" th:if="${#fields.hasErrors('title')}"
+                   th:text="${#strings.listJoin(#fields.errors('title'), ', ')}"></p>
+            </div>
+
+            <div class="col-md-6">
+                <label for="title">Author</label>
+                <input class="form-control" hx-get="/googlebooks?index=0" hx-include="#title"
+                       hx-target="#googleBookCandidates"
+                       hx-target-error="#detail" hx-trigger="focusout" id="author"
+                       name="author" placeholder="Enter the author's name" th:errorclass="is-invalid"
+                       th:field="*{author}" type="text"/>
+                <p class="invalid-feedback" th:if="${#fields.hasErrors('author')}"
+                   th:text="${#strings.listJoin(#fields.errors('author'), ', ')}"></p>
+            </div>
+
+            <div class="col-md-4">
+                <label for="rating">Your Rating Of The Book</label>
+                <select class="form-control" id="rating" th:errorclass="is-invalid" th:field="*{rating}">
+                    <option th:text="'Select a rating...'" th:value="'NO_VALUE_SELECTED'"></option>
+                    <option th:text="Great" th:value="'GREAT'"></option>
+                    <option th:text="Good" th:value="'GOOD'"></option>
+                    <option th:text="OK" th:value="'OK'"></option>
+                    <option th:text="Poor" th:value="'POOR'"></option>
+                    <option th:text="Terrible" th:value="'TERRIBLE'"></option>
+                </select>
+                <p class="invalid-feedback" th:if="${#fields.hasErrors('rating')}"
+                   th:text="${#strings.listJoin(#fields.errors('rating'), ', ')}"></p>
+            </div>
+
+            <div class="col-md-8">
+                <label for="genre">Genre</label>
+                <select autocomplete="off" class="form-control" id="genre" name="genre"
+                        placeholder="Start typing a genre..." th:errorclass="is-invalid" th:field="*{genre}">
+                    <option value="">Start typing a genre...</option>
+                    <option th:each="genre : ${genres}" th:text="${genre.genre + ' - ' + genre.countOfBooks + ' books'}"
+                            th:value="${genre.genre}">Novel - 20 books
+                    </option>
+                </select>
+                <p class="invalid-feedback" th:if="${#fields.hasErrors('genre')}"
+                   th:text="${#strings.listJoin(#fields.errors('genre'), ', ')}"></p>
+            </div>
+
+            <div class="col-md-12">
+                <label for="summary">Your review / summary</label>
+                <textarea aria-describedby="summaryHelpBlock" class="form-control" id="summary" name="summary"
+                          placeholder="What did you think of the book?" rows="8"
+                          th:errorclass="is-invalid" th:field="*{summary}"></textarea>
+                <p class="invalid-feedback" th:errors="*{summary}" th:if="${#fields.hasErrors('summary')}">Invalid
+                    summary</p>
+                <small class="form-text" id="summaryHelpBlock">
+                    Enter anything you like that may help someone else to decide whether the book is
+                    worth reading or not.
+                    Probably best not to say what the ending is!
+                    HTML formatting is not supported.<br/>
+                    Remember: all entries are publicly visible.
+                </small>
+            </div>
+
+            <input id="bookId" name="bookId" th:value="*{bookId}" type="hidden">
+
+            <div class="row mt-5" id="googleBookCandidates" th:fragment="cloudy-google-book-candidates">
+
+                <input id="googleBookId" name="googleBookId" th:value="${googleBookId}" type="hidden">
+                <input id="index" name="index" th:value="${index}" type="hidden">
+
+                <div th:if="${(googleBookSearchResult != null) and (googleBookSearchResult.item == null)}">
+                    <div class="alert alert-warning" role="alert">
+                        We didn't find any matching books on Google Books. This may be correct but please do
+                        check what is entered in the <b>Book Title</b> and <b>Author</b> fields above.
+                    </div>
                 </div>
 
-                <div class="col-md-6">
-                    <label for="title">Author</label>
-                    <input type="text" id="author" name="author" class="form-control"
-                        placeholder="Enter the author's name" th:field="*{author}" hx-target-error="#detail"
-                           hx-get="/googlebooks?index=0" hx-trigger="focusout" hx-target="#googleBookCandidates"
-                        hx-include="#title" th:errorclass="is-invalid" />
-                    <p th:if="${#fields.hasErrors('author')}" class="invalid-feedback"
-                        th:text="${#strings.listJoin(#fields.errors('author'), ', ')}"></p>
+                <div class="col-md-8"
+                     th:if="${googleBookSearchResult != null and googleBookSearchResult.item  != null}">
+                    <h5 th:if="${googleBookSearchResult.item.volumeInfo}"
+                        th:text="${googleBookSearchResult.item.volumeInfo.title}">A book title</h5>
+                    <p>
+                        <img alt="A book cover image from Google"
+                             class="rounded float-start googleBookImageImport"
+                             src="https://books.google.com/books/content?id=VDRePgAACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
+                             th:if="${googleBookSearchResult.item.volumeInfo?.imageLinks?.thumbnail}"
+                             th:src="${#strings.replace(googleBookSearchResult.item.volumeInfo.imageLinks.thumbnail, 'http://', 'https://')}"/>
+                        <span hx-disable th:utext="${googleBookSearchResult.item.volumeInfo.description}">Google books description</span>
+                    </p>
+                    <p th:if="${googleBookSearchResult.item.volumeInfo.authors}">
+                        By: <span th:text="${#strings.arrayJoin(googleBookSearchResult.item.volumeInfo.authors, ',')}">An author</span>
+                    </p>
                 </div>
 
-                <div class="col-md-4">
-                    <label for="rating">Your Rating Of The Book</label>
-                    <select id="rating" th:field="*{rating}" class="form-control" th:errorclass="is-invalid">
-                        <option th:value="'NO_VALUE_SELECTED'" th:text="'Select a rating...'"></option>
-                        <option th:value="'GREAT'" th:text="Great"></option>
-                        <option th:value="'GOOD'" th:text="Good"></option>
-                        <option th:value="'OK'" th:text="OK"></option>
-                        <option th:value="'POOR'" th:text="Poor"></option>
-                        <option th:value="'TERRIBLE'" th:text="Terrible"></option>
-                    </select>
-                    <p th:if="${#fields.hasErrors('rating')}" class="invalid-feedback"
-                        th:text="${#strings.listJoin(#fields.errors('rating'), ', ')}"></p>
-                </div>
+                <div class="col-md-4" th:if="${googleBookSearchResult != null and googleBookSearchResult.item != null}">
+                    <div class="googleBookText card">
+                        <h5>Have we found the right book?</h5>
+                        <p>Does this look like the book you've read? If not, please try the scroll buttons to see
+                            alternatives
+                            and then click the check box if you find a good match.</p>
+                        <p>If none of the options look like a good match, please untick the check box.</p>
 
-                <div class="col-md-8">
-                    <label for="genre">Genre</label>
-                    <select id="genre" class="form-control" placeholder="Start typing a genre..." autocomplete="off"
-                        name="genre" th:field="*{genre}" th:errorclass="is-invalid">
-                        <option value="">Start typing a genre...</option>
-                        <option th:each="genre : ${genres}" th:value="${genre.genre}"
-                            th:text="${genre.genre + ' - ' + genre.countOfBooks + ' books'}">Novel - 20 books</option>
-                    </select>
-                    <p th:if="${#fields.hasErrors('genre')}" class="invalid-feedback"
-                        th:text="${#strings.listJoin(#fields.errors('genre'), ', ')}"></p>
-                </div>
-
-                <div class="col-md-12">
-                    <label for="summary">Your review / summary</label>
-                    <textarea id="summary" name="summary" rows="8" class="form-control"
-                            placeholder="What did you think of the book?" aria-describedby="summaryHelpBlock"
-                            th:field="*{summary}" th:errorclass="is-invalid"></textarea>
-                    <p class="invalid-feedback" th:if="${#fields.hasErrors('summary')}" th:errors="*{summary}">Invalid summary</p>
-                    <small id="summaryHelpBlock" class="form-text">
-                        Enter anything you like that may help someone else to decide whether the book is
-                        worth reading or not.
-                        Probably best not to say what the ending is!
-                        HTML formatting is not supported.<br />
-                        Remember: all entries are publicly visible.
-                    </small>
-                </div>
-
-                <input type="hidden" th:value="*{bookId}" name="bookId" id="bookId">
-
-                <div id="googleBookCandidates" th:fragment="cloudy-google-book-candidates" class="row mt-5">
-
-                    <input type="hidden" th:value="${googleBookId}" name="googleBookId" id="googleBookId">
-                    <input type="hidden" th:value="${index}" name="index" id="index">
-
-                    <div th:if="${(googleBookSearchResult != null) and (googleBookSearchResult.item == null)}">
-                        <div class="alert alert-warning" role="alert">
-                            We didn't find any matching books on Google Books. This may be correct but please do
-                            check what is entered in the <b>Book Title</b> and <b>Author</b> fields above.
+                        <div class="bookMatchControl d-flex align-items-center justify-content-center">
+                            <input aria-label="Click if book matches" class="form-check-input" id="checkBoxBookMatch"
+                                   th:checked="true"
+                                   type="checkbox"/>
                         </div>
-                    </div>
 
-                    <div class="col-md-8" th:if="${googleBookSearchResult != null and googleBookSearchResult.item  != null}">
-                        <h5 th:if="${googleBookSearchResult.item.volumeInfo}"
-                            th:text="${googleBookSearchResult.item.volumeInfo.title}">A book title</h5>
-                        <p>
-                            <img th:if="${googleBookSearchResult.item.volumeInfo?.imageLinks?.thumbnail}"
-                                 src="https://books.google.com/books/content?id=VDRePgAACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
-                                 th:src="${#strings.replace(googleBookSearchResult.item.volumeInfo.imageLinks.thumbnail, 'http://', 'https://')}"
-                                 alt="A book cover image from Google" class="rounded float-start googleBookImageImport" />
-                            <span hx-disable th:utext="${googleBookSearchResult.item.volumeInfo.description}">Google books description</span>
-                        </p>
-                        <p th:if="${googleBookSearchResult.item.volumeInfo.authors}">
-                            By: <span th:text="${#strings.arrayJoin(googleBookSearchResult.item.volumeInfo.authors, ',')}">An author</span>
-                        </p>
-                    </div>
-
-                    <div class="col-md-4" th:if="${googleBookSearchResult != null and googleBookSearchResult.item != null}">
-                        <div class="googleBookText card">
-                            <h5>Have we found the right book?</h5>
-                            <p>Does this look like the book you've read? If not, please try the scroll buttons to see alternatives
-                                and then click the check box if you find a good match.</p>
-                            <p>If none of the options look like a good match, please untick the check box.</p>
-
-                            <div class="bookMatchControl d-flex align-items-center justify-content-center">
-                                <input class="form-check-input" type="checkbox" th:checked="true" id="checkBoxBookMatch"
-                                       aria-label="Click if book matches" />
-                            </div>
-
-                            <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
-                                <button type="button" th:disabled="${googleBookSearchResult.hasPrevious == false}"
-                                        th:hx-get="@{/googlebooks(index=${index - 1},title=${booktitle},author=${author})}"
-                                        hx-target="#googleBookCandidates" hx-swap="outerHTML" hx-target-error="#detail"
-                                        class="btn btn-outline-primary previous-button" aria-label="Previous">&laquo; Previous</button>
-                                <button type="button" th:disabled="${googleBookSearchResult.hasMore == false}"
-                                        th:hx-get="@{/googlebooks(index=${index + 1},title=${booktitle},author=${author})}"
-                                        hx-target="#googleBookCandidates" hx-swap="outerHTML" hx-target-error="#detail"
-                                        class="btn btn-outline-primary next-button" aria-label="Next">Next &raquo;</button>
-                            </div>
-
+                        <div aria-label="Toolbar with button groups" class="btn-toolbar justify-content-between"
+                             role="toolbar">
+                            <button aria-label="Previous" class="btn btn-outline-primary previous-button"
+                                    hx-swap="outerHTML"
+                                    hx-target="#googleBookCandidates" hx-target-error="#detail"
+                                    th:disabled="${googleBookSearchResult.hasPrevious == false}"
+                                    th:hx-get="@{/googlebooks(index=${index - 1},title=${booktitle},author=${author})}"
+                                    type="button">&laquo;
+                                Previous
+                            </button>
+                            <button aria-label="Next" class="btn btn-outline-primary next-button"
+                                    hx-swap="outerHTML"
+                                    hx-target="#googleBookCandidates" hx-target-error="#detail"
+                                    th:disabled="${googleBookSearchResult.hasMore == false}"
+                                    th:hx-get="@{/googlebooks(index=${index + 1},title=${booktitle},author=${author})}"
+                                    type="button">Next &raquo;
+                            </button>
                         </div>
+
                     </div>
-
                 </div>
 
-                <div class="text-center">
-                    <button th:if="${iscreate}" type="submit" class="btn btn btn-outline-primary btn-wd me-3">Save book review</button>
-                    <button th:if="${isupdate}" type="submit" class="btn btn btn-outline-primary btn-wd me-3">Update book review</button>
-                    <a href="/">
-                        <button type="button" class="btn btn btn-outline-secondary btn-wd">Cancel</button>
-                    </a>
-                </div>
+            </div>
 
-            </form>
-        </div>
+            <div class="text-center">
+                <button class="btn btn btn-outline-primary btn-wd me-3" th:if="${iscreate}" type="submit">Save book
+                    review
+                </button>
+                <button class="btn btn btn-outline-primary btn-wd me-3" th:if="${isupdate}" type="submit">Update book
+                    review
+                </button>
+                <a href="/">
+                    <button class="btn btn btn-outline-secondary btn-wd" type="button">Cancel</button>
+                </a>
+            </div>
 
-
-        <script src="../static/js/tom-select.base.min.js" th:src="@{/js/tom-select.base.min.js}"></script>
-        <script>
-            let selectControls = [];
-            htmx.onLoad(function (elt) {
-                const allSelects = htmx.findAll(elt, "#genre");
-                allSelects.forEach((el) => {
-                    console.log(el);
-                    if (!el.tomselect) {
-                        console.log('Running TomSelect init');
-                        try {
-                            selectControls.push(new TomSelect(el, {
-                                create: true,
-                                sortField: [{ field: '$order' }, { field: '$score' }]
-                            }));
-                        } catch (err) {
-                            console.log(err);
-                        }
-                    } else {
-                        console.log('Skipping - already TomSelect init');
-                    }
-                }
-                )
-            });
-
-        </script>
-
+        </form>
     </div>
+
+
+    <script src="../static/js/tom-select.base.min.js" th:src="@{/js/tom-select.base.min.js}"></script>
+    <script>
+        let selectControls = [];
+        htmx.onLoad(function (elt) {
+            const allSelects = htmx.findAll(elt, "#genre");
+            allSelects.forEach((el) => {
+                console.log(el);
+                if (!el.tomselect) {
+                    console.log('Running TomSelect init');
+                    try {
+                        selectControls.push(new TomSelect(el, {
+                            create: true,
+                            sortField: [{ field: '$order' }, { field: '$score' }]
+                        }));
+                    } catch (err) {
+                        console.log(err);
+                    }
+                } else {
+                    console.log('Skipping - already TomSelect init');
+                }
+            }
+            )
+        });
+
+    </script>
+
+</div>
 
 </body>
 

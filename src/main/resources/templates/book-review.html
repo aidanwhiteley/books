@@ -1,104 +1,121 @@
 <!DOCTYPE html>
 <html th:replace="~{layout :: layout(~{::title}, ~{::#detail}, false)}"
       xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <title th:text="'Cloudy Book Club - ' + ${book.title} + ' Book Review'">Cloudy Book Club - Book Review</title>
-        <meta charset="utf-8">
-        <link rel="stylesheet" href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
-        <link rel="stylesheet" href="../static/css/books-app.css" th:href="@{/css/books-app.css}">
-    </head>
-    <body>
+<head>
+    <title th:text="'Cloudy Book Club - ' + ${book.title} + ' Book Review'">Cloudy Book Club - Book Review</title>
+    <meta charset="utf-8">
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link href="../static/css/books-app.css" rel="stylesheet" th:href="@{/css/books-app.css}">
+</head>
+<body>
 
-        <div id="detail">
+<div id="detail">
 
-            <ul class="nav nav-tabs mb-3" id="myTab" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button"
-                            role="tab" aria-controls="home" aria-selected="true">Book Details</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button"
-                            role="tab" aria-controls="profile" aria-selected="false">Google Book Summary</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="messages-tab" data-bs-toggle="tab" data-bs-target="#messages" type="button"
-                            role="tab" aria-controls="messages" aria-selected="false">Review Comments</button>
-                </li>
-            </ul>
+    <ul class="nav nav-tabs mb-3" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button aria-controls="home" aria-selected="true" class="nav-link active" data-bs-target="#home"
+                    data-bs-toggle="tab"
+                    id="home-tab" role="tab" type="button">Book Details
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button aria-controls="profile" aria-selected="false" class="nav-link" data-bs-target="#profile"
+                    data-bs-toggle="tab"
+                    id="profile-tab" role="tab" type="button">Google Book Summary
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button aria-controls="messages" aria-selected="false" class="nav-link" data-bs-target="#messages"
+                    data-bs-toggle="tab"
+                    id="messages-tab" role="tab" type="button">Review Comments
+            </button>
+        </li>
+    </ul>
 
-            <div class="tab-content">
-                <div class="tab-pane active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                    <div class="bookInfo">
-                        <span th:if="${book.googleBookDetails != null and book.googleBookDetails.volumeInfo != null and book.googleBookDetails.volumeInfo.imageLinks != null}" >
+    <div class="tab-content">
+        <div aria-labelledby="home-tab" class="tab-pane active" id="home" role="tabpanel">
+            <div class="bookInfo">
+                        <span th:if="${book.googleBookDetails != null and book.googleBookDetails.volumeInfo != null and book.googleBookDetails.volumeInfo.imageLinks != null}">
 
-                            <img src="../static/images/book-club-logo.jpeg" alt="A book cover" class="float-start rounded img-thumbnail me-3"
+                            <img alt="A book cover" class="float-start rounded img-thumbnail me-3"
+                                 src="../static/images/book-club-logo.jpeg"
                                  th:src="${!#strings.isEmpty(book.googleBookDetails.volumeInfo.imageLinks.thumbnail)} ?
-                                    ${book.googleBookDetails.volumeInfo.imageLinks.thumbnail} : ${book.googleBookDetails.volumeInfo.imageLinks.smallThumbnail}" />
+                                    ${book.googleBookDetails.volumeInfo.imageLinks.thumbnail} : ${book.googleBookDetails.volumeInfo.imageLinks.smallThumbnail}"/>
                         </span>
-                        <p><b>Title
-                            : </b><span th:text="${book.title}">A book title</span></p>
-                        <p><b>Author: </b><span th:text="${book.author}">An author</span></p>
-                        <p className="rating"><b>Rating: </b><span th:text="${#strings.capitalize(#strings.toLowerCase(book.rating))}">Good</span></p>
-                        <p th:if="${book.createdDateTime}"><b>Review Date: </b><span th:text="${#temporals.format(book.createdDateTime, 'dd-MM-yyyy')}">20-7-2024</span></p>
-                        <p><b>Genre: </b><span th:text="${book.genre}">Novel</span></p>
+                <p><b>Title
+                    : </b><span th:text="${book.title}">A book title</span></p>
+                <p><b>Author: </b><span th:text="${book.author}">An author</span></p>
+                <p className="rating"><b>Rating: </b><span
+                        th:text="${#strings.capitalize(#strings.toLowerCase(book.rating))}">Good</span></p>
+                <p th:if="${book.createdDateTime}"><b>Review Date: </b><span
+                        th:text="${#temporals.format(book.createdDateTime, 'dd-MM-yyyy')}">20-7-2024</span></p>
+                <p><b>Genre: </b><span th:text="${book.genre}">Novel</span></p>
 
-                        <p th:if="${book.googleBookDetails != null and book.googleBookDetails.accessInfo.embeddable != null and book.googleBookDetails.accessInfo.viewability != 'NO_PAGES'}">
-                            <b class="me-3">Book Preview:</b>
-                            <a href="@{'https://books.google.co.uk/books?printsec=frontcover#v=onepage&q&f=true&gbpv=1(${id=book.googleBookId}'}" target="_blank">
-                                <img src="/images/gbs_preview_button1.gif" alt="Google book preview button image"/>
-                            </a>
-                        </p>
+                <p th:if="${book.googleBookDetails != null and book.googleBookDetails.accessInfo.embeddable != null and book.googleBookDetails.accessInfo.viewability != 'NO_PAGES'}">
+                    <b class="me-3">Book Preview:</b>
+                    <a href="@{'https://books.google.co.uk/books?printsec=frontcover#v=onepage&q&f=true&gbpv=1(${id=book.googleBookId}'}"
+                       target="_blank">
+                        <img alt="Google book preview button image" src="/images/gbs_preview_button1.gif"/>
+                    </a>
+                </p>
 
-                        <p class="reviewDetail"><b>Reviewer's Summary:</b><span th:text="${book.summary}" class="reviewDetailSummary">A book review summary</span></p>
-                        <p th:if="${book.createdBy != null and book.createdBy.fullName != null and user != null and (highestRole == 'EDITOR' or highestRole == 'ADMIN')}"><b>Reviewer:</b> <span th:text="${book.createdBy.fullName}">Fred Bloggs</span></p>
+                <p class="reviewDetail"><b>Reviewer's Summary:</b><span class="reviewDetailSummary"
+                                                                        th:text="${book.summary}">A book review summary</span>
+                </p>
+                <p th:if="${book.createdBy != null and book.createdBy.fullName != null and user != null and (highestRole == 'EDITOR' or highestRole == 'ADMIN')}">
+                    <b>Reviewer:</b> <span th:text="${book.createdBy.fullName}">Fred Bloggs</span></p>
 
-                        <a th:href="@{/updatereview/{id}(id = ${book.id})}">
-                            <button type="button" class="me-4 mt-4 btn btn-outline-primary" aria-label="Update book review">
-                                Update this book review
-                            </button>
-                        </a>
-                        <button type="submit" class="mt-4 btn btn-outline-danger" aria-label="Delete book review"
-                            th:hx-delete="@{/deletereview/{id}(id = ${book.id})}" hx-trigger="click" hx-target="#detail"
-                            hx-confirm="Are you sure you wish to delete this book review?" hx-target-error="#detail">
-                            Delete this book review
-                            <img class="htmx-indicator" width="20" height="20" src="/images/circles.svg">
-                        </button>
+                <a th:href="@{/updatereview/{id}(id = ${book.id})}">
+                    <button aria-label="Update book review" class="me-4 mt-4 btn btn-outline-primary" type="button">
+                        Update this book review
+                    </button>
+                </a>
+                <button aria-label="Delete book review" class="mt-4 btn btn-outline-danger"
+                        hx-confirm="Are you sure you wish to delete this book review?"
+                        hx-target="#detail" hx-target-error="#detail" hx-trigger="click"
+                        th:hx-delete="@{/deletereview/{id}(id = ${book.id})}" type="submit">
+                    Delete this book review
+                    <img class="htmx-indicator" height="20" src="/images/circles.svg" width="20">
+                </button>
 
-                    </div>
-                </div>
+            </div>
+        </div>
 
-                <div class="tab-pane" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                    <div className="bookInfo">
-                         <span th:if="${book.googleBookDetails != null and book.googleBookDetails.volumeInfo != null and book.googleBookDetails.volumeInfo.imageLinks != null}" >
-                            <img src="../static/images/book-club-logo.jpeg" alt="A book cover" class="float-start rounded img-thumbnail me-3"
+        <div aria-labelledby="profile-tab" class="tab-pane" id="profile" role="tabpanel">
+            <div className="bookInfo">
+                         <span th:if="${book.googleBookDetails != null and book.googleBookDetails.volumeInfo != null and book.googleBookDetails.volumeInfo.imageLinks != null}">
+                            <img alt="A book cover" class="float-start rounded img-thumbnail me-3"
+                                 src="../static/images/book-club-logo.jpeg"
                                  th:src="${!#strings.isEmpty(book.googleBookDetails.volumeInfo.imageLinks.thumbnail)} ?
-                                    ${book.googleBookDetails.volumeInfo.imageLinks.thumbnail} : ${book.googleBookDetails.volumeInfo.imageLinks.smallThumbnail}" />
+                                    ${book.googleBookDetails.volumeInfo.imageLinks.thumbnail} : ${book.googleBookDetails.volumeInfo.imageLinks.smallThumbnail}"/>
                         </span>
-                        <p><b>Google Summary: </b></p>
-                        <div th:if="${book.googleBookDetails != null and book.googleBookDetails.volumeInfo != null}" hx-disable
-                             id="googleSummaryDetail" th:utext="${book.googleBookDetails.volumeInfo.description}">
-                            This is where the text from the Google book summary will go
-                        </div>
-                    </div>
+                <p><b>Google Summary: </b></p>
+                <div hx-disable id="googleSummaryDetail"
+                     th:if="${book.googleBookDetails != null and book.googleBookDetails.volumeInfo != null}"
+                     th:utext="${book.googleBookDetails.volumeInfo.description}">
+                    This is where the text from the Google book summary will go
                 </div>
+            </div>
+        </div>
 
-                <div class="tab-pane" id="messages" role="tabpanel" aria-labelledby="messages-tab">
-                    <p th:if="${#lists.isEmpty(book.comments)}" class="mt-4">No comments have been left yet on this book review</p>
+        <div aria-labelledby="messages-tab" class="tab-pane" id="messages" role="tabpanel">
+            <p class="mt-4" th:if="${#lists.isEmpty(book.comments)}">No comments have been left yet on this book
+                review</p>
 
-                    <ul th:if="${not #lists.isEmpty(book.comments)}" class="mt-4">
-                        <li th:each="comment : ${book.comments}" class="comment-entry">
+            <ul class="mt-4" th:if="${not #lists.isEmpty(book.comments)}">
+                <li class="comment-entry" th:each="comment : ${book.comments}">
                             <span th:text="${comment.deleted} ? 'Comment deleted by ' + ${comment.deletedBy}
                                 : 'On ' + ${#temporals.format(comment.entered, 'dd-MM-yyyy')} + ' ' + ${comment.owner.fullName} + ' commented - ' + ${comment.commentText}">
                             </span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <script src="../static/js/bootstrap.bundle.min.js" th:src="@{/js/bootstrap.bundle.min.js}"></script>
-            <div th:if="${message}" th:insert="~{components/toast-messages :: cloudy-toast-messages}"></div>
+                </li>
+            </ul>
         </div>
+    </div>
 
-    </body>
+    <script src="../static/js/bootstrap.bundle.min.js" th:src="@{/js/bootstrap.bundle.min.js}"></script>
+    <div th:if="${message}" th:insert="~{components/toast-messages :: cloudy-toast-messages}"></div>
+</div>
+
+</body>
 
 </html>

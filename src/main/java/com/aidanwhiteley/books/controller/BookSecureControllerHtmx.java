@@ -41,16 +41,14 @@ import static com.aidanwhiteley.books.util.LogDetaint.logMessageDetaint;
 @Controller
 public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHandling {
 
+    private static final String NO_VALUE_SELECTED = "NO_VALUE_SELECTED";
+    private static final Logger LOGGER = LoggerFactory.getLogger(BookSecureControllerHtmx.class);
     private final BookRepository bookRepository;
     private final JwtAuthenticationUtils authUtils;
     private final StatsService statsService;
     private final GoogleBookSearchService googleBookSearchService;
     private final GoogleBooksDaoSync googleBooksDaoSync;
     private final FlashMessages flashMessages;
-
-    private static final String NO_VALUE_SELECTED = "NO_VALUE_SELECTED";
-    private static final Logger LOGGER = LoggerFactory.getLogger(BookSecureControllerHtmx.class);
-
     @Value("${books.users.default.page.size}")
     private int defaultPageSize;
 
@@ -117,7 +115,7 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
 
         if (bindingResult.hasErrors()) {
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Following form validation errors occurred: {}", bindingResult);
+                LOGGER.debug("Following create form validation errors occurred: {}", bindingResult);
             }
 
             model.addAttribute("bookForm", bookForm);
@@ -142,7 +140,7 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
 
             // If there were Google Book details specified, go and get the full details from Google
             // and then update the Mongo document for the book
-            if (bookForm.getGoogleBookId() != null && bookForm.getGoogleBookId().length() > 0) {
+            if (bookForm.getGoogleBookId() != null && !bookForm.getGoogleBookId().isEmpty()) {
                 googleBooksDaoSync.updateBookWithGoogleBookDetails(aBook, bookForm.getGoogleBookId());
             }
 
@@ -165,7 +163,7 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
 
         if (bindingResult.hasErrors()) {
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Following form validation errors occurred: {}", bindingResult);
+                LOGGER.debug("Following update form validation errors occurred: {}", bindingResult);
             }
 
             model.addAttribute("bookForm", bookForm);
@@ -206,7 +204,7 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
 
             // If there were Google Book details specified, go and get the full details from Google
             // and then update the Mongo document for the book
-            if (bookForm.getGoogleBookId() != null && bookForm.getGoogleBookId().length() > 0) {
+            if (bookForm.getGoogleBookId() != null && !bookForm.getGoogleBookId().isEmpty()) {
                 googleBooksDaoSync.updateBookWithGoogleBookDetails(aBook, bookForm.getGoogleBookId());
             }
 
@@ -242,7 +240,6 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
 
         return "create-update-review :: cloudy-google-book-candidates";
     }
-
 
 
     @DeleteMapping(value = "/deletereview/{id}")
@@ -288,7 +285,7 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
 
     @GetMapping(value = {"/find"}, params = {"reviewer", "pagenum"})
     public String findByReviewer(Model model, Principal principal, @RequestParam String reviewer, @RequestParam int pagenum,
-                                 @RequestHeader(value="HX-Request", required = false) boolean hxRequest) {
+                                 @RequestHeader(value = "HX-Request", required = false) boolean hxRequest) {
 
         if (reviewer == null || reviewer.trim().isEmpty()) {
             throw new IllegalArgumentException("Genre parameter cannot be empty");

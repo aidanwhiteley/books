@@ -44,7 +44,7 @@ class FeedsControllerTest extends IntegrationTest {
         assertTrue(syndFeed.getEntries().size() > 0);
 
         for (SyndEntry entry : syndFeed.getEntries()) {
-            assertFalse(entry.getContents().get(0).getValue().isEmpty());
+            assertFalse(entry.getContents().getFirst().getValue().isEmpty());
         }
     }
 }

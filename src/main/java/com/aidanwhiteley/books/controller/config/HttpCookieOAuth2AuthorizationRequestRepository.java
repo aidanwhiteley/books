@@ -21,14 +21,11 @@ import java.util.Optional;
  */
 class HttpCookieOAuth2AuthorizationRequestRepository implements AuthorizationRequestRepository<OAuth2AuthorizationRequest> {
 
+    public static final String COOKIE_NAME = "cloudy-oauth2-auth";
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpCookieOAuth2AuthorizationRequestRepository.class);
-
+    private final ObjectMapper authRequestJsonMapper;
     @Value("${books.oauth2.cookieOverHttpsOnly}")
     private boolean cookieOverHttpsOnly;
-
-    private final ObjectMapper authRequestJsonMapper;
-
-    public static final String COOKIE_NAME = "cloudy-oauth2-auth";
 
     public HttpCookieOAuth2AuthorizationRequestRepository(ObjectMapper authRequestJsonMapper) {
         this.authRequestJsonMapper = authRequestJsonMapper;
@@ -63,7 +60,7 @@ class HttpCookieOAuth2AuthorizationRequestRepository implements AuthorizationReq
         deleteCookie(request, response);
         return loadAuthorizationRequest(request);
     }
-    
+
     private String fromAuthorizationRequest(OAuth2AuthorizationRequest authorizationRequest) {
         try {
             return Base64.getEncoder().encodeToString(authRequestJsonMapper.writeValueAsString(authorizationRequest).getBytes());

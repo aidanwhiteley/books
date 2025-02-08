@@ -56,7 +56,7 @@ public class DataLoader {
      * setting.
      * <p>
      * Reads from files where each line is expected to be a valid JSON object but
-     * the whole file itself isnt a valid JSON object (hence the .data extension rather than .json).
+     * the whole file itself isn't a valid JSON object (hence the .data extension rather than .json).
      * <p>
      * "Fail safe" checking for required Spring profile being active and the config switch setting.
      */
@@ -134,8 +134,8 @@ public class DataLoader {
      * The exception is the tests that require a full text index to be in place for "search" to work.
      * Therefore, we run in the full text index below when loading test data - but not
      * when the Spring profile means we are running against the in memory mongo-java-server
-     * as that fale Mongo doesn't support full text indexes currently.
-     *
+     * as that false Mongo doesn't support full text indexes currently.
+     * <p>
      * The real application index creation commands are in
      * /src/main/resources/indexes/books.data
      * It does not matter much if the index below gets out of step with the real index - in terms

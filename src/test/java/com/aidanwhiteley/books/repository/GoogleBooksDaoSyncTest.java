@@ -14,14 +14,10 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Profile({"dev-mongo-java-server", "dev-mongo-java-server-no-auth", "dev-mongodb-no-auth", "dev-mongodb", "ci"})
-@AutoConfigureWireMock(port=0, httpsPort = 0)
+@AutoConfigureWireMock(port = 0, httpsPort = 0)
 class GoogleBooksDaoSyncTest extends IntegrationTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GoogleBooksDaoSyncTest.class);
@@ -40,8 +36,8 @@ class GoogleBooksDaoSyncTest extends IntegrationTest {
         BookSearchResult result = theDao.searchGoogBooksByTitleAndAuthor("Design Patterns", "Gamma");
         assertNotNull(result);
         assertEquals(NUMBER_OF_BOOKS_IN_SEARCH_RESULTS, result.getItems().size());
-        assertTrue(result.getItems().get(0).getId().length() > 0, "Should have found a book id");
-        assertTrue(result.getItems().get(0).getVolumeInfo().getTitle().length() > 0, "Should have found a title");
+        assertFalse(result.getItems().getFirst().getId().isEmpty(), "Should have found a book id");
+        assertFalse(result.getItems().getFirst().getVolumeInfo().getTitle().isEmpty(), "Should have found a title");
     }
 
     @Test
@@ -56,7 +52,7 @@ class GoogleBooksDaoSyncTest extends IntegrationTest {
     @Test
     void confirmFindbyBookTimesOut() {
 
-    	// Turn off unwanted logging for read timeout. Prevents JUnit output having unnecessary stack traces etc.
+        // Turn off unwanted logging for read timeout. Prevents JUnit output having unnecessary stack traces etc.
         LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
         context.getLogger(GoogleBooksDaoSync.class).setLevel(Level.valueOf("OFF"));
 

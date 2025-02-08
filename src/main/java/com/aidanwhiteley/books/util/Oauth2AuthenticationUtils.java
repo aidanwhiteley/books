@@ -2,6 +2,7 @@ package com.aidanwhiteley.books.util;
 
 import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.repository.UserRepository;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,9 +28,11 @@ public class Oauth2AuthenticationUtils {
 
     private final OAuth2AuthorizedClientService authorizedClientService;
 
+    @Setter
     @Value("${spring.security.oauth2.client.registration.google.client-id}")
     private String googleClientClientId;
 
+    @Setter
     @Value("${spring.security.oauth2.client.registration.facebook.client-id}")
     private String facebookClientClientId;
 
@@ -47,18 +50,14 @@ public class Oauth2AuthenticationUtils {
         List<User> users = userRepository.findAllByAuthenticationServiceIdAndAuthProvider(authenticationProviderId,
                 this.getAuthenticationProvider(authentication).toString());
 
-        User user;
-        switch (users.size()) {
-            case 0:
-                user = null;
-                break;
-            case 1:
-                user = users.get(0);
-                break;
-            default:
+        User user = switch (users.size()) {
+            case 0 -> null;
+            case 1 -> users.getFirst();
+            default -> {
                 LOGGER.error("More than one user found for Authentication: {}", authentication);
                 throw new IllegalStateException("More that one user found for a given Authentication");
-        }
+            }
+        };
 
         return Optional.ofNullable(user);
     }
@@ -82,14 +81,6 @@ public class Oauth2AuthenticationUtils {
             LOGGER.error("Unknown clientId specified of {} so cant determine authentication provider.", clientId);
             throw new IllegalArgumentException("Uknown client id specified");
         }
-    }
-
-    public void setGoogleClientClientId(String googleClientClientId) {
-        this.googleClientClientId = googleClientClientId;
-    }
-
-    public void setFacebookClientClientId(String facebookClientClientId) {
-        this.facebookClientClientId = facebookClientClientId;
     }
 
     private OAuth2AuthorizedClient getAuthorizedClient(OAuth2AuthenticationToken authentication) {

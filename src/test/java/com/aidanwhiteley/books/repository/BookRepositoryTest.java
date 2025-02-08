@@ -23,17 +23,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class BookRepositoryTest extends IntegrationTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(BookRepositoryTest.class);
-
     public static final String DR_ZEUSS = "Dr Zuess";
     public static final String J_UNIT_TESTING_FOR_BEGINNERS = "JUnit testing for beginners";
+    private static final Logger LOGGER = LoggerFactory.getLogger(BookRepositoryTest.class);
     private static final String A_GUIDE_TO_POKING_SOFTWARE = "A guide to poking software";
     private static final String COMPUTING = "Computing";
 
@@ -68,39 +64,39 @@ public class BookRepositoryTest extends IntegrationTest {
         PageRequest pageObj = PageRequest.of(PAGE, PAGE_SIZE);
         Page<Book> books = bookRepository.findAllByAuthorOrderByCreatedDateTimeDesc(pageObj, DR_ZEUSS);
         assertTrue(books.getContent().size() >= 1);
-        assertEquals(DR_ZEUSS, books.getContent().get(0).getAuthor());
+        assertEquals(DR_ZEUSS, books.getContent().getFirst().getAuthor());
 
         // The book should have a system created id value.
-        assertNotNull(books.getContent().get(0).getId());
+        assertNotNull(books.getContent().getFirst().getId());
     }
 
     @Test
     void countBooksByGenre() {
         List<BooksByGenre> list = bookRepository.countBooksByGenre();
         assertTrue(list.size() > 0);
-        assertTrue(list.get(0).getGenre().length() > 0);
-        assertTrue(list.get(0).getCountOfBooks() > 0);
+        assertFalse(list.getFirst().getGenre().isEmpty());
+        assertTrue(list.getFirst().getCountOfBooks() > 0);
     }
 
     @Test
     void countBooksByRating() {
         List<BooksByRating> list = bookRepository.countBooksByRating();
         assertTrue(list.size() > 0);
-        assertTrue(list.get(0).getCountOfBooks() > 0);
+        assertTrue(list.getFirst().getCountOfBooks() > 0);
     }
 
     @Test
     void countBooksByAuthor() {
         List<BooksByAuthor> list = bookRepository.countBooksByAuthor();
         assertTrue(list.size() > 0);
-        assertTrue(list.get(0).getCountOfBooks() > 0);
+        assertTrue(list.getFirst().getCountOfBooks() > 0);
     }
 
     @Test
     void countBooksByReader() {
         List<BooksByReader> list = bookRepository.countBooksByReader();
         assertTrue(list.size() > 0);
-        assertTrue(list.get(0).getCountOfBooks() > 0);
+        assertTrue(list.getFirst().getCountOfBooks() > 0);
     }
 
     @Test
@@ -115,7 +111,7 @@ public class BookRepositoryTest extends IntegrationTest {
         Book updatedBook = bookRepository.addCommentToBook(savedBook.getId(), comment);
 
         assertEquals(1, updatedBook.getComments().size());
-        assertEquals(A_COMMENT, updatedBook.getComments().get(0).getCommentText());
+        assertEquals(A_COMMENT, updatedBook.getComments().getFirst().getCommentText());
     }
 
     @Test
@@ -141,13 +137,13 @@ public class BookRepositoryTest extends IntegrationTest {
 
         // Returned Book holds just the updated comments
         updatedBook = bookRepository.removeCommentFromBook(savedBook.getId(),
-                updatedBook.getComments().get(0).getId(), COMMENT_REMOVER);
+                updatedBook.getComments().getFirst().getId(), COMMENT_REMOVER);
 
         // There should still be two comments but the first should now be "marked" as deleted
         assertEquals(2, updatedBook.getComments().size());
-        assertEquals("", updatedBook.getComments().get(0).getCommentText());
-        assertTrue(updatedBook.getComments().get(0).isDeleted());
-        assertEquals(COMMENT_REMOVER, updatedBook.getComments().get(0).getDeletedBy());
+        assertEquals("", updatedBook.getComments().getFirst().getCommentText());
+        assertTrue(updatedBook.getComments().getFirst().isDeleted());
+        assertEquals(COMMENT_REMOVER, updatedBook.getComments().getFirst().getDeletedBy());
     }
 
     @Test

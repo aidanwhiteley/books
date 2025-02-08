@@ -1,21 +1,22 @@
 <!DOCTYPE html>
 <html th:replace="~{layout :: layout(~{::title}, ~{::#detail}, false)}"
       xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <title>Cloudy Book Club - Recently Reviewed</title>
-        <meta charset="utf-8">
-        <link rel="stylesheet" href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
-        <link rel="stylesheet" href="../static/css/books-app.css" th:href="@{/css/books-app.css}">
-    </head>
-    <body>
+<head>
+    <title>Cloudy Book Club - Recently Reviewed</title>
+    <meta charset="utf-8">
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link href="../static/css/books-app.css" rel="stylesheet" th:href="@{/css/books-app.css}">
+</head>
+<body>
 
-        <div id="detail">
-            <div th:if="${param.created}" class="alert alert-success" role="alert">
-                Book review created successfully
-            </div>
-            <p th:replace="~{components/books-table :: cloudy-books-table}">The <a href="./components/books-table.html">table</a> of recently reviewed books will go here.</p>
-            <div th:if="${message}" th:insert="~{components/toast-messages :: cloudy-toast-messages}"></div>
-        </div>
+<div id="detail">
+    <div class="alert alert-success" role="alert" th:if="${param.created}">
+        Book review created successfully
+    </div>
+    <p th:replace="~{components/books-table :: cloudy-books-table}">The <a
+            href="./components/books-table.html">table</a> of recently reviewed books will go here.</p>
+    <div th:if="${message}" th:insert="~{components/toast-messages :: cloudy-toast-messages}"></div>
+</div>
 
-    </body>
+</body>
 </html>

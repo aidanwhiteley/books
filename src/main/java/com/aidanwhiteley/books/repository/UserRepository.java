@@ -8,5 +8,6 @@ import java.util.List;
 public interface UserRepository extends MongoRepository<User, String>, UserRepositoryCustomMethods {
 
     List<User> findAllByAuthenticationServiceIdAndAuthProvider(String authenticationServiceId, String authenticationProvider);
+
     List<User> findAllByAdminEmailedAboutSignupIsFalse();
 }

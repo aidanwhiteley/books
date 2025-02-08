@@ -18,29 +18,24 @@ import java.util.Date;
 @Component
 public class SiteRssFeed {
 
-	private static final String FEED_TYPE_RSS_2_0 = "rss_2.0";
+    private static final String FEED_TYPE_RSS_2_0 = "rss_2.0";
+    private final BookRepository bookRepository;
+    @Value("${books.feeds.maxentries}")
+    private int booksFeedsMaxEntries;
+    @Value("${books.feeds.title}")
+    private String booksFeedsTitles;
+    @Value("${books.feeds.domain}")
+    private String booksFeedsDomain;
+    @Value("${books.feeds.description}")
+    private String booksFeedsDescription;
 
-	@Value("${books.feeds.maxentries}")
-	private int booksFeedsMaxEntries;
-
-	@Value("${books.feeds.title}")
-	private String booksFeedsTitles;
-
-	@Value("${books.feeds.domain}")
-	private String booksFeedsDomain;
-
-	@Value("${books.feeds.description}")
-	private String booksFeedsDescription;
-
-	private final BookRepository bookRepository;
-
-	public SiteRssFeed(BookRepository bookRepository) {
-		this.bookRepository = bookRepository;
-	}
+    public SiteRssFeed(BookRepository bookRepository) {
+        this.bookRepository = bookRepository;
+    }
 
     public Channel createSiteRssFeed() {
-		PageRequest pageObj = PageRequest.of(0, booksFeedsMaxEntries);
-		Page<Book> recentBooks = bookRepository.findAllByOrderByCreatedDateTimeDesc(pageObj);
+        PageRequest pageObj = PageRequest.of(0, booksFeedsMaxEntries);
+        Page<Book> recentBooks = bookRepository.findAllByOrderByCreatedDateTimeDesc(pageObj);
 
         Channel channel = new Channel(FEED_TYPE_RSS_2_0);
         channel.setTitle(booksFeedsTitles);
@@ -68,8 +63,8 @@ public class SiteRssFeed {
             item.setContent(content);
 
             return item;
-		}).toList());
+        }).toList());
 
         return channel;
-	}
+    }
 }

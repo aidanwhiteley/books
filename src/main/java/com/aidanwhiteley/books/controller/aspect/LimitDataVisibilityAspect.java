@@ -50,6 +50,7 @@ public class LimitDataVisibilityAspect {
 
     @Pointcut("@within(com.aidanwhiteley.books.controller.aspect.LimitDataVisibility)")
     public void isAnnotated() {
+        System.out.println("In isAnnotated");
         // Just used for point cut - no implementation
     }
 
@@ -60,6 +61,7 @@ public class LimitDataVisibilityAspect {
 
     @Pointcut("execution(public org.springframework.data.domain.Page<com.aidanwhiteley.books.domain.Book> com.aidanwhiteley.books..*.*(..))")
     public void returnsPageOfBooks() {
+        System.out.println("In in page of books");
         // Just used for point cut - no implementation
     }
 

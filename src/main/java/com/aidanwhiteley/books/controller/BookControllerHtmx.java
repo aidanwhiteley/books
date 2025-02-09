@@ -71,7 +71,7 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
     @GetMapping(value = "/")
     public String index(Model model, Principal principal) {
         PageRequest pageObj = PageRequest.of(0, 30);
-        Page<Book> page = bookRepository.findByRatingOrderByCreatedDateTimeDesc(pageObj, GREAT);
+        Page<Book> page = getBooks(pageObj, principal);
 
         List<Book> books = getBooksWithRequiredImages(page);
         model.addAttribute("books", books.stream().toList());
@@ -79,6 +79,10 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
         addUserToModel(principal, model);
 
         return "home";
+    }
+
+    public Page<Book> getBooks(PageRequest pageObj, Principal principal) {
+       return bookRepository.findByRatingOrderByCreatedDateTimeDesc(pageObj, GREAT);
     }
 
     @GetMapping(value = {"/getBooksByRating"}, params = {"rating", "bookRating"})

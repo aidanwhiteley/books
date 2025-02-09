@@ -40,12 +40,12 @@
 
     <logger name="com.aidanwhiteley.books" level="WARN"/>
     <logger name="com.aidanwhiteley.books.controller" level="WARN"/>
-    <logger name="com.aidanwhiteley.books.controller.aspect" level="WARN"/>
+    <logger name="com.aidanwhiteley.books.controller.aspect" level="DEBUG"/>
     <logger name="com.aidanwhiteley.books.controller.BookSecureController" level="WARN"/>
     <logger name="com.aidanwhiteley.books.service.SignUpNotificationService" level="WARN"/>
     <logger name="com.aidanwhiteley.books.repository.GoogleBooksDaoAsync" level="WARN"/>
     <logger name="com.aidanwhiteley.books.repository.GoogleBooksDaoSync" level="WARN"/>
-    <logger name="com.aidanwhiteley.books.controller.BookControllerHtmx" level="DEBUG"/>
+    <logger name="com.aidanwhiteley.books.controller.BookControllerHtmx" level="WARN"/>
 
 
 </configuration>

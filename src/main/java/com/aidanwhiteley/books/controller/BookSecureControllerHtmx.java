@@ -1,5 +1,6 @@
 package com.aidanwhiteley.books.controller;
 
+import com.aidanwhiteley.books.controller.aspect.LimitDataVisibility;
 import com.aidanwhiteley.books.controller.dtos.BookForm;
 import com.aidanwhiteley.books.controller.exceptions.NotAuthorisedException;
 import com.aidanwhiteley.books.controller.exceptions.NotFoundException;
@@ -37,6 +38,7 @@ import java.util.Optional;
 
 import static com.aidanwhiteley.books.util.LogDetaint.logMessageDetaint;
 
+@LimitDataVisibility
 @PreAuthorize("hasAnyRole('ROLE_EDITOR', 'ROLE_ADMIN')")
 @Controller
 public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHandling {
@@ -138,10 +140,10 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
 
             Book aBook = bookRepository.insert(bookForm.getBookFromBookForm());
 
-            // If there were Google Book details specified, go and get the full details from Google
+            // If there were Google Book details specified, go and get the full details from Google (or the local cache)
             // and then update the Mongo document for the book
             if (bookForm.getGoogleBookId() != null && !bookForm.getGoogleBookId().isEmpty()) {
-                googleBooksDaoSync.updateBookWithGoogleBookDetails(aBook, bookForm.getGoogleBookId());
+                googleBookSearchService.updateBookWithGoogleBookDetails(aBook, bookForm.getTitle(), bookForm.getAuthor(), bookForm.getIndex());
             }
 
             flashMessages.storeFlashMessage("message", "Book review added successfully", request, response);
@@ -202,10 +204,10 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
                 throw new NotAuthorisedException("User did not have the permission required to update a book review");
             }
 
-            // If there were Google Book details specified, go and get the full details from Google
+            // If there were Google Book details specified, go and get the full details from Google (or the local cache)
             // and then update the Mongo document for the book
             if (bookForm.getGoogleBookId() != null && !bookForm.getGoogleBookId().isEmpty()) {
-                googleBooksDaoSync.updateBookWithGoogleBookDetails(aBook, bookForm.getGoogleBookId());
+                googleBookSearchService.updateBookWithGoogleBookDetails(aBook, bookForm.getTitle(), bookForm.getAuthor(), bookForm.getIndex());
             }
 
             flashMessages.storeFlashMessage("message", "Book review updated successfully", request, response);

@@ -81,8 +81,7 @@ public class LimitDataVisibilityAspect {
         Principal principal = getPrincipal(joinPoint);
 
         // Note - we only look at data from the JWT to build the User here - we
-        // are
-        // only interested in the users roles and they are in the JWT.
+        // are only interested in the users roles and they are in the JWT.
         Optional<User> user = authUtils.extractUserFromPrincipal(principal, true);
 
         if (retVal instanceof Book book) {

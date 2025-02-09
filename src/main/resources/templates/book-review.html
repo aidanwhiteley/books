@@ -91,6 +91,8 @@
                                     ${book.googleBookDetails.volumeInfo.imageLinks.thumbnail} : ${book.googleBookDetails.volumeInfo.imageLinks.smallThumbnail}"/>
                         </span>
                 <p><b>Google Summary: </b></p>
+                
+                <!--/* HTML content is sanitized on the server side */-->
                 <div hx-disable id="googleSummaryDetail"
                      th:if="${book.googleBookDetails != null and book.googleBookDetails.volumeInfo != null}"
                      th:utext="${book.googleBookDetails.volumeInfo.description}">
@@ -105,11 +107,15 @@
 
             <ul class="mt-4" th:if="${not #lists.isEmpty(book.comments)}">
                 <li class="comment-entry" th:each="comment : ${book.comments}">
-                            <span th:text="${comment.deleted} ? 'Comment deleted by ' + ${comment.deletedBy}
-                                : 'On ' + ${#temporals.format(comment.entered, 'dd-MM-yyyy')} + ' ' + ${comment.owner.fullName} + ' commented - ' + ${comment.commentText}">
-                            </span>
+                    <del th:if="${comment.deleted}" th:text="'Comment deleted by ' + ${comment.deletedBy}" ></del>
+                    <span th:if="${!comment.deleted}"
+                          th:text="'On ' + ${#temporals.format(comment.entered, 'dd-MM-yyyy')} + ' ' +
+                                ${comment.owner.fullName} + ' commented - ' + ${comment.commentText}" >
+                        On 11-02-2018 Fred Bloggs commented - This is a dummy comment
+                    </span>
                 </li>
             </ul>
+
         </div>
     </div>
 

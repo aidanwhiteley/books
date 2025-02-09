@@ -1,11 +1,15 @@
 package com.aidanwhiteley.books.service;
 
+import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.googlebooks.BookSearchResult;
 import com.aidanwhiteley.books.domain.googlebooks.Item;
+import com.aidanwhiteley.books.domain.googlebooks.VolumeInfo;
+import com.aidanwhiteley.books.repository.BookRepository;
 import com.aidanwhiteley.books.repository.GoogleBookSearchRepository;
 import com.aidanwhiteley.books.repository.GoogleBooksDaoSync;
 import com.aidanwhiteley.books.repository.dtos.GoogleBookSearch;
 import com.aidanwhiteley.books.service.dtos.GoogleBookSearchResult;
+import com.aidanwhiteley.books.util.HtmlSanitiserUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,14 +26,17 @@ public class GoogleBookSearchService {
 
     private final GoogleBookSearchRepository googleBookSearchRepository;
     private final GoogleBooksDaoSync googleBooksDaoSync;
+    private final BookRepository bookRepository;
 
     @Value("${books.google.books.cacheTimeoutMinutes}")
     private int cacheTimeoutMinutes;
 
-    public GoogleBookSearchService(@Autowired GoogleBookSearchRepository googleBookSearchRepository,
-                                   @Autowired GoogleBooksDaoSync googleBooksDaoSync) {
+    public GoogleBookSearchService(GoogleBookSearchRepository googleBookSearchRepository,
+                                   GoogleBooksDaoSync googleBooksDaoSync,
+                                   BookRepository bookRepository) {
         this.googleBookSearchRepository = googleBookSearchRepository;
         this.googleBooksDaoSync = googleBooksDaoSync;
+        this.bookRepository =bookRepository;
     }
 
     public GoogleBookSearchResult getGoogleBooks(String title, String author, int index) {
@@ -41,6 +48,26 @@ public class GoogleBookSearchService {
         } else {
             return getGoogleBookSearchResultFromAPI(title, author, index);
         }
+    }
+
+    public Book updateBookWithGoogleBookDetails(Book aBook, String title, String author, int index) {
+
+        GoogleBookSearchResult googleBookSearchResult = getGoogleBooks(title, author, index);
+        Item item = googleBookSearchResult.getItem();
+
+        // Google Books API data _should_ be safe from CSRF attacks but lets make sure before storing the
+        // description text in the database!
+        VolumeInfo vlInfo = item.getVolumeInfo();
+        if (vlInfo != null && vlInfo.getDescription() != null) {
+            vlInfo.setDescription(HtmlSanitiserUtils.allowBasicTextFormattingOnly(vlInfo.getDescription()));
+            item.setVolumeInfo(vlInfo);
+        }
+
+        bookRepository.addGoogleBookItemToBook(aBook.getId(), item);
+        LOGGER.debug("Google Books details added to Mongo for {}", aBook.getId());
+
+        aBook.setGoogleBookDetails(item);
+        return aBook;
     }
 
 

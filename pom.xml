@@ -313,8 +313,7 @@
                 </configuration>
             </plugin>
 
-            <!-- Following two plugins are for Mockito's use of NetBuddy and its dynamic loading of an agent.
-                See https://github.com/mockito/mockito/issues/3037 -->
+            <!-- See https://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/Mockito.html#0.3 -->
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <version>3.8.1</version>
@@ -332,6 +331,7 @@
                 <version>3.5.2</version>
                 <configuration>
                     <argLine>@{argLine} -javaagent:${net.bytebuddy:byte-buddy-agent:jar}</argLine>
+                    <argLine>@{argLine} -javaagent:${org.mockito:mockito-core:jar}</argLine>
                 </configuration>
             </plugin>
         </plugins>

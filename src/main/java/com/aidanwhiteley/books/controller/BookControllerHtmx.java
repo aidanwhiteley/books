@@ -1,5 +1,6 @@
 package com.aidanwhiteley.books.controller;
 
+import com.aidanwhiteley.books.controller.aspect.LimitDataVisibility;
 import com.aidanwhiteley.books.controller.exceptions.NotFoundException;
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.User;
@@ -34,6 +35,7 @@ import java.util.Optional;
 
 import static com.aidanwhiteley.books.domain.Book.Rating.GREAT;
 
+@LimitDataVisibility
 @Controller
 public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
 

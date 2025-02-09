@@ -1,12 +1,17 @@
 package com.aidanwhiteley.books.service;
 
+import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.googlebooks.Item;
+import com.aidanwhiteley.books.repository.BookRepository;
+import com.aidanwhiteley.books.repository.BookRepositoryTest;
 import com.aidanwhiteley.books.service.dtos.GoogleBookSearchResult;
 import com.aidanwhiteley.books.util.IntegrationTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.context.annotation.Profile;
+
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -16,6 +21,9 @@ public class GoogleBookSearchServiceTest extends IntegrationTest {
 
     @Autowired
     private GoogleBookSearchService googleBookSearchService;
+
+    @Autowired
+    private BookRepository bookRepository;
 
     @Test
     void testGetGoogleBookDataNotInCache() {
@@ -36,5 +44,20 @@ public class GoogleBookSearchServiceTest extends IntegrationTest {
         Item item2 = result2.getItem();
         assertNotNull(item2);
         assertTrue(result2.isFromCache());
+    }
+
+    @Test
+    void testUpdateBookWithGoogleDataFromCache() {
+        GoogleBookSearchResult result = googleBookSearchService.getGoogleBooks("Design Patterns", "Gamma", 0);
+        result = googleBookSearchService.getGoogleBooks("Design Patterns", "Gamma", 0);
+        assertTrue(result.isFromCache());
+
+        Book aBook = bookRepository.insert(BookRepositoryTest.createTestBook());
+        Book updatedBook = googleBookSearchService.updateBookWithGoogleBookDetails(aBook,
+                "Design Patterns", "Gamma", 0);
+        assertTrue(updatedBook.getGoogleBookDetails() != null);
+
+        Book foundBook = bookRepository.findById(updatedBook.getId()).orElseThrow();
+        assertTrue(foundBook.getGoogleBookDetails() != null);
     }
 }

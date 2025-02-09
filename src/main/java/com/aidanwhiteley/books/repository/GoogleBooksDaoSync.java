@@ -81,22 +81,6 @@ public class GoogleBooksDaoSync {
         }
     }
 
-    public void updateBookWithGoogleBookDetails(Book book, String googleBookId) {
-        Item item = searchGoogleBooksByGoogleBookId(googleBookId);
-
-        // Google Books API data _should_ be safe from CSRF attacks but lets make sure before storing the
-        // description text in the database!
-        VolumeInfo vlInfo = item.getVolumeInfo();
-        if (vlInfo != null && vlInfo.getDescription() != null) {
-            vlInfo.setDescription(HtmlSanitiserUtils.allowBasicTextFormattingOnly(vlInfo.getDescription()));
-            item.setVolumeInfo(vlInfo);
-        }
-
-        bookRepository.addGoogleBookItemToBook(book.getId(), item);
-        LOGGER.debug("Google Books details added to Mongo for {}", book.getId());
-    }
-
-
     private RestTemplate buildRestTemplate(RestTemplateBuilder builder) {
 
         return builder.setConnectTimeout(Duration.ofMillis(googleBooksApiConfig.getConnectTimeout())).

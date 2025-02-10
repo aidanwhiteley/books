@@ -71,9 +71,10 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
     @GetMapping(value = "/")
     public String index(Model model, Principal principal) {
         PageRequest pageObj = PageRequest.of(0, 30);
-        Page<Book> page = getBooks(pageObj, principal);
+        Page<Book> page = bookRepository.findByRatingOrderByCreatedDateTimeDesc(pageObj, GREAT);
+        Page<Book> limitedPage = limitDataVisibilityPageBooks(page, principal);
 
-        List<Book> books = getBooksWithRequiredImages(page);
+        List<Book> books = getBooksWithRequiredImages(limitedPage);
         model.addAttribute("books", books.stream().toList());
         model.addAttribute("rating", "great");
         addUserToModel(principal, model);
@@ -82,7 +83,7 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
     }
 
     public Page<Book> getBooks(PageRequest pageObj, Principal principal) {
-       return bookRepository.findByRatingOrderByCreatedDateTimeDesc(pageObj, GREAT);
+       return limitDataVisibilityPageBooks(bookRepository.findByRatingOrderByCreatedDateTimeDesc(pageObj, GREAT), principal);
     }
 
     @GetMapping(value = {"/getBooksByRating"}, params = {"rating", "bookRating"})
@@ -95,8 +96,9 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
 
         PageRequest pageObj = PageRequest.of(0, 30);
         Page<Book> page = bookRepository.findByRatingOrderByCreatedDateTimeDesc(pageObj, ipRating);
+        Page<Book> limitedPage = limitDataVisibilityPageBooks(page, principal);
 
-        List<Book> books = getBooksWithRequiredImages(page);
+        List<Book> books = getBooksWithRequiredImages(limitedPage);
         model.addAttribute("books", books.stream().toList());
         model.addAttribute("rating", rating);
         addUserToModel(principal, model);
@@ -106,7 +108,6 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
 
     @GetMapping(value = "/recent")
     public String recentlyReviewed(Model model, Principal principal) {
-
         return recentlyReviewedByPage(1, model, principal, false);
     }
 
@@ -115,7 +116,9 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
                                          @RequestHeader(value = "HX-Request", required = false) boolean hxRequest) {
         PageRequest pageObj = PageRequest.of(pagenum - 1, 7);
         Page<Book> page = bookRepository.findAllByOrderByCreatedDateTimeDesc(pageObj);
-        model.addAttribute("pageOfBooks", page);
+        Page<Book> limitedPage = limitDataVisibilityPageBooks(page, principal);
+
+        model.addAttribute("pageOfBooks", limitedPage);
         addUserToModel(principal, model);
         model.addAttribute("paginationLink", "/recent");
 
@@ -130,7 +133,8 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
     public String bookReview(@RequestParam String bookId, Model model, Principal principal,
                              HttpServletRequest request, HttpServletResponse response) {
         Book aBook = bookRepository.findById(bookId).orElseThrow(() -> new NotFoundException("Book id " + bookId + " not found"));
-        model.addAttribute("book", aBook);
+
+        model.addAttribute("book", limitDataVisibilityBook(aBook, principal));
         addUserToModel(principal, model);
 
         String aFlashMessage = flashMessages.retrieveFlashMessage("message", request, response);
@@ -173,7 +177,7 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
         PageRequest pageObj = PageRequest.of(pagenum - 1, defaultPageSize);
         Page<Book> books = bookRepository.findByRatingOrderByCreatedDateTimeDesc(pageObj, aRating);
 
-        model.addAttribute("pageOfBooks", books);
+        model.addAttribute("pageOfBooks", limitDataVisibilityPageBooks(books, principal));
         model.addAttribute("ratings", getRatings(""));
         model.addAttribute("authors", getAuthors());
         model.addAttribute("genres", getGenres());
@@ -202,7 +206,7 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
 
         PageRequest pageObj = PageRequest.of(pagenum - 1, defaultPageSize);
         Page<Book> books = bookRepository.findAllByAuthorOrderByCreatedDateTimeDesc(pageObj, author);
-        model.addAttribute("pageOfBooks", books);
+        model.addAttribute("pageOfBooks", limitDataVisibilityPageBooks(books, principal));
         model.addAttribute("ratings", getRatings(""));
         model.addAttribute("authors", getAuthors());
         model.addAttribute("reviewers", getReviewers(principal));
@@ -227,7 +231,7 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
 
         PageRequest pageObj = PageRequest.of(pagenum - 1, defaultPageSize);
         Page<Book> books = bookRepository.findAllByGenreOrderByCreatedDateTimeDesc(pageObj, genre);
-        model.addAttribute("pageOfBooks", books);
+        model.addAttribute("pageOfBooks", limitDataVisibilityPageBooks(books, principal));
         model.addAttribute("ratings", getRatings(""));
         model.addAttribute("authors", getAuthors());
         model.addAttribute("genres", getGenres());
@@ -262,7 +266,7 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
         PageRequest pageObj = PageRequest.of(pagenum - 1, defaultPageSize);
         Page<Book> books = bookRepository.searchForBooks(term, pageObj);
 
-        model.addAttribute("pageOfBooks", books);
+        model.addAttribute("pageOfBooks", limitDataVisibilityPageBooks(books, principal));
         addUserToModel(principal, model);
         model.addAttribute("paginationLink", "search?term=" + term);
 
@@ -307,6 +311,34 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
             model.addAttribute("user", null);
             model.addAttribute("highestRole", null);
         }
+    }
+
+
+    /*
+        The AOP based method for ensuring that data in Book objects is limited based on
+        the role of the user doesn't work so well in this controller where we are not
+        returning Book or Page<Book> objects from the controller methods.
+        Applying AOP advices on the database level calls isn't convenient either as
+        we need a Principal object available to know what roles the user has.
+
+        However, given that with Htmx we are not returning objects as JSON to the client side,
+        the need to call limitDataVisibility on Books is much diminished and it is the
+        utility accessors like allowUpdate, allowDelete and allowComment that are
+        probably still useful.
+     */
+    protected Book limitDataVisibilityBook(Book book, Principal principal) {
+        Optional<User> user = authUtils.extractUserFromPrincipal(principal, true);
+        book.setPermissionsAndContentForUser(user.orElse(null));
+        return book;
+    }
+
+    /*
+        See comment above.
+     */
+    protected Page<Book> limitDataVisibilityPageBooks(Page<Book> page, Principal principal) {
+        Optional<User> user = authUtils.extractUserFromPrincipal(principal, true);
+        page.getContent().forEach(s -> s.setPermissionsAndContentForUser(user.orElse(null)));
+        return page;
     }
 
     private List<BooksByAuthor> getAuthors() {

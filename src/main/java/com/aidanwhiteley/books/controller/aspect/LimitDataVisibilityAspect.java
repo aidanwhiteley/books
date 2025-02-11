@@ -32,8 +32,14 @@ import java.util.Optional;
  * method signature, then we assume the method is being called by an anonymous
  * user and all restrictions on the returned data are applied.
  * <p>
- * TODO - this doesn't need to be an "around" advice - it could just be an
- * "after".
+ * The AOP based method for ensuring that data in Book objects is limited based on
+ * the role of the user doesn't work so well in the BookControllerHtmx controllers where we are not
+ * returning Book or Page<Book> objects from the controller methods.
+ * Applying AOP advices on the database level calls isn't convenient either as
+ * we need a Principal object available to know what roles the user has.
+ * <p>
+ * However, given that with Htmx we are not returning objects as JSON to the client side,
+ * the need to call limitDataVisibility on Books is pretty much removed.
  */
 @SuppressWarnings({"EmptyMethod", "unused"})
 @Aspect
@@ -50,7 +56,6 @@ public class LimitDataVisibilityAspect {
 
     @Pointcut("@within(com.aidanwhiteley.books.controller.aspect.LimitDataVisibility)")
     public void isAnnotated() {
-        System.out.println("In isAnnotated");
         // Just used for point cut - no implementation
     }
 

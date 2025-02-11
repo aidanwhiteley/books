@@ -65,8 +65,13 @@ public class Book extends Auditable {
     private Item googleBookDetails;
 
     // The following three transient fields are intended as "helpers" to enable
-    // the client side to create links to functionality that will pass the
+    // the client side to create links to functionality that will later pass the
     // server side method level security.
+    // Note: These fields are set by the AOP based advice in LimitDataVisibilityAspect
+    //       and this advice is run when a Book (or Page<Book>) is returned to the client.
+    //       For the Htmx based client we don't have the same data security issue and
+    //       therefore the advice is not run and these fields are not correctly set
+    //       for individual users.
     @Transient
     @Setter(AccessLevel.NONE)
     private boolean allowUpdate;
@@ -119,7 +124,7 @@ public class Book extends Auditable {
 
         this.comments.forEach(c -> c.setPermissionsAndContentForUser(user));
 
-        // Remove user related data if the caller deosnt have the required level of access
+        // Remove user related data if the caller doesn't have the required level of access
         if (this.getCreatedBy() != null) {
             this.getCreatedBy().setPermissionsAndContentForUser(user);
         }

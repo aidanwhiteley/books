@@ -1,6 +1,5 @@
 package com.aidanwhiteley.books.controller;
 
-import com.aidanwhiteley.books.controller.aspect.LimitDataVisibility;
 import com.aidanwhiteley.books.controller.dtos.BookForm;
 import com.aidanwhiteley.books.controller.exceptions.NotAuthorisedException;
 import com.aidanwhiteley.books.controller.exceptions.NotFoundException;
@@ -38,7 +37,6 @@ import java.util.Optional;
 
 import static com.aidanwhiteley.books.util.LogDetaint.logMessageDetaint;
 
-@LimitDataVisibility
 @PreAuthorize("hasAnyRole('ROLE_EDITOR', 'ROLE_ADMIN')")
 @Controller
 public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHandling {
@@ -47,7 +45,6 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
     private static final Logger LOGGER = LoggerFactory.getLogger(BookSecureControllerHtmx.class);
     private final BookRepository bookRepository;
     private final JwtAuthenticationUtils authUtils;
-    private final StatsService statsService;
     private final GoogleBookSearchService googleBookSearchService;
     private final GoogleBooksDaoSync googleBooksDaoSync;
     private final FlashMessages flashMessages;
@@ -55,11 +52,10 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
     private int defaultPageSize;
 
     public BookSecureControllerHtmx(BookRepository bookRepository, JwtAuthenticationUtils jwtAuthenticationUtils,
-                                    StatsService statsService, GoogleBookSearchService googleBookSearchService,
+                                    GoogleBookSearchService googleBookSearchService,
                                     GoogleBooksDaoSync googleBooksDaoSync, FlashMessages flashMessages) {
         this.bookRepository = bookRepository;
         this.authUtils = jwtAuthenticationUtils;
-        this.statsService = statsService;
         this.googleBookSearchService = googleBookSearchService;
         this.googleBooksDaoSync = googleBooksDaoSync;
         this.flashMessages = flashMessages;
@@ -150,7 +146,7 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
 
             return "redirect:/bookreview?bookId=" + aBook.getId();
         } else {
-            LOGGER.error("Couldnt create a book as user to own book not found! Principal: {}", logMessageDetaint(principal));
+            LOGGER.error("Couldn't create a book as user to own book not found! Principal: {}", logMessageDetaint(principal));
             throw new NotAuthorisedException("User trying to create a book review not found in user data store!");
         }
     }

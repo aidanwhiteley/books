@@ -19,15 +19,15 @@
             </button>
         </li>
         <li class="nav-item" role="presentation">
-            <button aria-controls="profile" aria-selected="false" class="nav-link" data-bs-target="#profile"
+            <button aria-controls="profile" aria-selected="false" class="nav-link" data-bs-target="#google-details"
                     data-bs-toggle="tab"
                     id="profile-tab" role="tab" type="button">Google Book Summary
             </button>
         </li>
         <li class="nav-item" role="presentation">
-            <button aria-controls="messages" aria-selected="false" class="nav-link" data-bs-target="#messages"
+            <button aria-controls="comments" aria-selected="false" class="nav-link" data-bs-target="#comments"
                     data-bs-toggle="tab"
-                    id="messages-tab" role="tab" type="button">Review Comments
+                    id="comments-tab" role="tab" type="button">Review Comments
             </button>
         </li>
     </ul>
@@ -55,7 +55,8 @@
                     <b class="me-3">Book Preview:</b>
                     <a href="@{'https://books.google.co.uk/books?printsec=frontcover#v=onepage&q&f=true&gbpv=1(${id=book.googleBookId}'}"
                        target="_blank">
-                        <img alt="Google book preview button image" src="/images/gbs_preview_button1.gif"/>
+                        <img alt="Google book preview button image"
+                             th:src="@{/images/gbs_preview_button1.gif}" src="../static/images/gbs_preview_button1.gif"/>
                     </a>
                 </p>
 
@@ -75,14 +76,14 @@
                         hx-target="#detail" hx-target-error="#detail" hx-trigger="click"
                         th:hx-delete="@{/deletereview/{id}(id = ${book.id})}" type="submit">
                     Delete this book review
-                    <img class="htmx-indicator" height="20" src="/images/circles.svg" width="20"
-                        alt="Waiting...">
+                    <img class="htmx-indicator" height="20" src="../static/images/circles.svg" width="20"
+                        alt="Waiting..." th:src="@{/images/circles.svg}">
                 </button>
 
             </div>
         </div>
 
-        <div aria-labelledby="profile-tab" class="tab-pane" id="profile" role="tabpanel">
+        <div aria-labelledby="profile-tab" class="tab-pane" id="google-details" role="tabpanel">
             <div className="bookInfo">
                          <span th:if="${book.googleBookDetails != null and book.googleBookDetails.volumeInfo != null and book.googleBookDetails.volumeInfo.imageLinks != null}">
                             <img alt="A book cover" class="float-start rounded img-thumbnail me-3"
@@ -96,18 +97,21 @@
                 <div hx-disable id="googleSummaryDetail"
                      th:if="${book.googleBookDetails != null and book.googleBookDetails.volumeInfo != null}"
                      th:utext="${book.googleBookDetails.volumeInfo.description}">
-                    This is where the text from the Google book summary will go
+                    <p>This is where the text from the Google book summary will go</p>
+                    <p>It supports a very limited set of html elements that may have been used when writing
+                    a book review on Google Books</p>
                 </div>
             </div>
         </div>
 
-        <div aria-labelledby="messages-tab" class="tab-pane" id="messages" role="tabpanel">
+        <div aria-labelledby="comments-tab" class="tab-pane" id="comments" role="tabpanel">
+
             <p class="mt-4" th:if="${#lists.isEmpty(book.comments)}">No comments have been left yet on this book
                 review</p>
 
             <ul class="mt-4" th:if="${not #lists.isEmpty(book.comments)}">
                 <li class="comment-entry" th:each="comment : ${book.comments}">
-                    <del th:if="${comment.deleted}" th:text="'Comment deleted by ' + ${comment.deletedBy}" ></del>
+                    <del th:if="${comment.deleted}" th:text="'Comment deleted by ' + ${comment.deletedBy}" >A deleted dummy comment<br></del>
                     <span th:if="${!comment.deleted}"
                           th:text="'On ' + ${#temporals.format(comment.entered, 'dd-MM-yyyy')} + ' ' +
                                 ${comment.owner.fullName} + ' commented - ' + ${comment.commentText}" >
@@ -115,6 +119,10 @@
                     </span>
                 </li>
             </ul>
+
+
+
+
 
         </div>
     </div>

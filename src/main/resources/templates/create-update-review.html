@@ -17,7 +17,8 @@
         <h4 th:if="${iscreate}">Enter your review of a book you have read</h4>
         <h4 th:if="${isupdate}">Update book review</h4>
 
-        <form action="#" class="row g-3" id="createreviewform" method="post" novalidate
+        <form th:if="${user != null and (highestRole == 'EDITOR' or highestRole == 'ADMIN')}"
+              action="#" class="row g-3" id="createreviewform" method="post" novalidate
               th:action="@{${actionUrl}}"
               th:fragment="cloudy-book-review-form" th:object="${bookForm}">
 
@@ -166,6 +167,11 @@
             </div>
 
         </form>
+
+        <div th:if="${user == null or (highestRole != 'EDITOR' and highestRole != 'ADMIN')}"
+             class="alert alert-warning" role="alert">
+            <p>Sorry - you do not have permission to create or edit a book review. Did you forget to logon?</p>
+        </div>
     </div>
 
 

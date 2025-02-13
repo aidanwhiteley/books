@@ -120,7 +120,24 @@
                 </li>
             </ul>
 
+                <form th:if="${user != null and (highestRole == 'EDITOR' or highestRole == 'ADMIN')}"
+                        name="commentForm" method="post" class="row g-3" novalidate>
 
+                    <label for="comment">Your review comments</label>
+                    <textarea id="comment" name="comment" rows=4 class="form-control" placeholder="What did you think of the book review?"
+                              aria-describedby="commentHelpBlock" required></textarea>
+                    <small id="commentHelpBlock" class="form-text">
+                        Do you have a comment about the book or the review of the book? If so, enter it here.
+                        HTML formatting is not supported.<br />
+                        Remember: all entries are publicly visible.
+                    </small>
+
+                    <input type="hidden" id="bookId" name="bookId" value={aBook.id} />
+
+                    <button aria-label="Update book review" id="comment-add" class="me-4 mt-4 btn btn-outline-primary" type="button">
+                        Comment on this book review
+                    </button>
+                </form>
 
 
 

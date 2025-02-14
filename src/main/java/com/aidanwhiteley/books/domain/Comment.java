@@ -54,6 +54,8 @@ public class Comment implements Serializable {
     // The following transient field is intended as a "helper" to enable the
     // client side to create links to functionality that will pass the server
     // side method level security.
+    // As this is set via an AOP advice on the JSON APIs, it is not set / used for
+    // the HTMX version of the UI.
     @Transient
     @Setter(AccessLevel.NONE)
     private boolean allowDelete;

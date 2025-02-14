@@ -1,6 +1,6 @@
 package com.aidanwhiteley.books.controller;
 
-import com.aidanwhiteley.books.controller.aspect.LimitDataVisibility;
+import com.aidanwhiteley.books.controller.dtos.CommentForm;
 import com.aidanwhiteley.books.controller.exceptions.NotFoundException;
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.User;
@@ -127,6 +127,7 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
         Book aBook = bookRepository.findById(bookId).orElseThrow(() -> new NotFoundException("Book id " + bookId + " not found"));
 
         model.addAttribute("book", aBook);
+        model.addAttribute("commentForm", new CommentForm());
         addUserToModel(principal, model);
 
         String aFlashMessage = flashMessages.retrieveFlashMessage("message", request, response);

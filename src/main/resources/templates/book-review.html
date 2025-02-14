@@ -45,7 +45,7 @@
                 <p><b>Title
                     : </b><span th:text="${book.title}">A book title</span></p>
                 <p><b>Author: </b><span th:text="${book.author}">An author</span></p>
-                <p className="rating"><b>Rating: </b><span
+                <p class="rating"><b>Rating: </b><span
                         th:text="${#strings.capitalize(#strings.toLowerCase(book.rating))}">Good</span></p>
                 <p th:if="${book.createdDateTime}"><b>Review Date: </b><span
                         th:text="${#temporals.format(book.createdDateTime, 'dd-MM-yyyy')}">20-7-2024</span></p>
@@ -84,7 +84,7 @@
         </div>
 
         <div aria-labelledby="profile-tab" class="tab-pane" id="google-details" role="tabpanel">
-            <div className="bookInfo">
+            <div class="bookInfo">
                          <span th:if="${book.googleBookDetails != null and book.googleBookDetails.volumeInfo != null and book.googleBookDetails.volumeInfo.imageLinks != null}">
                             <img alt="A book cover" class="float-start rounded img-thumbnail me-3"
                                  src="../static/images/book-club-logo.jpeg"
@@ -104,7 +104,8 @@
             </div>
         </div>
 
-        <div aria-labelledby="comments-tab" class="tab-pane" id="comments" role="tabpanel">
+        <div aria-labelledby="comments-tab" class="tab-pane" id="comments" role="tabpanel"
+             th:fragment="cloudy-book-comment-form" >
 
             <p class="mt-4" th:if="${#lists.isEmpty(book.comments)}">No comments have been left yet on this book
                 review</p>
@@ -121,20 +122,25 @@
             </ul>
 
             <form th:if="${user != null and (highestRole == 'EDITOR' or highestRole == 'ADMIN')}"
-                    name="commentForm" method="post" class="row g-3" novalidate>
+                  name="commentForm" method="post" class="row g-3" novalidate action="#"
+                  th:object="${commentForm}" >
 
                 <label for="comment">Your review comments</label>
                 <textarea id="comment" name="comment" rows=4 class="form-control" placeholder="What did you think of the book review?"
-                          aria-describedby="commentHelpBlock" required></textarea>
+                          aria-describedby="commentHelpBlock" th:errorclass="is-invalid" th:field="*{comment}"></textarea>
+                <p class="invalid-feedback" th:errors="*{comment}" th:if="${#fields.hasErrors('comment')}">Invalid
+                    comment</p>
                 <small id="commentHelpBlock" class="form-text">
                     Do you have a comment about the book or the review of the book? If so, enter it here.
                     HTML formatting is not supported.<br />
                     Remember: all entries are publicly visible.
                 </small>
 
-                <input type="hidden" id="bookId" name="bookId" value={aBook.id} />
+                <input type="hidden" id="bookId" name="bookId" th:value="${book.id}" />
 
-                <button aria-label="Update book review" id="comment-add" class="me-4 mt-4 btn btn-outline-primary" type="button">
+                <button aria-label="Update book review" id="comment-add" class="me-4 mt-4 btn btn-outline-primary"
+                        th:hx-post="@{/addcomment}" hx-swap="outerHTML" hx-target="#comments" hx-target-error="#comments"
+                        type="button">
                     Comment on this book review
                 </button>
 

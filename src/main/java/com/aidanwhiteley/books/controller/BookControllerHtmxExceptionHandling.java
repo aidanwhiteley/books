@@ -85,7 +85,7 @@ public interface BookControllerHtmxExceptionHandling {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     default String handleException(Exception ex, Model model, Principal principal, WebRequest request) {
-        LOGGER.error("An unhandled exception was caught be the exception handler of last resort - {}", ex.getMessage(), ex);
+        LOGGER.error("An unhandled exception was caught by the exception handler of last resort - {}", ex.getMessage(), ex);
         String description = "Sorry - an unexpected problem occurred in the application.";
         return addAttributesToErrorPage(description, "e-500", model, principal, request);
     }
@@ -104,6 +104,5 @@ public interface BookControllerHtmxExceptionHandling {
     }
 
     void addUserToModel(Principal principal, Model model);
-
 
 }

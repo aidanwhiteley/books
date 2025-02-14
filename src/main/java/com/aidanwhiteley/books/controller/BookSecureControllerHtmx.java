@@ -1,9 +1,13 @@
 package com.aidanwhiteley.books.controller;
 
 import com.aidanwhiteley.books.controller.dtos.BookForm;
+import com.aidanwhiteley.books.controller.dtos.CommentForm;
+import com.aidanwhiteley.books.controller.dtos.CommentRec;
 import com.aidanwhiteley.books.controller.exceptions.NotAuthorisedException;
 import com.aidanwhiteley.books.controller.exceptions.NotFoundException;
 import com.aidanwhiteley.books.domain.Book;
+import com.aidanwhiteley.books.domain.Comment;
+import com.aidanwhiteley.books.domain.Owner;
 import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.repository.BookRepository;
 import com.aidanwhiteley.books.repository.GoogleBooksDaoSync;
@@ -11,7 +15,6 @@ import com.aidanwhiteley.books.repository.dtos.BooksByAuthor;
 import com.aidanwhiteley.books.repository.dtos.BooksByGenre;
 import com.aidanwhiteley.books.repository.dtos.BooksByReader;
 import com.aidanwhiteley.books.service.GoogleBookSearchService;
-import com.aidanwhiteley.books.service.StatsService;
 import com.aidanwhiteley.books.service.dtos.GoogleBookSearchResult;
 import com.aidanwhiteley.books.util.FlashMessages;
 import com.aidanwhiteley.books.util.JwtAuthenticationUtils;
@@ -264,6 +267,35 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
         } else {
             LOGGER.error("A user that doesnt exist in the database tried to delete book id {}", id);
             throw new NotFoundException("User not found when trying to delete a book review");
+        }
+    }
+
+    @PostMapping(value = "/addcomment")
+    public String addCommentToBook(@Valid @ModelAttribute CommentForm commentForm,
+                                    BindingResult bindingResult, Model model, Principal principal) {
+
+        if (bindingResult.hasErrors()) {
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Following comment creation validation errors occurred: {}", bindingResult);
+            }
+            Book theBook = bookRepository.findById(commentForm.getBookId())
+                    .orElseThrow(() -> new IllegalArgumentException("Couldn't find book id " + commentForm.getBookId() +
+                            " for new comment error message"));
+
+            model.addAttribute("commentForm", commentForm);
+            model.addAttribute("book", theBook);
+            addUserToModel(principal, model);
+            return "book-review :: cloudy-book-comment-form";
+        }
+
+        Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
+        if (user.isPresent()) {
+            Comment comment = new Comment(commentForm.getComment(), new Owner(user.get()));
+            bookRepository.addCommentToBook(commentForm.getBookId(), comment);
+            return "book-review :: cloudy-book-comment-form";
+        } else {
+            LOGGER.error("A user that doesnt exist in the database tried to create a book review comment");
+            throw new NotFoundException("User not found when trying to create a book review comment");
         }
     }
 

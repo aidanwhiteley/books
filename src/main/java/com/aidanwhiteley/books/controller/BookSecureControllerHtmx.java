@@ -291,7 +291,11 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
         Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
         if (user.isPresent()) {
             Comment comment = new Comment(commentForm.getComment(), new Owner(user.get()));
-            bookRepository.addCommentToBook(commentForm.getBookId(), comment);
+            Book updatedBook = bookRepository.addCommentToBook(commentForm.getBookId(), comment);
+
+            model.addAttribute("commentForm", new CommentForm());
+            model.addAttribute("book", updatedBook);
+            addUserToModel(principal, model);
             return "book-review :: cloudy-book-comment-form";
         } else {
             LOGGER.error("A user that doesnt exist in the database tried to create a book review comment");

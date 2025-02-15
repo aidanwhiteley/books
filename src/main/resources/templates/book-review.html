@@ -33,7 +33,7 @@
     </ul>
 
     <div class="tab-content">
-        <div aria-labelledby="home-tab" class="tab-pane active" id="home" role="tabpanel">
+        <div aria-labelledby="home-tab" class="tab-pane fade show active" id="home" role="tabpanel">
             <div class="bookInfo">
                         <span th:if="${book.googleBookDetails != null and book.googleBookDetails.volumeInfo != null and book.googleBookDetails.volumeInfo.imageLinks != null}">
 
@@ -83,7 +83,7 @@
             </div>
         </div>
 
-        <div aria-labelledby="profile-tab" class="tab-pane" id="google-details" role="tabpanel">
+        <div aria-labelledby="profile-tab" class="tab-pane fade" id="google-details" role="tabpanel">
             <div class="bookInfo">
                          <span th:if="${book.googleBookDetails != null and book.googleBookDetails.volumeInfo != null and book.googleBookDetails.volumeInfo.imageLinks != null}">
                             <img alt="A book cover" class="float-start rounded img-thumbnail me-3"
@@ -104,47 +104,46 @@
             </div>
         </div>
 
-        <div aria-labelledby="comments-tab" class="tab-pane" id="comments" role="tabpanel"
-             th:fragment="cloudy-book-comment-form" >
+        <div aria-labelledby="comments-tab" class="tab-pane fade" id="comments" role="tabpanel">
 
-            <p class="mt-4" th:if="${#lists.isEmpty(book.comments)}">No comments have been left yet on this book
-                review</p>
+            <div id="comments-content" th:fragment="cloudy-book-comment-form" >
 
-            <ul class="mt-4" th:if="${not #lists.isEmpty(book.comments)}">
-                <li class="comment-entry" th:each="comment : ${book.comments}">
-                    <del th:if="${comment.deleted}" th:text="'Comment deleted by ' + ${comment.deletedBy}" >A deleted dummy comment<br></del>
-                    <span th:if="${!comment.deleted}"
-                          th:text="'On ' + ${#temporals.format(comment.entered, 'dd-MM-yyyy')} + ' ' +
-                                ${comment.owner.fullName} + ' commented - ' + ${comment.commentText}" >
-                        On 11-02-2018 Fred Bloggs commented - This is a dummy comment
-                    </span>
-                </li>
-            </ul>
+                <p class="mt-4" th:if="${#lists.isEmpty(book.comments)}">No comments have been left yet on this book
+                    review</p>
 
-            <form th:if="${user != null and (highestRole == 'EDITOR' or highestRole == 'ADMIN')}"
-                  name="commentForm" method="post" class="row g-3" novalidate action="#"
-                  th:object="${commentForm}" >
+                <ul class="mt-4" th:if="${not #lists.isEmpty(book.comments)}">
+                    <li class="comment-entry" th:each="comment : ${book.comments}">
+                        <del th:if="${comment.deleted}" th:text="'Comment deleted by ' + ${comment.deletedBy}" >A deleted dummy comment<br></del>
+                        <span th:if="${!comment.deleted}"
+                              th:text="'On ' + ${#temporals.format(comment.entered, 'dd-MM-yyyy')} + ' ' +
+                                    ${comment.owner.fullName} + ' commented - ' + ${comment.commentText}" >
+                            On 11-02-2018 Fred Bloggs commented - This is a dummy comment
+                        </span>
+                    </li>
+                </ul>
 
-                <label for="comment">Your review comments</label>
-                <textarea id="comment" name="comment" rows=4 class="form-control" placeholder="What did you think of the book review?"
-                          aria-describedby="commentHelpBlock" th:errorclass="is-invalid" th:field="*{comment}"></textarea>
-                <p class="invalid-feedback" th:errors="*{comment}" th:if="${#fields.hasErrors('comment')}">Invalid
-                    comment</p>
-                <small id="commentHelpBlock" class="form-text">
-                    Do you have a comment about the book or the review of the book? If so, enter it here.
-                    HTML formatting is not supported.<br />
-                    Remember: all entries are publicly visible.
-                </small>
+                <form th:if="${user != null and (highestRole == 'EDITOR' or highestRole == 'ADMIN')}"
+                      name="commentForm" th:hx-post="@{/addcomment}" hx-target="#comments-content" hx-swap="outerHTML"
+                      class="row g-3" novalidate th:object="${commentForm}" >
 
-                <input type="hidden" id="bookId" name="bookId" th:value="${book.id}" />
+                    <label for="comment">Your review comments</label>
+                    <textarea id="comment" name="comment" rows=4 class="form-control" placeholder="What did you think of the book review?"
+                              aria-describedby="commentHelpBlock" th:errorclass="is-invalid" th:field="*{comment}"></textarea>
+                    <p class="invalid-feedback" th:errors="*{comment}" th:if="${#fields.hasErrors('comment')}">Invalid comment</p>
+                    <small id="commentHelpBlock" class="form-text">
+                        Do you have a comment about the book or the review of the book? If so, enter it here.
+                        HTML formatting is not supported.<br />
+                        Remember: all entries are publicly visible.
+                    </small>
 
-                <button aria-label="Update book review" id="comment-add" class="me-4 mt-4 btn btn-outline-primary"
-                        th:hx-post="@{/addcomment}" hx-swap="outerHTML" hx-target="#comments" hx-target-error="#comments"
-                        type="button">
-                    Comment on this book review
-                </button>
+                    <input type="hidden" id="bookId" name="bookId" th:value="${book.id}" />
 
-            </form>
+                    <button aria-label="Update book review" id="comment-add" class="me-4 mt-4 btn btn-outline-primary" type="submit">
+                        Comment on this book review
+                    </button>
+
+                </form>
+            </div>
 
         </div>
     </div>

@@ -297,7 +297,7 @@
                 <configuration>
                     <from>
                         <image>openjdk:21-jdk</image>
-                        <!--                    <image>amazoncorretto:21.0.0</image>-->
+                        <!-- <image>amazoncorretto:21.0.0</image>-->
                     </from>
                     <to>
                         <image>aidanwhiteley/books-api-java</image>

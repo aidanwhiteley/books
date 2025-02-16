@@ -96,9 +96,7 @@
         htmx.onLoad(function (elt) {
             const allSelects = htmx.findAll(elt, ".finder-control");
             allSelects.forEach((el) => {
-                console.log(el);
                 if (!el.tomselect) {
-                    console.log('Running TomSelect init');
                     try {
                         selectControls.push(new TomSelect(el, {
                             create: false,
@@ -109,24 +107,19 @@
                             sortField: [{ field: '$order' }, { field: '$score' }]
                         }));
                     } catch (err) {
-                        console.log('Ignoring already initted error');
+                        console.debug('Ignoring already initted error on Tom Select');
                     }
-                } else {
-                    console.log('Skipping - already TomSelect init');
                 }
             }
             )
         });
 
         function clearSelects(evt) {
-            console.log('In the select ' + evt.id);
-            console.log(selectControls);
             selectControls.forEach((el) => {
-                console.log(el);
                 if (el.inputId === evt.id) {
-                    console.log('NOT CLEARING el.inputId ' + el.inputId + ' evt.id ' + evt.id);
+                    console.debug('Not clearing el.inputId ' + el.inputId + ' evt.id ' + evt.id);
                 } else {
-                    console.log('CLEARING el.id ' + el.inputId + ' evt.id ' + evt.id);
+                    console.debug('Clearing el.id ' + el.inputId + ' evt.id ' + evt.id);
                     el.clear(true);
                 }
             });

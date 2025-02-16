@@ -6,6 +6,21 @@ spring:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
 
+  resources:
+    chain:
+      html-application-cache: true
+      enabled: true
+      strategy:
+        content:
+          enabled: true
+          paths: /**
+    cache:
+      cachecontrol:
+        max-age: 365d
+        no-cache: false
+        no-store: false
+        cache-public: true
+
   application:
     name: BooksApiService
   data:

@@ -272,7 +272,8 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
 
     @PostMapping(value = "/addcomment")
     public String addCommentToBook(@Valid @ModelAttribute CommentForm commentForm,
-                                    BindingResult bindingResult, Model model, Principal principal) {
+                                    BindingResult bindingResult, Model model, Principal principal,
+                                   HttpServletRequest request, HttpServletResponse response) {
 
         if (bindingResult.hasErrors()) {
             if (LOGGER.isDebugEnabled()) {
@@ -296,6 +297,8 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
             model.addAttribute("commentForm", new CommentForm());
             model.addAttribute("book", updatedBook);
             addUserToModel(principal, model);
+            response.addHeader("HX-Trigger-After-Swap", "{ \"showFlashMessage\": \"Your comment on the book review was " +
+                    "successfully created\"}");
             return "book-review :: cloudy-book-comment-form";
         } else {
             LOGGER.error("A user that doesnt exist in the database tried to create a book review comment");

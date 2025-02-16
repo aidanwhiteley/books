@@ -181,19 +181,17 @@
         htmx.onLoad(function (elt) {
             const allSelects = htmx.findAll(elt, "#genre");
             allSelects.forEach((el) => {
-                console.log(el);
                 if (!el.tomselect) {
-                    console.log('Running TomSelect init');
                     try {
                         selectControls.push(new TomSelect(el, {
                             create: true,
                             sortField: [{ field: '$order' }, { field: '$score' }]
                         }));
                     } catch (err) {
-                        console.log(err);
+                        console.error(err);
                     }
                 } else {
-                    console.log('Skipping - already TomSelect init');
+                    console.debug('Skipping - already TomSelect init');
                 }
             }
             )

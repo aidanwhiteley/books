@@ -122,8 +122,8 @@
                     </li>
                 </ul>
 
-                <form th:if="${user != null and (highestRole == 'EDITOR' or highestRole == 'ADMIN')}"
-                      name="commentForm" th:hx-post="@{/addcomment}" hx-target="#comments-content" hx-swap="outerHTML"
+                <form th:if="${user != null and (highestRole == 'EDITOR' or highestRole == 'ADMIN')}" name="commentForm"
+                      th:hx-post="@{/addcomment}" hx-target="#comments-content" hx-swap="outerHTML" hx-target-error="#detail"
                       class="row g-3" novalidate th:object="${commentForm}" >
 
                     <label for="comment">Your review comments</label>

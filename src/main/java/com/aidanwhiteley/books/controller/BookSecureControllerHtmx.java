@@ -2,7 +2,6 @@ package com.aidanwhiteley.books.controller;
 
 import com.aidanwhiteley.books.controller.dtos.BookForm;
 import com.aidanwhiteley.books.controller.dtos.CommentForm;
-import com.aidanwhiteley.books.controller.dtos.CommentRec;
 import com.aidanwhiteley.books.controller.exceptions.NotAuthorisedException;
 import com.aidanwhiteley.books.controller.exceptions.NotFoundException;
 import com.aidanwhiteley.books.domain.Book;
@@ -16,7 +15,6 @@ import com.aidanwhiteley.books.repository.dtos.BooksByGenre;
 import com.aidanwhiteley.books.repository.dtos.BooksByReader;
 import com.aidanwhiteley.books.service.GoogleBookSearchService;
 import com.aidanwhiteley.books.service.dtos.GoogleBookSearchResult;
-import com.aidanwhiteley.books.util.FlashMessages;
 import com.aidanwhiteley.books.util.JwtAuthenticationUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -50,18 +48,19 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
     private final JwtAuthenticationUtils authUtils;
     private final GoogleBookSearchService googleBookSearchService;
     private final GoogleBooksDaoSync googleBooksDaoSync;
-    private final FlashMessages flashMessages;
+    private final BookControllerHtmx bookControllerHtmx;
     @Value("${books.users.default.page.size}")
     private int defaultPageSize;
 
     public BookSecureControllerHtmx(BookRepository bookRepository, JwtAuthenticationUtils jwtAuthenticationUtils,
                                     GoogleBookSearchService googleBookSearchService,
-                                    GoogleBooksDaoSync googleBooksDaoSync, FlashMessages flashMessages) {
+                                    GoogleBooksDaoSync googleBooksDaoSync,
+                                    BookControllerHtmx bookControllerHtmx) {
         this.bookRepository = bookRepository;
         this.authUtils = jwtAuthenticationUtils;
         this.googleBookSearchService = googleBookSearchService;
         this.googleBooksDaoSync = googleBooksDaoSync;
-        this.flashMessages = flashMessages;
+        this.bookControllerHtmx = bookControllerHtmx;
     }
 
     @GetMapping(value = {"/createreview"})
@@ -145,9 +144,13 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
                 googleBookSearchService.updateBookWithGoogleBookDetails(aBook, bookForm.getTitle(), bookForm.getAuthor(), bookForm.getIndex());
             }
 
-            flashMessages.storeFlashMessage("message", "Book review added successfully", request, response);
-
-            return "redirect:/bookreview?bookId=" + aBook.getId();
+            model.addAttribute("book", aBook);
+            model.addAttribute("commentForm", new CommentForm());
+            addUserToModel(principal, model);
+            response.addHeader("HX-Trigger-After-Swap", "{ \"showFlashMessage\": \"Your book review was " +
+                    "successfully created\"}");
+            response.setHeader("HX-Push-Url", "/bookreview?bookId=" + aBook.getId());
+            return "book-review :: cloudy-book-review";
         } else {
             LOGGER.error("Couldn't create a book as user to own book not found! Principal: {}", logMessageDetaint(principal));
             throw new NotAuthorisedException("User trying to create a book review not found in user data store!");
@@ -209,9 +212,6 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
                 googleBookSearchService.updateBookWithGoogleBookDetails(aBook, bookForm.getTitle(), bookForm.getAuthor(), bookForm.getIndex());
             }
 
-            // flashMessages.storeFlashMessage("message", "Book review updated successfully", request, response);
-            // return "redirect:/bookreview?bookId=" + bookForm.getBookId();
-
             model.addAttribute("book", aBook);
             model.addAttribute("commentForm", new CommentForm());
             addUserToModel(principal, model);
@@ -251,7 +251,8 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
 
 
     @DeleteMapping(value = "/deletereview/{id}")
-    public String deleteBookReview(@PathVariable String id, Model model, Principal principal) {
+    public String deleteBookReview(@PathVariable String id, Model model, Principal principal,
+                                   HttpServletResponse response) {
 
         Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
         if (user.isPresent()) {
@@ -260,12 +261,16 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
 
             if (currentBookState.isOwner(user.get()) || user.get().getRoles().contains(User.Role.ROLE_ADMIN)) {
                 bookRepository.deleteById(id);
-                model.addAttribute("booktitle", currentBookState.getTitle());
-                model.addAttribute("author", currentBookState.getAuthor());
-                model.addAttribute("reviewer", currentBookState.getCreatedBy().getFullName());
-                addUserToModel(principal, model);
 
-                return "delete-book-confirmation :: cloudy-delete-confirmation";
+                // This call is to populate the model variable - we don't use the return string
+                bookControllerHtmx.index(model, principal);
+
+                response.addHeader("HX-Trigger-After-Swap", "{ \"showFlashMessage\": \"The review of '" +
+                        currentBookState.getTitle() + " by " + currentBookState.getAuthor() +
+                        " was successfully deleted\"}");
+                response.setHeader("HX-Push-Url", "/");
+
+                return "home :: cloudy-home-page";
             } else {
                 LOGGER.warn("User {} {} tried to delete book id {} '{}' without the necessary permissions", user.get().getFullName(),
                         user.get().getId(), currentBookState.getId(), currentBookState.getTitle());

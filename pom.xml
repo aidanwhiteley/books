@@ -119,13 +119,6 @@
             <version>1.18.3</version>
         </dependency>
 
-        <!-- For cookie based Flash attributes -->
-        <dependency>
-            <groupId>com.innoq</groupId>
-            <artifactId>spring-cookie</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-
         <!-- Cloud related dependencies -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>

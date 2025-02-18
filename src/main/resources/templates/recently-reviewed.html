@@ -10,12 +10,8 @@
 <body>
 
 <div id="detail">
-    <div class="alert alert-success" role="alert" th:if="${param.created}">
-        Book review created successfully
-    </div>
     <p th:replace="~{components/books-table :: cloudy-books-table}">The <a
             href="./components/books-table.html">table</a> of recently reviewed books will go here.</p>
-    <div th:if="${message}" th:insert="~{components/toast-messages :: cloudy-toast-messages}"></div>
 </div>
 
 </body>

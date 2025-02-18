@@ -135,7 +135,7 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
             model.addAttribute("message", aFlashMessage);
         }
 
-        return "book-review.html";
+        return "book-review";
     }
 
     @GetMapping(value = "/find")

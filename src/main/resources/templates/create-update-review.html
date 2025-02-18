@@ -19,7 +19,7 @@
 
         <form th:if="${user != null and (highestRole == 'EDITOR' or highestRole == 'ADMIN')}"
               action="#" class="row g-3" id="createreviewform" method="post" novalidate
-              th:action="@{${actionUrl}}"
+              th:hx-post="@{${actionUrl}}" hx-target="#detail"
               th:fragment="cloudy-book-review-form" th:object="${bookForm}">
 
             <div class="col-md-6">

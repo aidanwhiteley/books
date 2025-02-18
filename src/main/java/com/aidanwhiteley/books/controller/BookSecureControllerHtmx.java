@@ -209,9 +209,16 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
                 googleBookSearchService.updateBookWithGoogleBookDetails(aBook, bookForm.getTitle(), bookForm.getAuthor(), bookForm.getIndex());
             }
 
-            flashMessages.storeFlashMessage("message", "Book review updated successfully", request, response);
+            // flashMessages.storeFlashMessage("message", "Book review updated successfully", request, response);
+            // return "redirect:/bookreview?bookId=" + bookForm.getBookId();
 
-            return "redirect:/bookreview?bookId=" + bookForm.getBookId();
+            model.addAttribute("book", aBook);
+            model.addAttribute("commentForm", new CommentForm());
+            addUserToModel(principal, model);
+            response.addHeader("HX-Trigger-After-Swap", "{ \"showFlashMessage\": \"The book review was " +
+                    "successfully updated\"}");
+            response.setHeader("HX-Push-Url", "/bookreview?bookId=" + bookForm.getBookId());
+            return "book-review :: cloudy-book-review";
         } else {
             LOGGER.error("Couldn't update a book as user to own book not found! Principal: {}", logMessageDetaint(principal));
             throw new NotAuthorisedException("User trying to update a book review not found in user data store!");

@@ -112,8 +112,7 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
     }
 
     @GetMapping(value = "/bookreview", params = {"bookId"})
-    public String bookReview(@RequestParam String bookId, Model model, Principal principal,
-                             HttpServletRequest request, HttpServletResponse response) {
+    public String bookReview(@RequestParam String bookId, Model model, Principal principal) {
         Book aBook = bookRepository.findById(bookId).orElseThrow(() -> new NotFoundException("Book id " + bookId + " not found"));
 
         model.addAttribute("book", aBook);

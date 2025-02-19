@@ -1,4 +1,31 @@
 
+function initialiseSwiper(evt) {
+    new Swiper('.mySwiper', {
+        effect: 'coverflow',
+        grabCursor: true,
+        centeredSlides: true,
+        slidesPerView: 'auto',
+        coverflowEffect: {
+            rotate: 20,
+            stretch: 10,
+            depth: 30,
+            modifier: 1,
+            slideShadows: false,
+        },
+        loop: true,
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        }
+    });
+}
+if (document.getElementById("swiper-slides")) {
+    initialiseSwiper();
+}
+document.body.addEventListener("initSwiper", function(evt) {
+    initialiseSwiper();
+})
+
 document.body.addEventListener("showFlashMessage", function(evt){
     Toastify({
         text: evt.detail.value,
@@ -13,3 +40,4 @@ document.body.addEventListener("showFlashMessage", function(evt){
         }
     }).showToast();
 })
+

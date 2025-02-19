@@ -9,7 +9,6 @@ import com.aidanwhiteley.books.domain.Comment;
 import com.aidanwhiteley.books.domain.Owner;
 import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.repository.BookRepository;
-import com.aidanwhiteley.books.repository.GoogleBooksDaoSync;
 import com.aidanwhiteley.books.repository.dtos.BooksByAuthor;
 import com.aidanwhiteley.books.repository.dtos.BooksByGenre;
 import com.aidanwhiteley.books.repository.dtos.BooksByReader;
@@ -47,19 +46,16 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
     private final BookRepository bookRepository;
     private final JwtAuthenticationUtils authUtils;
     private final GoogleBookSearchService googleBookSearchService;
-    private final GoogleBooksDaoSync googleBooksDaoSync;
     private final BookControllerHtmx bookControllerHtmx;
     @Value("${books.users.default.page.size}")
     private int defaultPageSize;
 
     public BookSecureControllerHtmx(BookRepository bookRepository, JwtAuthenticationUtils jwtAuthenticationUtils,
                                     GoogleBookSearchService googleBookSearchService,
-                                    GoogleBooksDaoSync googleBooksDaoSync,
                                     BookControllerHtmx bookControllerHtmx) {
         this.bookRepository = bookRepository;
         this.authUtils = jwtAuthenticationUtils;
         this.googleBookSearchService = googleBookSearchService;
-        this.googleBooksDaoSync = googleBooksDaoSync;
         this.bookControllerHtmx = bookControllerHtmx;
     }
 
@@ -106,8 +102,7 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
 
     @PostMapping(value = {"/createreview"})
     public String createBookReviewForm(@Valid @ModelAttribute BookForm bookForm, BindingResult bindingResult,
-                                       HttpServletRequest request, HttpServletResponse response,
-                                       Model model, Principal principal) {
+                                       HttpServletResponse response, Model model, Principal principal) {
 
         if (bookForm.getRating().equals(NO_VALUE_SELECTED)) {
             bindingResult.rejectValue("rating", "error.rating", "You must select your rating for the book");
@@ -263,14 +258,14 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
                 bookRepository.deleteById(id);
 
                 // This call is to populate the model variable - we don't use the return string
-                bookControllerHtmx.index(model, principal);
+                bookControllerHtmx.recentlyReviewed(model, principal);
 
                 response.addHeader("HX-Trigger-After-Swap", "{ \"showFlashMessage\": \"The review of '" +
-                        currentBookState.getTitle() + " by " + currentBookState.getAuthor() +
+                        currentBookState.getTitle() + "' by " + currentBookState.getAuthor() +
                         " was successfully deleted\"}");
-                response.setHeader("HX-Push-Url", "/");
 
-                return "home :: cloudy-home-page";
+                response.addHeader("HX-Push-Url", "recent");
+                return "recently-reviewed :: cloudy-recently-reviewed";
             } else {
                 LOGGER.warn("User {} {} tried to delete book id {} '{}' without the necessary permissions", user.get().getFullName(),
                         user.get().getId(), currentBookState.getId(), currentBookState.getTitle());
@@ -284,8 +279,8 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
 
     @PostMapping(value = "/addcomment")
     public String addCommentToBook(@Valid @ModelAttribute CommentForm commentForm,
-                                    BindingResult bindingResult, Model model, Principal principal,
-                                   HttpServletRequest request, HttpServletResponse response) {
+                                   BindingResult bindingResult, Model model, Principal principal,
+                                   HttpServletResponse response) {
 
         if (bindingResult.hasErrors()) {
             if (LOGGER.isDebugEnabled()) {

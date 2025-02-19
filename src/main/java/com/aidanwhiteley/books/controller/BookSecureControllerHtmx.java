@@ -272,7 +272,7 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
                 throw new AccessDeniedException("User tried to delete book without necessary permissions");
             }
         } else {
-            LOGGER.error("A user that doesnt exist in the database tried to delete book id {}", id);
+            LOGGER.error("A user that doesn't exist in the database tried to delete book id {}", id);
             throw new NotFoundException("User not found when trying to delete a book review");
         }
     }

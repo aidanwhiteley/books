@@ -18,7 +18,7 @@
 
         <div class="col-sm mb-4">
             <h3 class="finder-header">Find Reviews By Rating</h3>
-            <select autocomplete="off" class="finder-control" data-placeholder="Select a review rating"
+            <select autocomplete="off" class="form-control tom-select-control" data-placeholder="Select a review rating"
                     hx-get="/find?pagenum=1" hx-on::after-request="clearSelects(this)" hx-push-url="true"
                     hx-target="#cloudy-find-by-results"
                     hx-target-error="#detail" id="select-by-rating" name="rating">
@@ -32,7 +32,7 @@
 
         <div class="col-sm mb-4">
             <h3 class="finder-header">Find Reviews By Author</h3>
-            <select autocomplete="off" class="finder-control" data-placeholder="Start typing an author's name..."
+            <select autocomplete="off" class="form-control tom-select-control" data-placeholder="Start typing an author's name..."
                     hx-get="/find?pagenum=1" hx-on::after-request="clearSelects(this)" hx-push-url="true"
                     hx-target="#cloudy-find-by-results"
                     hx-target-error="#detail" id="select-by-author" name="author">
@@ -47,7 +47,7 @@
 
         <div class="col-sm mb-4">
             <h3 class="finder-header">Find Reviews By Genre</h3>
-            <select autocomplete="off" class="finder-control" data-placeholder="Start typing a genre..."
+            <select autocomplete="off" class="form-control tom-select-control" data-placeholder="Start typing a genre..."
                     hx-get="/find?pagenum=1" hx-on::after-request="clearSelects(this)" hx-push-url="true"
                     hx-target="#cloudy-find-by-results"
                     hx-target-error="#detail" id="select-by-genre" name="genre">
@@ -62,7 +62,7 @@
         <div class="col-sm mb-4"
              th:if="${(user != null) and ((highestRole == 'EDITOR' or highestRole == 'ADMIN'))}">
             <h3 class="finder-header">Find Reviews By Reviewer</h3>
-            <select autocomplete="off" class="finder-control" data-placeholder="Start typing a reviewer..."
+            <select autocomplete="off" class="form-control tom-select-control" data-placeholder="Start typing a reviewer..."
                     hx-get="/find?pagenum=1" hx-on::after-request="clearSelects(this)" hx-push-url="true"
                     hx-target="#cloudy-find-by-results"
                     hx-target-error="#detail" id="select-by-reviewer" name="reviewer">
@@ -89,42 +89,6 @@
         </div>
 
     </div>
-
-    <script src="../../static/js/tom-select.base.min.js" th:src="@{/js/tom-select.base.min.js}"></script>
-    <script>
-        let selectControls = [];
-        htmx.onLoad(function (elt) {
-            const allSelects = htmx.findAll(elt, ".finder-control");
-            allSelects.forEach((el) => {
-                if (!el.tomselect) {
-                    try {
-                        selectControls.push(new TomSelect(el, {
-                            create: false,
-                            highlight: true,
-                            allowEmptyOption: false,
-                            maxItems: 1,
-                            items: [],
-                            sortField: [{ field: '$order' }, { field: '$score' }]
-                        }));
-                    } catch (err) {
-                        console.debug('Ignoring already initted error on Tom Select');
-                    }
-                }
-            }
-            )
-        });
-
-        function clearSelects(evt) {
-            selectControls.forEach((el) => {
-                if (el.inputId === evt.id) {
-                    console.debug('Not clearing el.inputId ' + el.inputId + ' evt.id ' + evt.id);
-                } else {
-                    console.debug('Clearing el.id ' + el.inputId + ' evt.id ' + evt.id);
-                    el.clear(true);
-                }
-            });
-        }
-    </script>
 
 </div>
 

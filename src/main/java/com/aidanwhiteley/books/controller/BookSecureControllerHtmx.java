@@ -125,7 +125,7 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
                 findGoogleBooksByTitleAndAuthor(bookForm.getTitle(), bookForm.getAuthor(), bookForm.getIndex(), model, principal);
             }
 
-            return "create-update-review";
+            return "create-update-review :: cloudy-book-review-form";
         }
 
         Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
@@ -310,6 +310,41 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
         } else {
             LOGGER.error("A user that doesnt exist in the database tried to create a book review comment");
             throw new NotFoundException("User not found when trying to create a book review comment");
+        }
+    }
+
+    @DeleteMapping(value = "/deletecomment/", params = {"bookId", "commentId"})
+    public String deleteCommentFromBook(@RequestParam String bookId, @RequestParam String commentId,
+                                      Principal principal, Model model, HttpServletResponse response) {
+
+        if (bookId == null || bookId.isBlank() || commentId == null || commentId.isBlank()) {
+            throw new IllegalArgumentException("Missing parameters when trying to delete a book review comment");
+        }
+
+        Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
+
+        if (user.isPresent()) {
+            Book currentBook = bookRepository.findById(bookId)
+                    .orElseThrow(() -> new IllegalArgumentException("Unable to find book to delete comment from"));
+            Comment comment = currentBook.getComments().stream().filter(c -> c.getId().equals(commentId)).findFirst()
+                    .orElse(null);
+            if (comment == null) {
+                throw new IllegalArgumentException("Unknown commentId supplied to deleteCommentFromBook");
+            }
+
+            if (comment.isOwner(user.get()) || user.get().getRoles().contains(User.Role.ROLE_ADMIN)) {
+                Book book = bookRepository.removeCommentFromBook(bookId, commentId, user.get().getFullName());
+                model.addAttribute("book", book);
+                addUserToModel(principal, model);
+                response.addHeader("HX-Trigger-After-Swap", "{ \"showFlashMessage\": \"Your comment on the '" + currentBook.getTitle() +
+                                "' book review was successfully deleted\"}");
+                return "book-review :: cloudy-book-comments-list";
+
+            } else {
+                throw new NotAuthorisedException("Attempt to delete a comment but the user is not owner of comment or admin");
+            }
+        } else {
+            throw new NotAuthorisedException("Attempt to delete a comment but the user not found!");
         }
     }
 

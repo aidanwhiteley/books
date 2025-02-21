@@ -41,3 +41,49 @@ document.body.addEventListener("showFlashMessage", function(evt){
     }).showToast();
 })
 
+let selectControls = [];
+function initialiseTomSelect() {
+    htmx.onLoad(function (elt) {
+        const allSelects = htmx.findAll(elt, ".tom-select-control");
+        allSelects.forEach((el) => {
+            if (!el.tomselect) {
+                try {
+                    selectControls.push(new TomSelect(el, {
+                        create: false,
+                        highlight: true,
+                        allowEmptyOption: false,
+                        maxItems: 1,
+                        items: [],
+                        sortField: [{ field: '$order' }, { field: '$score' }]
+                    }));
+                } catch (err) {
+                    console.debug('Ignoring already initted error on Tom Select');
+                }
+            }
+        }
+        )
+    });
+}
+
+if (document.getElementById("createreviewform")) {
+    initialiseTomSelect();
+}
+
+if (document.getElementById("select-by-author")) {
+    initialiseTomSelect();
+}
+
+function clearSelects(evt) {
+    selectControls.forEach((el) => {
+        if (el.inputId === evt.id) {
+            console.debug('Not clearing el.inputId ' + el.inputId + ' evt.id ' + evt.id);
+        } else {
+            console.debug('Clearing el.id ' + el.inputId + ' evt.id ' + evt.id);
+            el.clear(true);
+        }
+    });
+}
+
+
+
+

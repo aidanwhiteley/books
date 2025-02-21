@@ -11,7 +11,7 @@
 
 <body>
 
-<div id="detail">
+<div id="detail" th:fragment="cloudy-book-review-form" >
 
     <div class="container">
         <h4 th:if="${iscreate}">Enter your review of a book you have read</h4>
@@ -19,8 +19,7 @@
 
         <form th:if="${user != null and (highestRole == 'EDITOR' or highestRole == 'ADMIN')}"
               action="#" class="row g-3" id="createreviewform" method="post" novalidate
-              th:hx-post="@{${actionUrl}}" hx-target="#detail"
-              th:fragment="cloudy-book-review-form" th:object="${bookForm}">
+              th:hx-post="@{${actionUrl}}" hx-target="#detail" th:object="${bookForm}">
 
             <div class="col-md-6">
                 <label for="title">Book Title</label>
@@ -58,7 +57,7 @@
 
             <div class="col-md-8">
                 <label for="genre">Genre</label>
-                <select autocomplete="off" class="form-control" id="genre" name="genre"
+                <select autocomplete="off" class="form-control tom-select-control" id="genre" name="genre"
                         placeholder="Start typing a genre..." th:errorclass="is-invalid" th:field="*{genre}">
                     <option value="">Start typing a genre...</option>
                     <option th:each="genre : ${genres}" th:text="${genre.genre + ' - ' + genre.countOfBooks + ' books'}"
@@ -185,31 +184,6 @@
             <p>Sorry - you do not have permission to create or edit a book review. Did you forget to logon?</p>
         </div>
     </div>
-
-
-    <script src="../static/js/tom-select.base.min.js" th:src="@{/js/tom-select.base.min.js}"></script>
-    <script>
-        let selectControls = [];
-        htmx.onLoad(function (elt) {
-            const allSelects = htmx.findAll(elt, "#genre");
-            allSelects.forEach((el) => {
-                if (!el.tomselect) {
-                    try {
-                        selectControls.push(new TomSelect(el, {
-                            create: true,
-                            sortField: [{ field: '$order' }, { field: '$score' }]
-                        }));
-                    } catch (err) {
-                        console.error(err);
-                    }
-                } else {
-                    console.debug('Skipping - already TomSelect init');
-                }
-            }
-            )
-        });
-
-    </script>
 
 </div>
 

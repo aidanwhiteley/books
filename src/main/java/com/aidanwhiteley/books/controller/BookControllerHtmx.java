@@ -11,8 +11,6 @@ import com.aidanwhiteley.books.repository.dtos.BooksByReader;
 import com.aidanwhiteley.books.service.StatsService;
 import com.aidanwhiteley.books.service.dtos.SummaryStats;
 import com.aidanwhiteley.books.util.JwtAuthenticationUtils;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -187,6 +185,8 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
         model.addAttribute("ratings", getRatings(""));
         model.addAttribute("authors", getAuthors());
         model.addAttribute("reviewers", getReviewers(principal));
+        addUserToModel(principal, model);
+        model.addAttribute("paginationLink", "find?author=" + author);
         if (hxRequest) {
             return "find-reviews :: cloudy-find-by-results";
         } else {

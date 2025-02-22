@@ -11,6 +11,7 @@ import com.aidanwhiteley.books.repository.dtos.BooksByReader;
 import com.aidanwhiteley.books.service.StatsService;
 import com.aidanwhiteley.books.service.dtos.SummaryStats;
 import com.aidanwhiteley.books.util.JwtAuthenticationUtils;
+import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -56,7 +57,8 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
     }
 
     @GetMapping(value = "/")
-    public String index(Model model, Principal principal) {
+    public String index(Model model, Principal principal, HttpServletResponse response,
+                        @RequestHeader(value = "HX-Request", required = false) boolean hxRequest) {
         PageRequest pageObj = PageRequest.of(0, 30);
         Page<Book> page = bookRepository.findByRatingOrderByCreatedDateTimeDesc(pageObj, GREAT);
 
@@ -64,6 +66,10 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
         model.addAttribute("books", books.stream().toList());
         model.addAttribute("rating", "great");
         addUserToModel(principal, model);
+
+        if (hxRequest) {
+            response.addHeader("HX-Trigger-After-Swap", "initSwiper");
+        }
 
         return "home";
     }

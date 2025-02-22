@@ -41,14 +41,18 @@ document.body.addEventListener("showFlashMessage", function(evt){
     }).showToast();
 })
 
-let selectControls = [];
+console.log('Initting globals');
+var bookAppGlobals = {
+    selectControls: [],
+}
+
 function initialiseTomSelect() {
     htmx.onLoad(function (elt) {
         const allSelects = htmx.findAll(elt, ".tom-select-control");
         allSelects.forEach((el) => {
             if (!el.tomselect) {
                 try {
-                    selectControls.push(new TomSelect(el, {
+                    bookAppGlobals.selectControls.push(new TomSelect(el, {
                         create: false,
                         highlight: true,
                         allowEmptyOption: false,
@@ -65,23 +69,29 @@ function initialiseTomSelect() {
     });
 }
 
+function clearSelects(evt) {
+    //const allSelects = htmx.findAll(".tom-select-control");
+    const allSelects = bookAppGlobals.selectControls;
+    allSelects.forEach((el) => {
+        console.log(el);
+        if (el.tomselect) {
+            console.log(el);
+            if (el.inputId === evt.id) {
+                console.debug('Not clearing el.inputId ' + el.inputId + ' evt.id ' + evt.id);
+            } else {
+                console.debug('Clearing el.id ' + el.inputId + ' evt.id ' + evt.id);
+                el.clear(true);
+            }
+        }
+    });
+}
+
 if (document.getElementById("createreviewform")) {
     initialiseTomSelect();
 }
 
 if (document.getElementById("select-by-author")) {
     initialiseTomSelect();
-}
-
-function clearSelects(evt) {
-    selectControls.forEach((el) => {
-        if (el.inputId === evt.id) {
-            console.debug('Not clearing el.inputId ' + el.inputId + ' evt.id ' + evt.id);
-        } else {
-            console.debug('Clearing el.id ' + el.inputId + ' evt.id ' + evt.id);
-            el.clear(true);
-        }
-    });
 }
 
 

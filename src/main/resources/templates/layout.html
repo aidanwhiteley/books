@@ -16,8 +16,13 @@
     <link href="../static/css/books-app.css" rel="stylesheet" th:href="@{/css/books-app.css}">
     <script src="../static/js/htmx.js" th:src="@{/js/htmx.js}"></script>
     <script src="../static/js/htmx-response-targets.js" th:src="@{/js/htmx-response-targets.js}"></script>
+    <script src="../static/js/bootstrap.bundle.min.js" th:src="@{/js/bootstrap.bundle.min.js}"></script>
+    <script src="../static/js/toastify-js.js" th:src="@{/js/toastify-js.js}"></script>
+    <script src="../static/js/swiper-bundle.min.js" th:src="@{/js/swiper-bundle.min.js}"></script>
+    <script src="../static/js/tom-select.base.min.js" th:src="@{/js/tom-select.base.min.js}"></script>
+    <script src="../static/js/books.js" th:src="@{/js/books.js}" defer></script>
 </head>
-<body hx-boost="false" hx-ext="response-targets">
+<body hx-boost="true" hx-ext="response-targets">
     <div id="root">
 
         <section class="navbar navbar-expand-xl navbar-light bg-light sticky-top" data-bs-theme="light"
@@ -45,11 +50,7 @@
 
     </div>
 
-    <script src="../static/js/bootstrap.bundle.min.js" th:src="@{/js/bootstrap.bundle.min.js}"></script>
-    <script src="../../static/js/toastify-js.js" th:src="@{/js/toastify-js.js}"></script>
-    <script src="../../static/js/swiper-bundle.min.js" th:src="@{/js/swiper-bundle.min.js}"></script>
-    <script src="../../static/js/tom-select.base.min.js" th:src="@{/js/tom-select.base.min.js}"></script>
-    <script src="../../static/js/books.js" th:src="@{/js/books.js}"></script>
+
 </body>
 
 </html>

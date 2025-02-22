@@ -19,7 +19,7 @@
         <div class="col-sm mb-4">
             <h3 class="finder-header">Find Reviews By Rating</h3>
             <select autocomplete="off" class="form-control tom-select-control" data-placeholder="Select a review rating"
-                    hx-get="/find?pagenum=1" hx-on::after-request="clearSelects(this)" hx-push-url="true"
+                    hx-get="/find?pagenum=1" hx-on--after-request="clearSelects(this)" hx-push-url="true"
                     hx-target="#cloudy-find-by-results"
                     hx-target-error="#detail" id="select-by-rating" name="rating">
                 <optgroup id="select-by-rating-options" th:fragment="cloudy-find-by-ratings-options">
@@ -33,7 +33,7 @@
         <div class="col-sm mb-4">
             <h3 class="finder-header">Find Reviews By Author</h3>
             <select autocomplete="off" class="form-control tom-select-control" data-placeholder="Start typing an author's name..."
-                    hx-get="/find?pagenum=1" hx-on::after-request="clearSelects(this)" hx-push-url="true"
+                    hx-get="/find?pagenum=1" hx-on--after-request="clearSelects(this)" hx-push-url="true"
                     hx-target="#cloudy-find-by-results"
                     hx-target-error="#detail" id="select-by-author" name="author">
                 <optgroup id="select-by-author-options" th:fragment="cloudy-find-by-author-options">
@@ -48,7 +48,7 @@
         <div class="col-sm mb-4">
             <h3 class="finder-header">Find Reviews By Genre</h3>
             <select autocomplete="off" class="form-control tom-select-control" data-placeholder="Start typing a genre..."
-                    hx-get="/find?pagenum=1" hx-on::after-request="clearSelects(this)" hx-push-url="true"
+                    hx-get="/find?pagenum=1" hx-on--after-request="clearSelects(this)" hx-push-url="true"
                     hx-target="#cloudy-find-by-results"
                     hx-target-error="#detail" id="select-by-genre" name="genre">
                 <optgroup id="select-by-genre-options" th:fragment="cloudy-find-by-genre-options">
@@ -63,7 +63,7 @@
              th:if="${(user != null) and ((highestRole == 'EDITOR' or highestRole == 'ADMIN'))}">
             <h3 class="finder-header">Find Reviews By Reviewer</h3>
             <select autocomplete="off" class="form-control tom-select-control" data-placeholder="Start typing a reviewer..."
-                    hx-get="/find?pagenum=1" hx-on::after-request="clearSelects(this)" hx-push-url="true"
+                    hx-get="/find?pagenum=1" hx-on--after-request="clearSelects(this)" hx-push-url="true"
                     hx-target="#cloudy-find-by-results"
                     hx-target-error="#detail" id="select-by-reviewer" name="reviewer">
                 <optgroup id="select-by-reviewer-options" th:fragment="cloudy-find-by-reviewer-options">

@@ -9,6 +9,7 @@ import com.aidanwhiteley.books.domain.Comment;
 import com.aidanwhiteley.books.domain.Owner;
 import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.repository.BookRepository;
+import com.aidanwhiteley.books.repository.UserRepository;
 import com.aidanwhiteley.books.repository.dtos.BooksByAuthor;
 import com.aidanwhiteley.books.repository.dtos.BooksByGenre;
 import com.aidanwhiteley.books.repository.dtos.BooksByReader;
@@ -23,6 +24,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -47,16 +50,19 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
     private final JwtAuthenticationUtils authUtils;
     private final GoogleBookSearchService googleBookSearchService;
     private final BookControllerHtmx bookControllerHtmx;
+    private final UserRepository userRepository;
     @Value("${books.users.default.page.size}")
     private int defaultPageSize;
 
     public BookSecureControllerHtmx(BookRepository bookRepository, JwtAuthenticationUtils jwtAuthenticationUtils,
                                     GoogleBookSearchService googleBookSearchService,
-                                    BookControllerHtmx bookControllerHtmx) {
+                                    BookControllerHtmx bookControllerHtmx,
+                                    UserRepository userRepository) {
         this.bookRepository = bookRepository;
         this.authUtils = jwtAuthenticationUtils;
         this.googleBookSearchService = googleBookSearchService;
         this.bookControllerHtmx = bookControllerHtmx;
+        this.userRepository = userRepository;
     }
 
     @GetMapping(value = {"/createreview"})
@@ -388,6 +394,47 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
             return "find-reviews :: cloudy-find-by-results";
         } else {
             return "find-reviews";
+        }
+    }
+
+    @GetMapping(value = {"/useradmin"})
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public String userAdmin(Model model, Principal principal) {
+
+        model.addAttribute("users", userRepository.findAll());
+        addUserToModel(principal, model);
+
+        return "user-admin";
+    }
+
+    @DeleteMapping(value = "/deleteuser/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public String deleteUserById(@PathVariable String id, Principal principal, Model model,
+                                 HttpServletResponse response) {
+
+        Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
+        if (user.isPresent()) {
+            if (user.get().getId().equals(id)) {
+                LOGGER.info("User {} on {} attempted to delete themselves. This isn't allowed",
+                        user.get().getFullName(), user.get().getAuthProvider());
+
+                model.addAttribute("users", userRepository.findAll());
+                addUserToModel(principal, model);
+                response.addHeader("HX-Trigger-After-Swap", "{ \"showFlashMessage\": \"You cannot delete your own logged on user\"}");
+                response.addHeader("HX-Retarget", "#users-table");
+                return "user-admin :: cloudy-user-admin-table";
+            }
+
+            userRepository.deleteById(id);
+            response.addHeader("HX-Trigger-After-Swap", "{ \"showFlashMessage\": \"Selected user successfully deleted\"}");
+            response.addHeader("HX-Trigger-After-Settle", "initSimpleDataTables");
+            return "common/empty";
+        } else {
+            model.addAttribute("users", userRepository.findAll());
+            addUserToModel(principal, model);
+            response.addHeader("HX-Trigger-After-Swap", "{ \"showFlashMessage\": \"Your userid no longer found in the data store!\"}");
+            response.addHeader("HX-Retarget", "#users-table");
+            return "user-admin :: cloudy-user-admin-table";
         }
     }
 

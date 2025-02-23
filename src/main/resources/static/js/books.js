@@ -1,4 +1,3 @@
-
 function initialiseSwiper(evt) {
     new Swiper('.mySwiper', {
         effect: 'coverflow',
@@ -22,11 +21,11 @@ function initialiseSwiper(evt) {
 if (document.getElementById("swiper-slides")) {
     initialiseSwiper();
 }
-document.body.addEventListener("initSwiper", function(evt) {
+document.addEventListener("initSwiper", function(evt) {
     initialiseSwiper();
-})
+});
 
-document.body.addEventListener("showFlashMessage", function(evt){
+document.addEventListener("showFlashMessage", function(evt){
     Toastify({
         text: evt.detail.value,
         duration: 5000,
@@ -39,52 +38,50 @@ document.body.addEventListener("showFlashMessage", function(evt){
             background: "linear-gradient(to right, #00b09b, #96c93d)",
         }
     }).showToast();
-})
+});
 
-console.log('Initting globals');
-var bookAppGlobals = {
-    selectControls: [],
-}
+(function() {
+    let selectControls = [];
 
-function initialiseTomSelect() {
-    htmx.onLoad(function (elt) {
-        const allSelects = htmx.findAll(elt, ".tom-select-control");
-        allSelects.forEach((el) => {
-            if (!el.tomselect) {
-                try {
-                    bookAppGlobals.selectControls.push(new TomSelect(el, {
-                        create: false,
-                        highlight: true,
-                        allowEmptyOption: false,
-                        maxItems: 1,
-                        items: [],
-                        sortField: [{ field: '$order' }, { field: '$score' }]
-                    }));
-                } catch (err) {
-                    console.debug('Ignoring already initted error on Tom Select');
+    function initialiseTomSelect() {
+        htmx.onLoad(function (elt) {
+            const allSelects = htmx.findAll(elt, ".tom-select-control");
+            allSelects.forEach((el) => {
+                if (!el.tomselect) {
+                    try {
+                        selectControls.push(new TomSelect(el, {
+                            create: false,
+                            highlight: true,
+                            allowEmptyOption: false,
+                            maxItems: 1,
+                            items: [],
+                            sortField: [{ field: '$order' }, { field: '$score' }]
+                        }));
+                        console.debug('Created a Tom Select');
+                    } catch (err) {
+                        console.error('Ignoring already initted error on Tom Select');
+                    }
                 }
-            }
-        }
-        )
-    });
-}
+            });
+        });
+    }
 
-function clearSelects(evt) {
-    //const allSelects = htmx.findAll(".tom-select-control");
-    const allSelects = bookAppGlobals.selectControls;
-    allSelects.forEach((el) => {
-        console.log(el);
-        if (el.tomselect) {
-            console.log(el);
+    function clearSelects(evt) {
+        const allSelects = selectControls;
+        allSelects.forEach((el) => {
             if (el.inputId === evt.id) {
                 console.debug('Not clearing el.inputId ' + el.inputId + ' evt.id ' + evt.id);
             } else {
                 console.debug('Clearing el.id ' + el.inputId + ' evt.id ' + evt.id);
                 el.clear(true);
             }
-        }
-    });
-}
+        });
+    }
+
+    // Expose functions needed elsewhere
+    window.clearSelects = clearSelects;
+    window.initialiseTomSelect = initialiseTomSelect;
+})();
 
 if (document.getElementById("createreviewform")) {
     initialiseTomSelect();
@@ -94,6 +91,20 @@ if (document.getElementById("select-by-author")) {
     initialiseTomSelect();
 }
 
+function initialiseSimpleDataTables(evt) {
+    const options = {
+        searchable: true,
+        perPage: 10
+    };
+    new window.simpleDatatables.DataTable("#users-table", options);
+}
+if (document.getElementById("users-table")) {
+    initialiseSimpleDataTables();
+}
+document.addEventListener("initSimpleDataTables", function(evt) {
+    console.log('Should be initing data table');
+    initialiseSimpleDataTables();
+});
 
 
 

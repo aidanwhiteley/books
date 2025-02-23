@@ -91,19 +91,37 @@ if (document.getElementById("select-by-author")) {
     initialiseTomSelect();
 }
 
-function initialiseSimpleDataTables(evt) {
-    const options = {
-        searchable: true,
-        perPage: 10
-    };
-    new window.simpleDatatables.DataTable("#users-table", options);
-}
+(function() {
+    let userAdminTables = [];
+
+    function initialiseSimpleDataTables(evt) {
+        const options = {
+            searchable: true,
+            perPage: 10
+        };
+        userAdminTables.push(new window.simpleDatatables.DataTable("#users-table", options));
+    }
+
+    function refreshSimpleDataTables(evt) {
+            userAdminTables.forEach((el) => {
+                console.log('Should have refreshed a table');
+                setTimeout(10000);
+                console.log('Should have waited 10 secs');
+                el.refresh();
+            });
+        }
+
+    // Expose functions needed elsewhere
+    window.initialiseSimpleDataTables = initialiseSimpleDataTables;
+    window.refreshSimpleDataTables = refreshSimpleDataTables;
+})();
+
 if (document.getElementById("users-table")) {
     initialiseSimpleDataTables();
 }
-document.addEventListener("initSimpleDataTables", function(evt) {
-    console.log('Should be initing data table');
-    initialiseSimpleDataTables();
+document.addEventListener("refreshSimpleDataTables", function(evt) {
+    console.log('Should be refreshSimpleDataTables');
+    refreshSimpleDataTables();
 });
 
 

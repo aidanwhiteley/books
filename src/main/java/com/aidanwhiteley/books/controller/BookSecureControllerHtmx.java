@@ -426,9 +426,13 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
             }
 
             userRepository.deleteById(id);
+
+            model.addAttribute("users", userRepository.findAll());
+            addUserToModel(principal, model);
             response.addHeader("HX-Trigger-After-Swap", "{ \"showFlashMessage\": \"Selected user successfully deleted\"}");
-            response.addHeader("HX-Trigger-After-Settle", "initSimpleDataTables");
-            return "common/empty";
+            response.addHeader("HX-Trigger-After-Settle", "refreshSimpleDataTables");
+
+            return "user-admin :: cloudy-user-admin-table";
         } else {
             model.addAttribute("users", userRepository.findAll());
             addUserToModel(principal, model);

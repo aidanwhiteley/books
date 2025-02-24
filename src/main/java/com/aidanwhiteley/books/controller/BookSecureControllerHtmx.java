@@ -1,6 +1,7 @@
 package com.aidanwhiteley.books.controller;
 
 import com.aidanwhiteley.books.controller.dtos.BookForm;
+import com.aidanwhiteley.books.controller.dtos.ClientRoles;
 import com.aidanwhiteley.books.controller.dtos.CommentForm;
 import com.aidanwhiteley.books.controller.exceptions.NotAuthorisedException;
 import com.aidanwhiteley.books.controller.exceptions.NotFoundException;
@@ -30,11 +31,13 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StopWatch;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -433,6 +436,56 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
             response.addHeader("HX-Trigger-After-Settle", "refreshSimpleDataTables");
 
             return "user-admin :: cloudy-user-admin-table";
+        } else {
+            model.addAttribute("users", userRepository.findAll());
+            addUserToModel(principal, model);
+            response.addHeader("HX-Trigger-After-Swap", "{ \"showFlashMessage\": \"Your userid no longer found in the data store!\"}");
+            response.addHeader("HX-Retarget", "#users-table");
+            return "user-admin :: cloudy-user-admin-table";
+        }
+    }
+
+    @PutMapping(value = "/updateuserrole/{id}", params = {"role"})
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public String updateUserRoles(@PathVariable String id, @RequestParam String role,
+                                  Principal principal, Model model,
+                                  HttpServletResponse response) {
+
+        Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
+        if (user.isPresent()) {
+            if (user.get().getId().equals(id)) {
+                LOGGER.info("User {} on {} attempted to change their own roles. This isn't allowed",
+                        user.get().getFullName(), user.get().getAuthProvider());
+                model.addAttribute("users", userRepository.findAll());
+                addUserToModel(principal, model);
+                response.addHeader("HX-Trigger-After-Swap", "{ \"showFlashMessage\": \"Your cannot change the role for you own logged on user!\"}");
+                response.addHeader("HX-Retarget", "#users-table");
+                return "user-admin :: cloudy-user-admin-table";
+            }
+
+            ClientRoles roles = new ClientRoles();
+            roles.setId(id);
+            if (role.equalsIgnoreCase("ROLE_ADMIN")) {
+                roles.setAdmin(true);
+                roles.setEditor(true);
+            } else if (role.equalsIgnoreCase("ROLE_EDITOR")) {
+                roles.setAdmin(false);
+                roles.setEditor(true);
+            } else {
+                roles.setAdmin(false);
+                roles.setEditor(false);
+            }
+            userRepository.updateUserRoles(roles);
+            User updatedUser = userRepository.findById(id).orElseThrow(() ->
+                    new IllegalArgumentException("Didn't find the user being updated"));
+
+            List<User> singleUser = new ArrayList<>();
+            singleUser.add(updatedUser);
+            model.addAttribute("users", singleUser);
+            addUserToModel(principal, model);
+            response.addHeader("HX-Trigger-After-Swap", "{ \"showFlashMessage\": \"" + updatedUser.getFullName() + "'s role updated OK\"}");
+            return "user-admin :: cloudy-user-admin-row";
+
         } else {
             model.addAttribute("users", userRepository.findAll());
             addUserToModel(principal, model);

@@ -6,6 +6,7 @@
     <meta charset="utf-8">
     <link href="../static/css/bootstrap.min.css" rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
     <link href="../static/css/books-app.css" rel="stylesheet" th:href="@{/css/books-app.css}">
+    <script src="../static/js/bootstrap.bundle.min.js" th:src="@{/js/bootstrap.bundle.min.js}" defer></script>
 </head>
 <body>
 
@@ -13,9 +14,9 @@
     <h2>The Cloudy Book Club User Admin</h2>
 
     <div class="container">
-        <div class="row table-responsive">
+        <div id="table-wrapper" class="row table-responsive" th:fragment="cloudy-user-admin-table">
 
-            <table id="users-table" class="table table-hover" th:fragment="cloudy-user-admin-table">
+            <table id="users-table" class="table table-hover">
                 <thead>
                     <tr>
                         <th>Name</th>
@@ -33,7 +34,18 @@
                         <td>Aidan Whiteley</td>
                         <td>Google</td>
                         <td>example@example.com</td>
-                        <td>Admin</td>
+                        <td>
+                            <div class="btn-group" role="group" aria-label="User role selector">
+                                <button type="button" class="btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    ROLE_ADMIN
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item">ROLE_USER</a></li>
+                                    <li><a class="dropdown-item">ROLE_EDITOR</a></li>
+                                    <li><a class="dropdown-item">ROLE_ADMIN</a></li>
+                                </ul>
+                            </div>
+                        </td>
                         <td><img src="https://lh3.googleusercontent.com/a-/AOh14GiSloGW5XUkj02kFEU-wBHPaWqgupSjieqXqkE=s96-c" alt="User profile image"></td>
                         <td>5/2/2018</td>
                         <td>6/2/2025</td>
@@ -46,26 +58,45 @@
                         </button></td>
                     </tr>
 
-                    <tr th:each="user : ${users}">
+                    <tr th:each="user : ${users}" th:fragment="cloudy-user-admin-row" hx-target-error="#detail">
                         <td th:text=${user.fullName}>Barnaby Rudge</td>
                         <td th:text=${#strings.capitalize(#strings.toLowerCase(user.authProvider))}>Great</td>
                         <td th:text="${user.email}">example@example.org</td>
-                        <td th:text=${user.highestRole}>ROLE_ADMIN</td>
+                        <td>
+                            <div class="btn-group role-btn-group" role="group" aria-label="User role selector">
+                                <button type="button" class="btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"
+                                        th:text=${user.highestRole}>
+                                    ROLE_ADMIN
+                                </button>
+                                <ul class="dropdown-menu" hx-target="closest tr" hx-swap="outerHTML" hx-indicator="closest .role-btn-group">
+                                    <li>
+                                        <a class="dropdown-item" th:hx-put="@{/updateuserrole/{id}(id = ${user.id}, role=ROLE_USER)}">ROLE_USER</a>
+                                    </li>
+                                    <li><a class="dropdown-item" th:hx-put="@{/updateuserrole/{id}(id = ${user.id}, role=ROLE_EDITOR)}">ROLE_EDITOR</a></li>
+                                    <li><a class="dropdown-item" th:hx-put="@{/updateuserrole/{id}(id = ${user.id}, role=ROLE_ADMIN)}">ROLE_ADMIN</a></li>
+                                </ul>
+                            </div>
+                        </td>
                         <td><img alt="User profile picture" src="https://lh3.googleusercontent.com/a-/AOh14GhZRtMP-NnwFvMMhsrPFPIIqh_bLTygnj6xdRM=s96-c"
                             th:src="${user.picture}"></td>
                         <td th:text="${#temporals.format(user.firstLogon, 'dd-MM-yyyy')}">20-7-2024</td>
                         <td th:text="${#temporals.format(user.lastLogon, 'dd-MM-yyyy')}">20-1-2025</td>
-                        <td><button  aria-label="Delete user" class="btn btn-sm btn-outline-danger"
-                                     hx-confirm="Are you sure you wish to delete this user?"
-                                     hx-target="#users-table" hx-target-error="#detail" hx-swap="swap:1s"
-                                     th:hx-delete="@{/deleteuser/{id}(id = ${user.id})}" type="submit">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash-circle" viewBox="0 0 16 16">
-                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"></path>
-                                <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8"></path>
-                            </svg>
-                            Delete user?
-                        </button></td>
+                        <td>
+                            <button aria-label="Delete user" class="btn btn-sm btn-outline-danger"
+                                         hx-confirm="Are you sure you wish to delete this user?"
+                                         hx-target="#table-wrapper" hx-target-error="#detail" hx-disabled-elt="this"
+                                         th:hx-delete="@{/deleteuser/{id}(id = ${user.id})}" type="submit">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash-circle" viewBox="0 0 16 16">
+                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"></path>
+                                    <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8"></path>
+                                </svg>
+                                <img class="htmx-indicator" height="16" src="../static/images/circles.svg" width="16"
+                                     alt="Deleting..." th:src="@{/images/circles.svg}">
+                                Delete user?
+                            </button>
+                        </td>
                     </tr>
+
                 </tbody>
             </table>
 
@@ -73,6 +104,7 @@
     </div>
 
     <script src="../static/js/simple-datatables.min.js" th:src="@{/js/simple-datatables.min.js}"></script>
+    <script src="../static/js/popper.min.js" th:src="@{/js/popper.min.js}"></script>
 
 </div>
 

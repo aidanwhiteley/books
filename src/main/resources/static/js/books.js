@@ -100,15 +100,15 @@ if (document.getElementById("select-by-author")) {
             perPage: 10
         };
         userAdminTables.push(new window.simpleDatatables.DataTable("#users-table", options));
+        console.debug('Should have initialised a DataTable')
     }
 
     function refreshSimpleDataTables(evt) {
             userAdminTables.forEach((el) => {
-                console.log('Should have refreshed a table');
-                setTimeout(10000);
-                console.log('Should have waited 10 secs');
-                el.refresh();
+                el.destroy();
+                console.debug('Should have destroyed a DataTable');
             });
+            initialiseSimpleDataTables();
         }
 
     // Expose functions needed elsewhere
@@ -120,7 +120,6 @@ if (document.getElementById("users-table")) {
     initialiseSimpleDataTables();
 }
 document.addEventListener("refreshSimpleDataTables", function(evt) {
-    console.log('Should be refreshSimpleDataTables');
     refreshSimpleDataTables();
 });
 

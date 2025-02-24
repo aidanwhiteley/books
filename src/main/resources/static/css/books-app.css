@@ -444,8 +444,10 @@ li.comment-entry {
 .htmx-request.htmx-indicator{
     display:inline;
 }
+.htmx-request .bi-dash-circle{
+    display:none;
+}
 
-tr.htmx-swapping td {
-  opacity: 0;
-  transition: opacity 1s ease-out;
+.role-btn-group.htmx-request {
+    opacity: .3;
 }

@@ -27,8 +27,8 @@
                    th:if="${(user != null) and ((highestRole == 'EDITOR' or highestRole == 'ADMIN'))}">Add a book
                     review</a>
                 <a class="nav-link" href="/useradmin" th:if="${(user != null) and (highestRole == 'ADMIN')}">User Admin</a>
-                <a class="nav-link" href="/logon" th:if="${user == null}">Logon</a>
-                <a class="nav-link" href="/logoff" th:if="${user != null}">Logoff</a>
+                <a class="nav-link" href="/log-on" th:if="${user != null}">Logon</a>
+                <a class="nav-link" href="/log-off" th:if="${user != null}">Logoff</a>
             </div>
             <div id="book-search">
                 <form action="/search?pagenum=1" id="search-form" method="get" role="search">

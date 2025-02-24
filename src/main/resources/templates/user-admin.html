@@ -60,7 +60,7 @@
 
                     <tr th:each="user : ${users}" th:fragment="cloudy-user-admin-row" hx-target-error="#detail">
                         <td th:text=${user.fullName}>Barnaby Rudge</td>
-                        <td th:text=${#strings.capitalize(#strings.toLowerCase(user.authProvider))}>Great</td>
+                        <td th:text=${#strings.capitalize(#strings.toLowerCase(user.authProvider))}>GOOGLE</td>
                         <td th:text="${user.email}">example@example.org</td>
                         <td>
                             <div class="btn-group role-btn-group" role="group" aria-label="User role selector">
@@ -77,8 +77,11 @@
                                 </ul>
                             </div>
                         </td>
-                        <td><img alt="User profile picture" src="https://lh3.googleusercontent.com/a-/AOh14GhZRtMP-NnwFvMMhsrPFPIIqh_bLTygnj6xdRM=s96-c"
-                            th:src="${user.picture}"></td>
+                        <td>
+                            <img th:if="${#strings.toString(user.authProvider) == 'GOOGLE'}"
+                                 alt="User profile picture" src="https://lh3.googleusercontent.com/a-/AOh14GhZRtMP-NnwFvMMhsrPFPIIqh_bLTygnj6xdRM=s96-c"
+                                 th:src="${user.picture}">
+                        </td>
                         <td th:text="${#temporals.format(user.firstLogon, 'dd-MM-yyyy')}">20-7-2024</td>
                         <td th:text="${#temporals.format(user.lastLogon, 'dd-MM-yyyy')}">20-1-2025</td>
                         <td>

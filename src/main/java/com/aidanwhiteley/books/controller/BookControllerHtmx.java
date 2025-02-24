@@ -274,6 +274,12 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
         return "book-stats";
     }
 
+    @GetMapping(value = {"/log-on"})
+    public String logon(Model model, Principal principal) {
+        addUserToModel(principal, model);
+        return "logon";
+    }
+
     @Override
     public void addUserToModel(Principal principal, Model model) {
 

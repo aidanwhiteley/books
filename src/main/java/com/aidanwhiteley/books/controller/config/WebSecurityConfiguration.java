@@ -21,6 +21,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
@@ -50,7 +51,7 @@ import static com.aidanwhiteley.books.domain.User.Role.ROLE_ACTUATOR;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 
 @Configuration
-@EnableMethodSecurity()
+@EnableMethodSecurity
 public class WebSecurityConfiguration {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WebSecurityConfiguration.class);

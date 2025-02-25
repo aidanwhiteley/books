@@ -26,16 +26,21 @@ document.addEventListener("initSwiper", function(evt) {
 });
 
 document.addEventListener("showFlashMessage", function(evt){
+    // Default to info level colours
+    let background = "linear-gradient(to right, #00b09b, #96c93d)";
+    if (evt.detail.level.toLowerCase() === "warn") {
+        background = "linear-gradient(to right, #9c4f43, #e03419)";
+     }
     Toastify({
-        text: evt.detail.value,
+        text: evt.detail.message,
         duration: 5000,
         newWindow: true,
         close: true,
-        gravity: "top", // `top` or `bottom`
-        position: "right", // `left`, `center` or `right`
-        stopOnFocus: true, // Prevents dismissing of toast on hover
+        gravity: "top",
+        position: "right",
+        stopOnFocus: true,
         style: {
-            background: "linear-gradient(to right, #00b09b, #96c93d)",
+            background: background,
         }
     }).showToast();
 });
@@ -45,8 +50,8 @@ document.addEventListener("showFlashMessage", function(evt){
 
     function initialiseTomSelect() {
         htmx.onLoad(function (elt) {
-            const allSelects = htmx.findAll(elt, ".tom-select-control");
-            allSelects.forEach((el) => {
+            const readSelects = htmx.findAll(elt, ".tom-select-control-readonly");
+            readSelects.forEach((el) => {
                 if (!el.tomselect) {
                     try {
                         selectControls.push(new TomSelect(el, {
@@ -57,7 +62,22 @@ document.addEventListener("showFlashMessage", function(evt){
                             items: [],
                             sortField: [{ field: '$order' }, { field: '$score' }]
                         }));
-                        console.debug('Created a Tom Select');
+                        console.debug('Created a Tom Select read only');
+                    } catch (err) {
+                        console.error('Ignoring already initted error on Tom Select');
+                    }
+                }
+            });
+
+            const createSelects = htmx.findAll(elt, ".tom-select-control-create");
+            createSelects.forEach((el) => {
+                if (!el.tomselect) {
+                    try {
+                        selectControls.push(new TomSelect(el, {
+                            create: true,
+                            sortField: [{ field: '$order' }, { field: '$score' }]
+                        }));
+                        console.debug('Created a Tom Select create');
                     } catch (err) {
                         console.error('Ignoring already initted error on Tom Select');
                     }

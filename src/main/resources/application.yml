@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: dev-mongo-java-server-no-auth
+    active: dev-mongo-java-server
 
   mvc:
     pathmatch:

@@ -159,6 +159,8 @@ public class WebSecurityConfiguration {
                 )
                 .exceptionHandling(handling -> handling
                         .defaultAuthenticationEntryPointFor(forbiddenEntryPoint(), PROTECTED_URLS))
+                // Should this be after the LogOut filter -
+                // https://docs.spring.io/spring-security/reference/servlet/architecture.html#servlet-securityfilterchain
                 .addFilterBefore(jwtAuththenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .oauth2Login(login -> login
                         .authorizationEndpoint(endpoint -> endpoint.baseUri("/login")

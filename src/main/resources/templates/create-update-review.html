@@ -57,7 +57,7 @@
 
             <div class="col-md-8">
                 <label for="genre">Genre</label>
-                <select autocomplete="off" class="form-control tom-select-control" id="genre" name="genre"
+                <select autocomplete="off" class="form-control tom-select-control-create" id="genre" name="genre"
                         placeholder="Start typing a genre..." th:errorclass="is-invalid" th:field="*{genre}">
                     <option value="">Start typing a genre...</option>
                     <option th:each="genre : ${genres}" th:text="${genre.genre + ' - ' + genre.countOfBooks + ' books'}"

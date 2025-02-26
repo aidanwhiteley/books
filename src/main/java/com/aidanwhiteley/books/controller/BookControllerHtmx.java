@@ -11,12 +11,14 @@ import com.aidanwhiteley.books.repository.dtos.BooksByReader;
 import com.aidanwhiteley.books.service.StatsService;
 import com.aidanwhiteley.books.service.dtos.SummaryStats;
 import com.aidanwhiteley.books.util.JwtAuthenticationUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -116,12 +118,16 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
     }
 
     @GetMapping(value = "/bookreview", params = {"bookId"})
-    public String bookReview(@RequestParam String bookId, Model model, Principal principal) {
+    public String bookReview(@RequestParam String bookId, Model model, Principal principal, HttpServletRequest request) {
         Book aBook = bookRepository.findById(bookId).orElseThrow(() -> new NotFoundException("Book id " + bookId + " not found"));
 
         model.addAttribute("book", aBook);
         model.addAttribute("commentForm", new CommentForm());
         addUserToModel(principal, model);
+
+       var csrfTokenRepository = new CookieCsrfTokenRepository();
+       String token = csrfTokenRepository.loadToken(request).getToken();
+       model.addAttribute("csrfToken", token);
 
         return "book-review";
     }

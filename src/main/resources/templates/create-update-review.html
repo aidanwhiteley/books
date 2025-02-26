@@ -18,7 +18,7 @@
         <h4 th:if="${isupdate}">Update book review</h4>
 
         <form th:if="${user != null and (highestRole == 'EDITOR' or highestRole == 'ADMIN')}"
-              action="#" class="row g-3" id="createreviewform" method="post" novalidate
+              th:action="@{/dummy}" class="row g-3" id="createreviewform" method="post" novalidate
               th:hx-post="@{${actionUrl}}" hx-target="#detail" th:object="${bookForm}">
 
             <div class="col-md-6">

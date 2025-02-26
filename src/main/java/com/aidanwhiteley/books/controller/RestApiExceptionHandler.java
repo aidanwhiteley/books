@@ -25,7 +25,7 @@ import static org.springframework.http.HttpStatus.*;
 @SuppressWarnings("NullableProblems")
 /*
   This is the central advice that handles exceptions for the REST API part of the application.
-  The HTMX controller (BookControllerHtmx) handles exceptions locally within that controller.
+  The HTMX controllers (implementing BookControllerHtmxExceptionHandling) handles exceptions locally within those controllers.
  */
 @RestControllerAdvice
 public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {

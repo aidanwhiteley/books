@@ -42,6 +42,7 @@ public class JwtAuthenticationService {
     @Value("${books.jwt.cookieExpirySeconds}")
     private int cookieExpirySeconds;
 
+    // TO-DO - remove this - always samesite=lax
     @Setter
     @Value("${books.jwt.cookieSameSiteStrict}")
     private boolean cookieSameSiteStrict;

@@ -10,6 +10,7 @@
     <logger name="org.springframework.boot" level="WARN"/>
     <logger name="org.springframework.boot.web.embedded.tomcat" level="INFO"/>
     <logger name="org.springframework.security" level="WARN"/>
+    <logger name="org.springframework.security.web.csrf" level="DEBUG" />
     <logger name="org.springframework.jmx" level="WARN"/>
     <logger name="org.springframework.scheduling" level="WARN"/>
     <logger name="org.springframework.web.client.RestTemplate" level="WARN"/>
@@ -40,7 +41,7 @@
 
     <logger name="com.aidanwhiteley.books" level="WARN"/>
     <logger name="com.aidanwhiteley.books.controller" level="WARN"/>
-    <logger name="com.aidanwhiteley.books.controller.aspect" level="DEBUG"/>
+    <logger name="com.aidanwhiteley.books.controller.aspect" level="WARN"/>
     <logger name="com.aidanwhiteley.books.controller.BookSecureController" level="WARN"/>
     <logger name="com.aidanwhiteley.books.service.SignUpNotificationService" level="WARN"/>
     <logger name="com.aidanwhiteley.books.repository.GoogleBooksDaoAsync" level="WARN"/>

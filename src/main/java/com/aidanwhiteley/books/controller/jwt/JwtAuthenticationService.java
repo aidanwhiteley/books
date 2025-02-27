@@ -67,7 +67,7 @@ public class JwtAuthenticationService {
         cookie.append("; Path=").append(jwtCookiePath);
         cookie.append("; Max-Age=").append(cookieExpirySeconds);
         if (cookieSameSiteStrict) {
-            cookie.append("; SameSite=Strict");
+            cookie.append("; SameSite=Lax");
         } else {
             cookie.append("; SameSite=Lax");
         }

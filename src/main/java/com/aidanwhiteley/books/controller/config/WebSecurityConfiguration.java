@@ -138,11 +138,9 @@ public class WebSecurityConfiguration {
                         hasRole(ROLE_ACTUATOR.getShortName())
                         // We permitAll here - see the method level JavaDocs for why we do this
                         .anyRequest().permitAll()
-                )
+                );
                 // We deliberately leave most of the security related header writing to the front end reverse proxy / API gateway
                 // to ensure consistency of approach across microservices
-                .headers(headers ->
-                        headers.referrerPolicy(policy -> policy.policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN)));
 
         return http.build();
     }
@@ -223,6 +221,7 @@ public class WebSecurityConfiguration {
         }
     }
 
+    // For adding CSRF tokens to be added to Thymeleaf templates
     @Bean("csrfRequestDatavalueprocessor")
     public RequestDataValueProcessor requestDataValueProcessor() {
         return new CsrfRequestDataValueProcessor();

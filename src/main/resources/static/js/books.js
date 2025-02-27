@@ -143,5 +143,47 @@ document.addEventListener("refreshSimpleDataTables", function(evt) {
     refreshSimpleDataTables();
 });
 
+// Function to read the value from a cookie named XSRF-TOKEN
+function getXsrfToken() {
+    const name = "XSRF-TOKEN=";
+    const decodedCookie = decodeURIComponent(document.cookie);
+    const ca = decodedCookie.split(';');
+    for(let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) === ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) === 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}
+
+document.body.addEventListener('htmx:configRequest', function(evt) {
+
+    const existingHeaderNames = Object.keys(evt.detail.headers);
+    const existingHeaderNamesUc = existingHeaderNames.map(function(x){ return x.toUpperCase(); })
+    const verb = evt.detail.verb.toLowerCase();
+    const safeVerbs = ['get', 'head', 'options'];
+
+    const xsrfCookieValue = getXsrfToken(); 
+
+    if (xsrfCookieValue) {
+        if (safeVerbs.indexOf(verb) === -1){
+            if (!existingHeaderNamesUc.includes('X-XSRF-TOKEN')) {
+                    evt.detail.headers['X-XSRF-TOKEN'] = xsrfCookieValue;
+                    console.debug('Set X-XSRF-TOKEN header to ' + xsrfCookieValue);
+            } else {
+                    console.debug('Request headers already contained an X-XSRF-TOKEN header');
+            }
+        } else {
+            console.debug('Request was for a safe HTTP verb so no X-XSRF-TOKEN added');
+        }
+    } else { 
+        console.debug('No XSRF-TOKEN cookie found');
+    }
+});
+
 
 

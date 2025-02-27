@@ -1,0 +1,53 @@
+Why I tried HTMX
+a) tired of JS library churn
+b) ridiculous front end complexity for basic CRUD(ish) apps - especially on test side
+
+Dev background
+Always label myself as a back end dev. But not quite true. Over the last 35 years...
+a) Rexx, JCL, Cobol, VB3+, VC4+, Perl, Java, Scala, Java....
+b) Plain JS, JQuery, Backbone, AngularJS, React, React + Typescript
+oh... and JavaScript on the server side in the early 2000s with a product called Broadvision. Left me deeply scarred :-)
+
+Choice of Thymeleaf versus (say) JTE
+a) Pros
+    1) natural templates and what goes with that
+b) Cons
+    1) not typesafe / lack of intellisense prompts
+    2) hideous stack traces
+
+THe test app - The Cloudy Book Club
+Just a bit more than the typical ToDos app.
+a) about 4k serverside Java LoC - https://github.com/aidanwhiteley/books
+b) an existing React / Typescript front end - https://github.com/aidanwhiteley/books-react
+
+Challenges
+a) Thymeleaf and HTMX - layered tagging!
+    - failed to be able to get Thymeleaf to write unescaped JSON into the HTMX hx-headers attribute to add XSRF token to HTMX Ajax requests.
+    had to fall back to using JS event listener on htmx:configRequest to intercept HTMX JS
+b) Getting HTMX and JS components to play nicely
+    - making sure JS lines (e.g. Swiper, TomSelect etc) initialised at right times e.g. after HTMX swap
+    - hx:boost gotchas - can't hold refs to initialised JS libs in mutable JS "global" variables.
+
+HTMX - How to use
+a) HTML built ins (e.g. form posts) or HTMXs - when and how to choose
+    - no post/redirect/get but harder CSRF protection
+        - create book review is hx-post but only because I'm using "flash" confirmation messages a server
+        side post/redirect/get would require http session state (not using) or more complexity e.g. https://github.com/innoq/spring-cookie
+    - drive decision by UX. Definitely doesn't all have to be Ajax!
+b) Best practices
+    1) CSRF patterns
+c) Re-architectured bits
+    1) not holding data on client side but remaining user session stateless on server
+
+HTMX versus React
+a) React Pros
+    1. Masses of components with React "wrappers"
+    2. Masses of best practices (but choose wisely)
+    3. Great for apps that have a lot of FE state (i.e. state that's not driven by back end state)
+b) React Cons
+    1. More rect positioning React as full stack - suggesting you should be using a "framework"
+    2. A lot of foot guns (especially hooks based) if you aren't using regularly
+    3. Constant churn on libraries / frameworks
+c) HTMX Pros
+    1. Simple and fun FE development (after a fairly shallow initial learning curve)
+    2. OK - the enjoyment of playing with something new!

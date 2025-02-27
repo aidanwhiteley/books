@@ -125,10 +125,6 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
         model.addAttribute("commentForm", new CommentForm());
         addUserToModel(principal, model);
 
-       var csrfTokenRepository = new CookieCsrfTokenRepository();
-       String token = csrfTokenRepository.loadToken(request).getToken();
-       model.addAttribute("csrfToken", "{\"X-CSRF-TOKEN\":" + token + "}");
-
         return "book-review";
     }
 

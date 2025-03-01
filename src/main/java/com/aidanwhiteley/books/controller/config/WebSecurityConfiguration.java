@@ -63,12 +63,6 @@ public class WebSecurityConfiguration {
 
     private final UserService userService;
 
-    @Value("${books.client.enableCORS}")
-    private boolean enableCORS;
-
-    @Value("${books.client.allowedCorsOrigin}")
-    private String allowedCorsOrigin;
-
     @Value("${books.client.postLogonUrl}")
     private String postLogonUrl;
 

@@ -22,7 +22,6 @@ class JwtAuthenticationServiceTest {
         theService.setCookieExpirySeconds(Integer.MAX_VALUE);
         theService.setCookieOverHttpsOnly(true);
         theService.setCookieAccessedByHttpOnly(true);
-        theService.setCookieSameSiteStrict(true);
         theService.setCookieAccessedByHttpOnly(true);
         theService.setJwtCookiePath("/dummyPath");
 
@@ -35,7 +34,7 @@ class JwtAuthenticationServiceTest {
 
         // In v0.14.1 support for SameSite cookie attribute was added. Test that it exists.
         String cookieForSameSite = response.getHeaders("Set-Cookie").stream().
-                filter(s -> s.contains("SameSite=Strict")).findFirst()
+                filter(s -> s.contains("SameSite=Lax")).findFirst()
                 .orElse(null);
         assertNotNull(cookieForSameSite);
 

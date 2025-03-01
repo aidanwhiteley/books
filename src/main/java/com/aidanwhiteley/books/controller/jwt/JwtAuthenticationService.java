@@ -42,11 +42,6 @@ public class JwtAuthenticationService {
     @Value("${books.jwt.cookieExpirySeconds}")
     private int cookieExpirySeconds;
 
-    // TO-DO - remove this - always samesite=lax
-    @Setter
-    @Value("${books.jwt.cookieSameSiteStrict}")
-    private boolean cookieSameSiteStrict;
-
     public JwtAuthenticationService(JwtUtils jwtUtils) {
         this.jwtUtils = jwtUtils;
     }
@@ -66,11 +61,7 @@ public class JwtAuthenticationService {
         }
         cookie.append("; Path=").append(jwtCookiePath);
         cookie.append("; Max-Age=").append(cookieExpirySeconds);
-        if (cookieSameSiteStrict) {
-            cookie.append("; SameSite=Lax");
-        } else {
-            cookie.append("; SameSite=Lax");
-        }
+        cookie.append("; SameSite=Lax");
 
         response.addHeader("Set-Cookie", cookie.toString());
         LOGGER.debug("JWT cookie written for {}", user.getFullName());

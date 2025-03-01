@@ -68,7 +68,6 @@ books:
       data: false
 
   client:
-    enableCORS: false
     postLogonUrl: https://cloudybookclub.com/?logged-on=y
 
   google:

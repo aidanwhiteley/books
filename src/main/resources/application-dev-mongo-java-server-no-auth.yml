@@ -51,8 +51,6 @@ books:
   autoAuthUser: true
 
   client:
-    enableCORS: true      # Note - this value overriden in the IntegrationTest base test class
-    allowedCorsOrigin: http://localhost:5173
     postLogonUrl: http://localhost:5173/
     xsrfHeader: X-XSRF
 

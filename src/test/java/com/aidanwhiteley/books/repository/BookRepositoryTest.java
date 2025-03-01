@@ -4,6 +4,7 @@ import com.aidanwhiteley.books.controller.BookControllerTest;
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.Comment;
 import com.aidanwhiteley.books.domain.Owner;
+import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.repository.dtos.BooksByAuthor;
 import com.aidanwhiteley.books.repository.dtos.BooksByGenre;
 import com.aidanwhiteley.books.repository.dtos.BooksByRating;
@@ -29,6 +30,7 @@ public class BookRepositoryTest extends IntegrationTest {
 
     public static final String DR_ZEUSS = "Dr Zuess";
     public static final String J_UNIT_TESTING_FOR_BEGINNERS = "JUnit testing for beginners";
+    public static final String REVIEWER = "Quasimodo";
     private static final Logger LOGGER = LoggerFactory.getLogger(BookRepositoryTest.class);
     private static final String A_GUIDE_TO_POKING_SOFTWARE = "A guide to poking software";
     private static final String COMPUTING = "Computing";

@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: dev-mongo-java-server
+    active: dev-mongo-java-server-no-auth
 
   mvc:
     pathmatch:
@@ -113,8 +113,6 @@ books:
   autoAuthUser: false       # Must be false in production!
 
   client:
-    enableCORS: false       # Setting this to true in production is not supported - leaves app at risk of CSRF
-    allowedCorsOrigin: http://localhost:8080
     postLogonUrl: http://localhost:8080/
     xsrfHeader: X-XSRF
 
@@ -164,7 +162,6 @@ books:
     cookieOverHttpsOnly: true
     cookieAccessedByHttpOnly: true
     cookiePath: /
-    cookieSameSiteStrict: true      # Will set SameSite=Strict. Set to false for SameSite=Lax.
 
   oauth2:
     cookieOverHttpsOnly: true

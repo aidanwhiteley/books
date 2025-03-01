@@ -64,7 +64,7 @@
                                                                         th:text="${book.summary}">A book review summary</span>
                 </p>
                 <p th:if="${book.createdBy != null and book.createdBy.fullName != null and user != null and (highestRole == 'EDITOR' or highestRole == 'ADMIN')}">
-                    <b>Reviewer:</b> <span th:text="${book.createdBy.fullName}">Fred Bloggs</span></p>
+                    <b>Reviewer:</b> <span class="reviewer" th:text="${book.createdBy.fullName}">Fred Bloggs</span></p>
 
                 <a th:if="${user != null and (highestRole == 'EDITOR' or highestRole == 'ADMIN')}"
                         th:href="@{/updatereview/{id}(id = ${book.id})}">

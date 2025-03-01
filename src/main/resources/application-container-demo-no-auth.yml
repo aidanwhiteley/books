@@ -65,9 +65,6 @@ books:
     development:
       data: ${JAVA_BOOKS_RELOAD_DEVELOPMENT_DATA}
 
-  client:
-    enableCORS: false
-
   users:
     registrationAdminEmail:
       enabled: false

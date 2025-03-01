@@ -50,9 +50,6 @@ logging:
 books:
   autoAuthUser: false
 
-  client:
-    enableCORS: true      # Note - this value overriden in the IntegrationTest base test class
-
   google:
     books:
       api:

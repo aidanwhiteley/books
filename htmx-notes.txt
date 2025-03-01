@@ -15,10 +15,10 @@ b) Cons
     1) not typesafe / lack of intellisense prompts
     2) hideous stack traces
 
-THe test app - The Cloudy Book Club
+The test app - The Cloudy Book Club
 Just a bit more than the typical ToDos app.
 a) about 4k serverside Java LoC - https://github.com/aidanwhiteley/books
-b) an existing React / Typescript front end - https://github.com/aidanwhiteley/books-react
+b) an existing React / Typescript front end - https://github.com/aidanwhiteley/books-react replacing an earlier AngularJS one
 
 Challenges
 a) Thymeleaf and HTMX - layered tagging!
@@ -43,11 +43,11 @@ HTMX versus React
 a) React Pros
     1. Masses of components with React "wrappers"
     2. Masses of best practices (but choose wisely)
-    3. Great for apps that have a lot of FE state (i.e. state that's not driven by back end state)
+    3. Great for apps that have a lot of FE state (i.e. state that's not directly driven by back end state)
 b) React Cons
-    1. More rect positioning React as full stack - suggesting you should be using a "framework"
-    2. A lot of foot guns (especially hooks based) if you aren't using regularly
-    3. Constant churn on libraries / frameworks
+    1. Constant churn on libraries / frameworks
+    2. More recent positioning React as full stack - suggesting you should be using a "framework"
+    3. A lot of foot guns (especially hooks based) if you aren't using regularly
 c) HTMX Pros
     1. Simple and fun FE development (after a fairly shallow initial learning curve)
     2. OK - the enjoyment of playing with something new!

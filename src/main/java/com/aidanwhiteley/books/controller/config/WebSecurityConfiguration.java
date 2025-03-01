@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.boot.actuate.health.HealthEndpoint;
 import org.springframework.boot.actuate.info.InfoEndpoint;
+import org.springframework.boot.web.server.Cookie;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
@@ -33,9 +34,13 @@ import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequ
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.CookieClearingLogoutHandler;
+import org.springframework.security.web.authentication.logout.HeaderWriterLogoutHandler;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.authentication.session.NullAuthenticatedSessionStrategy;
 import org.springframework.security.web.csrf.*;
+import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter;
 import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
 import org.springframework.security.web.servlet.support.csrf.CsrfRequestDataValueProcessor;
 import org.springframework.util.StringUtils;
@@ -78,7 +83,7 @@ public class WebSecurityConfiguration {
     /**
      * The Spring Security set up is driven by the following considerations
      * <ul>
-     *     <li>The original, main purpose of this demo application was to build a "microservice" with no HTPP Session state.
+     *     <li>The original, main purpose of this demo application was to build a "microservice" with no HTTP Session state.
      *     This was to promote "scalability" :-) and avoid the need for sticky sessions etc. And just to see
      *     how to do it.</li>
      *     <li>For better or worse, we are using JWT to hold the session logon token. No use of refresh tokens
@@ -86,7 +91,7 @@ public class WebSecurityConfiguration {
      *     <li>Anyone can register on the site via Google or Facebook. This gives no additional privileges compared
      *     to "not logged on" but means that the Spring Security default of "must be authenticated" brings no
      *     benefit in this case - so we don't use it</li>
-     *     <li>As of 2025, we are no longer supporting CORS. In development, stick a "middleware proxy" or something
+     *     <li>As of 2025, we are no longer supporting CORS. For SPA client development, stick a "middleware proxy" or something
      *     similar in your SPA config. For production, get a reverse proxy or API gateway. In any case, the
      *     "out of the box" default front end for the microservice is now an HTMX Thymeleaf UI included in the project and,
      *     therefore, on the same protocoal/domain/port</li>
@@ -114,13 +119,19 @@ public class WebSecurityConfiguration {
         // Set the name of the attribute the CsrfToken will be populated on to cause the CsrfToken to be loaded on every request.
         requestHandler.setCsrfRequestAttributeName(null);
 
+        final CookieCsrfTokenRepository cookieCsrfTokenRepository = CookieCsrfTokenRepository.withHttpOnlyFalse();
+        cookieCsrfTokenRepository.setCookieCustomizer((x) -> x.sameSite(Cookie.SameSite.STRICT.attributeValue()));
+
+        CookieClearingLogoutHandler jwtCookie = new CookieClearingLogoutHandler(JwtAuthenticationService.JWT_COOKIE_NAME);
+        HeaderWriterLogoutHandler clearSiteData = new HeaderWriterLogoutHandler(new ClearSiteDataHeaderWriter(ClearSiteDataHeaderWriter.Directive.COOKIES));
+
         http
                 .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                         .enableSessionUrlRewriting(false))
                 .csrf((csrf) -> csrf
-                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                        .csrfTokenRepository(cookieCsrfTokenRepository)
                         // With our JWT in a cookie, every time a request with that cookie hits the server an authentication
-                        // process takes place and this would trigger a new CSRF token (meaning token checking fails).
+                        // process takes place and this would trigger a new CSRF token (meaning token checking frequently fails).
                         // See https://github.com/spring-projects/spring-security/issues/5669#issuecomment-855757197
                         .sessionAuthenticationStrategy(new NullAuthenticatedSessionStrategy())
                         .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler()))
@@ -138,7 +149,9 @@ public class WebSecurityConfiguration {
                         hasRole(ROLE_ACTUATOR.getShortName())
                         // We permitAll here - see the method level JavaDocs for why we do this
                         .anyRequest().permitAll()
-                );
+                )
+                .logout((logout) -> logout.addLogoutHandler(jwtCookie).addLogoutHandler(clearSiteData)
+                        .logoutSuccessUrl("/"));
                 // We deliberately leave most of the security related header writing to the front end reverse proxy / API gateway
                 // to ensure consistency of approach across microservices
 
@@ -226,4 +239,5 @@ public class WebSecurityConfiguration {
     public RequestDataValueProcessor requestDataValueProcessor() {
         return new CsrfRequestDataValueProcessor();
     }
+
 }

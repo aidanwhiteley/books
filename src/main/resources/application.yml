@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: dev-mongo-java-server-no-auth
+    active: dev-mongo-java-server
 
   mvc:
     pathmatch:
@@ -41,9 +41,9 @@ spring:
       client:
         registration:
           google:
-            client-id: NotInSCM1
-            client-secret: NotInSCM1
-            redirect-uri: https://cloudybookclub.com/login/oauth2/code/google?logged-on=y
+            client-id: 869359861983-hilkdm0cgf63nonnra132tmje5o39esk.apps.googleusercontent.com
+            client-secret: _BSmMQtcrn5beswAizZyJo7n
+            redirect-uri: http://localhost:8080/login/oauth2/code/google
           facebook:
             client-id: NotInSCM2
             client-secret: NotInSCM2
@@ -114,8 +114,8 @@ books:
 
   client:
     enableCORS: false       # Setting this to true in production is not supported - leaves app at risk of CSRF
-    allowedCorsOrigin: http://localhost:5173
-    postLogonUrl: http://localhost:5173/?logged-on=y
+    allowedCorsOrigin: http://localhost:8080
+    postLogonUrl: http://localhost:8080/
     xsrfHeader: X-XSRF
 
   google:
@@ -136,7 +136,7 @@ books:
   users:
     default:
       admin:
-        email:   # The remote email address for a user that will be automatically made an admin on first logon.
+        email: # The email address for the user that will be automatically made an admin on first logon
       page:
         size: 5
     max:

@@ -113,9 +113,8 @@ public class UserController {
     /**
      * A custom logout method that removes the necessary client side cookies.
      * <p>
-     * We don't use the Spring Security config based logout as our needs are
-     * simple and there are complexities with the ordering of Spring Security
-     * filters when we want to be able to call logout when CORS is enabled.
+     * This is now "legacy" but left in place for the earlier React / Typescript
+     * based front end.
      */
     @PostMapping(value = "/logout")
     public void logout(HttpServletResponse response) {

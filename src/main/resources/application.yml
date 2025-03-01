@@ -41,8 +41,8 @@ spring:
       client:
         registration:
           google:
-            client-id: 869359861983-hilkdm0cgf63nonnra132tmje5o39esk.apps.googleusercontent.com
-            client-secret: _BSmMQtcrn5beswAizZyJo7n
+            client-id: NotInSCM1
+            client-secret: NotInSCM1
             redirect-uri: http://localhost:8080/login/oauth2/code/google
           facebook:
             client-id: NotInSCM2

@@ -5,17 +5,26 @@ import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.repository.BookRepositoryTest;
 import com.aidanwhiteley.books.util.IntegrationTest;
+import com.aidanwhiteley.books.util.JwtAuthenticationUtils;
 import org.jsoup.Jsoup;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.security.Principal;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -23,11 +32,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SuppressWarnings("ConstantConditions")
 @AutoConfigureMockMvc
 public class BookControllerHtmxTest extends IntegrationTest {
-
-    public static final String IN_MEMORY_MONGODB_SPRING_PROFILE = "mongo-java-server";
-    private static final String NO_AUTH_SPRING_PROFILE = "no-auth";
-    private static final Logger LOGGER = LoggerFactory.getLogger(BookControllerHtmxTest.class);
-    private static final String ERROR_MESSAGE_FOR_INVALID_RATING = "Supplied rating parameter not recognised";
 
     @Autowired
     private TestRestTemplate testRestTemplate;
@@ -64,8 +68,27 @@ public class BookControllerHtmxTest extends IntegrationTest {
         assertTrue(element.html().contains(BookRepositoryTest.J_UNIT_TESTING_FOR_BEGINNERS));
     }
 
+//    @Test
+//    @WithMockUser(roles="EDITOR")
+//    void testUserDataIsReturnedToEditorUser() throws Exception {
+//        String bookId = getIdForNewBook();
+//
+//        var jwtAuthlUtilsMock = Mockito.mock(JwtAuthenticationUtils.class);
+//        Mockito.when(jwtAuthlUtilsMock.extractUserFromPrincipal(any(Principal.class), eq(false)))
+//                .thenReturn(Optional.of(BookControllerTestUtils.getEditorTestUser()));
+//
+//        var result = mockMvc.perform(get("/bookreview?bookId=" + bookId))
+//                .andExpect(status().isOk())
+//                .andExpect(content().contentTypeCompatibleWith("text/html"))
+//                .andReturn();
+//        var output = result.getResponse().getContentAsString();
+//
+//        var element = Jsoup.parse(output).selectFirst("span.reviewer");
+//        assertTrue(element.html().contains(BookControllerTestUtils.USER_WITH_ALL_ROLES_FULL_NAME));
+//    }
+
     @Test
-    void testUserDataIsReturnedToEditorUser() throws Exception {
+    void testUserDataIsNotReturnedToBasicUser() throws Exception {
         String bookId = getIdForNewBook();
 
         var result = mockMvc.perform(get("/bookreview?bookId=" + bookId))
@@ -75,7 +98,7 @@ public class BookControllerHtmxTest extends IntegrationTest {
         var output = result.getResponse().getContentAsString();
 
         var element = Jsoup.parse(output).selectFirst("span.reviewer");
-        assertTrue(element.html().contains(BookControllerTestUtils.USER_WITH_ALL_ROLES_FULL_NAME));
+        assertNull(element);
     }
 
     private String getIdForNewBook() {

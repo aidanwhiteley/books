@@ -1,10 +1,7 @@
 package com.aidanwhiteley.books.repository;
 
-import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.googlebooks.BookSearchResult;
 import com.aidanwhiteley.books.domain.googlebooks.Item;
-import com.aidanwhiteley.books.domain.googlebooks.VolumeInfo;
-import com.aidanwhiteley.books.util.HtmlSanitiserUtils;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

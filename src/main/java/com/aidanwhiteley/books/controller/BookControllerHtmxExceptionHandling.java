@@ -28,6 +28,7 @@ public interface BookControllerHtmxExceptionHandling {
     // As we want to leave the REST API in place, we handle exceptions locally in this HTMX based controller
     // so that we can return HTML views for any errors from this controller.
 
+    @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler(UncategorizedMongoDbException.class)
     default String handleInMemoryMongoFullTextSearchException(UncategorizedMongoDbException ex, Model model,
                                                               Principal principal, WebRequest request) {
@@ -37,7 +38,7 @@ public interface BookControllerHtmxExceptionHandling {
                 "reasons, the full stack trace is logged", ex);
         String description = "Search doesn't work when running against the in-memory Mongo " +
                 "used in development because full text indexes are not supported in that implementation.";
-        return addAttributesToErrorPage(description, "e-mongo-uncategorized", model, principal, request);
+        return addAttributesToErrorPage(description, "e-mongo-full-text-search", model, principal, request);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

@@ -11,7 +11,7 @@ import static io.gatling.javaapi.http.HttpDsl.status;
 @SuppressWarnings("this-escape")
 public class StressTestSimulation extends Simulation {
 
-    HttpProtocolBuilder httpProtocol = http
+    final HttpProtocolBuilder httpProtocol = http
             .baseUrl("http://localhost:8080")
             .acceptHeader("text/html,text/json,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
             .doNotTrackHeader("1")
@@ -19,7 +19,7 @@ public class StressTestSimulation extends Simulation {
             .acceptEncodingHeader("gzip, deflate")
             .userAgentHeader("Mozilla/5.0 (Windows NT 5.1; rv:31.0) Gecko/20100101 Firefox/31.0");
 
-    ScenarioBuilder scn = scenario("BasicSimulation")
+    final ScenarioBuilder scn = scenario("BasicSimulation")
             .exec(http("request_1")
                     .get("/api/books/?page=0&size=5")
                     .check(status().is(200))

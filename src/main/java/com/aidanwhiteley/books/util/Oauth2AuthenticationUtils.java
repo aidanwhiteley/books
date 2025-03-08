@@ -64,7 +64,7 @@ public class Oauth2AuthenticationUtils {
 
     public Map<String, Object> getUserDetails(OAuth2AuthenticationToken authToken) {
         LinkedHashMap<String, Object> modifiableMap = new LinkedHashMap<>();
-        authToken.getPrincipal().getAttributes().forEach(modifiableMap::put);
+        modifiableMap.putAll(authToken.getPrincipal().getAttributes());
         return modifiableMap;
     }
 

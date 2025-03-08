@@ -11,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.context.annotation.Profile;
 
-import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 @Profile({"dev-mongo-java-server", "dev-mongo-java-server-no-auth", "dev-mongodb-no-auth", "dev-mongodb", "ci"})
@@ -48,16 +46,15 @@ public class GoogleBookSearchServiceTest extends IntegrationTest {
 
     @Test
     void testUpdateBookWithGoogleDataFromCache() {
-        GoogleBookSearchResult result = googleBookSearchService.getGoogleBooks("Design Patterns", "Gamma", 0);
-        result = googleBookSearchService.getGoogleBooks("Design Patterns", "Gamma", 0);
+        var result = googleBookSearchService.getGoogleBooks("Design Patterns", "Gamma", 0);
         assertTrue(result.isFromCache());
 
         Book aBook = bookRepository.insert(BookRepositoryTest.createTestBook());
         Book updatedBook = googleBookSearchService.updateBookWithGoogleBookDetails(aBook,
                 "Design Patterns", "Gamma", 0);
-        assertTrue(updatedBook.getGoogleBookDetails() != null);
+        assertNotNull(updatedBook.getGoogleBookDetails());
 
         Book foundBook = bookRepository.findById(updatedBook.getId()).orElseThrow();
-        assertTrue(foundBook.getGoogleBookDetails() != null);
+        assertNotNull(foundBook.getGoogleBookDetails());
     }
 }

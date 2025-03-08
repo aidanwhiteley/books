@@ -105,6 +105,7 @@ public class User {
     // A user gets the ROLE_USER as soon as they log on via an authentication provider.
     // It does not mean they are "trusted" users of the application. That only happens
     // when an admin gives them the ROLE_EDITOR role.
+    @Getter
     public enum Role {
         ROLE_USER(0),
         ROLE_EDITOR(1),
@@ -131,10 +132,6 @@ public class User {
 
         public String getShortName() {
             return this.toString().split("ROLE_")[1];
-        }
-
-        public int getRoleNumber() {
-            return this.roleNumber;
         }
 
     }

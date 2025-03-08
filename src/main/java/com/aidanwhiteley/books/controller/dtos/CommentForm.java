@@ -1,16 +1,9 @@
 package com.aidanwhiteley.books.controller.dtos;
 
-import com.aidanwhiteley.books.domain.Book;
-import com.aidanwhiteley.books.domain.Comment;
-import com.aidanwhiteley.books.service.dtos.GoogleBookSearchResult;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Data
 @NoArgsConstructor

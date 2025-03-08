@@ -1,10 +1,10 @@
 package com.aidanwhiteley.books.repository;
 
 import com.aidanwhiteley.books.controller.BookControllerTest;
+import com.aidanwhiteley.books.controller.BookControllerTestUtils;
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.Comment;
 import com.aidanwhiteley.books.domain.Owner;
-import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.repository.dtos.BooksByAuthor;
 import com.aidanwhiteley.books.repository.dtos.BooksByGenre;
 import com.aidanwhiteley.books.repository.dtos.BooksByRating;
@@ -49,10 +49,12 @@ public class BookRepositoryTest extends IntegrationTest {
     private Environment environment;
 
     public static Book createTestBook() {
+        Owner owner = new Owner(BookControllerTestUtils.getTestUser());
         return Book.builder().title(J_UNIT_TESTING_FOR_BEGINNERS)
                 .summary(A_GUIDE_TO_POKING_SOFTWARE).genre(COMPUTING)
                 .author(DR_ZEUSS).rating(Book.Rating.POOR)
                 .createdDateTime(LocalDateTime.of(2016, 11, 20, 0, 0))
+                .createdBy(owner)
                 .build();
     }
 
@@ -153,7 +155,7 @@ public class BookRepositoryTest extends IntegrationTest {
         // mongo-java-server doesnt support full text indexes across fields
         if (Arrays.stream(this.environment.getActiveProfiles()).anyMatch(s ->
                 s.contains(BookControllerTest.IN_MEMORY_MONGODB_SPRING_PROFILE))) {
-            LOGGER.warn("Test skipped - mongo-java-server doesnt yet support weighted full text indexes on multiple fields");
+            LOGGER.warn("searchForBooks test skipped - mongo-java-server doesnt yet support weighted full text indexes on multiple fields");
             return;
         }
 

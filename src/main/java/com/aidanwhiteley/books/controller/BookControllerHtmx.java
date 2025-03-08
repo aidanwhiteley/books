@@ -76,7 +76,7 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
         return "home";
     }
 
-    @GetMapping(value = {"/getBooksByRating"}, params = {"rating", "bookRating"})
+    @GetMapping(value = {"/getBooksByRating"}, params = {"rating"})
     public String findByRating(Model model, @RequestParam String rating, Principal principal) {
 
         Book.Rating ipRating = Book.Rating.getRatingByString(rating);
@@ -123,6 +123,7 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
 
         model.addAttribute("book", aBook);
         model.addAttribute("commentForm", new CommentForm());
+        addIsOwnerToModel(aBook, principal, model);
         addUserToModel(principal, model);
 
         return "book-review";
@@ -295,13 +296,27 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
             }
         }
 
-        Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
+        Optional<User> user = authUtils.extractUserFromPrincipal(principal, true);
         if (user.isPresent()) {
             model.addAttribute("user", user.get());
             model.addAttribute("highestRole", user.get().getHighestRole().getShortName());
         } else {
             model.addAttribute("user", null);
             model.addAttribute("highestRole", null);
+        }
+    }
+
+    private void addIsOwnerToModel(Book aBook, Principal principal, Model model) {
+        if (principal == null) {
+            LOGGER.debug("Principal passed to addIsOwnerToModel method was null");
+            model.addAttribute("isOwner", false);
+        } else {
+            Optional<User> user = authUtils.extractUserFromPrincipal(principal, true);
+            if (user.isPresent() && aBook.isOwner(user.get())) {
+                model.addAttribute("isOwner", true);
+            } else {
+                model.addAttribute("isOwner", false);
+            }
         }
     }
 

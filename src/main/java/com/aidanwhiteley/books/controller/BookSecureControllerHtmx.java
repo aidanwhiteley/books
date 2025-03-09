@@ -43,8 +43,11 @@ import static com.aidanwhiteley.books.util.LogDetaint.logMessageDetaint;
 @Controller
 public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHandling {
 
-    private static final String NO_VALUE_SELECTED = "NO_VALUE_SELECTED";
     private static final Logger LOGGER = LoggerFactory.getLogger(BookSecureControllerHtmx.class);
+    public static final String HX_TRIGGER_AFTER_SWAP = "HX-Trigger-After-Swap";
+    public static final String HX_RETARGET = "HX-Retarget";
+    private static final String NO_VALUE_SELECTED = "NO_VALUE_SELECTED";
+
     private final BookRepository bookRepository;
     private final JwtAuthenticationUtils authUtils;
     private final GoogleBookSearchService googleBookSearchService;
@@ -129,7 +132,7 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
                 // Ignoring the view string return value - just want the data added to the Model
                 findGoogleBooksByTitleAndAuthor(bookForm.getTitle(), bookForm.getAuthor(), bookForm.getIndex(), model, principal);
             }
-            response.addHeader("HX-Trigger-After-Swap", "{ \"showFlashMessage\": {\"level\": \"warn\", \"message\": \"Please check and correct the highlighted form fields\"}}");
+            response.addHeader(HX_TRIGGER_AFTER_SWAP, "{ \"showFlashMessage\": {\"level\": \"warn\", \"message\": \"Please check and correct the highlighted form fields\"}}");
 
             return "create-update-review :: cloudy-book-review-form";
         }
@@ -148,7 +151,7 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
             model.addAttribute("book", aBook);
             model.addAttribute("commentForm", new CommentForm());
             addUserToModel(principal, model);
-            response.addHeader("HX-Trigger-After-Swap", "{ \"showFlashMessage\": {\"level\": \"info\", \"message\": \"\"Your book review was " +
+            response.addHeader(HX_TRIGGER_AFTER_SWAP, "{ \"showFlashMessage\": {\"level\": \"info\", \"message\": \"Your book review was " +
                     "successfully created\"}}");
             response.setHeader("HX-Push-Url", "/bookreview?bookId=" + aBook.getId());
             return "book-review :: cloudy-book-review";
@@ -186,7 +189,7 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
                 // Ignoring the view string return value - just want the data added to the Model
                 findGoogleBooksByTitleAndAuthor(bookForm.getTitle(), bookForm.getAuthor(), bookForm.getIndex(), model, principal);
             }
-            response.addHeader("HX-Trigger-After-Swap", "{ \"showFlashMessage\": {\"level\": \"warn\", \"message\": \"Please check and correct the highlighted form fields\"}}");
+            response.addHeader(HX_TRIGGER_AFTER_SWAP, "{ \"showFlashMessage\": {\"level\": \"warn\", \"message\": \"Please check and correct the highlighted form fields\"}}");
 
             return "create-update-review :: cloudy-book-review-form";
         }
@@ -217,7 +220,7 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
             model.addAttribute("book", aBook);
             model.addAttribute("commentForm", new CommentForm());
             addUserToModel(principal, model);
-            response.addHeader("HX-Trigger-After-Swap", "{ \"showFlashMessage\": {\"level\": \"info\", \"message\": \"The book review was " +
+            response.addHeader(HX_TRIGGER_AFTER_SWAP, "{ \"showFlashMessage\": {\"level\": \"info\", \"message\": \"The book review was " +
                     "successfully updated\"}}");
             response.setHeader("HX-Push-Url", "/bookreview?bookId=" + bookForm.getBookId());
             return "book-review :: cloudy-book-review";
@@ -267,7 +270,7 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
                 // This call is to populate the model variable - we don't use the return string
                 bookControllerHtmx.recentlyReviewed(model, principal);
 
-                response.addHeader("HX-Trigger-After-Swap", "{ \"showFlashMessage\": {\"level\": \"info\", \"message\": \"The review of '" +
+                response.addHeader(HX_TRIGGER_AFTER_SWAP, "{ \"showFlashMessage\": {\"level\": \"info\", \"message\": \"The review of '" +
                         currentBookState.getTitle() + "' by " + currentBookState.getAuthor() +
                         " was successfully deleted\"}}");
 
@@ -311,7 +314,7 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
             model.addAttribute("commentForm", new CommentForm());
             model.addAttribute("book", updatedBook);
             addUserToModel(principal, model);
-            response.addHeader("HX-Trigger-After-Swap", "{ \"showFlashMessage\": {\"level\": \"info\", \"message\": \"Your comment on the book review was " +
+            response.addHeader(HX_TRIGGER_AFTER_SWAP, "{ \"showFlashMessage\": {\"level\": \"info\", \"message\": \"Your comment on the book review was " +
                     "successfully created\"}}");
             return "book-review :: cloudy-book-comment-form";
         } else {
@@ -343,7 +346,7 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
                 Book book = bookRepository.removeCommentFromBook(bookId, commentId, user.get().getFullName());
                 model.addAttribute("book", book);
                 addUserToModel(principal, model);
-                response.addHeader("HX-Trigger-After-Swap", "{ \"showFlashMessage\": {\"level\": \"info\", \"message\": \"Your comment on the '" + currentBook.getTitle() +
+                response.addHeader(HX_TRIGGER_AFTER_SWAP, "{ \"showFlashMessage\": {\"level\": \"info\", \"message\": \"Your comment on the '" + currentBook.getTitle() +
                                 "' book review was successfully deleted\"}}");
                 return "book-review :: cloudy-book-comments-list";
 
@@ -421,8 +424,8 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
 
                 model.addAttribute("users", userRepository.findAll());
                 addUserToModel(principal, model);
-                response.addHeader("HX-Trigger-After-Swap", "{ \"showFlashMessage\": {\"level\": \"warn\", \"message\": \"You cannot delete your own logged on user\"}}");
-                response.addHeader("HX-Retarget", "#users-table");
+                response.addHeader(HX_TRIGGER_AFTER_SWAP, "{ \"showFlashMessage\": {\"level\": \"warn\", \"message\": \"You cannot delete your own logged on user\"}}");
+                response.addHeader(HX_RETARGET, "#users-table");
                 return "user-admin :: cloudy-user-admin-table";
             }
 
@@ -430,15 +433,15 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
 
             model.addAttribute("users", userRepository.findAll());
             addUserToModel(principal, model);
-            response.addHeader("HX-Trigger-After-Swap", "{ \"showFlashMessage\": {\"level\": \"info\", \"message\": \"Selected user successfully deleted\"}}");
+            response.addHeader(HX_TRIGGER_AFTER_SWAP, "{ \"showFlashMessage\": {\"level\": \"info\", \"message\": \"Selected user successfully deleted\"}}");
             response.addHeader("HX-Trigger-After-Settle", "refreshSimpleDataTables");
 
             return "user-admin :: cloudy-user-admin-table";
         } else {
             model.addAttribute("users", userRepository.findAll());
             addUserToModel(principal, model);
-            response.addHeader("HX-Trigger-After-Swap", "{ \"showFlashMessage\": {\"level\": \"warn\", \"message\": \"Your userid no longer found in the data store!\"}}");
-            response.addHeader("HX-Retarget", "#users-table");
+            response.addHeader(HX_TRIGGER_AFTER_SWAP, "{ \"showFlashMessage\": {\"level\": \"warn\", \"message\": \"Your userid no longer found in the data store!\"}}");
+            response.addHeader(HX_RETARGET, "#users-table");
             return "user-admin :: cloudy-user-admin-table";
         }
     }
@@ -456,8 +459,8 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
                         user.get().getFullName(), user.get().getAuthProvider());
                 model.addAttribute("users", userRepository.findAll());
                 addUserToModel(principal, model);
-                response.addHeader("HX-Trigger-After-Swap", "{ \"showFlashMessage\": {\"level\": \"warn\", \"message\": \"Your cannot change the role for you own logged on user!\"}}");
-                response.addHeader("HX-Retarget", "#users-table");
+                response.addHeader(HX_TRIGGER_AFTER_SWAP, "{ \"showFlashMessage\": {\"level\": \"warn\", \"message\": \"Your cannot change the role for you own logged on user!\"}}");
+                response.addHeader(HX_RETARGET, "#users-table");
                 return "user-admin :: cloudy-user-admin-table";
             }
 
@@ -481,14 +484,14 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
             singleUser.add(updatedUser);
             model.addAttribute("users", singleUser);
             addUserToModel(principal, model);
-            response.addHeader("HX-Trigger-After-Swap", "{ \"showFlashMessage\": {\"level\": \"info\", \"message\": \"" + updatedUser.getFullName() + "'s role updated OK\"}}");
+            response.addHeader(HX_TRIGGER_AFTER_SWAP, "{ \"showFlashMessage\": {\"level\": \"info\", \"message\": \"" + updatedUser.getFullName() + "'s role updated OK\"}}");
             return "user-admin :: cloudy-user-admin-row";
 
         } else {
             model.addAttribute("users", userRepository.findAll());
             addUserToModel(principal, model);
-            response.addHeader("HX-Trigger-After-Swap", "{ \"showFlashMessage\": {\"level\": \"warn\", \"message\": \"Your userid no longer found in the data store!\"}}");
-            response.addHeader("HX-Retarget", "#users-table");
+            response.addHeader(HX_TRIGGER_AFTER_SWAP, "{ \"showFlashMessage\": {\"level\": \"warn\", \"message\": \"Your userid no longer found in the data store!\"}}");
+            response.addHeader(HX_RETARGET, "#users-table");
             return "user-admin :: cloudy-user-admin-table";
         }
     }

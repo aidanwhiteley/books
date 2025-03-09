@@ -77,7 +77,18 @@ public interface BookControllerHtmxExceptionHandling {
     @ResponseStatus(HttpStatus.FORBIDDEN)
     @ExceptionHandler(AccessDeniedException.class)
     default String handleAccessDeniedException(AccessDeniedException ex, Model model, Principal principal, WebRequest request) {
-        LOGGER.error("An attempt was made to access a protected resource without the required permission - {}", ex.getMessage(), ex);
+        // We don't want to log a stack trace for this but we do want to be able to see details of who was trying to access what.
+        StringBuilder errMsg = new StringBuilder();
+        errMsg.append("An attempt was made to access a protected resource without the required permission. ");
+        errMsg.append(" Exception message: ").append(ex.getMessage());
+        errMsg.append(" Principal: ");
+        if (principal != null) {
+            errMsg.append(principal);
+        }
+        if (request != null) {
+            errMsg.append(" Request details: ").append(request);
+        }
+        LOGGER.warn(errMsg.toString());
         String description = "Sorry - you are not permitted to access this functionality";
         return addAttributesToErrorPage(description, "e-403", model, principal, request);
     }

@@ -66,7 +66,6 @@ public class LimitDataVisibilityAspect {
 
     @Pointcut("execution(public org.springframework.data.domain.Page<com.aidanwhiteley.books.domain.Book> com.aidanwhiteley.books..*.*(..))")
     public void returnsPageOfBooks() {
-        System.out.println("In in page of books");
         // Just used for point cut - no implementation
     }
 

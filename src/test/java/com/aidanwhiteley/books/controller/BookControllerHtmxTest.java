@@ -7,6 +7,7 @@ import com.aidanwhiteley.books.controller.jwt.JwtUtils;
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.repository.BookRepository;
 import com.aidanwhiteley.books.repository.BookRepositoryTest;
+import de.bwaldvogel.mongo.wire.MongoWireProtocolHandler;
 import jakarta.servlet.http.Cookie;
 import org.jsoup.Jsoup;
 import org.junit.jupiter.api.Test;
@@ -20,7 +21,10 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.Arrays;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -173,6 +177,7 @@ public class BookControllerHtmxTest {
             // Temporarily turn off unwanted logging during this specific test
             LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
             context.getLogger(BookControllerHtmxExceptionHandling.class).setLevel(Level.valueOf("OFF"));
+            context.getLogger(MongoWireProtocolHandler.class).setLevel(Level.valueOf("OFF"));
 
             var result = mockMvc.perform(get("/search?pagenum=1&term=book"))
                     .andExpect(status().isConflict())
@@ -181,6 +186,7 @@ public class BookControllerHtmxTest {
             var output = result.getResponse().getContentAsString();
             assertEquals("e-mongo-full-text-search", Jsoup.parse(output).getElementById("errorCode").html());
             context.getLogger(BookControllerHtmxExceptionHandling.class).setLevel(Level.valueOf("WARN"));
+            context.getLogger(MongoWireProtocolHandler.class).setLevel(Level.valueOf("WARN"));
         } else {
             var result = mockMvc.perform(get("/search?pagenum=1&term=book"))
                     .andExpect(status().isOk())

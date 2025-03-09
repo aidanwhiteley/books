@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -102,12 +103,12 @@ public class BookSecureControllerHtmxTest {
         var output = mockMvc.perform(createReview)
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith("text/html"))
-                //.andDo(print())
                 .andReturn();
 
         String flashMessage = output.getResponse().getHeaderValue(BookSecureControllerHtmx.HX_TRIGGER_AFTER_SWAP).toString();
         assertTrue(flashMessage.contains("success"));
 
+        // Get the new books id and check it has been saved correctly
         String retargetUrl = output.getResponse().getHeaderValue("hx-push-url").toString();
         String bookId = retargetUrl.split("=")[1];
         Book savedBook = bookRepository.findById(bookId).orElseThrow(() -> new NotFoundException("Book id " + bookId + " not found"));
@@ -115,10 +116,75 @@ public class BookSecureControllerHtmxTest {
         assertEquals(author, savedBook.getAuthor());
     }
 
+    @Test
+    void testCreateBookReviewInvalidData() throws Exception {
 
-    private Book createTestBook() {
-        return bookRepository.insert(BookRepositoryTest.createTestBook());
+        String token = jwtUtils.createTokenForUser(BookControllerTestUtils.getEditorTestUser());
+        Cookie cookie = new Cookie(JwtAuthenticationService.JWT_COOKIE_NAME, token);
+
+        final String title = "Ask An Astronaut";
+        final String author = "Tim Peake";
+        // Fill in some invalid data
+        MockHttpServletRequestBuilder createReview = post("/createreview")
+                .cookie(cookie)
+                .with(csrf())
+                .param("title", title)
+                .param("author", author)
+                .param("genre", "")
+                .param("summary", "")
+                .param("rating", "WRONG")
+                .param("googleBookId", "m141DwAAQBAJ")
+                .param("index", "0");
+
+        var output = mockMvc.perform(createReview)
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith("text/html"))
+                //.andDo(print())
+                .andReturn();
+
+        var html = output.getResponse().getContentAsString();
+        var elements = Jsoup.parse(html).select(".invalid-feedback");
+        assertTrue(elements.size() > 0);
+
+        String flashMessage = output.getResponse().getHeaderValue(BookSecureControllerHtmx.HX_TRIGGER_AFTER_SWAP).toString();
+        assertTrue(flashMessage.contains("warn"));
     }
 
+
+    @Test
+    void testAdminCanUpdateBookReview() throws Exception {
+
+        String token = jwtUtils.createTokenForUser(BookControllerTestUtils.getTestUser());
+        Cookie cookie = new Cookie(JwtAuthenticationService.JWT_COOKIE_NAME, token);
+
+        final String title = "Ask An Astronaut";
+        final String author = "Tim Peake";
+        final String updatedReviewSummary = "Here is an updated review";
+        MockHttpServletRequestBuilder createReview = post("/updatereview")
+                .cookie(cookie)
+                .with(csrf())
+                .param("bookId", ASK_AN_ASTRONAUT_EXISTING_BOOK_ID)
+                .param("title", title)
+                .param("author", author)
+                .param("genre", "Autobiography")
+                .param("summary", updatedReviewSummary)
+                .param("rating", "GREAT")
+                .param("googleBookId", "m141DwAAQBAJ")
+                .param("index", "0");
+
+        var output = mockMvc.perform(createReview)
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith("text/html"))
+                .andReturn();
+
+        String flashMessage = output.getResponse().getHeaderValue(BookSecureControllerHtmx.HX_TRIGGER_AFTER_SWAP).toString();
+        assertTrue(flashMessage.contains("success"));
+
+        Book updatedBook = bookRepository.findById(ASK_AN_ASTRONAUT_EXISTING_BOOK_ID).orElseThrow(() ->
+                new NotFoundException("Book id " + ASK_AN_ASTRONAUT_EXISTING_BOOK_ID + " not found"));
+        assertEquals(title, updatedBook.getTitle());
+        // And now the updated summary
+        assertEquals(updatedReviewSummary, updatedBook.getSummary());
+    }
 
 }

@@ -17,12 +17,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static com.aidanwhiteley.books.controller.BookControllerTestUtils.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -58,7 +56,7 @@ public class BookSecureControllerHtmxTest {
     @Test
     void testEditorUserCanAccessCreateReviewPage() throws Exception {
 
-        String token = jwtUtils.createTokenForUser(BookControllerTestUtils.getEditorTestUser());
+        String token = jwtUtils.createTokenForUser(getEditorTestUser());
         Cookie cookie = new Cookie(JwtAuthenticationService.JWT_COOKIE_NAME, token);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/createreview")
@@ -69,9 +67,19 @@ public class BookSecureControllerHtmxTest {
     }
 
     @Test
+    void testInvalidJwtToken() throws Exception {
+        Cookie cookie = new Cookie(JwtAuthenticationService.JWT_COOKIE_NAME, "INVALID_TOKEN");
+        mockMvc.perform(MockMvcRequestBuilders.get("/createreview")
+                        .cookie(cookie))
+                .andExpect(status().isForbidden())
+                .andExpect(content().contentTypeCompatibleWith("text/html"))
+                .andReturn();
+    }
+
+    @Test
     void testEditorUserCanAccessUpdateReviewPage() throws Exception {
 
-        String token = jwtUtils.createTokenForUser(BookControllerTestUtils.getEditorTestUser());
+        String token = jwtUtils.createTokenForUser(getEditorTestUser());
         Cookie cookie = new Cookie(JwtAuthenticationService.JWT_COOKIE_NAME, token);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/updatereview/" + ASK_AN_ASTRONAUT_EXISTING_BOOK_ID)
@@ -84,7 +92,7 @@ public class BookSecureControllerHtmxTest {
     @Test
     void testEditorCanCreateBookReview() throws Exception {
 
-        String token = jwtUtils.createTokenForUser(BookControllerTestUtils.getEditorTestUser());
+        String token = jwtUtils.createTokenForUser(getEditorTestUser());
         Cookie cookie = new Cookie(JwtAuthenticationService.JWT_COOKIE_NAME, token);
 
         final String title = "Ask An Astronaut";
@@ -119,7 +127,7 @@ public class BookSecureControllerHtmxTest {
     @Test
     void testCreateBookReviewInvalidData() throws Exception {
 
-        String token = jwtUtils.createTokenForUser(BookControllerTestUtils.getEditorTestUser());
+        String token = jwtUtils.createTokenForUser(getEditorTestUser());
         Cookie cookie = new Cookie(JwtAuthenticationService.JWT_COOKIE_NAME, token);
 
         final String title = "Ask An Astronaut";
@@ -154,7 +162,7 @@ public class BookSecureControllerHtmxTest {
     @Test
     void testAdminCanUpdateBookReview() throws Exception {
 
-        String token = jwtUtils.createTokenForUser(BookControllerTestUtils.getTestUser());
+        String token = jwtUtils.createTokenForUser(getTestUser());
         Cookie cookie = new Cookie(JwtAuthenticationService.JWT_COOKIE_NAME, token);
 
         final String title = "Ask An Astronaut";
@@ -183,8 +191,88 @@ public class BookSecureControllerHtmxTest {
         Book updatedBook = bookRepository.findById(ASK_AN_ASTRONAUT_EXISTING_BOOK_ID).orElseThrow(() ->
                 new NotFoundException("Book id " + ASK_AN_ASTRONAUT_EXISTING_BOOK_ID + " not found"));
         assertEquals(title, updatedBook.getTitle());
-        // And now the updated summary
+        // And now check the updated summary
         assertEquals(updatedReviewSummary, updatedBook.getSummary());
+    }
+
+    @Test
+    void testAdminUpdateBookReviewBadData() throws Exception {
+
+        String token = jwtUtils.createTokenForUser(getTestUser());
+        Cookie cookie = new Cookie(JwtAuthenticationService.JWT_COOKIE_NAME, token);
+
+        final String title = "Ask An Astronaut";
+        final String author = "Tim Peake";
+        final String emptySummaryData = "";
+        MockHttpServletRequestBuilder createReview = post("/updatereview")
+                .cookie(cookie)
+                .with(csrf())
+                .param("bookId", ASK_AN_ASTRONAUT_EXISTING_BOOK_ID)
+                .param("title", title)
+                .param("author", author)
+                .param("genre", "Autobiography")
+                .param("summary", emptySummaryData)
+                .param("rating", "GREAT")
+                .param("googleBookId", "m141DwAAQBAJ")
+                .param("index", "0");
+
+        var output = mockMvc.perform(createReview)
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith("text/html"))
+                .andReturn();
+
+        var html = output.getResponse().getContentAsString();
+        var elements = Jsoup.parse(html).select(".invalid-feedback");
+        assertEquals(1, elements.size());
+
+        String flashMessage = output.getResponse().getHeaderValue(BookSecureControllerHtmx.HX_TRIGGER_AFTER_SWAP).toString();
+        assertTrue(flashMessage.contains("warn"));
+    }
+
+    @Test
+    void testAdminCanDeleteBookReview() throws Exception {
+
+        Book aBook = bookRepository.insert(BookRepositoryTest.createTestBook());
+        String bookId = aBook.getId();
+        assertTrue(bookRepository.findById(bookId).isPresent());
+
+        String token = jwtUtils.createTokenForUser(getTestUser());
+        Cookie cookie = new Cookie(JwtAuthenticationService.JWT_COOKIE_NAME, token);
+
+        MockHttpServletRequestBuilder deleteReview = delete("/deletereview/" + aBook.getId())
+                .cookie(cookie)
+                .with(csrf());
+
+        var output = mockMvc.perform(deleteReview)
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith("text/html"))
+                .andReturn();
+
+        String flashMessage = output.getResponse().getHeaderValue(BookSecureControllerHtmx.HX_TRIGGER_AFTER_SWAP).toString();
+        assertTrue(flashMessage.contains("deleted"));
+        assertFalse(bookRepository.findById(bookId).isPresent());
+    }
+
+    @Test
+    void testEditorCannotDeleteBookReviewTheyDidntCreate() throws Exception {
+
+        Book aBook = bookRepository.insert(BookRepositoryTest.createTestBook());
+        String bookId = aBook.getId();
+        assertTrue(bookRepository.findById(bookId).isPresent());
+
+        String token = jwtUtils.createTokenForUser(getEditorTestUser());
+        Cookie cookie = new Cookie(JwtAuthenticationService.JWT_COOKIE_NAME, token);
+
+        MockHttpServletRequestBuilder deleteReview = delete("/deletereview/" + aBook.getId())
+                .cookie(cookie)
+                .with(csrf());
+
+        mockMvc.perform(deleteReview)
+                .andExpect(status().isForbidden())
+                .andExpect(content().contentTypeCompatibleWith("text/html"))
+                .andReturn();
+
+        assertTrue(bookRepository.findById(bookId).isPresent());
     }
 
 }

@@ -196,7 +196,7 @@ public class BookSecureControllerHtmxTest {
     }
 
     @Test
-    void testAdminUpdateBookReviewBadData() throws Exception {
+    void testAdminUpdateBookReviewWithBadData() throws Exception {
 
         String token = jwtUtils.createTokenForUser(getTestUser());
         Cookie cookie = new Cookie(JwtAuthenticationService.JWT_COOKIE_NAME, token);
@@ -256,6 +256,7 @@ public class BookSecureControllerHtmxTest {
     @Test
     void testEditorCannotDeleteBookReviewTheyDidntCreate() throws Exception {
 
+        // This book is created with an admin owner rather than the editor user used later on in this test
         Book aBook = bookRepository.insert(BookRepositoryTest.createTestBook());
         String bookId = aBook.getId();
         assertTrue(bookRepository.findById(bookId).isPresent());
@@ -273,6 +274,70 @@ public class BookSecureControllerHtmxTest {
                 .andReturn();
 
         assertTrue(bookRepository.findById(bookId).isPresent());
+    }
+
+    @Test
+    void testEditorCanAddCommentToAnyBook() throws Exception {
+
+        // This book is created with an admin owner rather than the editor user used later on in this test
+        Book aBook = bookRepository.insert(BookRepositoryTest.createTestBook());
+        String bookId = aBook.getId();
+        assertTrue(bookRepository.findById(bookId).isPresent());
+
+        String token = jwtUtils.createTokenForUser(getTestUser());
+        Cookie cookie = new Cookie(JwtAuthenticationService.JWT_COOKIE_NAME, token);
+
+        final String commentText = "Here is a test comment";
+        MockHttpServletRequestBuilder createComment = post("/addcomment")
+                .cookie(cookie)
+                .with(csrf())
+                .param("comment", commentText)
+                .param("bookId", bookId);
+
+        var output = mockMvc.perform(createComment)
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith("text/html"))
+                .andReturn();
+
+        String flashMessage = output.getResponse().getHeaderValue(BookSecureControllerHtmx.HX_TRIGGER_AFTER_SWAP).toString();
+        assertTrue(flashMessage.contains("created"));
+
+        Book bookWithComment = bookRepository.findById(bookId).get();
+        assertEquals(1, bookWithComment.getComments().size());
+    }
+
+    @Test
+    void testAddCommentBadData() throws Exception {
+
+        // This book is created with an admin owner rather than the editor user used later on in this test
+        Book aBook = bookRepository.insert(BookRepositoryTest.createTestBook());
+        String bookId = aBook.getId();
+        assertTrue(bookRepository.findById(bookId).isPresent());
+
+        String token = jwtUtils.createTokenForUser(getTestUser());
+        Cookie cookie = new Cookie(JwtAuthenticationService.JWT_COOKIE_NAME, token);
+
+        final String commentText = "TooSmall";
+        MockHttpServletRequestBuilder createComment = post("/addcomment")
+                .cookie(cookie)
+                .with(csrf())
+                .param("comment", commentText)
+                .param("bookId", bookId);
+
+        var output = mockMvc.perform(createComment)
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith("text/html"))
+                .andReturn();
+
+        var html = output.getResponse().getContentAsString();
+        var elements = Jsoup.parse(html).select(".invalid-feedback");
+        assertEquals(1, elements.size());
+
+//        String flashMessage = output.getResponse().getHeaderValue(BookSecureControllerHtmx.HX_TRIGGER_AFTER_SWAP).toString();
+//        assertTrue(flashMessage.contains("created"));
+
+        Book bookWithComment = bookRepository.findById(bookId).get();
+        assertEquals(0, bookWithComment.getComments().size());
     }
 
 }

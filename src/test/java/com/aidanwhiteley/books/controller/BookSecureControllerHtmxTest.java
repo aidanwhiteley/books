@@ -333,11 +333,70 @@ public class BookSecureControllerHtmxTest {
         var elements = Jsoup.parse(html).select(".invalid-feedback");
         assertEquals(1, elements.size());
 
-//        String flashMessage = output.getResponse().getHeaderValue(BookSecureControllerHtmx.HX_TRIGGER_AFTER_SWAP).toString();
-//        assertTrue(flashMessage.contains("created"));
+        String flashMessage = output.getResponse().getHeaderValue(BookSecureControllerHtmx.HX_TRIGGER_AFTER_SWAP).toString();
+        assertTrue(flashMessage.contains("correct"));
 
         Book bookWithComment = bookRepository.findById(bookId).get();
         assertEquals(0, bookWithComment.getComments().size());
+    }
+
+    @Test
+    void testAddAndDeleteComment() throws Exception {
+
+        // This book is created with an admin owner rather than the editor user used later on in this test
+        Book aBook = bookRepository.insert(BookRepositoryTest.createTestBook());
+        String bookId = aBook.getId();
+        assertTrue(bookRepository.findById(bookId).isPresent());
+
+        String token = jwtUtils.createTokenForUser(getTestUser());
+        Cookie cookie = new Cookie(JwtAuthenticationService.JWT_COOKIE_NAME, token);
+
+        final String commentText = "Here is a test comment";
+        MockHttpServletRequestBuilder createComment = post("/addcomment")
+                .cookie(cookie)
+                .with(csrf())
+                .param("comment", commentText)
+                .param("bookId", bookId);
+
+        var output = mockMvc.perform(createComment)
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith("text/html"))
+                .andReturn();
+
+        Book bookWithComment = bookRepository.findById(bookId).get();
+        String commentId = bookWithComment.getComments().getFirst().getId();
+
+        MockHttpServletRequestBuilder deleteComment = delete("/deletecomment/?bookId=" + bookId +
+                "&commentId=" + commentId)
+                .cookie(cookie)
+                .with(csrf());
+
+        mockMvc.perform(deleteComment)
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith("text/html"))
+                .andReturn();
+
+        Book bookWithoutComment = bookRepository.findById(bookId).get();
+        assertTrue(bookWithoutComment.getComments().getFirst().isDeleted());
+    }
+
+    @Test
+    void testEditorCanSeeBookReviewers() throws Exception {
+
+        String token = jwtUtils.createTokenForUser(getEditorTestUser());
+        Cookie cookie = new Cookie(JwtAuthenticationService.JWT_COOKIE_NAME, token);
+
+        final String reviewer = "Fred Bloggs";
+
+        var result = mockMvc.perform(MockMvcRequestBuilders.get("/find?reviewer=" + reviewer + "&pagenum=1")
+                        .cookie(cookie))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith("text/html"))
+                .andReturn();
+
+        var output = result.getResponse().getContentAsString();
+        var html = Jsoup.parse(output);
+        assertTrue(html.select("td.firstTableCol").size() > 0);
     }
 
 }

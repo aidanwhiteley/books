@@ -303,6 +303,7 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
             model.addAttribute("commentForm", commentForm);
             model.addAttribute("book", theBook);
             addUserToModel(principal, model);
+            response.addHeader(HX_TRIGGER_AFTER_SWAP, "{ \"showFlashMessage\": {\"level\": \"warn\", \"message\": \"Please check and correct your comment\"}}");
             return "book-review :: cloudy-book-comment-form";
         }
 
@@ -377,7 +378,7 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
                                  @RequestHeader(value = "HX-Request", required = false) boolean hxRequest) {
 
         if (reviewer == null || reviewer.trim().isEmpty()) {
-            throw new IllegalArgumentException("Genre parameter cannot be empty");
+            throw new IllegalArgumentException("Reviewer parameter cannot be empty");
         }
 
         if (pagenum < 1) {

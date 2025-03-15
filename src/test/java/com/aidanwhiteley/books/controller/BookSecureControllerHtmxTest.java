@@ -399,4 +399,49 @@ public class BookSecureControllerHtmxTest {
         assertTrue(html.select("td.firstTableCol").size() > 0);
     }
 
+    @Test
+    void testEditorCannotSeeUserAdmin() throws Exception {
+
+        String token = jwtUtils.createTokenForUser(getEditorTestUser());
+        Cookie cookie = new Cookie(JwtAuthenticationService.JWT_COOKIE_NAME, token);
+
+        MockHttpServletRequestBuilder deleteReview = get("/useradmin")
+                .cookie(cookie)
+                .with(csrf());
+        mockMvc.perform(deleteReview)
+                .andExpect(status().isForbidden())
+                .andExpect(content().contentTypeCompatibleWith("text/html"))
+                .andReturn();
+    }
+
+    @Test
+    void testAdminCanSeeUserAdmin() throws Exception {
+
+        String token = jwtUtils.createTokenForUser(getTestUser());
+        Cookie cookie = new Cookie(JwtAuthenticationService.JWT_COOKIE_NAME, token);
+
+        MockHttpServletRequestBuilder deleteReview = get("/useradmin")
+                .cookie(cookie)
+                .with(csrf());
+        mockMvc.perform(deleteReview)
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith("text/html"))
+                .andReturn();
+    }
+
+    @Test
+    void testAdminCannotDeleteOwnUserid() throws Exception {
+
+        String token = jwtUtils.createTokenForUser(getTestUser());
+        Cookie cookie = new Cookie(JwtAuthenticationService.JWT_COOKIE_NAME, token);
+
+        MockHttpServletRequestBuilder deleteReview = get("/useradmin")
+                .cookie(cookie)
+                .with(csrf());
+        mockMvc.perform(deleteReview)
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith("text/html"))
+                .andReturn();
+    }
+
 }

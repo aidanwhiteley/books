@@ -29,7 +29,7 @@
                         <th data-sortable="false">Delete</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody hx-target-error="#detail">
                     <tr th:remove="all">
                         <td>Aidan Whiteley</td>
                         <td>Google</td>
@@ -58,7 +58,7 @@
                         </button></td>
                     </tr>
 
-                    <tr th:each="user : ${users}" th:fragment="cloudy-user-admin-row" hx-target-error="#detail">
+                    <tr th:each="user : ${users}" th:fragment="cloudy-user-admin-row" th:attr="data-userid=${user.id}">
                         <td th:text=${user.fullName}>Barnaby Rudge</td>
                         <td th:text=${#strings.capitalize(#strings.toLowerCase(user.authProvider))}>GOOGLE</td>
                         <td th:text="${user.email}">example@example.org</td>

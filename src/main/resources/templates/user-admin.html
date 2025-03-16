@@ -69,9 +69,7 @@
                                     ROLE_ADMIN
                                 </button>
                                 <ul class="dropdown-menu" hx-target="closest tr" hx-swap="outerHTML" hx-indicator="closest .role-btn-group">
-                                    <li>
-                                        <a class="dropdown-item" th:hx-put="@{/updateuserrole/{id}(id = ${user.id}, role=ROLE_USER)}">ROLE_USER</a>
-                                    </li>
+                                    <li><a class="dropdown-item" th:hx-put="@{/updateuserrole/{id}(id = ${user.id}, role=ROLE_USER)}">ROLE_USER</a></li>
                                     <li><a class="dropdown-item" th:hx-put="@{/updateuserrole/{id}(id = ${user.id}, role=ROLE_EDITOR)}">ROLE_EDITOR</a></li>
                                     <li><a class="dropdown-item" th:hx-put="@{/updateuserrole/{id}(id = ${user.id}, role=ROLE_ADMIN)}">ROLE_ADMIN</a></li>
                                 </ul>

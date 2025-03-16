@@ -432,16 +432,39 @@ public class BookSecureControllerHtmxTest {
     @Test
     void testAdminCannotDeleteOwnUserid() throws Exception {
 
+        final String idOfCurrentTestUser = "5a6cc95fba03402460427b4a";
+
         String token = jwtUtils.createTokenForUser(getTestUser());
         Cookie cookie = new Cookie(JwtAuthenticationService.JWT_COOKIE_NAME, token);
 
-        MockHttpServletRequestBuilder deleteReview = get("/useradmin")
+        MockHttpServletRequestBuilder deleteUser = delete("/deleteuser/" + idOfCurrentTestUser)
                 .cookie(cookie)
                 .with(csrf());
-        mockMvc.perform(deleteReview)
+        var output = mockMvc.perform(deleteUser)
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith("text/html"))
                 .andReturn();
+        String flashMessage = output.getResponse().getHeaderValue(BookSecureControllerHtmx.HX_TRIGGER_AFTER_SWAP).toString();
+        assertTrue(flashMessage.contains("cannot delete"));
+    }
+
+    @Test
+    void testAdminCanDeleteOtherUserid() throws Exception {
+
+        final String idOfCurrentTestUser = "5a6cc95fba03402460427b4b";
+
+        String token = jwtUtils.createTokenForUser(getTestUser());
+        Cookie cookie = new Cookie(JwtAuthenticationService.JWT_COOKIE_NAME, token);
+
+        MockHttpServletRequestBuilder deleteUser = delete("/deleteuser/" + idOfCurrentTestUser)
+                .cookie(cookie)
+                .with(csrf());
+        var output = mockMvc.perform(deleteUser)
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith("text/html"))
+                .andReturn();
+        String flashMessage = output.getResponse().getHeaderValue(BookSecureControllerHtmx.HX_TRIGGER_AFTER_SWAP).toString();
+        assertTrue(flashMessage.contains("successfully deleted"));
     }
 
 }

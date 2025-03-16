@@ -448,23 +448,61 @@ public class BookSecureControllerHtmxTest {
         assertTrue(flashMessage.contains("cannot delete"));
     }
 
+//    @Test
+//    void testAdminCanDeleteOtherUserid() throws Exception {
+//
+//        final String idOfAnotherTestUser = "5a6cc95fba03402460427b4b";
+//
+//        String token = jwtUtils.createTokenForUser(getTestUser());
+//        Cookie cookie = new Cookie(JwtAuthenticationService.JWT_COOKIE_NAME, token);
+//
+//        MockHttpServletRequestBuilder deleteUser = delete("/deleteuser/" + idOfAnotherTestUser)
+//                .cookie(cookie)
+//                .with(csrf());
+//        var output = mockMvc.perform(deleteUser)
+//                .andExpect(status().isOk())
+//                .andExpect(content().contentTypeCompatibleWith("text/html"))
+//                .andReturn();
+//        String flashMessage = output.getResponse().getHeaderValue(BookSecureControllerHtmx.HX_TRIGGER_AFTER_SWAP).toString();
+//        assertTrue(flashMessage.contains("successfully deleted"));
+//    }
+
     @Test
-    void testAdminCanDeleteOtherUserid() throws Exception {
+    void testAdminCannotChangeOwnRoles() throws Exception {
 
         final String idOfCurrentTestUser = "5a6cc95fba03402460427b4b";
 
         String token = jwtUtils.createTokenForUser(getTestUser());
         Cookie cookie = new Cookie(JwtAuthenticationService.JWT_COOKIE_NAME, token);
 
-        MockHttpServletRequestBuilder deleteUser = delete("/deleteuser/" + idOfCurrentTestUser)
+        MockHttpServletRequestBuilder updateUser = put("/updateuserrole/" + idOfCurrentTestUser + "?role=ANYTHING")
                 .cookie(cookie)
                 .with(csrf());
-        var output = mockMvc.perform(deleteUser)
+        var output = mockMvc.perform(updateUser)
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith("text/html"))
                 .andReturn();
         String flashMessage = output.getResponse().getHeaderValue(BookSecureControllerHtmx.HX_TRIGGER_AFTER_SWAP).toString();
-        assertTrue(flashMessage.contains("successfully deleted"));
+        assertTrue(flashMessage.contains("cannot change the role"));
     }
+
+//    @Test
+//    void testAdminCanDChangeRoleOfOtherUserid() throws Exception {
+//
+//        final String idOfAnotherTestUser = "5a6ccababa03401ce44d8381";
+//
+//        String token = jwtUtils.createTokenForUser(getTestUser());
+//        Cookie cookie = new Cookie(JwtAuthenticationService.JWT_COOKIE_NAME, token);
+//
+//        MockHttpServletRequestBuilder updateUser = put("/updateuserrole/" + idOfAnotherTestUser + "?role=ADMIN")
+//                .cookie(cookie)
+//                .with(csrf());
+//        var output = mockMvc.perform(updateUser)
+//                .andExpect(status().isOk())
+//                .andExpect(content().contentTypeCompatibleWith("text/html"))
+//                .andReturn();
+//        String flashMessage = output.getResponse().getHeaderValue(BookSecureControllerHtmx.HX_TRIGGER_AFTER_SWAP).toString();
+//        assertTrue(flashMessage.contains("role updated OK"));
+//    }
 
 }

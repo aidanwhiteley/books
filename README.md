@@ -8,7 +8,7 @@ actually be useful.
 So welcome to the "Cloudy Bookclub" microservice!
 
 > [!NOTE]  
-> Now uplifted to the latest Spring Boot 3.x and Java 21 and with a default HTMX based front end provided.
+> Now uplifted to the latest Spring Boot 3.x and Java 21 and with a default, HTMX based front end provided.
 
 [![Actions CI Build](https://github.com/aidanwhiteley/books/workflows/Actions%20CI%20Build/badge.svg)](https://github.com/aidanwhiteley/books/actions?query=workflow%3A%22Actions+CI+Build%22)
 [![Sonar Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=com.aidanwhiteley%3Abooks&metric=alert_status)](https://sonarcloud.io/dashboard?id=com.aidanwhiteley%3Abooks)
@@ -28,10 +28,10 @@ making the web application entirely free of http session state (see later for wh
     * except for some Mongo aggregation queries added to the Repository implementation
 * accessing the Google Books API with the Spring RestTemplate
 * and Docker images and a Docker Compose file that runs all the tiers of the application with one `docker compose up -d` command
-* new from 2025 - there is now a "built in" front end implementation using [HTMX](https://htmx.org/). The old JSON data APIs are still retained meaning that the alternative React / Typescript front end implementation still works.
+* new from 2025 - there is now a "built in" front end implementation using [HTMX](https://htmx.org/). The earlier JSON data APIs are still retained meaning that the alternative React / Typescript front end implementation still works.
 
 ### Live application
-This project runs live under Docker Compose using the HTMX front end at https://cloudybookclub.com/ and with a React / Typescript [client application](https://github.com/aidanwhiteley/books-react) available at https://cloudybookclub.com/react-typescript
+This project runs live under Docker Compose using the HTMX front end at https://cloudybookclub.com/ and with a React / Typescript [client application](https://github.com/aidanwhiteley/books-react) available at https://react-typescript.cloudybookclub.com/
 
 ![The Cloudy Book Club](../media/screengrab.jpg?raw=true)
 
@@ -41,7 +41,7 @@ The checked in default Spring profile is "mongo-java-server-no-auth". This uses 
 [mongo-java-server](https://github.com/bwaldvogel/mongo-java-server) - so there is no need to run MongoDb locally. It also
 auto logs you on with a dummy admin user so there is no need to set up OAuth config to explore the application. So you 
 should be able to just check out the code and run and test the application for development purposes with no other dependencies. Try
-`mvn spring-boot:run`
+`mvnw.cmd spring-boot:run`
 and then point a browser at http://localhost:8080/
 
 To develop Mongo related code you should switch to the "dev" profile which does expect to be able to connect to a real MongoDb instance.
@@ -51,23 +51,23 @@ output to the console.
 
 ### Tests
 All tests should run fine "out of the box" i.e. with a clean checkout of the code you should be able to successfully run
-`mvn clean compile test package` and all tests should pass.
+`mvnw.cmd clean compile test package` and all tests should pass (with the code coverage reports output to target/site/jococo/index.html)
 
 By default, the tests run against mongo-java-server so there is no need to install
-MongDb to test most of the application. Functionality not supported by mogo-java-server such as full text indexes results in some tests being skipped when 
+MongoDb to test most of the application. Functionality not supported by mogo-java-server such as full text indexes results in some tests being skipped when 
 running with the mongo-java-server Spring profile.
 
 When running the CI builds with Github Actions, all tests run against a real Mongo instance.
 
 Some of the integration tests make use of WireMock - see the /src/test/resources/mappings and __files directories for the configuration details.
 
-The tests are probably about 50/50 between unit and integration tests...
+The tests are probably about 50/50 between unit tests and vastly more useful integration tests...
 
 #### Stress Test
 To support a simple load test, there is a Maven plugin configured that runs a basic Gatling load test.
-After starting the Spring Boot application (i.e. mvn spring-boot:run or via your IDE) run the command:
+After starting the Spring Boot application (i.e. mvnw.cmd spring-boot:run or via your IDE) run the command:
 
-`mvn gatling:test`
+mvnw.cmd gatling:test
 
 The source code of this test in at test/java/com/aidanwhiteley/books/loadtest/StressTestSimulation.java. The checked in config
 ensures that, by default, the number of request per second is low enough not to stress an average PC.
@@ -75,7 +75,7 @@ ensures that, by default, the number of request per second is low enough not to 
 #### Mutation Tests
 There is support for mutation testing using the [Pitest](https://pitest.org/) library.
 To try it out use something similar to 
-`mvn -Ppitest -DwithHistory=true -DtargetClasses="com.aidanwhiteley.books.service.*" test`
+`mvnw.cmd -Ppitest -DwithHistory=true -DtargetClasses="com.aidanwhiteley.books.service.*" test`
 Be warned, the first run will take a long time (many minutes) - especially if the glob for targetClasses is wide. Subsequent runs should be much quicker.
 Unfortunately, this mutation support wasn't in place when the tests were originally written meaning that the 
 current test suite have some tests that survive too many mutations! The mutation test code is there for any new code.
@@ -87,13 +87,13 @@ head on over to [Lombok](https://projectlombok.org/) and click the appropriate "
 
 In preparation for playing with recent Java features such as virtual threads and pattern matching, the build of this project **now requires JDK21**.
 
-With appropriate versions of the JDK, Maven and a (optionally) Mongo installed, start with
+With appropriate versions of the JDK (i.e. 21+) and optionally Maven and Mongo installed, start with
 ~~~~
-mvn clean compile test
+mvnw.cmd clean compile test
 ~~~~
 and then try
 ~~~~
-mvn spring-boot:run
+mvnw.cmd spring-boot:run
 ~~~~
 To access the application using the default HTMX based front end, point your browser to http://localhost:8080/
 
@@ -212,7 +212,7 @@ tool to auto create OpenAPI 3 JSON. The API documentation can be explored and te
 A lot of the time developing this microservice was spent in making it entirely independent of HTTP session state  - based around issuing a 
 JWT after the user has authenticated via Google / Facebook.
 
-This turned out to be suprisingly difficult - with the cause of the difficulty mainly being in the Spring Boot OAuth2 implementation 
+This turned out to be surprisingly difficult - with the cause of the difficulty mainly being in the Spring Boot OAuth2 implementation 
 in Spring Boot 1.x. The Google/Facebook re-direct back to the microservice needed to hit the same session / JVM as I think that the 
 Oauth2ClientContext was storing some state in http session. 
 
@@ -251,7 +251,7 @@ A Spring / Netflix Eureka service registry in which instances of the books micro
 which the API gateway finds available instances of the books microservice.
 ### Java API tier
 There is Google Jib created image (aidanwhiteley/books-api-java) for this application. 
-The image can be recreated by running "mvn compile jib:dockerBuild".
+The image can be recreated by running "mvnw.cmd compile jib:dockerBuild".
 Registers with Service Registry (dependant on the Spring profile used).
 ### MongoDB data tier
 A MongoDB based Docker image (aidanwhiteley/books-db-mongodb or aidanwhiteley/books-db-mongodb-demodata) is available

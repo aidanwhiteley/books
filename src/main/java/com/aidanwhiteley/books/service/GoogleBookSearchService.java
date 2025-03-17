@@ -91,7 +91,7 @@ public class GoogleBookSearchService {
                     "Google books search cache is too low at {} minutes", index, cacheTimeoutMinutes);
         }
 
-        BookSearchResult result = googleBooksDaoSync.searchGoogBooksByTitleAndAuthor(title, author);
+        BookSearchResult result = googleBooksDaoSync.searchGoogleBooksByTitleAndAuthor(title, author);
         if (!result.getItems().isEmpty()) {
             LOGGER.debug("Inserting an entry into the Google books search cache for title {}, author {} and index {} ",
                     title, author, index);

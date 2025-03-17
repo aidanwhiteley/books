@@ -239,7 +239,7 @@ class BookSecureControllerTest extends IntegrationTest {
         final String testReader = "Fred Bloggs";
         ResponseEntity<String> response = testRestTemplate.exchange("/secure/api/books?reader=" + testReader, HttpMethod.GET, request, String.class);
         List<Book> books = JsonPath.read(response.getBody(), "$.content");
-        assertTrue(books.size() > 0);
+        assertFalse(books.isEmpty());
 
         final String emptyReader = "";
         response = testRestTemplate.exchange("/secure/api/books?reader=" + emptyReader, HttpMethod.GET, request, String.class);
@@ -259,7 +259,7 @@ class BookSecureControllerTest extends IntegrationTest {
 
         ResponseEntity<String> response = testRestTemplate.exchange("/secure/api/books/readers", HttpMethod.GET, request, String.class);
         List<String> bookReaders = JsonPath.read(response.getBody(), "$[*].reader");
-        assertTrue(bookReaders.size() > 0);
+        assertFalse(bookReaders.isEmpty());
     }
 
     @Test

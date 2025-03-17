@@ -437,14 +437,13 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
             response.addHeader(HX_TRIGGER_AFTER_SWAP, "{ \"showFlashMessage\": {\"level\": \"info\", \"message\": \"Selected user successfully deleted\"}}");
             response.addHeader("HX-Trigger-After-Settle", "refreshSimpleDataTables");
 
-            return "user-admin :: cloudy-user-admin-table";
         } else {
             model.addAttribute("users", userRepository.findAll());
             addUserToModel(principal, model);
             response.addHeader(HX_TRIGGER_AFTER_SWAP, "{ \"showFlashMessage\": {\"level\": \"warn\", \"message\": \"Your userid no longer found in the data store!\"}}");
             response.addHeader(HX_RETARGET, "#users-table");
-            return "user-admin :: cloudy-user-admin-table";
         }
+        return "user-admin :: cloudy-user-admin-table";
     }
 
     @PutMapping(value = "/updateuserrole/{id}", params = {"role"})

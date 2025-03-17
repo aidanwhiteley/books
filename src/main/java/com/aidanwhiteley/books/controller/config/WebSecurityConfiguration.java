@@ -53,7 +53,7 @@ public class WebSecurityConfiguration {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WebSecurityConfiguration.class);
 
-    private final JwtAuthenticationFilter jwtAuththenticationFilter;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     private final JwtAuthenticationService jwtAuthenticationService;
 
@@ -65,7 +65,7 @@ public class WebSecurityConfiguration {
     public WebSecurityConfiguration(JwtAuthenticationFilter jwtAuthenticationFilter, JwtAuthenticationService jwtAuthenticationService,
                                     UserService userService) {
 
-        this.jwtAuththenticationFilter = jwtAuthenticationFilter;
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.jwtAuthenticationService = jwtAuthenticationService;
         this.userService = userService;
     }
@@ -127,7 +127,7 @@ public class WebSecurityConfiguration {
                         .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler()))
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
-                .addFilterAfter(jwtAuththenticationFilter, LogoutFilter.class)
+                .addFilterAfter(jwtAuthenticationFilter, LogoutFilter.class)
                 .oauth2Login(login -> login
                         .authorizationEndpoint(endpoint -> endpoint.baseUri("/login")
                                 .authorizationRequestRepository(cookieBasedAuthorizationRequestRepository()))

@@ -228,7 +228,7 @@ public class BookSecureController {
 
     @GetMapping(value = {"/googlebooks", "googlebooks/"}, params = {"title", "author"})
     public BookSearchResult findGoogleBooksByTitleAndAuthor(@RequestParam String title, @RequestParam String author) {
-        return googleBooksDaoSync.searchGoogBooksByTitleAndAuthor(title, author);
+        return googleBooksDaoSync.searchGoogleBooksByTitleAndAuthor(title, author);
     }
 
     @GetMapping(value = "/books/readers")

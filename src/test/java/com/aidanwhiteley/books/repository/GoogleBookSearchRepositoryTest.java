@@ -25,7 +25,7 @@ class GoogleBookSearchRepositoryTest extends IntegrationTest {
 
     @Test
     void findByTitleAndAuthor() {
-        BookSearchResult result = theDao.searchGoogBooksByTitleAndAuthor("Design Patterns", "Gamma");
+        BookSearchResult result = theDao.searchGoogleBooksByTitleAndAuthor("Design Patterns", "Gamma");
         assertNotNull(result);
 
         // Now using fake title, author when inserting into cache to avoid conflict with other tests (no rollback after test!).

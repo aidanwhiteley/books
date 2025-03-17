@@ -37,7 +37,7 @@ public class GoogleBooksDaoSync {
         this.googleBooksRestTemplate = buildRestTemplate(restTemplateBuilder);
     }
 
-    public BookSearchResult searchGoogBooksByTitleAndAuthor(String title, String author) {
+    public BookSearchResult searchGoogleBooksByTitleAndAuthor(String title, String author) {
 
         String encodedTitle = URLEncoder.encode(title, StandardCharsets.UTF_8);
         String encodedAuthor = URLEncoder.encode(author, StandardCharsets.UTF_8);
@@ -80,7 +80,7 @@ public class GoogleBooksDaoSync {
 
     private RestTemplate buildRestTemplate(RestTemplateBuilder builder) {
 
-        return builder.setConnectTimeout(Duration.ofMillis(googleBooksApiConfig.getConnectTimeout())).
-                setReadTimeout(Duration.ofMillis(googleBooksApiConfig.getReadTimeout())).build();
+        return builder.connectTimeout(Duration.ofMillis(googleBooksApiConfig.getConnectTimeout())).
+                readTimeout(Duration.ofMillis(googleBooksApiConfig.getReadTimeout())).build();
     }
 }

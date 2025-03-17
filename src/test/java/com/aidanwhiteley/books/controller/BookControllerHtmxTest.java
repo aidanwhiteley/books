@@ -106,7 +106,7 @@ public class BookControllerHtmxTest {
                 .andReturn();
         var output = result.getResponse().getContentAsString();
         var elements = Jsoup.parse(output).select("tr .firstTableCol");
-        assertTrue(elements.size() > 0);
+        assertFalse(elements.isEmpty());
     }
 
     @Test
@@ -150,9 +150,9 @@ public class BookControllerHtmxTest {
                 .andReturn();
         var output = result.getResponse().getContentAsString();
         var html = Jsoup.parse(output);
-        assertTrue(html.select("#select-by-author-options option").size() > 0);
-        assertTrue(html.select("#select-by-genre-options option").size() > 0);
-        assertTrue(html.select("#select-by-rating-options option").size() > 0);
+        assertFalse(html.select("#select-by-author-options option").isEmpty());
+        assertFalse(html.select("#select-by-genre-options option").isEmpty());
+        assertFalse(html.select("#select-by-rating-options option").isEmpty());
     }
 
     @Test
@@ -191,7 +191,7 @@ public class BookControllerHtmxTest {
                     .andReturn();
             var output = result.getResponse().getContentAsString();
             var elements = Jsoup.parse(output).select("tr .firstTableCol");
-            assertTrue(elements.size() > 0);
+            assertFalse(elements.isEmpty());
         }
     }
 

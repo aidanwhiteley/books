@@ -34,7 +34,7 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
     public static final String MESSAGE_ILLEGAL_ARGUMENT = "Sorry - you supplied an invalid input parameter value. Please check and try again";
     private static final String MESSAGE_FORBIDDEN = "Sorry - you do not have access to the URL you requested";
     private static final String MESSAGE_DENIED = "Sorry - you must be logged on";
-    private static final String MESSAGE_UNEXPECTED_EXCEPTION = "Sorry - an unexpected problem happended - please try later";
+    private static final String MESSAGE_UNEXPECTED_EXCEPTION = "Sorry - an unexpected problem happened - please try later";
 
     private static final Logger API_LOGGER = LoggerFactory.getLogger(RestApiExceptionHandler.class);
 

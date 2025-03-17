@@ -67,7 +67,7 @@ public class BookRepositoryTest extends IntegrationTest {
     void findByAuthor() {
         PageRequest pageObj = PageRequest.of(PAGE, PAGE_SIZE);
         Page<Book> books = bookRepository.findAllByAuthorOrderByCreatedDateTimeDesc(pageObj, DR_ZEUSS);
-        assertTrue(books.getContent().size() >= 1);
+        assertFalse(books.getContent().isEmpty());
         assertEquals(DR_ZEUSS, books.getContent().getFirst().getAuthor());
 
         // The book should have a system created id value.
@@ -77,7 +77,7 @@ public class BookRepositoryTest extends IntegrationTest {
     @Test
     void countBooksByGenre() {
         List<BooksByGenre> list = bookRepository.countBooksByGenre();
-        assertTrue(list.size() > 0);
+        assertFalse(list.isEmpty());
         assertFalse(list.getFirst().getGenre().isEmpty());
         assertTrue(list.getFirst().getCountOfBooks() > 0);
     }
@@ -85,21 +85,21 @@ public class BookRepositoryTest extends IntegrationTest {
     @Test
     void countBooksByRating() {
         List<BooksByRating> list = bookRepository.countBooksByRating();
-        assertTrue(list.size() > 0);
+        assertFalse(list.isEmpty());
         assertTrue(list.getFirst().getCountOfBooks() > 0);
     }
 
     @Test
     void countBooksByAuthor() {
         List<BooksByAuthor> list = bookRepository.countBooksByAuthor();
-        assertTrue(list.size() > 0);
+        assertFalse(list.isEmpty());
         assertTrue(list.getFirst().getCountOfBooks() > 0);
     }
 
     @Test
     void countBooksByReader() {
         List<BooksByReader> list = bookRepository.countBooksByReader();
-        assertTrue(list.size() > 0);
+        assertFalse(list.isEmpty());
         assertTrue(list.getFirst().getCountOfBooks() > 0);
     }
 

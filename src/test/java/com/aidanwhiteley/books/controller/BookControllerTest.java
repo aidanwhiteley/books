@@ -184,7 +184,7 @@ public class BookControllerTest extends IntegrationTest {
         LOGGER.debug("Retrieved JSON was: {}", response.getBody());
 
 
-        assertTrue(books.size() >= 1, "No books found");
+        assertFalse(books.isEmpty(), "No books found");
     }
 
     @Test
@@ -205,7 +205,7 @@ public class BookControllerTest extends IntegrationTest {
                 null, String.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         List<Book> books = JsonPath.read(response.getBody(), "$.content");
-        assertTrue(books.size() >= 1, "Search didnt find a book");
+        assertFalse(books.isEmpty(), "Search didnt find a book");
 
         // Then check that we dont get a match when using a "stop" work
         final String aStopWord = "A";
@@ -234,7 +234,7 @@ public class BookControllerTest extends IntegrationTest {
 
         List<Book> books = JsonPath.read(response.getBody(), "$.content");
         LOGGER.debug("Retrieved JSON was: {}", response.getBody());
-        assertTrue(books.size() > 0, "Expected to find novels");
+        assertFalse(books.isEmpty(), "Expected to find novels");
     }
 
     @Test
@@ -246,9 +246,9 @@ public class BookControllerTest extends IntegrationTest {
         int count = JsonPath.parse(response.getBody()).read("$.count", Integer.class);
         assertTrue(count > 0, "Should find more than 0 books");
         List<BooksByGenre> genres = JsonPath.read(response.getBody(), "$.bookByGenre");
-        assertTrue(genres.size() > 0, "Should find more than 0 genres");
+        assertFalse(genres.isEmpty(), "Should find more than 0 genres");
         List<BooksByRating> ratings = JsonPath.read(response.getBody(), "$.booksByRating");
-        assertTrue(ratings.size() > 0, "Should have found more than 0 ratings");
+        assertFalse(ratings.isEmpty(), "Should have found more than 0 ratings");
     }
 
     @Test
@@ -258,7 +258,7 @@ public class BookControllerTest extends IntegrationTest {
 
         List<Book> booksByRating = JsonPath.read(response.getBody(), "$.content");
         LOGGER.debug("Retrieved JSON was: {}", response.getBody());
-        assertTrue(booksByRating.size() > 0, "Expected to find novels");
+        assertFalse(booksByRating.isEmpty(), "Expected to find novels");
         assertEquals(2, booksByRating.size(), "Expected to find a page of 2 novels");
 
         // Test defaults

@@ -23,7 +23,7 @@ class SiteRssFeedTest extends IntegrationTest {
     void checkFeedForFeedData() {
         Channel channel = siteFeed.createSiteRssFeed();
         assertEquals(booksFeedsDescription, channel.getDescription());
-        assertTrue(channel.getItems().size() > 0 && channel.getItems().size() <= booksFeedsMaxEntries);
+        assertTrue(!channel.getItems().isEmpty() && channel.getItems().size() <= booksFeedsMaxEntries);
 
         Item item = channel.getItems().getFirst();
         assertFalse(item.getContent().getValue().isEmpty());

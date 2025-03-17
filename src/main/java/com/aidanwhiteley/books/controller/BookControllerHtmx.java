@@ -76,7 +76,9 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
     }
 
     @GetMapping(value = {"/getBooksByRating"}, params = {"rating"})
-    public String findByRating(Model model, @RequestParam String rating, Principal principal) {
+    public String findByRating(Model model, @RequestParam String rating, Principal principal,
+                               HttpServletResponse response,
+                               @RequestHeader(value = "HX-Request", required = false) boolean hxRequest) {
 
         Book.Rating ipRating = Book.Rating.getRatingByString(rating);
         if (ipRating == null) {
@@ -90,6 +92,10 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
         model.addAttribute("books", books.stream().toList());
         model.addAttribute("rating", rating);
         addUserToModel(principal, model);
+
+        if (hxRequest) {
+            response.addHeader("HX-Trigger-After-Swap", "initSwiper");
+        }
 
         return "components/swiper :: cloudy-swiper-slides";
     }
@@ -142,6 +148,7 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
 
     @GetMapping(value = {"/find"}, params = {"rating", "pagenum"})
     public String findByRating(Model model, Principal principal, @RequestParam String rating, @RequestParam int pagenum,
+                               HttpServletResponse response,
                                @RequestHeader(value = "HX-Request", required = false) boolean hxRequest) {
 
         if (null == rating || rating.trim().isEmpty()) {
@@ -169,6 +176,7 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
         model.addAttribute("paginationLink", "find?rating=" + rating);
 
         if (hxRequest) {
+            response.addHeader("HX-Trigger-After-Swap", "clearSelectRating");
             return "find-reviews :: cloudy-find-by-results";
         } else {
             return "find-reviews";
@@ -177,6 +185,7 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
 
     @GetMapping(value = {"/find"}, params = {"author", "pagenum"})
     public String findByAuthor(Model model, Principal principal, @RequestParam String author, @RequestParam int pagenum,
+                               HttpServletResponse response,
                                @RequestHeader(value = "HX-Request", required = false) boolean hxRequest) {
 
         if (author == null || author.trim().isEmpty()) {
@@ -196,6 +205,7 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
         addUserToModel(principal, model);
         model.addAttribute("paginationLink", "find?author=" + author);
         if (hxRequest) {
+            response.addHeader("HX-Trigger-After-Swap", "clearSelectAuthor");
             return "find-reviews :: cloudy-find-by-results";
         } else {
             return "find-reviews";
@@ -204,6 +214,7 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
 
     @GetMapping(value = {"/find"}, params = {"genre", "pagenum"})
     public String findByGenre(Model model, Principal principal, @RequestParam String genre, @RequestParam int pagenum,
+                              HttpServletResponse response,
                               @RequestHeader(value = "HX-Request", required = false) boolean hxRequest) {
 
         if (genre == null || genre.trim().isEmpty()) {
@@ -226,6 +237,7 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
         model.addAttribute("paginationLink", "find?genre=" + genre);
 
         if (hxRequest) {
+            response.addHeader("HX-Trigger-After-Swap", "clearSelectGenre");
             return "find-reviews :: cloudy-find-by-results";
         } else {
             return "find-reviews";

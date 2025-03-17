@@ -375,6 +375,7 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
 
     @GetMapping(value = {"/find"}, params = {"reviewer", "pagenum"})
     public String findByReviewer(Model model, Principal principal, @RequestParam String reviewer, @RequestParam int pagenum,
+                                 HttpServletResponse response,
                                  @RequestHeader(value = "HX-Request", required = false) boolean hxRequest) {
 
         if (reviewer == null || reviewer.trim().isEmpty()) {
@@ -396,6 +397,7 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
         model.addAttribute("paginationLink", "find?reviewer=" + reviewer);
 
         if (hxRequest) {
+            response.addHeader("HX-Trigger-After-Swap", "clearSelectReviewer");
             return "find-reviews :: cloudy-find-by-results";
         } else {
             return "find-reviews";

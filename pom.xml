@@ -272,12 +272,6 @@
                             <goal>report</goal>
                         </goals>
                     </execution>
-                    <execution>
-                        <id>default-check</id>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
                 </executions>
                 <configuration>
                     <excludes>
@@ -336,6 +330,7 @@
                 <version>3.5.2</version>
                 <configuration>
                     <argLine>
+                        @{argLine}
                         -Dspring.profiles.active=dev-mongo-java-server
                         -javaagent:${settings.localRepository}/org/mockito/mockito-core/${mockito.version}/mockito-core-${mockito.version}.jar
                         -Xshare:off

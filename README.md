@@ -198,7 +198,7 @@ re-sent to the server for state changing (non GET) requests as an X-XSRF-TOKEN r
 
 ### HTMX security details
 The included Thymeleaf / HTMX application follows the HTMX best practises detailed at https://htmx.org/docs/#security. In addition
-* `htmx.config.allowEval` is set to false to prevent the use of JavaScript's `eval()`
+* `htmx.config.allowEval` is set to false to prevent the HTMX's use of JavaScript's `eval()`
 * While mostly agreeing with the concept of [Locality of Behaviour](https://htmx.org/essays/locality-of-behaviour/), all JavaScript has been removed from the Thymeleaf templates to separate JS files. This is to allow a usefully strict Content Security Policy to be set
 
 ## OpenAPI 3 API documentation and swagger-ui

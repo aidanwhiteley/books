@@ -59,6 +59,9 @@ document.addEventListener("showFlashMessage", function(evt) {
 
 // Encapsulate TomSelect logic
 (function() {
+
+    // The following line wont play nicely with hx-boost.
+    // See https://htmx.org/quirks/#some-people-don-t-like-hx-boost
     const selectControls = [];
 
     function initialiseTomSelect() {
@@ -144,7 +147,10 @@ function getCookieValue(name) {
     return match ? decodeURIComponent(match.split("=")[1]) : "";
 }
 
-// Add XSRF token to HTMX requests
+// Add XSRF token to HTMX requests.
+// This is the "naive double submit cookie pattern" that OWASP try to discourage but
+// which I'm happy is strong enough CSRF protection for this site's limited functionality.
+// See more at https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html#naive-double-submit-cookie-pattern-discouraged
 document.body.addEventListener("htmx:configRequest", function(evt) {
     const xsrfToken = getCookieValue("XSRF-TOKEN");
     const isSafeVerb = ["get", "head", "options"].includes(evt.detail.verb.toLowerCase());

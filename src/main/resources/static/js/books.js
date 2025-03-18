@@ -1,3 +1,16 @@
+/*
+    This file contains the application specific JavaScript for the Books application.
+    Because the application is an MPA, there is only a little bit of JavaScript required
+    to add some interactivity and integrate a few 3rd party JS components.
+
+    In many ways (particularly to support "locality of behaviour"), it would have been nice
+    to keep this JavaScript inline in the pages it is used. However, as one of the aims of
+    this demo project is to show HTMX being used with a Content Security Policy that disallows
+    inline scripts, it is all kept in this single external file.
+*/
+
+
+// Slider used on the home page
 function initialiseSwiper(evt) {
     new Swiper('.mySwiper', {
         effect: 'coverflow',
@@ -25,6 +38,7 @@ document.addEventListener("initSwiper", function(evt) {
     initialiseSwiper();
 });
 
+// Toast based "flash" message functionality.
 document.addEventListener("showFlashMessage", function(evt){
     // Default to info level colours
     let background = "linear-gradient(to right, #00b09b, #96c93d)";
@@ -45,6 +59,7 @@ document.addEventListener("showFlashMessage", function(evt){
     }).showToast();
 });
 
+// Integrating TomSelect select controls on a couple of pages
 (function() {
     let selectControls = [];
 
@@ -89,10 +104,10 @@ document.addEventListener("showFlashMessage", function(evt){
     function clearSelects(evt) {
         const allSelects = selectControls;
         allSelects.forEach((el) => {
-            if (el.inputId === evt.id) {
-                console.debug('Not clearing el.inputId ' + el.inputId + ' evt.id ' + evt.id);
+            if (el.inputId === evt) {
+                console.debug('Not clearing el.inputId ' + el.inputId + ' evt ' + evt);
             } else {
-                console.debug('Clearing el.id ' + el.inputId + ' evt.id ' + evt.id);
+                console.debug('Clearing el.id ' + el.inputId + ' evt ' + evt);
                 el.clear(true);
             }
         });
@@ -111,6 +126,21 @@ if (document.getElementById("select-by-author")) {
     initialiseTomSelect();
 }
 
+// Event listeners that drive the call to clearSelects() for the "find reviews" page
+document.addEventListener("clearSelectRating", function(evt) {
+    clearSelects('select-by-rating');
+});
+document.addEventListener("clearSelectAuthor", function(evt) {
+    clearSelects('select-by-author');
+});
+document.addEventListener("clearSelectGenre", function(evt) {
+    clearSelects('select-by-genre');
+});
+document.addEventListener("clearSelectReviewer", function(evt) {
+    clearSelects('select-by-reviewer');
+});
+
+// Integrate Datatables component
 (function() {
     let userAdminTables = [];
 
@@ -160,6 +190,7 @@ function getXsrfToken() {
     return "";
 }
 
+// Add the XSRF token as a request header to "non safe" HTTP Ajax requests made by HTMX
 document.body.addEventListener('htmx:configRequest', function(evt) {
 
     const existingHeaderNames = Object.keys(evt.detail.headers);

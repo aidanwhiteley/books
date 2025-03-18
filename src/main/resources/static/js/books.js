@@ -10,7 +10,7 @@
 */
 
 
-// Slider used on the home page
+// Utility function to initialize a Swiper instance
 function initialiseSwiper(evt) {
     new Swiper('.mySwiper', {
         effect: 'coverflow',
@@ -31,20 +31,20 @@ function initialiseSwiper(evt) {
         }
     });
 }
+
+// Initialize Swiper if the element exists
 if (document.getElementById("swiper-slides")) {
     initialiseSwiper();
 }
-document.addEventListener("initSwiper", function(evt) {
-    initialiseSwiper();
-});
+document.addEventListener("initSwiper", initialiseSwiper);
 
-// Toast based "flash" message functionality.
-document.addEventListener("showFlashMessage", function(evt){
-    // Default to info level colours
-    let background = "linear-gradient(to right, #00b09b, #96c93d)";
-    if (evt.detail.level.toLowerCase() === "warn") {
-        background = "linear-gradient(to right, #9c4f43, #e03419)";
-     }
+// Simplify Toastify initialization
+document.addEventListener("showFlashMessage", function(evt) {
+    const level = evt.detail.level?.toLowerCase() || "info";
+    const background = level === "warn" 
+        ? "linear-gradient(to right, #9c4f43, #e03419)" 
+        : "linear-gradient(to right, #00b09b, #96c93d)";
+    
     Toastify({
         text: evt.detail.message,
         duration: 5000,
@@ -53,166 +53,105 @@ document.addEventListener("showFlashMessage", function(evt){
         gravity: "top",
         position: "right",
         stopOnFocus: true,
-        style: {
-            background: background,
-        }
+        style: { background },
     }).showToast();
 });
 
-// Integrating TomSelect select controls on a couple of pages
+// Encapsulate TomSelect logic
 (function() {
-    let selectControls = [];
+    const selectControls = [];
 
     function initialiseTomSelect() {
-        htmx.onLoad(function (elt) {
-            const readSelects = htmx.findAll(elt, ".tom-select-control-readonly");
-            readSelects.forEach((el) => {
-                if (!el.tomselect) {
-                    try {
-                        selectControls.push(new TomSelect(el, {
-                            create: false,
-                            highlight: true,
-                            allowEmptyOption: false,
-                            maxItems: 1,
-                            items: [],
-                            sortField: [{ field: '$order' }, { field: '$score' }]
-                        }));
-                        console.debug('Created a Tom Select read only');
-                    } catch (err) {
-                        console.error('Ignoring already initted error on Tom Select');
-                    }
-                }
-            });
+        htmx.onLoad((elt) => {
+            const selectors = [
+                { className: ".tom-select-control-readonly", options: { create: false, highlight: true, allowEmptyOption: false, maxItems: 1, items:[] } },
+                { className: ".tom-select-control-create", options: { create: true } }
+            ];
 
-            const createSelects = htmx.findAll(elt, ".tom-select-control-create");
-            createSelects.forEach((el) => {
-                if (!el.tomselect) {
-                    try {
-                        selectControls.push(new TomSelect(el, {
-                            create: true,
-                            sortField: [{ field: '$order' }, { field: '$score' }]
-                        }));
-                        console.debug('Created a Tom Select create');
-                    } catch (err) {
-                        console.error('Ignoring already initted error on Tom Select');
+            selectors.forEach(({ className, options }) => {
+                htmx.findAll(elt, className).forEach((el) => {
+                    if (!el.tomselect) {
+                        try {
+                            selectControls.push(new TomSelect(el, { ...options, sortField: [{ field: '$order' }, { field: '$score' }] }));
+                            console.debug(`Created a Tom Select for ${className}`);
+                        } catch (err) {
+                            console.error(`Error initializing Tom Select for ${className}:`, err);
+                        }
                     }
-                }
+                });
             });
         });
     }
 
-    function clearSelects(evt) {
-        const allSelects = selectControls;
-        allSelects.forEach((el) => {
-            if (el.inputId === evt) {
-                console.debug('Not clearing el.inputId ' + el.inputId + ' evt ' + evt);
-            } else {
-                console.debug('Clearing el.id ' + el.inputId + ' evt ' + evt);
-                el.clear(true);
+    function clearSelects(targetId) {
+        selectControls.forEach((control) => {
+            if (control.inputId !== targetId) {
+                control.clear(true);
+                console.debug(`Cleared select control with ID: ${control.inputId}`);
             }
         });
     }
 
-    // Expose functions needed elsewhere
-    window.clearSelects = clearSelects;
+    // Expose functions
     window.initialiseTomSelect = initialiseTomSelect;
+    window.clearSelects = clearSelects;
 })();
 
-if (document.getElementById("createreviewform")) {
-    initialiseTomSelect();
-}
-
-if (document.getElementById("select-by-author")) {
-    initialiseTomSelect();
-}
-
-// Event listeners that drive the call to clearSelects() for the "find reviews" page
-document.addEventListener("clearSelectRating", function(evt) {
-    clearSelects('select-by-rating');
-});
-document.addEventListener("clearSelectAuthor", function(evt) {
-    clearSelects('select-by-author');
-});
-document.addEventListener("clearSelectGenre", function(evt) {
-    clearSelects('select-by-genre');
-});
-document.addEventListener("clearSelectReviewer", function(evt) {
-    clearSelects('select-by-reviewer');
+// Initialize TomSelect if specific elements exist
+["createreviewform", "select-by-author"].forEach((id) => {
+    if (document.getElementById(id)) initialiseTomSelect();
 });
 
-// Integrate Datatables component
+// Event listeners for clearing selects
+["Rating", "Author", "Genre", "Reviewer"].forEach((type) => {
+    document.addEventListener(`clearSelect${type}`, () => clearSelects(`select-by-${type.toLowerCase()}`));
+});
+
+// Encapsulate DataTables logic
 (function() {
-    let userAdminTables = [];
+    const userAdminTables = [];
 
-    function initialiseSimpleDataTables(evt) {
-        const options = {
-            searchable: true,
-            perPage: 10
-        };
-        userAdminTables.push(new window.simpleDatatables.DataTable("#users-table", options));
-        console.debug('Should have initialised a DataTable')
+    function initialiseSimpleDataTables() {
+        const options = { searchable: true, perPage: 10 };
+        const table = new window.simpleDatatables.DataTable("#users-table", options);
+        userAdminTables.push(table);
+        console.debug("Initialized DataTable");
     }
 
-    function refreshSimpleDataTables(evt) {
-            userAdminTables.forEach((el) => {
-                el.destroy();
-                console.debug('Should have destroyed a DataTable');
-            });
-            initialiseSimpleDataTables();
-        }
+    function refreshSimpleDataTables() {
+        userAdminTables.forEach((table) => {
+            table.destroy();
+            console.debug("Destroyed DataTable");
+        });
+        initialiseSimpleDataTables();
+    }
 
-    // Expose functions needed elsewhere
+    // Expose functions
     window.initialiseSimpleDataTables = initialiseSimpleDataTables;
     window.refreshSimpleDataTables = refreshSimpleDataTables;
 })();
 
+// Initialize DataTables if the element exists
 if (document.getElementById("users-table")) {
     initialiseSimpleDataTables();
 }
-document.addEventListener("refreshSimpleDataTables", function(evt) {
-    refreshSimpleDataTables();
-});
+document.addEventListener("refreshSimpleDataTables", refreshSimpleDataTables);
 
-// Function to read the value from a cookie named XSRF-TOKEN
-function getXsrfToken() {
-    const name = "XSRF-TOKEN=";
-    const decodedCookie = decodeURIComponent(document.cookie);
-    const ca = decodedCookie.split(';');
-    for(let i = 0; i < ca.length; i++) {
-        let c = ca[i];
-        while (c.charAt(0) === ' ') {
-            c = c.substring(1);
-        }
-        if (c.indexOf(name) === 0) {
-            return c.substring(name.length, c.length);
-        }
-    }
-    return "";
+// Utility function to get a cookie value
+function getCookieValue(name) {
+    const cookies = document.cookie.split(";").map((cookie) => cookie.trim());
+    const match = cookies.find((cookie) => cookie.startsWith(`${name}=`));
+    return match ? decodeURIComponent(match.split("=")[1]) : "";
 }
 
-// Add the XSRF token as a request header to "non safe" HTTP Ajax requests made by HTMX
-document.body.addEventListener('htmx:configRequest', function(evt) {
+// Add XSRF token to HTMX requests
+document.body.addEventListener("htmx:configRequest", function(evt) {
+    const xsrfToken = getCookieValue("XSRF-TOKEN");
+    const isSafeVerb = ["get", "head", "options"].includes(evt.detail.verb.toLowerCase());
 
-    const existingHeaderNames = Object.keys(evt.detail.headers);
-    const existingHeaderNamesUc = existingHeaderNames.map(function(x){ return x.toUpperCase(); })
-    const verb = evt.detail.verb.toLowerCase();
-    const safeVerbs = ['get', 'head', 'options'];
-
-    const xsrfCookieValue = getXsrfToken(); 
-
-    if (xsrfCookieValue) {
-        if (safeVerbs.indexOf(verb) === -1){
-            if (!existingHeaderNamesUc.includes('X-XSRF-TOKEN')) {
-                    evt.detail.headers['X-XSRF-TOKEN'] = xsrfCookieValue;
-                    console.debug('Set X-XSRF-TOKEN header to ' + xsrfCookieValue);
-            } else {
-                    console.debug('Request headers already contained an X-XSRF-TOKEN header');
-            }
-        } else {
-            console.debug('Request was for a safe HTTP verb so no X-XSRF-TOKEN added');
-        }
-    } else { 
-        console.debug('No XSRF-TOKEN cookie found');
+    if (!isSafeVerb && xsrfToken && !Object.keys(evt.detail.headers).some((key) => key.toLowerCase() === "x-xsrf-token")) {
+        evt.detail.headers["X-XSRF-TOKEN"] = xsrfToken;
+        console.debug("Added X-XSRF-TOKEN header:", xsrfToken);
     }
 });
 

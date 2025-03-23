@@ -15,6 +15,12 @@ b) Cons
     1) not typesafe / lack of intellisense prompts
     2) hideous stack traces
 
+Spring Boot and Thymeleaf
+a) Devtools / LiveReload reload too slow for Java code changes when you are used to typical front end reload times
+b) but Thymeleaf template changes are usually pretty much immediate
+c) and static file changes (JS/CSS etc) are usually visible immediately even with file name caching fingerprinting applied
+(see the config for this in application.yaml)
+
 The test app - The Cloudy Book Club
 Just a bit more than the typical ToDos app.
 a) about 4k serverside Java LoC - https://github.com/aidanwhiteley/books
@@ -51,3 +57,6 @@ b) React Cons
 c) HTMX Pros
     1. Simple and fun FE development (after a fairly shallow initial learning curve)
     2. OK - the enjoyment of playing with something new!
+d) HTMX Cons
+    1. Need to decide where you stand on the security spectrum. Do you want to allow "eval" or live with a
+    CSP which might make some enterprises unhappy (i.e. allowing inline scripting)

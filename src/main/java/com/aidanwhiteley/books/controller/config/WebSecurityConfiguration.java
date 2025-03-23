@@ -76,7 +76,7 @@ public class WebSecurityConfiguration {
      *     <li>The original, main purpose of this demo application was to build a "microservice" with no HTTP Session state.
      *     This was to promote "scalability" :-) and avoid the need for sticky sessions etc. And just to see
      *     how to do it.</li>
-     *     <li>For better or worse, we are using JWT to hold the session logon token. No use of refresh tokens
+     *     <li>For better or worse, we are using a JWT to hold the session logon token. No use of refresh tokens
      *     given that this is a limited demo</li>
      *     <li>Anyone can register on the site via Google or Facebook. This gives no additional privileges compared
      *     to "not logged on" but means that the Spring Security default of "must be authenticated" brings no
@@ -84,7 +84,7 @@ public class WebSecurityConfiguration {
      *     <li>As of 2025, we are no longer supporting CORS. For SPA client development, stick a "middleware proxy" or something
      *     similar in your SPA config. For production, get a reverse proxy or API gateway. In any case, the
      *     "out of the box" default front end for the microservice is now an HTMX Thymeleaf UI included in the project and,
-     *     therefore, on the same protocoal/domain/port</li>
+     *     therefore, on the same protocol/domain/port</li>
      *     <li>CSRF protection should now always be on and should be working</li>
      *     <li>We use very little "request level" security (a bit for Actuator end points). Instead, we make
      *     heavy use of "method level" security. We apply this at the controller level which may not fully align

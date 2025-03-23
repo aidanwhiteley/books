@@ -43,11 +43,11 @@ spring:
           google:
             client-id: NotInSCM1
             client-secret: NotInSCM1
-            redirect-uri: http://localhost:8080/login/oauth2/code/google
+            redirect-uri: https://cloudybookclub.com/login/oauth2/code/google
           facebook:
             client-id: NotInSCM2
             client-secret: NotInSCM2
-            redirect-uri: https://cloudybookclub.com/login/oauth2/code/facebook?logged-on=y
+            redirect-uri: https://cloudybookclub.com/login/oauth2/code/facebook
         provider:
           # Google provides all the info this app needs by default. Facebook needs configuring.
           facebook:
@@ -113,7 +113,7 @@ books:
   autoAuthUser: false       # Must be false in production!
 
   client:
-    postLogonUrl: http://localhost:8080/
+    postLogonUrl: /
     xsrfHeader: X-XSRF
 
   google:

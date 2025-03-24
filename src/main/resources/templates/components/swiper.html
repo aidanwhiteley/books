@@ -20,7 +20,7 @@
                         <img alt="Book cover"
                              loading="lazy"
                              src="../../static/images/book-club-logo.jpeg" th:alt="${'Book cover for ' + book.title}"
-                             th:src="${#strings.replace(book.googleBookDetails.volumeInfo.imageLinks.thumbnail, 'http://', 'https://')}"/></a>
+                             th:src="${#strings.replace(book.googleBookDetails.volumeInfo.imageLinks.thumbnail, 'http://', 'https://')}"></a>
                 </div>
             </div>
             <div class="swiper-pagination"></div>
@@ -33,17 +33,17 @@
                 a <span th:text="${rating}"></span> rating</p>
 
             <div aria-label="Book rating selection button group" class="btn-group" role="group">
-                <input autocomplete="off" class="btn-check" hx-get="/getBooksByRating?rating=great"
+                <input class="btn-check" hx-get="/getBooksByRating?rating=great"
                        hx-swap="outerHTML" hx-target="#swiper-slides" hx-target-error="#detail" id="greatBooks"
                        name="bookRating" th:checked="${rating=='great'}" type="radio">
                 <label class="btn btn-outline-primary" for="greatBooks">Great books</label>
 
-                <input autocomplete="off" class="btn-check" hx-get="/getBooksByRating?rating=good"
+                <input class="btn-check" hx-get="/getBooksByRating?rating=good"
                        hx-swap="outerHTML" hx-target="#swiper-slides" hx-target-error="#detail" id="goodBooks"
                        name="bookRating" th:checked="${rating=='good'}" type="radio">
                 <label class="btn btn-outline-primary" for="goodBooks">Good books</label>
 
-                <input autocomplete="off" class="btn-check" hx-get="/getBooksByRating?rating=ok"
+                <input class="btn-check" hx-get="/getBooksByRating?rating=ok"
                        hx-swap="outerHTML" hx-target="#swiper-slides" hx-target-error="#detail" id="okBooks"
                        name="bookRating" th:checked="${rating=='ok'}" type="radio">
                 <label class="btn btn-outline-primary" for="okBooks">OK books</label>

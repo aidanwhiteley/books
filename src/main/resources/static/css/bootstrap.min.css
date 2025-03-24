@@ -1,4 +1,36 @@
-@import url(https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap);@charset "UTF-8";/*!
+/* open-sans-regular - latin */
+@font-face {
+  font-display: swap;
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: url('../fonts/open-sans-v40-latin-regular.woff2') format('woff2');
+}
+/* open-sans-italic - latin */
+@font-face {
+  font-display: swap;
+  font-family: 'Open Sans';
+  font-style: italic;
+  font-weight: 400;
+  src: url('../fonts/open-sans-v40-latin-italic.woff2') format('woff2');
+}
+/* open-sans-700 - latin */
+@font-face {
+  font-display: swap;
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 700;
+  src: url('../fonts/open-sans-v40-latin-700.woff2') format('woff2');
+}
+/* open-sans-700italic - latin */
+@font-face {
+  font-display: swap;
+  font-family: 'Open Sans';
+  font-style: italic;
+  font-weight: 700;
+  src: url('../fonts/open-sans-v40-latin-700italic.woff2') format('woff2');
+}
+/*!
  * Bootswatch v5.3.3 (https://bootswatch.com)
  * Theme: spacelab
  * Copyright 2012-2024 Thomas Park

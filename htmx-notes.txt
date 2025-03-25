@@ -45,7 +45,7 @@ b) Best practices
 c) Re-architectured bits
     1) not holding data on client side but remaining user session stateless on server
 d) Security, CSRF and HTMX config
-    <meta name="htmx-config" content='{"selfRequestsOnly":"true", "allowScriptTags":"false", "allowEval": "false", "includeIndicatorStyles": "false"}' >
+    <meta name="htmx-config" content='{"selfRequestsOnly": true, "allowScriptTags": false, "allowEval": false, "includeIndicatorStyles": false  }' >
 
 HTMX versus React
 a) React Pros

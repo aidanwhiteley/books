@@ -20,6 +20,7 @@ a) Devtools / LiveReload reload too slow for Java code changes when you are used
 b) but Thymeleaf template changes are usually pretty much immediate
 c) and static file changes (JS/CSS etc) are usually visible immediately even with file name caching fingerprinting applied
 (see the config for this in application.yaml)
+d) thymeleaf exception stack traces in Spring Boot are horrible and I've been looking at java stack traces for 25 years
 
 The test app - The Cloudy Book Club
 Just a bit more than the typical ToDos app.

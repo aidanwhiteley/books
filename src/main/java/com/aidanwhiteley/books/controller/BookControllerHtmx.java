@@ -294,6 +294,18 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
         return "logon";
     }
 
+    @GetMapping(value = "/tandcs")
+    public String helpAndTandCs(Model model, Principal principal) {
+        addUserToModel(principal, model);
+        return "helpandtandcs";
+    }
+
+    @GetMapping(value = "/privacy")
+    public String privacy(Model model, Principal principal) {
+        addUserToModel(principal, model);
+        return "privacy";
+    }
+
     @Override
     public void addUserToModel(Principal principal, Model model) {
 

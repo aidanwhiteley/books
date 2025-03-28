@@ -44,8 +44,12 @@ b) Best practices
     1) CSRF patterns
 c) Re-architectured bits
     1) not holding data on client side but remaining user session stateless on server
-d) Security, CSRF and HTMX config
-    <meta name="htmx-config" content='{"selfRequestsOnly": true, "allowScriptTags": false, "allowEval": false, "includeIndicatorStyles": false  }' >
+d) Security, CSRF and HTMX config - no inline JS is fine but no inline CSS problematic (Cross Site Styling attacks)
+    - <meta name="htmx-config" content='{"selfRequestsOnly": true, "allowScriptTags": false, "allowEval": false, "includeIndicatorStyles": false  }' >
+    (see https://github.com/bigskysoftware/htmx/issues/2832)
+    - but then had problems with simple-datatables 3rd part component
+    - swiper.js 3rd party component with coverflow effect seems to result in applying inline styles for 3d transforms when changing sets of "slides"
+    - rest of CSP should prevent data exfiltration but the site is still open to defacement attacks (if there are bugs that allow attacks in the first place)
 
 HTMX versus React
 a) React Pros

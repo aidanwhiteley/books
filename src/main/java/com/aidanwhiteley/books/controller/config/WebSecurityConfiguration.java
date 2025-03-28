@@ -62,6 +62,9 @@ public class WebSecurityConfiguration {
     @Value("${books.client.postLogonUrl}")
     private String postLogonUrl;
 
+    @Value("${books.xsrf.cookieOverHttpsOnly}")
+    private boolean xsrfCookieOverHttpsOnly;
+
     public WebSecurityConfiguration(JwtAuthenticationFilter jwtAuthenticationFilter, JwtAuthenticationService jwtAuthenticationService,
                                     UserService userService) {
 
@@ -110,7 +113,8 @@ public class WebSecurityConfiguration {
         requestHandler.setCsrfRequestAttributeName(null);
 
         final CookieCsrfTokenRepository cookieCsrfTokenRepository = CookieCsrfTokenRepository.withHttpOnlyFalse();
-        cookieCsrfTokenRepository.setCookieCustomizer((x) -> x.sameSite(Cookie.SameSite.STRICT.attributeValue()));
+        cookieCsrfTokenRepository.setCookieCustomizer((x) ->
+                x.sameSite(Cookie.SameSite.STRICT.attributeValue()).secure(xsrfCookieOverHttpsOnly));
 
         CookieClearingLogoutHandler jwtCookie = new CookieClearingLogoutHandler(JwtAuthenticationService.JWT_COOKIE_NAME);
         HeaderWriterLogoutHandler clearSiteData = new HeaderWriterLogoutHandler(new ClearSiteDataHeaderWriter(ClearSiteDataHeaderWriter.Directive.COOKIES));

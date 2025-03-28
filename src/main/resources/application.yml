@@ -166,6 +166,9 @@ books:
   oauth2:
     cookieOverHttpsOnly: true
 
+  xsrf:
+    cookieOverHttpsOnly: false
+
   thread:
     pool1:
       coresize: 2

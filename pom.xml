@@ -7,7 +7,7 @@
 
     <groupId>com.aidanwhiteley</groupId>
     <artifactId>books</artifactId>
-    <version>0.70.8-RELEASE</version>
+    <version>0.70.9-RELEASE</version>
     <packaging>jar</packaging>
 
     <name>Books Microservice</name>

@@ -1,7 +1,7 @@
 spring:
   data:
     mongodb:
-      uri: mongodb://localhost:27017/books-dev-mongo-java-server-no-auth?safe=true&journal=true&w=majority&connectTimeoutMS=1001&wtimeoutMS=1000&serverSelectionTimeoutMS=10000
+      uri: mongodb://localhost:27017/books-dev-mongo-java-server-no-auth?safe=true&journal=true&w=majority&connectTimeoutMS=1001&timeoutMS=1000&serverSelectionTimeoutMS=10000
   mail:
     port: 3026    # Must match the value specified in the SignUpNotificationServiceTest. Set high to avoid problems on Unix envs
 

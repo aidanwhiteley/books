@@ -2,7 +2,7 @@ spring:
   data:
     mongodb:
       # Username, password and MongoDB database name are expected to be passed in as environment variables
-      uri: mongodb://${CLOUDY_MONGO_APP_USERNAME}:${CLOUDY_MONGO_APP_PASSWORD}@${CLOUDY_MONGO_HOST}:${CLOUDY_MONGO_PORT}/${CLOUDY_MONGO_DATABASE}?safe=true&journal=true&w=majority&connectTimeoutMS=1001&wtimeoutMS=1000&serverSelectionTimeoutMS=10000
+      uri: mongodb://${CLOUDY_MONGO_APP_USERNAME}:${CLOUDY_MONGO_APP_PASSWORD}@${CLOUDY_MONGO_HOST}:${CLOUDY_MONGO_PORT}/${CLOUDY_MONGO_DATABASE}?safe=true&journal=true&w=majority&connectTimeoutMS=1001&timeoutMS=1000&serverSelectionTimeoutMS=10000
 
   security:
     oauth2:
@@ -28,6 +28,9 @@ spring:
           timeout: 3000
           writetimeout: 5000
     test-connection: false
+
+  devtools:
+    add-properties: false
 
 server:
   port: ${CLOUDY_SERVER_PORT:8100}

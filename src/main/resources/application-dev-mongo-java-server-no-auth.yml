@@ -1,9 +1,9 @@
 spring:
   data:
     mongodb:
-      uri: mongodb://localhost:27017/books-dev-mongo-java-server-no-auth?safe=true&journal=true&w=majority&connectTimeoutMS=1001&wtimeoutMS=1000&serverSelectionTimeoutMS=10000
+      uri: mongodb://localhost:27017/books-dev-mongo-java-server-no-auth?safe=true&journal=true&w=majority&connectTimeoutMS=1001&timeoutMS=1000&serverSelectionTimeoutMS=10000
   mail:
-    port: 3026    # Must match the value specified in the SignUpNotificationServiceTest. Set hight to avoid problems on Unix envs
+    port: 3026    # Must match the value specified in the SignUpNotificationServiceTest. Set high to avoid problems on Unix envs
 
   boot:
     admin:
@@ -51,18 +51,20 @@ books:
   autoAuthUser: true
 
   client:
-    enableCORS: true      # Note - this value overriden in the IntegrationTest base test class
-    allowedCorsOrigin: http://localhost:5173
     postLogonUrl: http://localhost:5173/
     xsrfHeader: X-XSRF
 
   google:
     books:
       api:
-        searchUrl: http://localhost:${wiremock.server.port}/books/v1/volumes?q=
-        getByIdUrl: http://localhost:${wiremock.server.port}/books/v1/volumes/
-        connecTimeout: 200
-        readTimeout: 300
+        #searchUrl: http://localhost:${wiremock.server.port}/books/v1/volumes?q=
+        #getByIdUrl: http://localhost:${wiremock.server.port}/books/v1/volumes/
+        #connecTimeout: 200
+        #readTimeout: 300
+        #searchUrl: https://www.googleapis.com/books/v1/volumes?q=
+        #getByIdUrl: https://www.googleapis.com/books/v1/volumes/
+        #connecTimeout: 2000
+        #readTimeout: 3000
   reload:
     development:
       data: true    # Whether the contents of the /src/main/resources/sample_data will be reloaded into the database at application startup. Deletes all existing data!!!

@@ -2,6 +2,8 @@ package com.aidanwhiteley.books.repository;
 
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.googlebooks.Item;
+import com.aidanwhiteley.books.domain.googlebooks.VolumeInfo;
+import com.aidanwhiteley.books.util.HtmlSanitiserUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -42,7 +44,7 @@ public class GoogleBooksDaoAsync extends GoogleBooksApiConfig {
      * <p>
      * We are calling block() on the Mono so the thread is going to be blocked until
      * the full response from Google Books API has been received. So that will
-     * negate any of the usual non blocking benefits of the WebClient usage.
+     * negate any of the usual non-blocking benefits of the WebClient usage.
      * <p>
      * We're also continuing to use the blocking Mongo driver in this method.
      * <p>
@@ -68,6 +70,14 @@ public class GoogleBooksDaoAsync extends GoogleBooksApiConfig {
 
             Item item = monoItem.block(Duration.ofSeconds(googleBooksApiConfig.getReadTimeout()));
             LOGGER.debug("Block completed");
+
+            // Google Books API data _should_ be safe from CSRF attacks but lets make sure before storing the
+            // description text in the database!
+            VolumeInfo vlInfo = item != null ? item.getVolumeInfo() : null;
+            if (vlInfo != null && vlInfo.getDescription() != null) {
+                vlInfo.setDescription(HtmlSanitiserUtils.allowBasicTextFormattingOnly(vlInfo.getDescription()));
+                item.setVolumeInfo(vlInfo);
+            }
 
             bookRepository.addGoogleBookItemToBook(book.getId(), item);
             LOGGER.debug("Google Books details added to Mongo for {}", book.getId());

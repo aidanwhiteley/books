@@ -17,36 +17,36 @@ import static org.mockito.Mockito.*;
 
 class HttpCookieOAuth2AuthorizationRequestRepositoryTest {
 
-	public static final String TEST_CLIENT_ID = "Hello world";
-	public static final String DUMMY_TEXT_NOT_TESTED = "http://example.com/example";
+    public static final String TEST_CLIENT_ID = "Hello world";
+    public static final String DUMMY_TEXT_NOT_TESTED = "http://example.com/example";
 
-	@Test
-	void testSaveAndLoadCookie() {
-		MockHttpServletRequest request = new MockHttpServletRequest();
-		MockHttpServletResponse response = new MockHttpServletResponse();
+    @Test
+    void testSaveAndLoadCookie() {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        MockHttpServletResponse response = new MockHttpServletResponse();
 
-		OAuth2AuthorizationRequest authorizationRequest =
-				OAuth2AuthorizationRequest.authorizationCode().clientId(TEST_CLIENT_ID).
-						authorizationUri(DUMMY_TEXT_NOT_TESTED).build();
+        OAuth2AuthorizationRequest authorizationRequest =
+                OAuth2AuthorizationRequest.authorizationCode().clientId(TEST_CLIENT_ID).
+                        authorizationUri(DUMMY_TEXT_NOT_TESTED).build();
 
-		HttpCookieOAuth2AuthorizationRequestRepository repo =
-				new HttpCookieOAuth2AuthorizationRequestRepository(WebSecurityConfiguration.getAuthRequestJsonMapper());
+        HttpCookieOAuth2AuthorizationRequestRepository repo =
+                new HttpCookieOAuth2AuthorizationRequestRepository(WebSecurityConfiguration.getAuthRequestJsonMapper());
 
-		repo.saveAuthorizationRequest(authorizationRequest, request, response);
+        repo.saveAuthorizationRequest(authorizationRequest, request, response);
 
-		// Now get the cookie that should have been added to the response
-		Cookie cookie = response.getCookie(HttpCookieOAuth2AuthorizationRequestRepository.COOKIE_NAME);
+        // Now get the cookie that should have been added to the response
+        Cookie cookie = response.getCookie(HttpCookieOAuth2AuthorizationRequestRepository.COOKIE_NAME);
 
-		request.setCookies(cookie);
+        request.setCookies(cookie);
 
-		OAuth2AuthorizationRequest retrievedOauth = repo.loadAuthorizationRequest(request);
-		String clientId = retrievedOauth.getClientId();
+        OAuth2AuthorizationRequest retrievedOauth = repo.loadAuthorizationRequest(request);
+        String clientId = retrievedOauth.getClientId();
 
-		assertEquals(TEST_CLIENT_ID, clientId);
-	}
+        assertEquals(TEST_CLIENT_ID, clientId);
+    }
 
-	@Test
-	void testNoAuthClearsCookie() {
+    @Test
+    void testNoAuthClearsCookie() {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
 
@@ -64,38 +64,40 @@ class HttpCookieOAuth2AuthorizationRequestRepositoryTest {
 
     }
 
-	@Test
-	void testAuthToJsonProcessingException() throws Exception {
+    @Test
+    void testAuthToJsonProcessingException() throws Exception {
 
-		MockHttpServletRequest request = new MockHttpServletRequest();
-		MockHttpServletResponse response = new MockHttpServletResponse();
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        MockHttpServletResponse response = new MockHttpServletResponse();
 
-		OAuth2AuthorizationRequest authorizationRequest =
-				OAuth2AuthorizationRequest.authorizationCode().clientId(TEST_CLIENT_ID).
-						authorizationUri(DUMMY_TEXT_NOT_TESTED).build();
+        OAuth2AuthorizationRequest authorizationRequest =
+                OAuth2AuthorizationRequest.authorizationCode().clientId(TEST_CLIENT_ID).
+                        authorizationUri(DUMMY_TEXT_NOT_TESTED).build();
 
-		ObjectMapper om = mock(ObjectMapper.class);
-		when(om.writeValueAsString(any())).thenThrow(new JsonProcessingException("This is an expected exception for this test") {});
-		when(om.readValue(anyString(), eq(OAuth2AuthorizationRequest.class))).
-				thenThrow(new JsonProcessingException("This is another expected exception for this test") {});
+        ObjectMapper om = mock(ObjectMapper.class);
+        when(om.writeValueAsString(any())).thenThrow(new JsonProcessingException("This is an expected exception for this test") {
+        });
+        when(om.readValue(anyString(), eq(OAuth2AuthorizationRequest.class))).
+                thenThrow(new JsonProcessingException("This is another expected exception for this test") {
+                });
 
-		HttpCookieOAuth2AuthorizationRequestRepository repo = new HttpCookieOAuth2AuthorizationRequestRepository(om);
+        HttpCookieOAuth2AuthorizationRequestRepository repo = new HttpCookieOAuth2AuthorizationRequestRepository(om);
 
-		// We dont want expected exception logs cluttering up test logs
-		LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
-		context.getLogger(HttpCookieOAuth2AuthorizationRequestRepository.class).setLevel(Level.valueOf("OFF"));
+        // We don't want expected exception logs cluttering up test logs
+        LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+        context.getLogger(HttpCookieOAuth2AuthorizationRequestRepository.class).setLevel(Level.valueOf("OFF"));
 
-		assertThrows(JwtAuthAuzException.class, () ->
-				repo.saveAuthorizationRequest(authorizationRequest, request, response));
+        assertThrows(JwtAuthAuzException.class, () ->
+                repo.saveAuthorizationRequest(authorizationRequest, request, response));
 
-		Cookie aCookie = new Cookie(HttpCookieOAuth2AuthorizationRequestRepository.COOKIE_NAME, "dummyVal");
-		request.setCookies(new Cookie[]{aCookie});
-		assertThrows(JwtAuthAuzException.class, () ->
-				repo.loadAuthorizationRequest(request));
+        Cookie aCookie = new Cookie(HttpCookieOAuth2AuthorizationRequestRepository.COOKIE_NAME, "dummyVal");
+        request.setCookies(aCookie);
+        assertThrows(JwtAuthAuzException.class, () ->
+                repo.loadAuthorizationRequest(request));
 
-		context.getLogger(HttpCookieOAuth2AuthorizationRequestRepository.class).setLevel(Level.valueOf("WARN"));
+        context.getLogger(HttpCookieOAuth2AuthorizationRequestRepository.class).setLevel(Level.valueOf("WARN"));
 
-		verify(om, times(1)).writeValueAsString(authorizationRequest);
-	}
+        verify(om, times(1)).writeValueAsString(authorizationRequest);
+    }
 
 }

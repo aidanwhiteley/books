@@ -1,10 +1,12 @@
 package com.aidanwhiteley.books.controller.jwt;
 
 import com.aidanwhiteley.books.domain.User;
+import lombok.Getter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import java.io.Serial;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -18,9 +20,12 @@ import java.util.Objects;
  */
 public class JwtAuthentication implements Authentication {
 
+    @Serial
     private static final long serialVersionUID = 1L;
     private final String fullName;
+    @Getter
     private final String authProvider;
+    @Getter
     private final String authenticationServiceId;
     private final transient List<GrantedAuthority> grantedAuthorities = new LinkedList<>();
     private boolean isAuthenticated = false;
@@ -84,14 +89,6 @@ public class JwtAuthentication implements Authentication {
     @Override
     public String getName() {
         return this.fullName;
-    }
-
-    public String getAuthProvider() {
-        return authProvider;
-    }
-
-    public String getAuthenticationServiceId() {
-        return authenticationServiceId;
     }
 
     @Override

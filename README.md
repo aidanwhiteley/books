@@ -8,7 +8,7 @@ actually be useful.
 So welcome to the "Cloudy Bookclub" microservice!
 
 > [!NOTE]  
-> Now uplifted to the latest Spring Boot 3.x and Java 21.
+> Now uplifted to the latest Spring Boot 3.x and Java 21 and with a default, HTMX based front end provided.
 
 [![Actions CI Build](https://github.com/aidanwhiteley/books/workflows/Actions%20CI%20Build/badge.svg)](https://github.com/aidanwhiteley/books/actions?query=workflow%3A%22Actions+CI+Build%22)
 [![Sonar Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=com.aidanwhiteley%3Abooks&metric=alert_status)](https://sonarcloud.io/dashboard?id=com.aidanwhiteley%3Abooks)
@@ -26,20 +26,23 @@ making the web application entirely free of http session state (see later for wh
 * Mongo based persistence with the use of Spring Data MongoRepository 
     * next to no persistence code
     * except for some Mongo aggregation queries added to the Repository implementation
-* accessing the Google Books API with the Spring RestTemplate and, a work in progress, the reactive Spring WebClient
+* accessing the Google Books API with the Spring RestTemplate
 * and Docker images and a Docker Compose file that runs all the tiers of the application with one `docker compose up -d` command
+* new from 2025 - there is now a "built in" front end implementation using [HTMX](https://htmx.org/). The earlier JSON data APIs are still retained meaning that the alternative React / Typescript front end implementation still works.
 
 ### Live application
-This project runs live under Docker Compose with a React / Typescript [client application](https://github.com/aidanwhiteley/books-react) available at https://cloudybookclub.com/
+This project runs live under Docker Compose using the HTMX front end at https://cloudybookclub.com/ and with a React / Typescript [client application](https://github.com/aidanwhiteley/books-react) available at https://react-typescript.cloudybookclub.com/
 
 ![The Cloudy Book Club](../media/screengrab.jpg?raw=true)
 
 
 ### Running in development
-The checked in default Spring profile is "mongo-java-server-no-auuth". This uses an in memory fake Mongo instance - 
+The checked in default Spring profile is "mongo-java-server-no-auth". This uses an in memory fake Mongo instance - 
 [mongo-java-server](https://github.com/bwaldvogel/mongo-java-server) - so there is no need to run MongoDb locally. It also
-auto logs you on with a dummy user so there is no need to set up OAuth config to explore the application. So you 
-should be able to just check out the code and run and test the application for development purposes with no other dependencies.
+auto logs you on with a dummy admin user so there is no need to set up OAuth config to explore the application. So you 
+should be able to just check out the code and run and test the application for development purposes with no other dependencies. Try
+`mvnw.cmd spring-boot:run`
+and then point a browser at http://localhost:8080/
 
 To develop Mongo related code you should switch to the "dev" profile which does expect to be able to connect to a real MongoDb instance.
 
@@ -48,23 +51,23 @@ output to the console.
 
 ### Tests
 All tests should run fine "out of the box" i.e. with a clean checkout of the code you should be able to successfully run
-`mvn clean compile test package` and all tests should pass.
+`mvnw.cmd clean compile test package` and all tests should pass (with the code coverage reports output to target/site/jococo/index.html)
 
 By default, the tests run against mongo-java-server so there is no need to install
-MongDb to test most of the application. Functionality not supported by mogo-java-server such as full text indexes results in some tests being skipped when 
+MongoDb to test most of the application. Functionality not supported by mogo-java-server such as full text indexes results in some tests being skipped when 
 running with the mongo-java-server Spring profile.
 
 When running the CI builds with Github Actions, all tests run against a real Mongo instance.
 
 Some of the integration tests make use of WireMock - see the /src/test/resources/mappings and __files directories for the configuration details.
 
-The tests are probably about 50/50 between unit and integration tests...
+The tests are probably about 50/50 between unit tests and vastly more useful integration tests...
 
 #### Stress Test
 To support a simple load test, there is a Maven plugin configured that runs a basic Gatling load test.
-After starting the Spring Boot application (i.e. mvn spring-boot:run or via your IDE) run the command:
+After starting the Spring Boot application (i.e. mvnw.cmd spring-boot:run or via your IDE) run the command:
 
-`mvn gatling:test`
+mvnw.cmd gatling:test
 
 The source code of this test in at test/java/com/aidanwhiteley/books/loadtest/StressTestSimulation.java. The checked in config
 ensures that, by default, the number of request per second is low enough not to stress an average PC.
@@ -72,7 +75,7 @@ ensures that, by default, the number of request per second is low enough not to 
 #### Mutation Tests
 There is support for mutation testing using the [Pitest](https://pitest.org/) library.
 To try it out use something similar to 
-`mvn -Ppitest -DwithHistory=true -DtargetClasses="com.aidanwhiteley.books.service.*" test`
+`mvnw.cmd -Ppitest -DwithHistory=true -DtargetClasses="com.aidanwhiteley.books.service.*" test`
 Be warned, the first run will take a long time (many minutes) - especially if the glob for targetClasses is wide. Subsequent runs should be much quicker.
 Unfortunately, this mutation support wasn't in place when the tests were originally written meaning that the 
 current test suite have some tests that survive too many mutations! The mutation test code is there for any new code.
@@ -82,17 +85,19 @@ current test suite have some tests that survive too many mutations! The mutation
 This project makes use of the excellent Lombok project. So to build in your favourite IDE, if necessary
 head on over to [Lombok](https://projectlombok.org/) and click the appropriate "Install" link (tested with IntelliJ and Eclipse).
 
-In preparation for playing with recent Java features such as virtual threads and pattern matching, the build or this project **now requires JDK21**.
+In preparation for playing with recent Java features such as virtual threads and pattern matching, the build of this project **now requires JDK21**.
 
-With appropriate versions of the JDK, Maven and a (optionally) Mongo installed, start with
+With appropriate versions of the JDK (i.e. 21+) and optionally Maven and Mongo installed, start with
 ~~~~
-mvn clean compile test
+mvnw.cmd clean compile test
 ~~~~
 and then try
 ~~~~
-mvn spring-boot:run
+mvnw.cmd spring-boot:run
 ~~~~
-To run a client application to access the microservice, head on over to https://github.com/aidanwhiteley/books-react or see the section below on using Docker.
+To access the application using the default HTMX based front end, point your browser to http://localhost:8080/
+
+To run a client Single Page Application to access the microservice API, head on over to https://github.com/aidanwhiteley/books-react or see the section below on using Docker.
 
 ### Available Spring profiles
 There are Spring profile files for a range of development and test scenarios. 
@@ -100,37 +105,31 @@ There are Spring profile files for a range of development and test scenarios.
 #### dev-mongo-java-server-no-auth (the default selected in application.yml)
 	- uses an in memory mongo-java-server rather than a real MongoDb
 	- configured such that all request have admin access. No oauth set up required and no logon
-    - configured to allow CORS access to APIs
 	- clears down the DB and reloads test data on every restart
 
 #### dev-mongo-java-server 
 	- uses an in memory mongo-java-server rather than a real MongoDb
 	- requires oauth configured correctly for access to update operations
-	- doesn't support CORS access to APIs
 	- clears down the DB and reloads test data on every restart
 	
 #### dev-mongodb-no-auth
 	- uses a real MongoDb
 	- configured such that all request have admin access. No oauth set up required and no logon
-	- doesn't support CORS access to APIs
 	- clears down the DB and reloads test data on every restart
 	
 #### dev-mongodb
 	- uses a real MongoDb
 	- requires oauth configured correctly for access to update operations
-	- configured to allow CORS access to APIs
 	- clears down DB and reloads test data on every restart
 	
 #### CI
 	- uses a real MongoDb
-	- configured to allow CORS access to APIs
 	- clears down the DB and reloads test data on every restart
 	
 #### container-demo-no-auth
     - requires the use of "docker-compose up" to start Docker containers - see later
 	- uses a real MongoDb
 	- configured such that all request have admin access and oauth config is not required
-	- does not allow CORS access to APIs
 	- clears down the Mongo DB and reloads test data on every restart of the Docker containers
 	
 
@@ -162,7 +161,7 @@ You should also set the redirect-uri to an appropriate value (and one that you h
 ### Sample data
 There is some sample data provided to make initial understanding of the functionality a bit easier.
 It is in the /src/main/resources/sample_data. See the #README.txt in that directory.
-See the details above for the available Spring profiles to see when this sample data is auto loaded.
+See the details above for the available Spring profiles to see when this sample data is autoloaded.
 
 #### Indexes
 The Mongo indexes required by the application are not "auto created" (except when running in Docker containers).
@@ -193,28 +192,31 @@ This demo application stores a JWT token in a secure and "httpOnly" cookie. So t
 (as the rogue JavaScript can't read the httpOnly cookie containing the JWT logon token). 
 
 To mitigate XSRF exploits, the application uses an XSRF filter to set an XSRF token in a (non httpOnly) cookie that must be
-re-sent to the server for state changing (non GET) requests as an X-XSRF-TOKEN request header. The application will check that the two values are the same.
+re-sent to the server for state changing (non GET) requests as an X-XSRF-TOKEN request header. The filter checks that the two values are the same.
 
-This works well (or seems to!) when the API and the HTML is on the same domain. When CORS is needed to call the API, this 
-doesn't currently work. So only use this application with CORS configured (i.e. with no "front proxy") in development.
-Don't use this application with CORS in production - it will leave you open to XSRF based attacks.
+**Note** - as of early 2025, this application no longer supports setting CORS headers to allow the front end to be on a different domain to the API. You should avoid this by using a reverse proxy or API gateway. For SPA development, a middleware proxy is recommended (see https://github.com/aidanwhiteley/books-react for an example)
+
+### HTMX security details
+The included Thymeleaf / HTMX application follows the HTMX best practises detailed at https://htmx.org/docs/#security. In addition
+* `htmx.config.allowEval` is set to false to prevent the HTMX's use of JavaScript's `eval()`
+* While mostly agreeing with the concept of [Locality of Behaviour](https://htmx.org/essays/locality-of-behaviour/), all JavaScript has been removed from the Thymeleaf templates to separate JS files. This is to allow a usefully strict Content Security Policy to be set
 
 ## OpenAPI 3 API documentation and swagger-ui
 
 [![API Documentation](https://github.com/aidanwhiteley/books/blob/develop/src/main/resources/static/swagger-logo.png)](https://cloudybookclub.com/swagger-ui/index.html)
 
-The public read only part of the application's REST API is automatically documented using the [springdoc-openapi](https://springdoc.org/)
+The public read only part of the application's JSON API is automatically documented using the [springdoc-openapi](https://springdoc.org/)
 tool to auto create OpenAPI 3 JSON. The API documentation can be explored and tested using the Swagger UI available [here](https://cloudybookclub.com/swagger-ui/index.html).
 
 ## Stateless Apps
 A lot of the time developing this microservice was spent in making it entirely independent of HTTP session state  - based around issuing a 
 JWT after the user has authenticated via Google / Facebook.
 
-This turned out to be suprisingly difficult - with the cause of the difficulty mainly being in the Spring Boot OAuth2 implementation 
+This turned out to be surprisingly difficult - with the cause of the difficulty mainly being in the Spring Boot OAuth2 implementation 
 in Spring Boot 1.x. The Google/Facebook re-direct back to the microservice needed to hit the same session / JVM as I think that the 
 Oauth2ClientContext was storing some state in http session. 
 
-The current version of this application has moved to the Oauth2 functionality in Spring Security 5+. While this greatly reduces the 
+The current version of this application has moved to the Oauth2 functionality in Spring Security 6. While this greatly reduces the 
 "boilerplate" code needed to logon via Google or Facebook it still, by default, stores data in the HTTP session (to validate the data in the redirect back from Google / Facebook).
 However, it does allow configuration of your own AuthorizationRequestRepository meaning that it is possible to implement a cookie
 based version. So, finally, this application is completely free of any HTTP session state! Which was the point of originally starting to write this 
@@ -227,7 +229,7 @@ For my own usage (where I'm extremely unlikely to need to quickly revoke users) 
 for user session management again in the future.
 
 > [!WARNING]  
-> There was an bug in versions of this project prior to those using Spring Boot 3 i.e. 
+> There was a bug in versions of this project prior to those using Spring Boot 3 i.e. 
 > prior to 0.30.0-SNAPSHOT in that random plaintext was being passed to the JWT signing
 > function rather than a SecretKey. Please see [this StackOverflow discussion](https://stackoverflow.com/questions/40252903/static-secret-as-byte-key-or-string/40274325#40274325) for more details.
 
@@ -249,7 +251,7 @@ A Spring / Netflix Eureka service registry in which instances of the books micro
 which the API gateway finds available instances of the books microservice.
 ### Java API tier
 There is Google Jib created image (aidanwhiteley/books-api-java) for this application. 
-The image can be recreated by running "mvn compile jib:dockerBuild".
+The image can be recreated by running "mvnw.cmd compile jib:dockerBuild".
 Registers with Service Registry (dependant on the Spring profile used).
 ### MongoDB data tier
 A MongoDB based Docker image (aidanwhiteley/books-db-mongodb or aidanwhiteley/books-db-mongodb-demodata) is available
@@ -321,12 +323,15 @@ public class JwtHeaderProvider implements HttpHeadersProvider {
 
 ## The name
 
-Why "The Cloudy BookClub"? Well - it's gong to run in the cloud innit. And I couldn't think
+Why "The Cloudy BookClub"? Well - it's going to run in the cloud innit. And I couldn't think
 of any other domain names that weren't already taken.
 
 ## Client Side Functionality
 
-There is a React/Typescript based front end application that consumes the microservice available 
-at https://github.com/aidanwhiteley/books-react
+There's a choice of two front end implementations.
 
-The running application can be seen at https://cloudybookclub.com/
+A Thymeleaf / HTMX based Multiple Page Application implementation is included in this project (see the src/main/resources/templates directory for the Thymeleaf templates and HTMX code). This implementation can be seen running at https://cloudybookclub.com/
+
+There is a React/Typescript based Single Page Application front end application that consumes the microservice is available at https://github.com/aidanwhiteley/books-react. This implementation can be seen running at https://cloudybookclub.com/react-typescript
+
+

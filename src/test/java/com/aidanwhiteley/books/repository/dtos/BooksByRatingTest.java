@@ -11,8 +11,8 @@ class BooksByRatingTest {
     @Test
     void testEqualsHashcode() {
         BooksByRating by = new BooksByRating(Book.Rating.POOR, 1);
-        assertNotEquals(by, new BooksByRating(Book.Rating.POOR, 2));
-        assertEquals(by, new BooksByRating(Book.Rating.POOR, 1));
+        assertNotEquals(new BooksByRating(Book.Rating.POOR, 2), by);
+        assertEquals(new BooksByRating(Book.Rating.POOR, 1), by);
 
         assertNotEquals(by.hashCode(), new BooksByRating(Book.Rating.POOR, 2).hashCode());
         assertEquals(by.hashCode(), new BooksByRating(Book.Rating.POOR, 1).hashCode());

@@ -1,12 +1,8 @@
 package com.aidanwhiteley.books.domain.googlebooks;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 @SuppressWarnings("WeakerAccess")
@@ -18,6 +14,7 @@ import java.io.Serializable;
 @ToString
 public class ImageLinks implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private String smallThumbnail;

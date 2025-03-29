@@ -34,13 +34,20 @@ public class JwtAuthenticationUtils {
         this.jwtUtils = jwtUtils;
     }
 
+    protected static void handleUnexpectedAuth(JwtAuthentication auth) {
+        if (LOGGER.isErrorEnabled()) {
+            LOGGER.error("More than one user found for JwtAuthentication: {}", logMessageDetaint(auth));
+        }
+        throw new IllegalStateException("More that one user found for a given Jwt Authentication");
+    }
+
     /**
      * Returns a User object by processing a supplied JWT.
-     *
+     * <p>
      * The caller is allowed to specify whether they want the data store queried for the
      * current state of the user data or whether they just want to use data from the JWT.
      *
-     * @param principal The user principal
+     * @param principal    The user principal
      * @param useTokenOnly Whether to just look at the data in the JWT or query the data store
      * @return A User object - will only be partially populated if using only JWT data.
      */
@@ -82,7 +89,7 @@ public class JwtAuthenticationUtils {
             return Optional.empty();
         }
 
-    	String authenticationServiceId = auth.getAuthenticationServiceId();
+        String authenticationServiceId = auth.getAuthenticationServiceId();
         String authenticationProviderId = auth.getAuthProvider();
 
         if (LOGGER.isDebugEnabled()) {
@@ -90,27 +97,20 @@ public class JwtAuthenticationUtils {
                     authenticationServiceId.replaceAll("[\n\r\t]", "_"),
                     authenticationProviderId.replaceAll("[\n\r\t]", "_"));
         }
-        
+
         List<User> users = userRepository.findAllByAuthenticationServiceIdAndAuthProvider(authenticationServiceId, authenticationProviderId);
         User user = null;
         switch (users.size()) {
             case 0:
                 break;
             case 1:
-                user = users.get(0);
+                user = users.getFirst();
                 break;
             default:
                 handleUnexpectedAuth(auth);
         }
 
         return Optional.ofNullable(user);
-    }
-
-    protected static void handleUnexpectedAuth(JwtAuthentication auth) {
-        if (LOGGER.isErrorEnabled()) {
-            LOGGER.error("More than one user found for JwtAuthentication: {}", logMessageDetaint(auth));
-        }
-        throw new IllegalStateException("More that one user found for a given Jwt Authentication");
     }
 
     private void checkPrincipalType(Principal principal) {

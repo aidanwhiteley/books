@@ -21,7 +21,7 @@ import java.util.List;
 @RequestMapping("/api")
 public class BookController {
 
-    public static final String PAGE_REQUEST_TOO_BIG_MESSAGE = "Cannot request a page of data containing more that %s elements";
+    public static final String PAGE_REQUEST_TOO_BIG_MESSAGE = "Cannot request a page of data containing more than %s elements";
 
     private final BookRepository bookRepository;
 

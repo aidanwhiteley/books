@@ -5,6 +5,7 @@ import com.aidanwhiteley.books.repository.UserRepository;
 import com.aidanwhiteley.books.util.Oauth2AuthenticationUtils;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,15 +14,9 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
-import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.FACEBOOK;
-import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.GOOGLE;
-import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.LOCAL;
+import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.*;
 
 @Service
 public class UserService {
@@ -38,10 +33,11 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final Oauth2AuthenticationUtils authUtils;
-    
+
     @Value("${books.users.default.admin.email}")
     private String defaultAdminEmail;
 
+    @Setter
     @Value("${books.users.allow.actuator.user.creation}")
     private boolean allowActuatorUserCreation;
 
@@ -63,7 +59,7 @@ public class UserService {
                         user(user1).
                         provider(provider).
                         build())
-            ).orElseGet(() -> createUser(userDetails, provider));
+        ).orElseGet(() -> createUser(userDetails, provider));
     }
 
     public Optional<User> createOrUpdateActuatorUser() {
@@ -82,15 +78,11 @@ public class UserService {
             } else {
                 return Optional.of(updateUser(
                         UpdateUserDetails.builder().userDetails(userDetails).
-                                user(users.get(0)).provider(provider).build()));
+                                user(users.getFirst()).provider(provider).build()));
             }
         } else {
             return Optional.empty();
         }
-    }
-
-    public void setAllowActuatorUserCreation(boolean allowActuatorUserCreation) {
-        this.allowActuatorUserCreation = allowActuatorUserCreation;
     }
 
     private User createUser(Map<String, Object> userDetails, User.AuthenticationProvider provider) {
@@ -112,7 +104,7 @@ public class UserService {
                 break;
             }
             default: {
-                LOGGER.error("Unexpected oauth user type {}", provider);
+                LOGGER.error("Unexpected oauth user type {} in createUser", provider);
                 throw new IllegalArgumentException("Unexpected oauth type: " + provider);
             }
         }

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en-GB" th:replace="~{layout :: layout(~{::title}, ~{::#detail}, false)}"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Cloudy Book Club - Error Page</title>
+    <meta charset="utf-8">
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link href="../static/css/books-app.css" rel="stylesheet" th:href="@{/css/books-app.css}">
+</head>
+<body>
+
+<div id="detail" th:fragment="cloudy-error-detail">
+
+    <div class="container">
+        <div class="row">
+
+            <div class="col-md-4 mt-4">
+                <img alt="Frustrated computer user" class="d-inline-block align-top"
+                     height="166" src="../static/images/frustrated-user-small.jpg"
+                     th:src="@{/images/frustrated-user-small.jpg}"
+                     width="276">
+            </div>
+            <div class="col-md-8 mt-4">
+                <p class="lead">
+                    Darn. There's been a problem and we can't currently show what you wanted. Sorry!
+                </p>
+                <p>
+                    If you want to report this problem, here are the details.
+                </p>
+                <ul>
+                    <li><b>Description: </b> <span th:text="${description}">Some description</span></li>
+                    <li><b>Code: </b> <span id="errorCode" th:text="${code}">Some code</span></li>
+                    <li><b>Date/time: </b> <span th:text="${dateTime}">Some date/time</span></li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+</body>
+
+</html>

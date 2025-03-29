@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en-GB" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Table of books component</title>
+    <meta charset="utf-8">
+    <link href="../../static/css/bootstrap.min.css" rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link href="../../static/css/books-app.css" rel="stylesheet" th:href="@{/css/books-app.css}">
+</head>
+<body>
+
+<h3>Table of books the Cloudy Book Club</h3>
+
+<div id="table-detail" th:fragment="cloudy-books-table">
+
+    <h3>Books matching your selection</h3>
+
+    <div th:if="${#lists.isEmpty(pageOfBooks.content)}">
+        There are no books that match your selection.
+    </div>
+
+    <div class="table-responsive" th:if="${not #lists.isEmpty(pageOfBooks.content)}">
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th class="firstTableCol" scope="col">Title</th>
+                <th scope="col">Author</th>
+                <th scope="col">Rating</th>
+                <th scope="col">Review Date</th>
+                <th scope="col">Genre</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:remove="all">
+                <td class="firstTableCol"><a href="#">The Twelve Caesars</a></td>
+                <td>Michael Grant</td>
+                <td>Good</td>
+                <td>12-12-2024</td>
+                <td>History</td>
+            </tr>
+            <tr th:each="book : ${pageOfBooks.content}">
+                <td class="firstTableCol"><a href="#" th:href="@{/bookreview(bookId=${book.id})}"><span
+                        th:text=${book.title}>Rules Of Civility</span></a></td>
+                <td th:text=${book.author}>Amor Towles</td>
+                <td th:text=${#strings.capitalize(#strings.toLowerCase(book.rating))}>Great</td>
+                <td th:text="${#temporals.format(book.createdDateTime, 'dd-MM-yyyy')}">20-7-2024</td>
+                <td th:text=${book.genre}>Novel</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <nav aria-label="Page navigation for table of books" class="d-flex align-items-center justify-content-center mt-4"
+         th:if="${pageOfBooks.totalPages > 1}">
+        <ul class="pagination">
+            <li class="page-item" th:classappend="${pageOfBooks.first} ? 'disabled'">
+                <a aria-label="First" class="page-link" hx-push-url="true"
+                   hx-target="#table-detail" hx-target-error="#detail" th:hx-get="@{${paginationLink}(pagenum=1)}">
+                    <span aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-double-left" viewBox="0 0 16 16">
+                          <path fill-rule="evenodd" d="M8.354 1.646a.5.5 0 0 1 0 .708L2.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
+                          <path fill-rule="evenodd" d="M12.354 1.646a.5.5 0 0 1 0 .708L6.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
+                        </svg>
+                    </span>
+                </a>
+            </li>
+            <li class="page-item" th:classappend="${pageOfBooks.first} ? 'disabled'">
+                <a aria-label="Previous" class="page-link" href="" hx-push-url="true"
+                   hx-target="#table-detail" hx-target-error="#detail"
+                   th:hx-get="@{${paginationLink}(pagenum=${pageOfBooks.number})}">
+                    <span aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-left" viewBox="0 0 16 16">
+                          <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
+                        </svg>
+                    </span>
+                </a>
+            </li>
+            <li class="page-item disabled" th:if="${pageOfBooks.number > 2}">
+                <a class="page-link" href="#">...</a>
+            </li>
+
+            <li class="page-item" th:classappend="${page - 1 == pageOfBooks.number} ? 'active'"
+                th:each="page, iterStat : ${#numbers.sequence(
+                                                pageOfBooks.number > 2 ?
+                                                pageOfBooks.number - 1 : 1,
+                                                    pageOfBooks.number + 2 < pageOfBooks.totalPages ?
+                                                pageOfBooks.number + 3 : pageOfBooks.totalPages)}">
+                <a class="page-link" href="#" hx-push-url="true" hx-target="#table-detail"
+                   hx-target-error="#detail" th:hx-get="@{${paginationLink}(pagenum=${page})}"
+                   th:text="${page}">#</a>
+            </li>
+
+            <li class="page-item disabled" th:if="${pageOfBooks.number < pageOfBooks.totalPages - 3}">
+                <a class="page-link" href="#">...</a>
+            </li>
+            <li class="page-item" th:classappend="${pageOfBooks.last} ? 'disabled'">
+                <a aria-label="Next" class="page-link" href="" hx-push-url="true"
+                   hx-target="#table-detail" hx-target-error="#detail"
+                   th:hx-get="@{${paginationLink}(pagenum=${pageOfBooks.number + 2})}">
+                    <span aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
+                          <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"/>
+                        </svg>
+                    </span>
+                </a>
+            </li>
+            <li class="page-item" th:classappend="${pageOfBooks.last} ? 'disabled'">
+                <a aria-label="Last" class="page-link" href="" hx-push-url="true"
+                   hx-target="#table-detail"
+                   hx-target-error="#detail" th:hx-get="@{${paginationLink}(pagenum=${pageOfBooks.totalPages})}">
+                    <span aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-double-right" viewBox="0 0 16 16">
+                          <path fill-rule="evenodd" d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708"/>
+                          <path fill-rule="evenodd" d="M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708"/>
+                        </svg>
+                    </span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
+</body>
+</html>

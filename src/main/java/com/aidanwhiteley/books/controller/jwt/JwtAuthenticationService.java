@@ -2,14 +2,14 @@ package com.aidanwhiteley.books.controller.jwt;
 
 import com.aidanwhiteley.books.domain.User;
 import io.jsonwebtoken.ExpiredJwtException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
 @Service
 public class JwtAuthenticationService {
@@ -18,48 +18,32 @@ public class JwtAuthenticationService {
     // any API gateway - to ensure that the API gateway fowards
     // on any headers or cookies required on the application tier.
     public static final String JWT_COOKIE_NAME = "CLOUDY-JWT";
-    private static final String JSESSIONID_COOKIE_NAME = "JSESSIONID";
     public static final String XSRF_HEADER_NAME = "X-XSRF-TOKEN";
     public static final String XSRF_COOKIE_NAME = "XSRF-TOKEN";
-
+    private static final String JSESSIONID_COOKIE_NAME = "JSESSIONID";
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtAuthenticationService.class);
 
     private final JwtUtils jwtUtils;
 
+    // Setters for testing support outside of a Spring context
+    @Setter
     @Value("${books.jwt.cookieOverHttpsOnly}")
     private boolean cookieOverHttpsOnly;
 
+    @Setter
     @Value("${books.jwt.cookieAccessedByHttpOnly}")
     private boolean cookieAccessedByHttpOnly;
 
+    @Setter
     @Value("${books.jwt.cookiePath}")
     private String jwtCookiePath;
 
+    @Setter
     @Value("${books.jwt.cookieExpirySeconds}")
     private int cookieExpirySeconds;
 
-    @Value("${books.jwt.cookieSameSiteStrict}")
-    private boolean cookieSameSiteStrict;
-
     public JwtAuthenticationService(JwtUtils jwtUtils) {
         this.jwtUtils = jwtUtils;
-    }
-
-    // Setters for testing support outside of a Spring context
-    public void setCookieOverHttpsOnly(boolean val) {
-        this.cookieOverHttpsOnly = val;
-    }
-    public void setCookieAccessedByHttpOnly(boolean val) {
-        this.cookieAccessedByHttpOnly = val;
-    }
-    public void setJwtCookiePath(String val) {
-        this.jwtCookiePath = val;
-    }
-    public void setCookieExpirySeconds(int val) {
-        this.cookieExpirySeconds = val;
-    }
-    public void setCookieSameSiteStrict(boolean val) {
-        this.cookieSameSiteStrict = val;
     }
 
     public void setAuthenticationData(HttpServletResponse response, User user) {
@@ -68,20 +52,16 @@ public class JwtAuthenticationService {
 
         // There is currently no functionality on the jakarta.servlet.http.Cookie class to set SameSite directly.
         var cookie = new StringBuilder();
-        cookie.append(JWT_COOKIE_NAME + "=" + token);
+        cookie.append(JWT_COOKIE_NAME + "=").append(token);
         if (cookieAccessedByHttpOnly) {
             cookie.append("; HttpOnly");
         }
         if (cookieOverHttpsOnly) {
             cookie.append("; Secure");
         }
-        cookie.append("; Path=" + jwtCookiePath);
-        cookie.append("; Max-Age=" + cookieExpirySeconds);
-        if (cookieSameSiteStrict) {
-            cookie.append("; SameSite=Strict");
-        } else {
-            cookie.append("; SameSite=Lax");
-        }
+        cookie.append("; Path=").append(jwtCookiePath);
+        cookie.append("; Max-Age=").append(cookieExpirySeconds);
+        cookie.append("; SameSite=Lax");
 
         response.addHeader("Set-Cookie", cookie.toString());
         LOGGER.debug("JWT cookie written for {}", user.getFullName());

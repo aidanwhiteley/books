@@ -6,32 +6,48 @@ spring:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
 
+  web:
+    resources:
+      chain:
+        html-application-cache: true
+        enabled: true
+        strategy:
+          content:
+            enabled: true
+            paths: /**
+      cache:
+        cachecontrol:
+          max-age: 365d
+          no-cache: false
+          no-store: false
+          cache-public: true
+
   application:
     name: BooksApiService
   data:
     mongodb:
-      uri: mongodb://localhost:27017/books?safe=true&journal=true&w=majority&connectTimeoutMS=1001&wtimeoutMS=1000&serverSelectionTimeoutMS=10000
+      uri: mongodb://localhost:27017/books?safe=true&journal=true&w=majority&connectTimeoutMS=1001&timeoutMS=1000&serverSelectionTimeoutMS=10000
   aop:
-    proxy-target-class: false
+  #proxy-target-class: false
   devtools:
     livereload:
-      enabled: false  # off as we already have live reload in the web tier project
+      enabled: true
   jackson:
     serialization:
       write-dates-as-timestamps: true
 
-  security:           # You need to set up your own accounts / client secrets etc in Google and Facebook and replace NotInSCMx values
+  security: # You need to set up your own accounts / client secrets etc in Google and Facebook and replace NotInSCMx values
     oauth2:
       client:
         registration:
           google:
             client-id: NotInSCM1
             client-secret: NotInSCM1
-            redirect-uri: https://cloudybookclub.com/login/oauth2/code/google?logged-on=y
+            redirect-uri: https://cloudybookclub.com/login/oauth2/code/google
           facebook:
             client-id: NotInSCM2
             client-secret: NotInSCM2
-            redirect-uri: https://cloudybookclub.com/login/oauth2/code/facebook?logged-on=y
+            redirect-uri: https://cloudybookclub.com/login/oauth2/code/facebook
         provider:
           # Google provides all the info this app needs by default. Facebook needs configuring.
           facebook:
@@ -78,7 +94,7 @@ management:
   endpoints:
     enabled-by-default: false
 
-# New in SB 2.5.0 and doesnt work with in memory mongo java server in tests
+  # New in SB 2.5.0 and doesnt work with in memory mongo java server in tests
   metrics:
     mongo:
       command:
@@ -97,9 +113,7 @@ books:
   autoAuthUser: false       # Must be false in production!
 
   client:
-    enableCORS: false       # Setting this to true in production is not supported - leaves app at risk of CSRF
-    allowedCorsOrigin: http://localhost:5173
-    postLogonUrl: http://localhost:5173/?logged-on=y
+    postLogonUrl: /
     xsrfHeader: X-XSRF
 
   google:
@@ -111,6 +125,7 @@ books:
         maxResults: maxResults=30
         connecTimeout: 2000
         readTimeout: 3000
+      cacheTimeoutMinutes: 10
 
   reload:
     development:
@@ -119,7 +134,7 @@ books:
   users:
     default:
       admin:
-        email:   # The remote email address for a user that will be automatically made an admin on first logon.
+        email: # The email address for the user that will be automatically made an admin on first logon
       page:
         size: 5
     max:
@@ -147,10 +162,12 @@ books:
     cookieOverHttpsOnly: true
     cookieAccessedByHttpOnly: true
     cookiePath: /
-    cookieSameSiteStrict: true      # Will set SameSite=Strict. Set to false for SameSite=Lax.
 
   oauth2:
     cookieOverHttpsOnly: true
+
+  xsrf:
+    cookieOverHttpsOnly: false
 
   thread:
     pool1:
@@ -160,7 +177,7 @@ books:
         capacity: 50
       thread:
         prefix: GoogleBooksLookup-
-        
+
   feeds:
     maxentries: 30
     title: The Cloudy Bookclub recent entries

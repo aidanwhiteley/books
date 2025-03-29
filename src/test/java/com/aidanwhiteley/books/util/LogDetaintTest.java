@@ -8,7 +8,7 @@ class LogDetaintTest {
 
     @Test
     void shouldRemoveTaintedChars() {
-        final String input ="abc\ndef\rghi\tjkl";
+        final String input = "abc\ndef\rghi\tjkl";
         final String expectedOutput = "abc_def_ghi_jkl";
 
         assertEquals(expectedOutput, LogDetaint.logMessageDetaint(input));

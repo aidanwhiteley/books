@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Profile;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 @Profile({"dev-mongo-java-server", "dev-mongo-java-server-no-auth", "dev-mongodb-no-auth", "dev-mongodb", "ci"})
-@AutoConfigureWireMock(port=0)
+@AutoConfigureWireMock(port = 0)
 class GoogleBookDaoAsyncTest extends IntegrationTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GoogleBookDaoAsyncTest.class);

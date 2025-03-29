@@ -30,7 +30,7 @@ public interface BookRepositoryCustomMethods {
 
     /**
      * Marks a comment as deleted. Empties the comment text and  marks comment as deleted.
-     * Doesnt actually remove the Comment from the database.
+     * Doesn't actually remove the Comment from the database.
      *
      * @return Returns a Book with JUST the comments and the bookId populated
      */

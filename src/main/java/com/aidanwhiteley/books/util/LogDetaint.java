@@ -2,7 +2,8 @@ package com.aidanwhiteley.books.util;
 
 public class LogDetaint {
 
-    private LogDetaint() {}
+    private LogDetaint() {
+    }
 
     /*
         User provided data, such as URL parameters, POST data payloads or cookies, should always be considered untrusted and tainted.

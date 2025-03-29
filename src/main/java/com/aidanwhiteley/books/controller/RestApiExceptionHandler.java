@@ -7,7 +7,6 @@ import com.aidanwhiteley.books.controller.exceptions.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -24,6 +23,10 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 import static org.springframework.http.HttpStatus.*;
 
 @SuppressWarnings("NullableProblems")
+/*
+  This is the central advice that handles exceptions for the REST API part of the application.
+  The HTMX controllers (implementing BookControllerHtmxExceptionHandling) handles exceptions locally within those controllers.
+ */
 @RestControllerAdvice
 public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
 
@@ -31,7 +34,7 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
     public static final String MESSAGE_ILLEGAL_ARGUMENT = "Sorry - you supplied an invalid input parameter value. Please check and try again";
     private static final String MESSAGE_FORBIDDEN = "Sorry - you do not have access to the URL you requested";
     private static final String MESSAGE_DENIED = "Sorry - you must be logged on";
-    private static final String MESSAGE_UNEXPECTED_EXCEPTION = "Sorry - an unexpected problem happended - please try later";
+    private static final String MESSAGE_UNEXPECTED_EXCEPTION = "Sorry - an unexpected problem happened - please try later";
 
     private static final Logger API_LOGGER = LoggerFactory.getLogger(RestApiExceptionHandler.class);
 
@@ -111,7 +114,7 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         if (ex instanceof NoResourceFoundException) {
             API_LOGGER.info("Resource not found. This may well be expected: {}", ex.getMessage());
-            return new ResponseEntity<>(HttpStatusCode.valueOf(NOT_FOUND.ordinal()));
+            return new ResponseEntity<>(HttpStatusCode.valueOf(NOT_FOUND.value()));
         }
 
         API_LOGGER.error(

@@ -4,10 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Some basic tests really only checking how Lombok is working (and in the IntelliJ IDE...)
@@ -48,17 +45,17 @@ class BookTest {
         assertNull(Book.Rating.getRatingByString("DoesntExist"));
         assertEquals(Book.Rating.GREAT, Book.Rating.getRatingByString("gReAt"));
     }
-    
+
     @Test
     void testBoilerPlateMethods() {
-    	Book book1 = Book.builder().author(AIDAN).genre(WHODUNNIT).createdDateTime(NOW).rating(GREAT).
+        Book book1 = Book.builder().author(AIDAN).genre(WHODUNNIT).createdDateTime(NOW).rating(GREAT).
                 summary(SOMEONE_DUNNIT).title(WHO_DID_IT).build();
-    	Book book2 = Book.builder().author(AIDAN).genre(WHODUNNIT).createdDateTime(NOW).rating(GREAT).
+        Book book2 = Book.builder().author(AIDAN).genre(WHODUNNIT).createdDateTime(NOW).rating(GREAT).
                 summary(SOMEONE_DUNNIT).title(WHO_DID_IT).build();
-    	
-    	assertEquals(book1.hashCode(), book2.hashCode());
+
+        assertEquals(book1.hashCode(), book2.hashCode());
         assertEquals(book1, book2);
-    	assertEquals(book1.toString(), book2.toString());
+        assertEquals(book1.toString(), book2.toString());
     }
-    
+
 }

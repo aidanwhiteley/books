@@ -3,6 +3,7 @@ package com.aidanwhiteley.books.service;
 import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.repository.UserRepository;
 import com.aidanwhiteley.books.util.MailClient;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,12 +17,11 @@ import java.util.List;
 public class SignUpNotificationService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SignUpNotificationService.class);
-
-    @Value("${books.users.registrationAdminEmail.enabled}")
-    private boolean registrationAdminEmailEnabled;
-
     private final UserRepository userRepository;
     private final MailClient mailClient;
+    @Setter
+    @Value("${books.users.registrationAdminEmail.enabled}")
+    private boolean registrationAdminEmailEnabled;
 
     public SignUpNotificationService(UserRepository userRepository, MailClient mailClient) {
         this.userRepository = userRepository;
@@ -57,7 +57,4 @@ public class SignUpNotificationService {
     }
 
 
-    public void setRegistrationAdminEmailEnabled(boolean registrationAdminEmailEnabled) {
-        this.registrationAdminEmailEnabled = registrationAdminEmailEnabled;
-    }
 }

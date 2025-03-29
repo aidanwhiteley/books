@@ -37,7 +37,7 @@ public class BookAuditor implements AuditorAware<Owner> {
             return aUser.map(s -> new Owner(
                     // TODO - the findAllByAuthenticationServiceIdAndAuthProvider method should really only find zero
                     // or one users so Optional would be better than List
-                    userRepository.findAllByAuthenticationServiceIdAndAuthProvider(s.getAuthenticationServiceId(), s.getAuthProvider().toString()).get(0))
+                    userRepository.findAllByAuthenticationServiceIdAndAuthProvider(s.getAuthenticationServiceId(), s.getAuthProvider().toString()).getFirst())
             );
         } else {
             return Optional.empty();

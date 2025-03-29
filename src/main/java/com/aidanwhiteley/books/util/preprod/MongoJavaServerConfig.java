@@ -12,7 +12,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 
 import java.net.InetSocketAddress;
 
-@Configuration(value="books-mongo-java-server")
+@Configuration(value = "books-mongo-java-server")
 @Profile({"dev-mongo-java-server", "dev-mongo-java-server-no-auth"})
 @EnableMongoRepositories(basePackages = "com.aidanwhiteley.books")
 /*

@@ -1,7 +1,8 @@
 spring:
   data:
     mongodb:
-      uri: mongodb://localhost:27017/books-mongodb-no-auth?safe=true&journal=true&w=majority&connectTimeoutMS=1001&wtimeoutMS=1000&serverSelectionTimeoutMS=10000
+      uri: mongodb://localhost:27017/books-mongodb-no-auth?safe=true&journal=true&w=majority&connectTimeoutMS=1001&timeoutMS=1000&serverSelectionTimeoutMS=10000
+      # uri: mongodb://applicationTestUser2:mypass02@localhost:27017/cloudy?safe=true&journal=true&w=majority&connectTimeoutMS=1001&timeoutMS=1000&serverSelectionTimeoutMS=10000
   mail:
     port: 3026    # Must match the value specified in the SignUpNotificationServiceTest. Set hight to avoid problems on Unix envs
 
@@ -49,9 +50,6 @@ logging:
 
 books:
   autoAuthUser: true
-
-  client:
-    enableCORS: false      # Note - this value overriden in the IntegrationTest base test class
 
   google:
     books:

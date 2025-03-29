@@ -110,7 +110,9 @@ public class GoogleBookSearchService {
             return new GoogleBookSearchResult(anItem, index, hasMore, hasPrevious, false);
         } else {
             LOGGER.debug("No matching results found using the Google Books API for title {}, author {} and index {} ",
-                    title, author, index);
+                    LogDetaint.logMessageDetaint(title),
+                    LogDetaint.logMessageDetaint(author),
+                    LogDetaint.logMessageDetaint(index));
             return new GoogleBookSearchResult(null, index, false, false, false);
         }
     }

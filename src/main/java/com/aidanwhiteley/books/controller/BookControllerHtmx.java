@@ -47,6 +47,8 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
     public static final String FIND_REVIEWS = "find-reviews";
     public static final String HIGHEST_ROLE = "highestRole";
     public static final String IS_OWNER = "isOwner";
+    public static final String COMMENT_FORM = "commentForm";
+    public static final String HX_REQUEST = "HX-Request";
     private final BookRepository bookRepository;
     private final JwtAuthenticationUtils authUtils;
     private final StatsService statsService;
@@ -70,7 +72,7 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
 
     @GetMapping(value = "/")
     public String index(Model model, Principal principal, HttpServletResponse response,
-                        @RequestHeader(value = "HX-Request", required = false) boolean hxRequest) {
+                        @RequestHeader(value = HX_REQUEST, required = false) boolean hxRequest) {
         PageRequest pageObj = PageRequest.of(0, 30);
         Page<Book> page = bookRepository.findByRatingOrderByCreatedDateTimeDesc(pageObj, GREAT);
 
@@ -89,7 +91,7 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
     @GetMapping(value = {"/getBooksByRating"}, params = {"rating"})
     public String findByRating(Model model, @RequestParam String rating, Principal principal,
                                HttpServletResponse response,
-                               @RequestHeader(value = "HX-Request", required = false) boolean hxRequest) {
+                               @RequestHeader(value = HX_REQUEST, required = false) boolean hxRequest) {
 
         Book.Rating ipRating = Book.Rating.getRatingByString(rating);
         if (ipRating == null) {
@@ -118,7 +120,7 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
 
     @GetMapping(value = "/recent", params = {"pagenum"})
     public String recentlyReviewedByPage(@RequestParam int pagenum, Model model, Principal principal,
-                                         @RequestHeader(value = "HX-Request", required = false) boolean hxRequest) {
+                                         @RequestHeader(value = HX_REQUEST, required = false) boolean hxRequest) {
         PageRequest pageObj = PageRequest.of(pagenum - 1, 7);
         Page<Book> page = bookRepository.findAllByOrderByCreatedDateTimeDesc(pageObj);
 
@@ -138,7 +140,7 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
         Book aBook = bookRepository.findById(bookId).orElseThrow(() -> new NotFoundException("Book id " + bookId + " not found"));
 
         model.addAttribute("book", aBook);
-        model.addAttribute("commentForm", new CommentForm());
+        model.addAttribute(COMMENT_FORM, new CommentForm());
         addIsOwnerToModel(aBook, principal, model);
         addUserToModel(principal, model);
 
@@ -160,7 +162,7 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
     @GetMapping(value = {"/find"}, params = {"rating", "pagenum"})
     public String findByRating(Model model, Principal principal, @RequestParam String rating, @RequestParam int pagenum,
                                HttpServletResponse response,
-                               @RequestHeader(value = "HX-Request", required = false) boolean hxRequest) {
+                               @RequestHeader(value = HX_REQUEST, required = false) boolean hxRequest) {
 
         if (null == rating || rating.trim().isEmpty()) {
             throw new IllegalArgumentException("Rating parameter cannot be empty");
@@ -197,7 +199,7 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
     @GetMapping(value = {"/find"}, params = {"author", "pagenum"})
     public String findByAuthor(Model model, Principal principal, @RequestParam String author, @RequestParam int pagenum,
                                HttpServletResponse response,
-                               @RequestHeader(value = "HX-Request", required = false) boolean hxRequest) {
+                               @RequestHeader(value = HX_REQUEST, required = false) boolean hxRequest) {
 
         if (author == null || author.trim().isEmpty()) {
             throw new IllegalArgumentException("Author parameter cannot be empty");
@@ -226,7 +228,7 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
     @GetMapping(value = {"/find"}, params = {"genre", "pagenum"})
     public String findByGenre(Model model, Principal principal, @RequestParam String genre, @RequestParam int pagenum,
                               HttpServletResponse response,
-                              @RequestHeader(value = "HX-Request", required = false) boolean hxRequest) {
+                              @RequestHeader(value = HX_REQUEST, required = false) boolean hxRequest) {
 
         if (genre == null || genre.trim().isEmpty()) {
             throw new IllegalArgumentException("Genre parameter cannot be empty");
@@ -262,7 +264,7 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
 
     @GetMapping(value = {"/search"}, params = {"term", "pagenum"})
     public String findBySearch(Model model, Principal principal, @RequestParam String term, @RequestParam int pagenum,
-                               @RequestHeader(value = "HX-Request", required = false) boolean hxRequest) {
+                               @RequestHeader(value = HX_REQUEST, required = false) boolean hxRequest) {
 
         if (null == term || term.trim().isEmpty()) {
             throw new IllegalArgumentException("Search query string cannot be empty");

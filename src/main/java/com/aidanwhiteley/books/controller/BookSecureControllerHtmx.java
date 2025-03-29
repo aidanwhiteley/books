@@ -58,6 +58,9 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
     public static final String ISUPDATE = "isupdate";
     public static final String ACTION_URL = "actionUrl";
     public static final String USERS = "users";
+    public static final String HX_PUSH_URL = "HX-Push-Url";
+    public static final String USERS_TABLE = "#users-table";
+    public static final String USER_ADMIN_CLOUDY_USER_ADMIN_TABLE = "user-admin :: cloudy-user-admin-table";
 
     private final BookRepository bookRepository;
     private final JwtAuthenticationUtils authUtils;
@@ -164,7 +167,7 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
             addUserToModel(principal, model);
             response.addHeader(HX_TRIGGER_AFTER_SWAP, "{ \"showFlashMessage\": {\"level\": \"info\", \"message\": \"Your book review was " +
                     "successfully created\"}}");
-            response.setHeader("HX-Push-Url", "/bookreview?bookId=" + aBook.getId());
+            response.setHeader(HX_PUSH_URL, "/bookreview?bookId=" + aBook.getId());
             return "book-review :: cloudy-book-review";
         } else {
             LOGGER.error("Couldn't create a book as user to own book not found! Principal: {}", logMessageDetaint(principal));
@@ -233,7 +236,7 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
             addUserToModel(principal, model);
             response.addHeader(HX_TRIGGER_AFTER_SWAP, "{ \"showFlashMessage\": {\"level\": \"info\", \"message\": \"The book review was " +
                     "successfully updated\"}}");
-            response.setHeader("HX-Push-Url", "/bookreview?bookId=" + bookForm.getBookId());
+            response.setHeader(HX_PUSH_URL, "/bookreview?bookId=" + bookForm.getBookId());
             return "book-review :: cloudy-book-review";
         } else {
             LOGGER.error("Couldn't update a book as user to own book not found! Principal: {}", logMessageDetaint(principal));
@@ -287,7 +290,7 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
                         currentBookState.getTitle() + "' by " + currentBookState.getAuthor() +
                         " was successfully deleted\"}}");
 
-                response.addHeader("HX-Push-Url", "recent");
+                response.addHeader(HX_PUSH_URL, "recent");
                 return "recently-reviewed :: cloudy-recently-reviewed";
             } else {
                 LOGGER.warn("User {} {} tried to delete book id {} '{}' without the necessary permissions", user.get().getFullName(),
@@ -442,8 +445,8 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
                 model.addAttribute(USERS, userRepository.findAll());
                 addUserToModel(principal, model);
                 response.addHeader(HX_TRIGGER_AFTER_SWAP, "{ \"showFlashMessage\": {\"level\": \"warn\", \"message\": \"You cannot delete your own logged on user\"}}");
-                response.addHeader(HX_RETARGET, "#users-table");
-                return "user-admin :: cloudy-user-admin-table";
+                response.addHeader(HX_RETARGET, USERS_TABLE);
+                return USER_ADMIN_CLOUDY_USER_ADMIN_TABLE;
             }
 
             userRepository.deleteById(id);
@@ -457,9 +460,9 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
             model.addAttribute(USERS, userRepository.findAll());
             addUserToModel(principal, model);
             response.addHeader(HX_TRIGGER_AFTER_SWAP, "{ \"showFlashMessage\": {\"level\": \"warn\", \"message\": \"Your userid no longer found in the data store!\"}}");
-            response.addHeader(HX_RETARGET, "#users-table");
+            response.addHeader(HX_RETARGET, USERS_TABLE);
         }
-        return "user-admin :: cloudy-user-admin-table";
+        return  USER_ADMIN_CLOUDY_USER_ADMIN_TABLE;
     }
 
     @PutMapping(value = "/updateuserrole/{id}", params = {"role"})
@@ -476,8 +479,8 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
                 model.addAttribute(USERS, userRepository.findAll());
                 addUserToModel(principal, model);
                 response.addHeader(HX_TRIGGER_AFTER_SWAP, "{ \"showFlashMessage\": {\"level\": \"warn\", \"message\": \"Your cannot change the role for you own logged on user!\"}}");
-                response.addHeader(HX_RETARGET, "#users-table");
-                return "user-admin :: cloudy-user-admin-table";
+                response.addHeader(HX_RETARGET, USERS_TABLE);
+                return USER_ADMIN_CLOUDY_USER_ADMIN_TABLE;
             }
 
             ClientRoles roles = new ClientRoles();
@@ -507,8 +510,8 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
             model.addAttribute(USERS, userRepository.findAll());
             addUserToModel(principal, model);
             response.addHeader(HX_TRIGGER_AFTER_SWAP, "{ \"showFlashMessage\": {\"level\": \"warn\", \"message\": \"Your userid no longer found in the data store!\"}}");
-            response.addHeader(HX_RETARGET, "#users-table");
-            return "user-admin :: cloudy-user-admin-table";
+            response.addHeader(HX_RETARGET, USERS_TABLE);
+            return USER_ADMIN_CLOUDY_USER_ADMIN_TABLE;
         }
     }
 

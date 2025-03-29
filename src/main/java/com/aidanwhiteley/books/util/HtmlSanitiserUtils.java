@@ -5,7 +5,8 @@ import org.jsoup.safety.Safelist;
 
 public class HtmlSanitiserUtils {
 
-    public HtmlSanitiserUtils() {
+    private HtmlSanitiserUtils() {
+        throw new UnsupportedOperationException("Should only be called through static methods!");
     }
 
     public static String allowNoHtmlTags(String text) {

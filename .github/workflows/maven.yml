@@ -51,7 +51,7 @@ jobs:
       run: >
         mvn -B clean package org.sonarsource.scanner.maven:sonar-maven-plugin:sonar --file pom.xml
         -Dspring.profiles.active=ci
-        -Dsonar.sources=src/main
+        -Dsonar.sources=src/main/java
         -Dsonar.java.binaries=target/classes
         -Dsonar.projectName="Books Microservice"
         -Dsonar.sourceEncoding=UTF-8

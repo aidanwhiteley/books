@@ -99,7 +99,9 @@ public class GoogleBookSearchService {
         BookSearchResult result = googleBooksDaoSync.searchGoogleBooksByTitleAndAuthor(title, author);
         if (!result.getItems().isEmpty()) {
             LOGGER.debug("Inserting an entry into the Google books search cache for title {}, author {} and index {} ",
-                    title, author, index);
+                    LogDetaint.logMessageDetaint(title),
+                    LogDetaint.logMessageDetaint(author),
+                    LogDetaint.logMessageDetaint(index));
             googleBookSearchRepository.insert(
                     new GoogleBookSearch(title, author, result, LocalDateTime.now().plusMinutes(cacheTimeoutMinutes)));
 

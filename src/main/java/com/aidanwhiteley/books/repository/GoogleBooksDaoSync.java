@@ -21,12 +21,10 @@ public class GoogleBooksDaoSync {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GoogleBooksDaoSync.class);
     private final GoogleBooksApiConfig googleBooksApiConfig;
-    private final BookRepository bookRepository;
     private RestTemplate googleBooksRestTemplate;
 
-    public GoogleBooksDaoSync(GoogleBooksApiConfig googleBooksApiConfig, BookRepository bookRepository) {
+    public GoogleBooksDaoSync(GoogleBooksApiConfig googleBooksApiConfig) {
         this.googleBooksApiConfig = googleBooksApiConfig;
-        this.bookRepository = bookRepository;
     }
 
     @PostConstruct

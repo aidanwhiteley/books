@@ -51,8 +51,6 @@ import static com.aidanwhiteley.books.domain.User.Role.ROLE_ACTUATOR;
 @EnableMethodSecurity
 public class WebSecurityConfiguration {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(WebSecurityConfiguration.class);
-
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     private final JwtAuthenticationService jwtAuthenticationService;
@@ -113,7 +111,7 @@ public class WebSecurityConfiguration {
         requestHandler.setCsrfRequestAttributeName(null);
 
         final CookieCsrfTokenRepository cookieCsrfTokenRepository = CookieCsrfTokenRepository.withHttpOnlyFalse();
-        cookieCsrfTokenRepository.setCookieCustomizer((x) ->
+        cookieCsrfTokenRepository.setCookieCustomizer(x ->
                 x.sameSite(Cookie.SameSite.STRICT.attributeValue()).secure(xsrfCookieOverHttpsOnly));
 
         CookieClearingLogoutHandler jwtCookie = new CookieClearingLogoutHandler(JwtAuthenticationService.JWT_COOKIE_NAME);
@@ -122,7 +120,7 @@ public class WebSecurityConfiguration {
         http
                 .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                         .enableSessionUrlRewriting(false))
-                .csrf((csrf) -> csrf
+                .csrf(csrf -> csrf
                         .csrfTokenRepository(cookieCsrfTokenRepository)
                         // With our JWT in a cookie, every time a request with that cookie hits the server an authentication
                         // process takes place and this would trigger a new CSRF token (meaning token checking frequently fails).
@@ -144,7 +142,7 @@ public class WebSecurityConfiguration {
                         // We permitAll here - see the method level JavaDocs for why we do this
                         .anyRequest().permitAll()
                 )
-                .logout((logout) -> logout.addLogoutHandler(jwtCookie).addLogoutHandler(clearSiteData)
+                .logout(logout -> logout.addLogoutHandler(jwtCookie).addLogoutHandler(clearSiteData)
                         .logoutSuccessUrl("/"));
                 // We deliberately leave most of the security related header writing to the front end reverse proxy / API gateway
                 // to ensure consistency of approach across microservices

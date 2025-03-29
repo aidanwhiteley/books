@@ -10,6 +10,7 @@ import com.aidanwhiteley.books.repository.GoogleBooksDaoSync;
 import com.aidanwhiteley.books.repository.dtos.GoogleBookSearch;
 import com.aidanwhiteley.books.service.dtos.GoogleBookSearchResult;
 import com.aidanwhiteley.books.util.HtmlSanitiserUtils;
+import com.aidanwhiteley.books.util.LogDetaint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -73,7 +74,9 @@ public class GoogleBookSearchService {
     private GoogleBookSearchResult getGoogleBookSearchResultFromCache(String title, String author, int index,
                                                                       List<GoogleBookSearch> googleBookSearchList) {
         LOGGER.debug("Using Google books search cache for title {}, author {} and index {} ",
-                title, author, index);
+                LogDetaint.logMessageDetaint(title),
+                LogDetaint.logMessageDetaint(author),
+                LogDetaint.logMessageDetaint(index));
         // A unique index means that there should only be one entry
         GoogleBookSearch googleBookSearch = googleBookSearchList.getFirst();
         Item anItem = googleBookSearch.getBookSearchResult().getItems().get(index);
@@ -84,7 +87,9 @@ public class GoogleBookSearchService {
 
     private GoogleBookSearchResult getGoogleBookSearchResultFromAPI(String title, String author, int index) {
         LOGGER.debug("Calling Google books API for title {}, author {} and index {} ",
-                title, author, index);
+                LogDetaint.logMessageDetaint(title),
+                LogDetaint.logMessageDetaint(author),
+                LogDetaint.logMessageDetaint(index));
         if (index != 0) {
             LOGGER.warn("Calling the Google books API when the required index is {}. This is unusual " +
                     "and probably either indicates a logic error in the client or that the timeout on the " +

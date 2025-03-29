@@ -17,6 +17,7 @@ import com.aidanwhiteley.books.repository.dtos.BooksByReader;
 import com.aidanwhiteley.books.service.GoogleBookSearchService;
 import com.aidanwhiteley.books.service.dtos.GoogleBookSearchResult;
 import com.aidanwhiteley.books.util.JwtAuthenticationUtils;
+import com.aidanwhiteley.books.util.LogDetaint;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -47,6 +48,16 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
     public static final String HX_TRIGGER_AFTER_SWAP = "HX-Trigger-After-Swap";
     public static final String HX_RETARGET = "HX-Retarget";
     private static final String NO_VALUE_SELECTED = "NO_VALUE_SELECTED";
+    public static final String BOOK_FORM = "bookForm";
+    public static final String GENRES = "genres";
+    public static final String GOOGLE_BOOK_SEARCH_RESULT = "googleBookSearchResult";
+    public static final String BOOKTITLE = "booktitle";
+    public static final String AUTHOR = "author";
+    public static final String INDEX = "index";
+    public static final String ISCREATE = "iscreate";
+    public static final String ISUPDATE = "isupdate";
+    public static final String ACTION_URL = "actionUrl";
+    public static final String USERS = "users";
 
     private final BookRepository bookRepository;
     private final JwtAuthenticationUtils authUtils;
@@ -70,12 +81,12 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
     @GetMapping(value = {"/createreview"})
     public String createBookReview(Model model, Principal principal) {
 
-        model.addAttribute("bookForm", new BookForm());
-        model.addAttribute("genres", getGenres());
-        model.addAttribute("index", -1);
-        model.addAttribute("iscreate", true);
-        model.addAttribute("isupdate", false);
-        model.addAttribute("actionUrl", "/createreview");
+        model.addAttribute(BOOK_FORM, new BookForm());
+        model.addAttribute(GENRES, getGenres());
+        model.addAttribute(INDEX, -1);
+        model.addAttribute(ISCREATE, true);
+        model.addAttribute(ISUPDATE, false);
+        model.addAttribute(ACTION_URL, "/createreview");
         addUserToModel(principal, model);
 
         return "create-update-review";
@@ -94,15 +105,15 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
         var googleBookSearchresult = bookForm.getGoogleBookSearchResult();
         googleBookSearchresult.setHasMore(true);
 
-        model.addAttribute("bookForm", bookForm);
-        model.addAttribute("googleBookSearchResult", googleBookSearchresult);
-        model.addAttribute("genres", getGenres());
-        model.addAttribute("booktitle", bookForm.getTitle());
-        model.addAttribute("author", bookForm.getAuthor());
-        model.addAttribute("index", 0);
-        model.addAttribute("iscreate", false);
-        model.addAttribute("isupdate", true);
-        model.addAttribute("actionUrl", "/updatereview");
+        model.addAttribute(BOOK_FORM, bookForm);
+        model.addAttribute(GOOGLE_BOOK_SEARCH_RESULT, googleBookSearchresult);
+        model.addAttribute(GENRES, getGenres());
+        model.addAttribute(BOOKTITLE, bookForm.getTitle());
+        model.addAttribute(AUTHOR, bookForm.getAuthor());
+        model.addAttribute(INDEX, 0);
+        model.addAttribute(ISCREATE, false);
+        model.addAttribute(ISUPDATE, true);
+        model.addAttribute(ACTION_URL, "/updatereview");
         addUserToModel(principal, model);
 
         return "create-update-review";
@@ -121,12 +132,12 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
                 LOGGER.debug("Following create form validation errors occurred: {}", bindingResult);
             }
 
-            model.addAttribute("bookForm", bookForm);
-            model.addAttribute("genres", getGenres());
-            model.addAttribute("index", -1);
-            model.addAttribute("iscreate", true);
-            model.addAttribute("isupdate", false);
-            model.addAttribute("actionUrl", "/createreview");
+            model.addAttribute(BOOK_FORM, bookForm);
+            model.addAttribute(GENRES, getGenres());
+            model.addAttribute(INDEX, -1);
+            model.addAttribute(ISCREATE, true);
+            model.addAttribute(ISUPDATE, false);
+            model.addAttribute(ACTION_URL, "/createreview");
             addUserToModel(principal, model);
             if (bookForm.getIndex() != -1) {
                 // Ignoring the view string return value - just want the data added to the Model
@@ -174,15 +185,15 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
                 LOGGER.debug("Following update form validation errors occurred: {}", bindingResult);
             }
 
-            model.addAttribute("bookForm", bookForm);
-            model.addAttribute("googleBookSearchResult", bookForm.getGoogleBookSearchResult());
-            model.addAttribute("genres", getGenres());
-            model.addAttribute("booktitle", bookForm.getTitle());
-            model.addAttribute("author", bookForm.getAuthor());
-            model.addAttribute("index", 0);
-            model.addAttribute("iscreate", false);
-            model.addAttribute("isupdate", true);
-            model.addAttribute("actionUrl", "/updatereview");
+            model.addAttribute(BOOK_FORM, bookForm);
+            model.addAttribute(GOOGLE_BOOK_SEARCH_RESULT, bookForm.getGoogleBookSearchResult());
+            model.addAttribute(GENRES, getGenres());
+            model.addAttribute(BOOKTITLE, bookForm.getTitle());
+            model.addAttribute(AUTHOR, bookForm.getAuthor());
+            model.addAttribute(INDEX, 0);
+            model.addAttribute(ISCREATE, false);
+            model.addAttribute(ISUPDATE, true);
+            model.addAttribute(ACTION_URL, "/updatereview");
             addUserToModel(principal, model);
 
             if (bookForm.getIndex() != -1) {
@@ -230,20 +241,22 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
         }
     }
 
-    @GetMapping(value = {"/googlebooks"}, params = {"title", "author", "index"})
+    @GetMapping(value = {"/googlebooks"}, params = {"title", AUTHOR, INDEX})
     public String findGoogleBooksByTitleAndAuthor(@RequestParam String title, @RequestParam String author,
                                                   @RequestParam int index, Model model, Principal principal) {
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Calling Google Book Search API with title '{}', author '{}' and index '{}'",
-                    title, author, index);
+                    LogDetaint.logMessageDetaint(title),
+                    LogDetaint.logMessageDetaint(author),
+                    LogDetaint.logMessageDetaint(index));
         }
         GoogleBookSearchResult result = googleBookSearchService.getGoogleBooks(title, author, index);
 
-        model.addAttribute("googleBookSearchResult", result);
-        model.addAttribute("booktitle", title);
-        model.addAttribute("author", author);
-        model.addAttribute("index", index);
+        model.addAttribute(GOOGLE_BOOK_SEARCH_RESULT, result);
+        model.addAttribute(BOOKTITLE, title);
+        model.addAttribute(AUTHOR, author);
+        model.addAttribute(INDEX, index);
         if (result.getItem() != null) {
             model.addAttribute("googleBookId", result.getItem().getId());
         } else {
@@ -282,7 +295,8 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
                 throw new AccessDeniedException("User tried to delete book without necessary permissions");
             }
         } else {
-            LOGGER.error("A user that doesn't exist in the database tried to delete book id {}", id);
+            LOGGER.error("A user that doesn't exist in the database tried to delete book id {}",
+                    LogDetaint.logMessageDetaint(id));
             throw new NotFoundException("User not found when trying to delete a book review");
         }
     }
@@ -391,7 +405,7 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
         model.addAttribute("pageOfBooks", books);
         model.addAttribute("ratings", BookControllerHtmx.getRatings(""));
         model.addAttribute("authors", getAuthors());
-        model.addAttribute("genres", getGenres());
+        model.addAttribute(GENRES, getGenres());
         model.addAttribute("reviewers", getReviewers(principal));
         addUserToModel(principal, model);
         model.addAttribute("paginationLink", "find?reviewer=" + reviewer);
@@ -408,7 +422,7 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String userAdmin(Model model, Principal principal) {
 
-        model.addAttribute("users", userRepository.findAll());
+        model.addAttribute( USERS, userRepository.findAll());
         addUserToModel(principal, model);
 
         return "user-admin";
@@ -425,7 +439,7 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
                 LOGGER.info("User {} on {} attempted to delete themselves. This isn't allowed",
                         user.get().getFullName(), user.get().getAuthProvider());
 
-                model.addAttribute("users", userRepository.findAll());
+                model.addAttribute(USERS, userRepository.findAll());
                 addUserToModel(principal, model);
                 response.addHeader(HX_TRIGGER_AFTER_SWAP, "{ \"showFlashMessage\": {\"level\": \"warn\", \"message\": \"You cannot delete your own logged on user\"}}");
                 response.addHeader(HX_RETARGET, "#users-table");
@@ -434,13 +448,13 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
 
             userRepository.deleteById(id);
 
-            model.addAttribute("users", userRepository.findAll());
+            model.addAttribute(USERS, userRepository.findAll());
             addUserToModel(principal, model);
             response.addHeader(HX_TRIGGER_AFTER_SWAP, "{ \"showFlashMessage\": {\"level\": \"info\", \"message\": \"Selected user successfully deleted\"}}");
             response.addHeader("HX-Trigger-After-Settle", "refreshSimpleDataTables");
 
         } else {
-            model.addAttribute("users", userRepository.findAll());
+            model.addAttribute(USERS, userRepository.findAll());
             addUserToModel(principal, model);
             response.addHeader(HX_TRIGGER_AFTER_SWAP, "{ \"showFlashMessage\": {\"level\": \"warn\", \"message\": \"Your userid no longer found in the data store!\"}}");
             response.addHeader(HX_RETARGET, "#users-table");
@@ -459,7 +473,7 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
             if (user.get().getId().equals(id)) {
                 LOGGER.info("User {} on {} attempted to change their own roles. This isn't allowed",
                         user.get().getFullName(), user.get().getAuthProvider());
-                model.addAttribute("users", userRepository.findAll());
+                model.addAttribute(USERS, userRepository.findAll());
                 addUserToModel(principal, model);
                 response.addHeader(HX_TRIGGER_AFTER_SWAP, "{ \"showFlashMessage\": {\"level\": \"warn\", \"message\": \"Your cannot change the role for you own logged on user!\"}}");
                 response.addHeader(HX_RETARGET, "#users-table");
@@ -484,13 +498,13 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
 
             List<User> singleUser = new ArrayList<>();
             singleUser.add(updatedUser);
-            model.addAttribute("users", singleUser);
+            model.addAttribute(USERS, singleUser);
             addUserToModel(principal, model);
             response.addHeader(HX_TRIGGER_AFTER_SWAP, "{ \"showFlashMessage\": {\"level\": \"info\", \"message\": \"" + updatedUser.getFullName() + "'s role updated OK\"}}");
             return "user-admin :: cloudy-user-admin-row";
 
         } else {
-            model.addAttribute("users", userRepository.findAll());
+            model.addAttribute(USERS, userRepository.findAll());
             addUserToModel(principal, model);
             response.addHeader(HX_TRIGGER_AFTER_SWAP, "{ \"showFlashMessage\": {\"level\": \"warn\", \"message\": \"Your userid no longer found in the data store!\"}}");
             response.addHeader(HX_RETARGET, "#users-table");

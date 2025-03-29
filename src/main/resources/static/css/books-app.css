@@ -116,7 +116,7 @@ input {
 }
 
 .swiper-button-prev:after,.swiper-button-next:after {
-    font-family: swiper-icons;
+    font-family: swiper-icons, sans-serif;
     font-size: var(--swiper-navigation-size);
     text-transform: none!important;
     letter-spacing: 0;

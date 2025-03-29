@@ -36,6 +36,17 @@ import static com.aidanwhiteley.books.domain.Book.Rating.GREAT;
 public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BookControllerHtmx.class);
+    public static final String HX_TRIGGER_AFTER_SWAP = "HX-Trigger-After-Swap";
+    public static final String PAGE_OF_BOOKS = "pageOfBooks";
+    public static final String PAGINATION_LINK = "paginationLink";
+    public static final String FIND_REVIEWS_CLOUDY_FIND_BY_RESULTS = "find-reviews :: cloudy-find-by-results";
+    public static final String RATINGS = "ratings";
+    public static final String AUTHORS = "authors";
+    public static final String GENRES = "genres";
+    public static final String REVIEWERS = "reviewers";
+    public static final String FIND_REVIEWS = "find-reviews";
+    public static final String HIGHEST_ROLE = "highestRole";
+    public static final String IS_OWNER = "isOwner";
     private final BookRepository bookRepository;
     private final JwtAuthenticationUtils authUtils;
     private final StatsService statsService;
@@ -69,7 +80,7 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
         addUserToModel(principal, model);
 
         if (hxRequest) {
-            response.addHeader("HX-Trigger-After-Swap", "initSwiper");
+            response.addHeader(HX_TRIGGER_AFTER_SWAP, "initSwiper");
         }
 
         return "home";
@@ -94,7 +105,7 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
         addUserToModel(principal, model);
 
         if (hxRequest) {
-            response.addHeader("HX-Trigger-After-Swap", "initSwiper");
+            response.addHeader(HX_TRIGGER_AFTER_SWAP, "initSwiper");
         }
 
         return "components/swiper :: cloudy-swiper-slides";
@@ -111,12 +122,12 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
         PageRequest pageObj = PageRequest.of(pagenum - 1, 7);
         Page<Book> page = bookRepository.findAllByOrderByCreatedDateTimeDesc(pageObj);
 
-        model.addAttribute("pageOfBooks", page);
+        model.addAttribute(PAGE_OF_BOOKS, page);
         addUserToModel(principal, model);
-        model.addAttribute("paginationLink", "/recent");
+        model.addAttribute(PAGINATION_LINK, "/recent");
 
         if (hxRequest) {
-            return "find-reviews :: cloudy-find-by-results";
+            return FIND_REVIEWS_CLOUDY_FIND_BY_RESULTS;
         } else {
             return "recently-reviewed";
         }
@@ -137,13 +148,13 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
     @GetMapping(value = "/find")
     public String findReviews(Model model, Principal principal) {
         List<Book.Rating> ratings = getRatings("");
-        model.addAttribute("ratings", ratings);
-        model.addAttribute("authors", getAuthors());
-        model.addAttribute("genres", getGenres());
-        model.addAttribute("reviewers", getReviewers(principal));
+        model.addAttribute(RATINGS, ratings);
+        model.addAttribute(AUTHORS, getAuthors());
+        model.addAttribute(GENRES, getGenres());
+        model.addAttribute(REVIEWERS, getReviewers(principal));
         addUserToModel(principal, model);
 
-        return "find-reviews";
+        return FIND_REVIEWS;
     }
 
     @GetMapping(value = {"/find"}, params = {"rating", "pagenum"})
@@ -167,19 +178,19 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
         PageRequest pageObj = PageRequest.of(pagenum - 1, defaultPageSize);
         Page<Book> books = bookRepository.findByRatingOrderByCreatedDateTimeDesc(pageObj, aRating);
 
-        model.addAttribute("pageOfBooks", books);
-        model.addAttribute("ratings", getRatings(""));
-        model.addAttribute("authors", getAuthors());
-        model.addAttribute("genres", getGenres());
-        model.addAttribute("reviewers", getReviewers(principal));
+        model.addAttribute(PAGE_OF_BOOKS, books);
+        model.addAttribute(RATINGS, getRatings(""));
+        model.addAttribute(AUTHORS, getAuthors());
+        model.addAttribute(GENRES, getGenres());
+        model.addAttribute(REVIEWERS, getReviewers(principal));
         addUserToModel(principal, model);
-        model.addAttribute("paginationLink", "find?rating=" + rating);
+        model.addAttribute(PAGINATION_LINK, "find?rating=" + rating);
 
         if (hxRequest) {
-            response.addHeader("HX-Trigger-After-Swap", "clearSelectRating");
-            return "find-reviews :: cloudy-find-by-results";
+            response.addHeader(HX_TRIGGER_AFTER_SWAP, "clearSelectRating");
+            return FIND_REVIEWS_CLOUDY_FIND_BY_RESULTS;
         } else {
-            return "find-reviews";
+            return FIND_REVIEWS;
         }
     }
 
@@ -198,17 +209,17 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
 
         PageRequest pageObj = PageRequest.of(pagenum - 1, defaultPageSize);
         Page<Book> books = bookRepository.findAllByAuthorOrderByCreatedDateTimeDesc(pageObj, author);
-        model.addAttribute("pageOfBooks", books);
-        model.addAttribute("ratings", getRatings(""));
-        model.addAttribute("authors", getAuthors());
-        model.addAttribute("reviewers", getReviewers(principal));
+        model.addAttribute(PAGE_OF_BOOKS, books);
+        model.addAttribute(RATINGS, getRatings(""));
+        model.addAttribute(AUTHORS, getAuthors());
+        model.addAttribute(REVIEWERS, getReviewers(principal));
         addUserToModel(principal, model);
-        model.addAttribute("paginationLink", "find?author=" + author);
+        model.addAttribute(PAGINATION_LINK, "find?author=" + author);
         if (hxRequest) {
-            response.addHeader("HX-Trigger-After-Swap", "clearSelectAuthor");
-            return "find-reviews :: cloudy-find-by-results";
+            response.addHeader(HX_TRIGGER_AFTER_SWAP, "clearSelectAuthor");
+            return FIND_REVIEWS_CLOUDY_FIND_BY_RESULTS;
         } else {
-            return "find-reviews";
+            return FIND_REVIEWS;
         }
     }
 
@@ -228,19 +239,19 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
         PageRequest pageObj = PageRequest.of(pagenum - 1, defaultPageSize);
         Page<Book> books = bookRepository.findAllByGenreOrderByCreatedDateTimeDesc(pageObj, genre);
 
-        model.addAttribute("pageOfBooks", books);
-        model.addAttribute("ratings", getRatings(""));
-        model.addAttribute("authors", getAuthors());
-        model.addAttribute("genres", getGenres());
-        model.addAttribute("reviewers", getReviewers(principal));
+        model.addAttribute(PAGE_OF_BOOKS, books);
+        model.addAttribute(RATINGS, getRatings(""));
+        model.addAttribute(AUTHORS, getAuthors());
+        model.addAttribute(GENRES, getGenres());
+        model.addAttribute(REVIEWERS, getReviewers(principal));
         addUserToModel(principal, model);
-        model.addAttribute("paginationLink", "find?genre=" + genre);
+        model.addAttribute(PAGINATION_LINK, "find?genre=" + genre);
 
         if (hxRequest) {
-            response.addHeader("HX-Trigger-After-Swap", "clearSelectGenre");
-            return "find-reviews :: cloudy-find-by-results";
+            response.addHeader(HX_TRIGGER_AFTER_SWAP, "clearSelectGenre");
+            return FIND_REVIEWS_CLOUDY_FIND_BY_RESULTS;
         } else {
-            return "find-reviews";
+            return FIND_REVIEWS;
         }
     }
 
@@ -264,12 +275,12 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
         PageRequest pageObj = PageRequest.of(pagenum - 1, defaultPageSize);
         Page<Book> books = bookRepository.searchForBooks(term, pageObj);
 
-        model.addAttribute("pageOfBooks", books);
+        model.addAttribute(PAGE_OF_BOOKS, books);
         addUserToModel(principal, model);
-        model.addAttribute("paginationLink", "search?term=" + term);
+        model.addAttribute(PAGINATION_LINK, "search?term=" + term);
 
         if (hxRequest) {
-            return "find-reviews :: cloudy-find-by-results";
+            return FIND_REVIEWS_CLOUDY_FIND_BY_RESULTS;
         } else {
             return "search-books";
         }
@@ -312,7 +323,7 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
         if (principal == null) {
             LOGGER.debug("Principal passed to user method was null");
             model.addAttribute("user", null);
-            model.addAttribute("highestRole", null);
+            model.addAttribute(HIGHEST_ROLE, null);
         } else {
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Principal passed in to user method is: {}", principal.toString().replaceAll("[\n\r\t]", "_"));
@@ -322,23 +333,23 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
         Optional<User> user = authUtils.extractUserFromPrincipal(principal, true);
         if (user.isPresent()) {
             model.addAttribute("user", user.get());
-            model.addAttribute("highestRole", user.get().getHighestRole().getShortName());
+            model.addAttribute(HIGHEST_ROLE, user.get().getHighestRole().getShortName());
         } else {
             model.addAttribute("user", null);
-            model.addAttribute("highestRole", null);
+            model.addAttribute(HIGHEST_ROLE, null);
         }
     }
 
     private void addIsOwnerToModel(Book aBook, Principal principal, Model model) {
         if (principal == null) {
             LOGGER.debug("Principal passed to addIsOwnerToModel method was null");
-            model.addAttribute("isOwner", false);
+            model.addAttribute( IS_OWNER, false);
         } else {
             Optional<User> user = authUtils.extractUserFromPrincipal(principal, true);
             if (user.isPresent() && aBook.isOwner(user.get())) {
-                model.addAttribute("isOwner", true);
+                model.addAttribute(IS_OWNER, true);
             } else {
-                model.addAttribute("isOwner", false);
+                model.addAttribute(IS_OWNER, false);
             }
         }
     }

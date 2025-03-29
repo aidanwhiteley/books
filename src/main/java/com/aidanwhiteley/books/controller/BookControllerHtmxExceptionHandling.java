@@ -108,7 +108,7 @@ public interface BookControllerHtmxExceptionHandling {
         model.addAttribute("dateTime", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         addUserToModel(principal, model);
 
-        if (request.getHeader("hx-request") != null && request.getHeader("Hx-request").equals("true")) {
+        if (request.getHeader("hx-request") != null && request.getHeader("hx-request").equals("true")) {
             return "error :: cloudy-error-detail";
         } else {
             return "error";

@@ -61,6 +61,7 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
     public static final String HX_PUSH_URL = "HX-Push-Url";
     public static final String USERS_TABLE = "#users-table";
     public static final String USER_ADMIN_CLOUDY_USER_ADMIN_TABLE = "user-admin :: cloudy-user-admin-table";
+    public static final String COMMENT_FORM = "commentForm";
 
     private final BookRepository bookRepository;
     private final JwtAuthenticationUtils authUtils;
@@ -163,7 +164,7 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
             }
 
             model.addAttribute("book", aBook);
-            model.addAttribute("commentForm", new CommentForm());
+            model.addAttribute(COMMENT_FORM, new CommentForm());
             addUserToModel(principal, model);
             response.addHeader(HX_TRIGGER_AFTER_SWAP, "{ \"showFlashMessage\": {\"level\": \"info\", \"message\": \"Your book review was " +
                     "successfully created\"}}");
@@ -232,7 +233,7 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
             }
 
             model.addAttribute("book", aBook);
-            model.addAttribute("commentForm", new CommentForm());
+            model.addAttribute(COMMENT_FORM, new CommentForm());
             addUserToModel(principal, model);
             response.addHeader(HX_TRIGGER_AFTER_SWAP, "{ \"showFlashMessage\": {\"level\": \"info\", \"message\": \"The book review was " +
                     "successfully updated\"}}");
@@ -317,7 +318,7 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
                     .orElseThrow(() -> new IllegalArgumentException("Couldn't find book id " + commentForm.getBookId() +
                             " for new comment error message"));
 
-            model.addAttribute("commentForm", commentForm);
+            model.addAttribute(COMMENT_FORM, commentForm);
             model.addAttribute("book", theBook);
             addUserToModel(principal, model);
             response.addHeader(HX_TRIGGER_AFTER_SWAP, "{ \"showFlashMessage\": {\"level\": \"warn\", \"message\": \"Please check and correct your comment\"}}");
@@ -329,7 +330,7 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
             Comment comment = new Comment(commentForm.getComment(), new Owner(user.get()));
             Book updatedBook = bookRepository.addCommentToBook(commentForm.getBookId(), comment);
 
-            model.addAttribute("commentForm", new CommentForm());
+            model.addAttribute(COMMENT_FORM, new CommentForm());
             model.addAttribute("book", updatedBook);
             addUserToModel(principal, model);
             response.addHeader(HX_TRIGGER_AFTER_SWAP, "{ \"showFlashMessage\": {\"level\": \"info\", \"message\": \"Your comment on the book review was " +
@@ -414,7 +415,7 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
         model.addAttribute("paginationLink", "find?reviewer=" + reviewer);
 
         if (hxRequest) {
-            response.addHeader("HX-Trigger-After-Swap", "clearSelectReviewer");
+            response.addHeader(HX_TRIGGER_AFTER_SWAP, "clearSelectReviewer");
             return "find-reviews :: cloudy-find-by-results";
         } else {
             return "find-reviews";

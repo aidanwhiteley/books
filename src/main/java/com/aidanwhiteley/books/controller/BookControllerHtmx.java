@@ -348,11 +348,8 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
             model.addAttribute( IS_OWNER, false);
         } else {
             Optional<User> user = authUtils.extractUserFromPrincipal(principal, true);
-            if (user.isPresent() && aBook.isOwner(user.get())) {
-                model.addAttribute(IS_OWNER, true);
-            } else {
-                model.addAttribute(IS_OWNER, false);
-            }
+            boolean isOwner = user.isPresent() && aBook.isOwner(user.get());
+            model.addAttribute(IS_OWNER, isOwner);
         }
     }
 

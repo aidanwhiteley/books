@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @Profile({"dev-mongo-java-server", "dev-mongo-java-server-no-auth", "dev-mongodb-no-auth", "dev-mongodb", "ci"})
 @AutoConfigureWireMock(port = 0, httpsPort = 0)
 @ActiveProfiles("dev-mongo-java-server")
-public class GoogleBookSearchServiceTest extends IntegrationTest {
+class GoogleBookSearchServiceTest extends IntegrationTest {
 
     @Autowired
     private GoogleBookSearchService googleBookSearchService;

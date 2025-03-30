@@ -73,10 +73,12 @@ public class GoogleBookSearchService {
 
     private GoogleBookSearchResult getGoogleBookSearchResultFromCache(String title, String author, int index,
                                                                       List<GoogleBookSearch> googleBookSearchList) {
-        LOGGER.debug("Using Google books search cache for title {}, author {} and index {} ",
-                LogDetaint.logMessageDetaint(title),
-                LogDetaint.logMessageDetaint(author),
-                LogDetaint.logMessageDetaint(index));
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Using Google books search cache for title {}, author {} and index {} ",
+                    LogDetaint.logMessageDetaint(title),
+                    LogDetaint.logMessageDetaint(author),
+                    LogDetaint.logMessageDetaint(index));
+        }
         // A unique index means that there should only be one entry
         GoogleBookSearch googleBookSearch = googleBookSearchList.getFirst();
         Item anItem = googleBookSearch.getBookSearchResult().getItems().get(index);
@@ -86,10 +88,12 @@ public class GoogleBookSearchService {
     }
 
     private GoogleBookSearchResult getGoogleBookSearchResultFromAPI(String title, String author, int index) {
-        LOGGER.debug("Calling Google books API for title {}, author {} and index {} ",
-                LogDetaint.logMessageDetaint(title),
-                LogDetaint.logMessageDetaint(author),
-                LogDetaint.logMessageDetaint(index));
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Calling Google books API for title {}, author {} and index {} ",
+                    LogDetaint.logMessageDetaint(title),
+                    LogDetaint.logMessageDetaint(author),
+                    LogDetaint.logMessageDetaint(index));
+        }
         if (index != 0) {
             LOGGER.warn("Calling the Google books API when the required index is {}. This is unusual " +
                     "and probably either indicates a logic error in the client or that the timeout on the " +
@@ -98,10 +102,12 @@ public class GoogleBookSearchService {
 
         BookSearchResult result = googleBooksDaoSync.searchGoogleBooksByTitleAndAuthor(title, author);
         if (!result.getItems().isEmpty()) {
-            LOGGER.debug("Inserting an entry into the Google books search cache for title {}, author {} and index {} ",
-                    LogDetaint.logMessageDetaint(title),
-                    LogDetaint.logMessageDetaint(author),
-                    LogDetaint.logMessageDetaint(index));
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Inserting an entry into the Google books search cache for title {}, author {} and index {} ",
+                        LogDetaint.logMessageDetaint(title),
+                        LogDetaint.logMessageDetaint(author),
+                        LogDetaint.logMessageDetaint(index));
+            }
             googleBookSearchRepository.insert(
                     new GoogleBookSearch(title, author, result, LocalDateTime.now().plusMinutes(cacheTimeoutMinutes)));
 
@@ -111,10 +117,12 @@ public class GoogleBookSearchService {
             boolean hasPrevious = index > 0;
             return new GoogleBookSearchResult(anItem, index, hasMore, hasPrevious, false);
         } else {
-            LOGGER.debug("No matching results found using the Google Books API for title {}, author {} and index {} ",
-                    LogDetaint.logMessageDetaint(title),
-                    LogDetaint.logMessageDetaint(author),
-                    LogDetaint.logMessageDetaint(index));
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("No matching results found using the Google Books API for title {}, author {} and index {} ",
+                        LogDetaint.logMessageDetaint(title),
+                        LogDetaint.logMessageDetaint(author),
+                        LogDetaint.logMessageDetaint(index));
+            }
             return new GoogleBookSearchResult(null, index, false, false, false);
         }
     }

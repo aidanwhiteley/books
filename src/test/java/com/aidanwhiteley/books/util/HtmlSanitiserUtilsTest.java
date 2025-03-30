@@ -10,20 +10,20 @@ class HtmlSanitiserUtilsTest {
 
     @Test
     void testTagsExpectedInGoogleBookDescriptionsAllowed() {
-        String TEST_STRING_1 = """
+        final String testString1 = """
                 <p>Here is some text in a para</p>
                 <p><b>Bold text</b></p>
                 <p>Text with <em>em</em> and <i>i</i></p>
                 <p>Text with a <br>
                   line break</p>
                 """;
-        String sanitised = HtmlSanitiserUtils.allowBasicTextFormattingOnly(TEST_STRING_1);
-        assertEquals(TEST_STRING_1.trim(), sanitised.trim());
+        String sanitised = HtmlSanitiserUtils.allowBasicTextFormattingOnly(testString1);
+        assertEquals(testString1.trim(), sanitised.trim());
     }
 
     @Test
     void testTagsNotExpectedInGoogleBookDescriptionsAllowed() {
-        String TEST_STRING_2 = """
+        final String testString2 = """
                 <p>Here is some text in a para</p>
                 <p><b>Bold text</b></p>
                 <p>Text with <em>em</em> and <i>i</i></p>
@@ -33,7 +33,7 @@ class HtmlSanitiserUtilsTest {
                 <p>&#60&#115&#99&#114&#105&#112&#116&#62&#97&#108&#101&#114&#116&#40&#49&#41&#60&#47&#115&#99&#114&#105&#112&#116&#62</p>
                   line break</p>
                 """;
-        String sanitised = HtmlSanitiserUtils.allowBasicTextFormattingOnly(TEST_STRING_2);
+        String sanitised = HtmlSanitiserUtils.allowBasicTextFormattingOnly(testString2);
         assertFalse(sanitised.contains("<a"));
         assertFalse(sanitised.contains("onmouseover"));
         assertFalse(sanitised.contains("<script>"));
@@ -42,10 +42,10 @@ class HtmlSanitiserUtilsTest {
 
     @Test
     void testTNoTagsAllowed() {
-        String TEST_STRING_3 = """
+        final String testString3 = """
                 <p>No tags allowed</p>
                 """;
-        String sanitised = HtmlSanitiserUtils.allowNoHtmlTags(TEST_STRING_3);
+        String sanitised = HtmlSanitiserUtils.allowNoHtmlTags(testString3);
         assertEquals("No tags allowed", sanitised.trim());
     }
 

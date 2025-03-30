@@ -103,7 +103,7 @@
                     <h5 th:if="${googleBookSearchResult.item.volumeInfo}"
                         th:text="${googleBookSearchResult.item.volumeInfo.title}">A book title</h5>
                     <p>
-                        <img alt="A book cover image from Google"
+                        <img alt="A book cover from Google"
                              class="rounded float-start googleBookImageImport"
                              src="https://books.google.com/books/content?id=VDRePgAACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
                              th:if="${googleBookSearchResult.item.volumeInfo?.imageLinks?.thumbnail}"

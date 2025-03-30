@@ -46,7 +46,7 @@
                                 </ul>
                             </div>
                         </td>
-                        <td><img src="https://lh3.googleusercontent.com/a-/AOh14GiSloGW5XUkj02kFEU-wBHPaWqgupSjieqXqkE=s96-c" alt="User profile image"></td>
+                        <td><img src="https://lh3.googleusercontent.com/a-/AOh14GiSloGW5XUkj02kFEU-wBHPaWqgupSjieqXqkE=s96-c" alt="User profile"></td>
                         <td>5/2/2018</td>
                         <td>6/2/2025</td>
                         <td><button  aria-label="Delete user" class="btn btn-sm btn-outline-danger" type="submit">
@@ -77,7 +77,7 @@
                         </td>
                         <td>
                             <img th:if="${#strings.toString(user.authProvider) == 'GOOGLE'}"
-                                 alt="User profile picture" src="https://lh3.googleusercontent.com/a-/AOh14GhZRtMP-NnwFvMMhsrPFPIIqh_bLTygnj6xdRM=s96-c"
+                                 alt="User profile" src="https://lh3.googleusercontent.com/a-/AOh14GhZRtMP-NnwFvMMhsrPFPIIqh_bLTygnj6xdRM=s96-c"
                                  th:src="${user.picture}">
                         </td>
                         <td th:text="${#temporals.format(user.firstLogon, 'dd-MM-yyyy')}">20-7-2024</td>

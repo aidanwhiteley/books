@@ -2,17 +2,12 @@ package com.aidanwhiteley.books.service;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
-import com.aidanwhiteley.books.controller.RestApiExceptionHandler;
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.googlebooks.Item;
 import com.aidanwhiteley.books.repository.BookRepository;
 import com.aidanwhiteley.books.repository.BookRepositoryTest;
 import com.aidanwhiteley.books.service.dtos.GoogleBookSearchResult;
 import com.aidanwhiteley.books.util.IntegrationTest;
-import org.aspectj.lang.annotation.After;
-import org.aspectj.lang.annotation.Before;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

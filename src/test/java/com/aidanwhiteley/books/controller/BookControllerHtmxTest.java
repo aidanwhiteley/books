@@ -7,6 +7,7 @@ import com.aidanwhiteley.books.controller.jwt.JwtUtils;
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.repository.BookRepository;
 import com.aidanwhiteley.books.repository.BookRepositoryTest;
+import com.aidanwhiteley.books.service.GoogleBookSearchService;
 import de.bwaldvogel.mongo.wire.MongoWireProtocolHandler;
 import jakarta.servlet.http.Cookie;
 import org.jsoup.Jsoup;
@@ -74,13 +75,15 @@ public class BookControllerHtmxTest {
     @Test
     void findByAuthor() throws Exception {
         createTestBook();
-        var result = mockMvc.perform(get("/find?pagenum=1&author=" + BookRepositoryTest.DR_ZEUSS))
+        var result = mockMvc.perform(get("/find?pagenum=1&author=" + BookRepositoryTest.DR_ZEUSS)
+                    .header(BookControllerHtmx.HX_REQUEST, true))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith("text/html"))
                 .andReturn();
         var output = result.getResponse().getContentAsString();
         var element = Jsoup.parse(output).selectFirst("td.firstTableCol");
         assertTrue(element.html().contains(BookRepositoryTest.J_UNIT_TESTING_FOR_BEGINNERS));
+        assertTrue(result.getResponse().containsHeader(BookControllerHtmx.HX_TRIGGER_AFTER_SWAP));
     }
 
     @Test
@@ -97,29 +100,100 @@ public class BookControllerHtmxTest {
         var output = result.getResponse().getContentAsString();
         assertEquals("e-400", Jsoup.parse(output).getElementById("errorCode").html());
 
-        context.getLogger(BookControllerHtmxExceptionHandling.class).setLevel(Level.valueOf("WARN"));
+        mockMvc.perform(get("/find?pagenum=1&author="))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentTypeCompatibleWith("text/html"))
+                .andReturn();
+
+        context.getLogger(BookControllerHtmxExceptionHandling.class).setLevel(Level.valueOf("ON"));
     }
 
     @Test
     void findByRating() throws Exception {
-        var result = mockMvc.perform(get("/find?pagenum=1&rating=great"))
+        var result = mockMvc.perform(get("/find?pagenum=1&rating=great")
+                        .header(BookControllerHtmx.HX_REQUEST, true))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith("text/html"))
                 .andReturn();
         var output = result.getResponse().getContentAsString();
         var elements = Jsoup.parse(output).select("tr .firstTableCol");
         assertFalse(elements.isEmpty());
+        assertTrue(result.getResponse().containsHeader(BookControllerHtmx.HX_TRIGGER_AFTER_SWAP));
+    }
+
+    @Test
+    void findByRatingBadParams() throws Exception {
+        // Don't want test logs filled with expected exceptions. If the test fails, comment this out to debug!
+        LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+        context.getLogger(BookControllerHtmxExceptionHandling.class).setLevel(Level.valueOf("OFF"));
+
+        mockMvc.perform(get("/find?pagenum=1&rating="))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentTypeCompatibleWith("text/html"))
+                .andReturn();
+
+        mockMvc.perform(get("/find?pagenum=1&rating=BAD-DATA"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentTypeCompatibleWith("text/html"))
+                .andReturn();
+
+        mockMvc.perform(get("/find?pagenum=0&rating=great"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentTypeCompatibleWith("text/html"))
+                .andReturn();
+
+        context.getLogger(BookControllerHtmxExceptionHandling.class).setLevel(Level.valueOf("ON"));
     }
 
     @Test
     void findByGenre() throws Exception {
-        var result = mockMvc.perform(get("/find?pagenum=1&genre=Novel"))
+        var result = mockMvc.perform(get("/find?pagenum=1&genre=Novel")
+                        .header(BookControllerHtmx.HX_REQUEST, true))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith("text/html"))
                 .andReturn();
         var output = result.getResponse().getContentAsString();
         var elements = Jsoup.parse(output).select("tr .firstTableCol");
         assertTrue(elements.size() >= 6);
+        assertTrue(result.getResponse().containsHeader(BookControllerHtmx.HX_TRIGGER_AFTER_SWAP));
+    }
+
+    @Test
+    void findByGenreBadParams() throws Exception {
+        // Don't want test logs filled with expected exceptions. If the test fails, comment this out to debug!
+        LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+        context.getLogger(BookControllerHtmxExceptionHandling.class).setLevel(Level.valueOf("OFF"));
+
+        mockMvc.perform(get("/find?pagenum=1&genre="))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentTypeCompatibleWith("text/html"))
+                .andReturn();
+
+        mockMvc.perform(get("/find?pagenum=0&genre=Novel"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentTypeCompatibleWith("text/html"))
+                .andReturn();
+
+        context.getLogger(BookControllerHtmxExceptionHandling.class).setLevel(Level.valueOf("ON"));
+    }
+
+    @Test
+    void searchBadParams() throws Exception {
+        // Don't want test logs filled with expected exceptions. If the test fails, comment this out to debug!
+        LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+        context.getLogger(BookControllerHtmxExceptionHandling.class).setLevel(Level.valueOf("OFF"));
+
+        mockMvc.perform(get("/search?term="))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentTypeCompatibleWith("text/html"))
+                .andReturn();
+
+        mockMvc.perform(get("/search?term=TEST&pagenum=0"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentTypeCompatibleWith("text/html"))
+                .andReturn();
+
+        context.getLogger(BookControllerHtmxExceptionHandling.class).setLevel(Level.valueOf("ON"));
     }
 
     @Test
@@ -135,13 +209,30 @@ public class BookControllerHtmxTest {
 
     @Test
     void getBookByRating() throws Exception {
-        var result = mockMvc.perform(get("/getBooksByRating?rating=great"))
+        var result = mockMvc.perform(get("/getBooksByRating?rating=great")
+                        .header(BookControllerHtmx.HX_REQUEST, true))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith("text/html"))
                 .andReturn();
         var output = result.getResponse().getContentAsString();
         var elements = Jsoup.parse(output).select(".swiper-slide");
+
         assertTrue(elements.size() >= 10);
+        assertTrue(result.getResponse().containsHeader(BookControllerHtmx.HX_TRIGGER_AFTER_SWAP));
+    }
+
+    @Test
+    void getBookByRatingMissingParam() throws Exception {
+        // Don't want test logs filled with expected exceptions. If the test fails, comment this out to debug!
+        LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+        context.getLogger(BookControllerHtmxExceptionHandling.class).setLevel(Level.valueOf("OFF"));
+
+        var result = mockMvc.perform(get("/getBooksByRating?rating=BAD-DATA"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentTypeCompatibleWith("text/html"))
+                .andReturn();
+
+        context.getLogger(BookControllerHtmxExceptionHandling.class).setLevel(Level.valueOf("ON"));
     }
 
     @Test

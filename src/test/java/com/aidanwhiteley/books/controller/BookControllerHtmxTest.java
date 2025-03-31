@@ -7,7 +7,6 @@ import com.aidanwhiteley.books.controller.jwt.JwtUtils;
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.repository.BookRepository;
 import com.aidanwhiteley.books.repository.BookRepositoryTest;
-import com.aidanwhiteley.books.service.GoogleBookSearchService;
 import de.bwaldvogel.mongo.wire.MongoWireProtocolHandler;
 import jakarta.servlet.http.Cookie;
 import org.jsoup.Jsoup;
@@ -227,7 +226,7 @@ public class BookControllerHtmxTest {
         LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
         context.getLogger(BookControllerHtmxExceptionHandling.class).setLevel(Level.valueOf("OFF"));
 
-        var result = mockMvc.perform(get("/getBooksByRating?rating=BAD-DATA"))
+        mockMvc.perform(get("/getBooksByRating?rating=BAD-DATA"))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentTypeCompatibleWith("text/html"))
                 .andReturn();

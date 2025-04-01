@@ -155,7 +155,7 @@ public class BookSecureControllerHtmxTest {
         LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
         context.getLogger(BookControllerHtmxExceptionHandling.class).setLevel(Level.valueOf("OFF"));
 
-        Book aBook = bookRepository.insert(BookRepositoryTest.createTestBook());
+        bookRepository.insert(BookRepositoryTest.createTestBook());
 
         String token = jwtUtils.createTokenForUser(getADifferentEditorTestUser());
         Cookie cookie = new Cookie(JwtAuthenticationService.JWT_COOKIE_NAME, token);

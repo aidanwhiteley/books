@@ -13,18 +13,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 
 import java.net.URI;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("ConstantConditions")
 class BookSecureControllerTest extends IntegrationTest {
@@ -61,7 +55,7 @@ class BookSecureControllerTest extends IntegrationTest {
 
         // Get location of created book
         String location = response.getHeaders().getLocation().toString();
-        assertTrue(location.length() > 0, "Location of newly created book should have been provided");
+        assertFalse(location.isEmpty(), "Location of newly created book should have been provided");
         String id = location.substring(location.lastIndexOf("/") + 1);
 
         // Get an admin user and required tokens and then delete the book
@@ -150,7 +144,7 @@ class BookSecureControllerTest extends IntegrationTest {
 
         // And finally check that the book was actually updated
         Book updatedBook = testRestTemplate.getForObject(uri, Book.class);
-        assertEquals(updatedBook.getTitle(), updatedTitle);
+        assertEquals(updatedTitle, updatedBook.getTitle());
     }
 
     @Test
@@ -223,29 +217,29 @@ class BookSecureControllerTest extends IntegrationTest {
 
         assertEquals(HttpStatus.OK, postResponse.getStatusCode());
         assertEquals(1, postResponse.getBody().getComments().size());
-        assertEquals(commentText,postResponse.getBody().getComments().get(0).getCommentText());
+        assertEquals(commentText, postResponse.getBody().getComments().getFirst().getCommentText());
 
         // Now remove the comment (the reuse of the postData is OK as we just need the headers - not the body)
-        String commentId = postResponse.getBody().getComments().get(0).getId();
+        String commentId = postResponse.getBody().getComments().getFirst().getId();
         ResponseEntity<Book> deleteResponse = testRestTemplate.exchange("/secure/api/books/" + bookId + "/comments/" + commentId, HttpMethod.DELETE, postData,
                 Book.class);
         assertEquals(HttpStatus.OK, deleteResponse.getStatusCode());
         assertEquals(1, deleteResponse.getBody().getComments().size());
-        assertTrue(deleteResponse.getBody().getComments().get(0).getDeletedBy().contains(user.getFullName()));
-        assertTrue(deleteResponse.getBody().getComments().get(0).isDeleted());
+        assertTrue(deleteResponse.getBody().getComments().getFirst().getDeletedBy().contains(user.getFullName()));
+        assertTrue(deleteResponse.getBody().getComments().getFirst().isDeleted());
     }
-    
+
     @Test
     void findBooksByReader() {
-		User user = BookControllerTestUtils.getTestUser();
+        User user = BookControllerTestUtils.getTestUser();
         String token = jwtUtils.createTokenForUser(user);
         String xsrfToken = BookControllerTestUtils.getXsrfToken(testRestTemplate);
         HttpEntity<Book> request = BookControllerTestUtils.getBookHttpEntity(null, token, xsrfToken);
-        
+
         final String testReader = "Fred Bloggs";
-        ResponseEntity<String> response = testRestTemplate.exchange("/secure/api/books?reader=" + testReader, HttpMethod.GET, request, String.class);   
+        ResponseEntity<String> response = testRestTemplate.exchange("/secure/api/books?reader=" + testReader, HttpMethod.GET, request, String.class);
         List<Book> books = JsonPath.read(response.getBody(), "$.content");
-        assertTrue(books.size() > 0);
+        assertFalse(books.isEmpty());
 
         final String emptyReader = "";
         response = testRestTemplate.exchange("/secure/api/books?reader=" + emptyReader, HttpMethod.GET, request, String.class);
@@ -265,7 +259,7 @@ class BookSecureControllerTest extends IntegrationTest {
 
         ResponseEntity<String> response = testRestTemplate.exchange("/secure/api/books/readers", HttpMethod.GET, request, String.class);
         List<String> bookReaders = JsonPath.read(response.getBody(), "$[*].reader");
-        assertTrue(bookReaders.size() > 0);
+        assertFalse(bookReaders.isEmpty());
     }
 
     @Test

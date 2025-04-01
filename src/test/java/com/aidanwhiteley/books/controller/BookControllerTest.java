@@ -8,7 +8,6 @@ import com.aidanwhiteley.books.repository.dtos.BooksByGenre;
 import com.aidanwhiteley.books.repository.dtos.BooksByRating;
 import com.aidanwhiteley.books.util.IntegrationTest;
 import com.jayway.jsonpath.JsonPath;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,11 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 
 import java.net.URI;
 import java.util.Arrays;
@@ -28,8 +23,7 @@ import java.util.List;
 
 import static com.aidanwhiteley.books.controller.BookController.PAGE_REQUEST_TOO_BIG_MESSAGE;
 import static com.aidanwhiteley.books.repository.BookRepositoryTest.J_UNIT_TESTING_FOR_BEGINNERS;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("ConstantConditions")
 public class BookControllerTest extends IntegrationTest {
@@ -74,9 +68,9 @@ public class BookControllerTest extends IntegrationTest {
 
         // Returns a "page" of books - so look for the content of the page
         List<Book> books = JsonPath.read(response.getBody(), "$.content");
-        LOGGER.debug("Retrieved JSON was: " + response.getBody());
+        LOGGER.debug("Retrieved JSON was: {}", response.getBody());
 
-        assertTrue(books.size() > 0, "No books found");
+        assertFalse(books.isEmpty(), "No books found");
     }
 
     @Test
@@ -92,10 +86,10 @@ public class BookControllerTest extends IntegrationTest {
         boolean noAuthProfile = Arrays.stream(this.environment.getActiveProfiles()).
                 anyMatch(s -> s.contains(NO_AUTH_SPRING_PROFILE));
 
-        Assertions.assertFalse(noAuthProfile, "Check not running a no auth profile");
-
-        String expected = "";
-        assertEquals(expected, book.getCreatedBy().getEmail());
+        if (!noAuthProfile) {
+            String expected = "";
+            assertEquals(expected, book.getCreatedBy().getEmail());
+        }
 
         // Now update the book and check that details about who updated the book are not returned
         String updatedTitle = "An updated title";
@@ -104,9 +98,12 @@ public class BookControllerTest extends IntegrationTest {
 
         // Check that the book was actually updated
         Book updatedBook = testRestTemplate.getForObject(location, Book.class);
-        assertEquals(updatedBook.getTitle(), updatedTitle);
-        // and check that details about who did the update arent returned
-        assertTrue(updatedBook.getLastModifiedBy().getLastName().isEmpty());
+        assertEquals(updatedTitle, updatedBook.getTitle());
+
+        if (!noAuthProfile) {
+            // and check that details about who did the update arent returned
+            assertTrue(updatedBook.getLastModifiedBy().getLastName().isEmpty());
+        }
     }
 
     @Test
@@ -136,7 +133,7 @@ public class BookControllerTest extends IntegrationTest {
 
         Book updatedBook = testRestTemplate
                 .exchange(location, HttpMethod.GET, request, Book.class).getBody();
-        assertEquals(updatedBook.getTitle(), updatedTitle);
+        assertEquals(updatedTitle, updatedBook.getTitle());
         // Check that details about who did the update ARE returned
         assertEquals(updatedBook.getLastModifiedBy().getFullName(), user.getFullName());
     }
@@ -184,10 +181,10 @@ public class BookControllerTest extends IntegrationTest {
 
         // Returns a "page" of books - so look for the content of the page
         List<Book> books = JsonPath.read(response.getBody(), "$.content");
-        LOGGER.debug("Retrieved JSON was: " + response.getBody());
+        LOGGER.debug("Retrieved JSON was: {}", response.getBody());
 
 
-        assertTrue(books.size() >= 1, "No books found");
+        assertFalse(books.isEmpty(), "No books found");
     }
 
     @Test
@@ -208,7 +205,7 @@ public class BookControllerTest extends IntegrationTest {
                 null, String.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         List<Book> books = JsonPath.read(response.getBody(), "$.content");
-        assertTrue(books.size() >= 1, "Search didnt find a book");
+        assertFalse(books.isEmpty(), "Search didnt find a book");
 
         // Then check that we dont get a match when using a "stop" work
         final String aStopWord = "A";
@@ -226,7 +223,7 @@ public class BookControllerTest extends IntegrationTest {
 
         // Returns a "page" of books - so look for the content of the page
         List<Book> books = JsonPath.read(response.getBody(), "$.content");
-        LOGGER.debug("Retrieved JSON was: " + response.getBody());
+        LOGGER.debug("Retrieved JSON was: {}", response.getBody());
         assertEquals(books.size(), defaultPageSize, "Default page size of books expected");
     }
 
@@ -236,8 +233,8 @@ public class BookControllerTest extends IntegrationTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
         List<Book> books = JsonPath.read(response.getBody(), "$.content");
-        LOGGER.debug("Retrieved JSON was: " + response.getBody());
-        assertTrue(books.size() > 0, "Expected to find novels");
+        LOGGER.debug("Retrieved JSON was: {}", response.getBody());
+        assertFalse(books.isEmpty(), "Expected to find novels");
     }
 
     @Test
@@ -249,23 +246,23 @@ public class BookControllerTest extends IntegrationTest {
         int count = JsonPath.parse(response.getBody()).read("$.count", Integer.class);
         assertTrue(count > 0, "Should find more than 0 books");
         List<BooksByGenre> genres = JsonPath.read(response.getBody(), "$.bookByGenre");
-        assertTrue(genres.size() > 0, "Should find more than 0 genres");
+        assertFalse(genres.isEmpty(), "Should find more than 0 genres");
         List<BooksByRating> ratings = JsonPath.read(response.getBody(), "$.booksByRating");
-        assertTrue(ratings.size() > 0, "Should have found more than 0 ratings");
+        assertFalse(ratings.isEmpty(), "Should have found more than 0 ratings");
     }
 
     @Test
     void findBookByRating() {
-        ResponseEntity<String> response = testRestTemplate.exchange("/api/books/?rating=GOOD&page=1&size=2", HttpMethod.GET, null, String.class);
+        ResponseEntity<String> response = testRestTemplate.exchange("/api/books/?rating=GREAT&page=1&size=2", HttpMethod.GET, null, String.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
         List<Book> booksByRating = JsonPath.read(response.getBody(), "$.content");
-        LOGGER.debug("Retrieved JSON was: " + response.getBody());
-        assertTrue(booksByRating.size() > 0, "Expected to find novels");
+        LOGGER.debug("Retrieved JSON was: {}", response.getBody());
+        assertFalse(booksByRating.isEmpty(), "Expected to find novels");
         assertEquals(2, booksByRating.size(), "Expected to find a page of 2 novels");
 
         // Test defaults
-        response = testRestTemplate.exchange("/api/books/?rating=GOOD", HttpMethod.GET, null, String.class);
+        response = testRestTemplate.exchange("/api/books/?rating=GREAT", HttpMethod.GET, null, String.class);
         booksByRating = JsonPath.read(response.getBody(), "$.content");
         assertEquals(defaultPageSize, booksByRating.size(), "Expected to find default page size of novels");
     }
@@ -276,7 +273,7 @@ public class BookControllerTest extends IntegrationTest {
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
 
         String bodyContent = response.getBody();
-        LOGGER.debug("Retrieved JSON was: " + bodyContent);
+        LOGGER.debug("Retrieved JSON was: {}", bodyContent);
         assertTrue(bodyContent.contains(ERROR_MESSAGE_FOR_INVALID_RATING), "Expected to find a specified error message");
     }
 

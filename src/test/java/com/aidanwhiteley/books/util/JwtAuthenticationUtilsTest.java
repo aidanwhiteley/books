@@ -30,7 +30,7 @@ class JwtAuthenticationUtilsTest extends IntegrationTest {
         User userFromToken = jwtUtils.getUserFromToken(jwt);
 
         assertEquals(1, userFromToken.getRoles().size(), "Actuator user should have single role");
-        assertEquals(User.Role.ROLE_ACTUATOR, userFromToken.getRoles().get(0), "Actuator user should only have actuator role");
+        assertEquals(User.Role.ROLE_ACTUATOR, userFromToken.getRoles().getFirst(), "Actuator user should only have actuator role");
         assertEquals(User.AuthenticationProvider.LOCAL, userFromToken.getAuthProvider(), "Actuator authprovider should be local");
     }
 
@@ -54,7 +54,6 @@ class JwtAuthenticationUtilsTest extends IntegrationTest {
     }
 
     private Principal getPrincipal() {
-        //noinspection Convert2Lambda
         return new JwtAuthentication("Dummy Name", User.AuthenticationProvider.LOCAL.toString(), "Some Auth Service ID");
     }
 }

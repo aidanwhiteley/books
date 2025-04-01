@@ -5,12 +5,11 @@ import com.aidanwhiteley.books.repository.UserRepository;
 import com.aidanwhiteley.books.util.IntegrationTest;
 import com.aidanwhiteley.books.util.Oauth2AuthenticationUtils;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
@@ -24,14 +23,11 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import java.util.*;
 
 import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.LOCAL;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class UserServiceTest extends IntegrationTest {
 
     private static final String DUMMY = "dummy";
@@ -39,7 +35,7 @@ class UserServiceTest extends IntegrationTest {
     private static final String NEW_USER_2 = "New User 2";
     private static final String UPDATED_USER_1 = "Updated User 1";
     private static final String UPDATED_USER_2 = "Updated User 2";
-    
+
     @Autowired
     private UserRepository userRepository;
 
@@ -47,7 +43,7 @@ class UserServiceTest extends IntegrationTest {
     private String googleClientClientId;
     @Value("${spring.security.oauth2.client.registration.facebook.client-id}")
     private String facebookClientClientId;
-    
+
     @Mock
     private OAuth2AuthenticationToken oauthToken;
     @Mock

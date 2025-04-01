@@ -1,7 +1,7 @@
 # Creates and run the Docker containers for the
 #
 # a) the books web tier SPA
-#   - github repository - https://github.com/aidanwhiteley/books-web
+#   - github repository - https://github.com/aidanwhiteley/books-react
 # b) the books Spring Cloud API gateway
 #   - github repository - https://github.com/aidanwhiteley/books-gateway
 # b) the books Eureka service registry
@@ -21,23 +21,21 @@
 #
 
 # This docker-compose file expects to see a .env file in the same directory.
-# This version retrieved from Git must be edited for your usage but will basically work without any edits
+# This version retrieved from Git should be edited for your usage but will basically work without any edits
 # if you just want to try stuff out (insecurely!).
-
-version: '3.7'
 
 services:
 
   # This container is built using the commands detailed in the Dockerfile
-  # at https://github.com/aidanwhiteley/books-web
-  # Change the image name to aidanwhiteley/books-web-angular (i.e. no "-gateway") to
+  # at https://github.com/aidanwhiteley/books-react
+  # Change the image name to aidanwhiteley/books-web-react (i.e. no "-gateway") to
   # use an image where nginx points directly to a single instance of the
   # Spring Boot java microservice (expected to be on 8080) rather than to an API gateway container which
   # can forward the request to multiple container based instances of the microservice.
   # Change the "depends_on" as appropriate.
-  web-tier-angular:
-    container_name: books-web-angular-container
-    image: aidanwhiteley/books-web-angular-gateway:v0.1.1
+  web-tier-react:
+    container_name: books-web-react-container
+    image: aidanwhiteley/books-web-react-gateway:v0.1.1
     restart: unless-stopped
     ports:
       - 80:80
@@ -51,7 +49,10 @@ services:
       start_period: "30s"
       retries: 3
     depends_on:
-      - api-gateway-tier
+      api-gateway-tier:
+        condition: service_started
+      api-tier-java:
+        condition: service_healthy
 
   # This container is built using Google Jib using the following maven command
   # for the project at https://github.com/aidanwhiteley/books-gateway
@@ -70,7 +71,8 @@ services:
       - "SERVICE_REGISTRY=${SERVICE_REGISTRY}"
     # Note - healthchecks not easily supportable on JIB based images as the distroless base image has no shell support
     depends_on:
-      - service-registry-tier
+      service-registry-tier:
+        condition: service_started
 
   # This container is built using Google Jib using the following maven command
   # for the project at https://github.com/aidanwhiteley/books-eureka
@@ -94,7 +96,7 @@ services:
 
   # This container is built using Google Jib using the maven command for this project of
   # mvn compile jib:dockerBuild (see comments in pom.xml).
-  # The service name "api-tier-java" is known to the nginx config used by the web-tier-angular
+  # The service name "api-tier-java" is known to the nginx config used by the web-tier-react
   # nginx based image.
   # Alternatively this tier is accessed by instances of the microservice in this container registering
   # with a Eureka service registry and a Spring Cloud API gateway forwarding calls to registered
@@ -103,7 +105,7 @@ services:
     # The container_name must be commented out if starting multiple containers for this tier e.g.
     # "docker compose up --scale api-tier-java=2"
     # container_name: books-api-java-container
-    image: aidanwhiteley/books-api-java:0.30.4-RELEASE
+    image: aidanwhiteley/books-api-java:0.50.3-RELEASE
     restart: unless-stopped
     environment:
       - "SPRING_PROFILES_ACTIVE=${JAVA_BOOKS_SPRING_PROFILE}"
@@ -122,9 +124,13 @@ services:
       - "SPRING_SECURITY_OUATH2_CLIENT_REGISTRATION_FACEBOOK_CLIENT_ID=${SPRING_SECURITY_OUATH2_CLIENT_REGISTRATION_FACEBOOK_CLIENT_ID}"
       - "SPRING_SECURITY_OUATH2_CLIENT_REGISTRATION_FACEBOOK_CLIENT_SECRET=${SPRING_SECURITY_OUATH2_CLIENT_REGISTRATION_FACEBOOK_CLIENT_SECRET}"
       - "SERVICE_REGISTRY=${SERVICE_REGISTRY}"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
     depends_on:
-      - data-tier-mongo
-      - service-registry-tier
+      data-tier-mongo:
+        condition: service_healthy
+      service-registry-tier:
+        condition: service_started
 
   # This container is built dynamically when the docker-compose up command is issued.
   # The service name is known to the spring-boot application-xxxxx.properties file
@@ -138,7 +144,7 @@ services:
     # This is typically done when also using a Spring profile (for the api tier) that is suffixed -no-auth.
     # To stop this behaviour remove the "-demodata" name from the image and make a couple of edits
     # to the .env environment variables file.
-    image: aidanwhiteley/books-db-mongodb-demodata:5.0.5-focal
+    image: aidanwhiteley/books-db-mongodb-demodata:5.0.30-focal
     restart: unless-stopped
     # Uncomment to access the MongoDB directly from the host - perhaps for debugging
     #ports:
@@ -153,8 +159,8 @@ services:
       - MONGO_INITDB_APP_PASSWORD=${MONGO_INITDB_APP_PASSWORD}
     # The default Mongo log level is too verbose - it obscures what is happening in this demo use
     # Comment out for debugging / production
-    logging:
-      driver: "none"
+    #logging:
+    #  driver: "none"
     healthcheck:
       test: echo 'db.runCommand({serverStatus:1}).ok' | mongo admin -u $MONGO_INITDB_ROOT_USERNAME -p $MONGO_INITDB_ROOT_PASSWORD --quiet | grep 1
       interval: "20s"
@@ -181,4 +187,5 @@ services:
       - "JAVA_BOOKS_ACTUATOR_ONLY_JWT_TOKEN=${JAVA_BOOKS_ACTUATOR_ONLY_JWT_TOKEN}"
       - "SERVICE_REGISTRY=${SERVICE_REGISTRY}"
     depends_on:
-      - service-registry-tier
+      service-registry-tier:
+        condition: service_started

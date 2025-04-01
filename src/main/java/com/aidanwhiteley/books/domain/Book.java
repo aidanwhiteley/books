@@ -16,7 +16,6 @@ import java.util.List;
 
 import static com.aidanwhiteley.books.domain.User.Role.*;
 
-@SuppressWarnings("DefaultAnnotationParam")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -42,6 +41,7 @@ public class Book extends Auditable {
 
     @NotNull
     @Length(min = 1, max = 75)
+    @Setter
     private String author;
 
     @NotNull
@@ -51,19 +51,27 @@ public class Book extends Auditable {
 
     @NotNull
     @Length(min = 1, max = 20000)
+    @Setter
     private String summary;
 
     @NotNull
+    @Setter
     private Rating rating;
 
+    @Setter
     private String googleBookId;
 
     @Setter
     private Item googleBookDetails;
 
     // The following three transient fields are intended as "helpers" to enable
-    // the client side to create links to functionality that will pass the
+    // the client side to create links to functionality that will later pass the
     // server side method level security.
+    // Note: These fields are set by the AOP based advice in LimitDataVisibilityAspect
+    //       and this advice is run when a Book (or Page<Book>) is returned to the client.
+    //       For the Htmx based client we don't have the same data security issue and
+    //       therefore the advice is not run and these fields are not correctly set
+    //       for individual users.
     @Transient
     @Setter(AccessLevel.NONE)
     private boolean allowUpdate;
@@ -116,7 +124,7 @@ public class Book extends Auditable {
 
         this.comments.forEach(c -> c.setPermissionsAndContentForUser(user));
 
-        // Remove user related data if the caller deosnt have the required level of access
+        // Remove user related data if the caller doesn't have the required level of access
         if (this.getCreatedBy() != null) {
             this.getCreatedBy().setPermissionsAndContentForUser(user);
         }
@@ -135,11 +143,11 @@ public class Book extends Auditable {
         }
     }
 
+    @Getter
     public enum Rating {
         // Note Jackson default deserialisation is 0 based - changing values
         // below would mean that that default serialisation / deserialisation
-        // would
-        // need overriding.
+        // would need overriding.
         TERRIBLE(0), POOR(1), OK(2), GOOD(3), GREAT(4);
 
         private final int ratingLevel;
@@ -157,8 +165,5 @@ public class Book extends Auditable {
             return null;
         }
 
-        public int getRatingLevel() {
-            return this.ratingLevel;
-        }
     }
 }

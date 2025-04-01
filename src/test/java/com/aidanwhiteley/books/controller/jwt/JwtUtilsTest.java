@@ -4,6 +4,7 @@ import com.aidanwhiteley.books.controller.BookControllerTestUtils;
 import com.aidanwhiteley.books.domain.User;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.security.SecurityException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -16,7 +17,7 @@ class JwtUtilsTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtUtilsTest.class);
 
     @Test
-    void testCreadAndReadGoodToken() {
+    void testCreateAndReadGoodToken() {
         JwtUtils jwt = new JwtUtils();
 
         jwt.setIssuer("A test issuer");
@@ -46,7 +47,7 @@ class JwtUtilsTest {
         StringBuilder tampered = new StringBuilder(token);
         int strlength = token.length();
         char aChar = token.charAt(strlength - 1);
-        tampered.setCharAt(strlength - 1, (char)( aChar - 1));
+        tampered.setCharAt(strlength - 1, (char) (aChar - 1));
         String tamperedString = tampered.toString();
 
         try {
@@ -54,7 +55,7 @@ class JwtUtilsTest {
             fail("Expected a SecurityException to be thrown " +
                     "- actually the deprecated SignatureException sub class if before V1.0 jsonwebtoken");
         } catch (JwtException je) {
-            assertTrue(je instanceof io.jsonwebtoken.security.SecurityException);
+            assertInstanceOf(SecurityException.class, je);
         }
 
     }

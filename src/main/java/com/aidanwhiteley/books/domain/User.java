@@ -45,7 +45,7 @@ public class User {
 
     @Length(max = 200)
     private String fullName;
-    
+
     private String email;
 
     @URL
@@ -88,7 +88,7 @@ public class User {
 
     public void addRole(Role role) {
 
-        // TODO - fully understand whythe move from Spring Boot 2.0.x to 2.1.x
+        // TODO - fully understand why the move from Spring Boot 2.0.x to 2.1.x
         // and the corresponding update to Spring Data meant that the "roles"
         // array in the Mongo Dcoument could end up being null when the member
         // variable is initialised to an empty list.
@@ -105,6 +105,7 @@ public class User {
     // A user gets the ROLE_USER as soon as they log on via an authentication provider.
     // It does not mean they are "trusted" users of the application. That only happens
     // when an admin gives them the ROLE_EDITOR role.
+    @Getter
     public enum Role {
         ROLE_USER(0),
         ROLE_EDITOR(1),
@@ -113,28 +114,24 @@ public class User {
 
         private static final Map<Integer, Role> map = new HashMap<>();
 
-        private final int roleNumber;
-
-        Role(int roleNumber) {
-            this.roleNumber = roleNumber;
-        }
-
-        public String getShortName() {
-            return this.toString().split("ROLE_")[1];
-        }
-
-        public int getRoleNumber() {
-            return this.roleNumber;
-        }
-
         static {
             for (Role aRole : Role.values()) {
                 map.put(aRole.getRoleNumber(), aRole);
             }
         }
 
+        private final int roleNumber;
+
+        Role(int roleNumber) {
+            this.roleNumber = roleNumber;
+        }
+
         public static Role getRole(int roleNumber) {
             return map.get(roleNumber);
+        }
+
+        public String getShortName() {
+            return this.toString().split("ROLE_")[1];
         }
 
     }
@@ -149,9 +146,9 @@ public class User {
         AuthenticationProvider(int provider) {
             this.provider = provider;
         }
-        
+
         public int getAuthProvider() {
-        	return this.provider;
+            return this.provider;
         }
     }
 }

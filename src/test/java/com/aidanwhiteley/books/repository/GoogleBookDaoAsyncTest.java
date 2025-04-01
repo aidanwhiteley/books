@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Profile;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 @Profile({"dev-mongo-java-server", "dev-mongo-java-server-no-auth", "dev-mongodb-no-auth", "dev-mongodb", "ci"})
-@AutoConfigureWireMock(port=0)
+@AutoConfigureWireMock(port = 0)
 class GoogleBookDaoAsyncTest extends IntegrationTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GoogleBookDaoAsyncTest.class);
@@ -30,7 +30,7 @@ class GoogleBookDaoAsyncTest extends IntegrationTest {
     void testBookUpdatedWithGoogleBookDetails() {
 
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Wiremock Mappings: " + WireMock.listAllStubMappings().getMappings());
+            LOGGER.debug("Wiremock Mappings: {}", WireMock.listAllStubMappings().getMappings());
         }
 
         Book book = BookRepositoryTest.createTestBook();
@@ -42,10 +42,6 @@ class GoogleBookDaoAsyncTest extends IntegrationTest {
 
         // TODO - fix such that following call will only take place after async update has completed.
         bookRepository.findById(savedBook.getId()).orElseThrow(() -> new IllegalStateException("Expected book not found"));
-
-        // Commented out until above to do is completed.
-        //assertNotNull(updatedBook.getGoogleBookDetails(),
-        //        "Google book details in Item object should not be null");
     }
 
 }

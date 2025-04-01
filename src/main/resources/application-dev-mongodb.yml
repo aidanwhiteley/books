@@ -1,7 +1,7 @@
 spring:
   data:
     mongodb:
-      uri: mongodb://localhost:27017/books-mongo-dev?safe=true&journal=true&w=majority&connectTimeoutMS=1001&wtimeoutMS=1000&serverSelectionTimeoutMS=10000
+      uri: mongodb://localhost:27017/books-mongo-dev?safe=true&journal=true&w=majority&connectTimeoutMS=1001&timeoutMS=1000&serverSelectionTimeoutMS=10000
   mail:
     port: 3026    # Must match the value specified in the SignUpNotificationServiceTest. Set hight to avoid problems on Unix envs
 
@@ -50,19 +50,11 @@ logging:
 books:
   autoAuthUser: false
 
-  client:
-    enableCORS: true      # Note - this value overriden in the IntegrationTest base test class
-    allowedCorsOrigin: http://localhost:9000
-    postLogonUrl: http://localhost:9000/
-    xsrfHeader: X-XSRF
-
   google:
     books:
       api:
         searchUrl: http://localhost:${wiremock.server.port}/books/v1/volumes?q=
         getByIdUrl: http://localhost:${wiremock.server.port}/books/v1/volumes/
-        countryCode: country=GB
-        maxResults: maxResults=30
         connectTimeout: 500
         readTimeout: 750
 

@@ -1,13 +1,13 @@
 {
-  "request" : {
-    "url" : "/books/v1/volumes?q=Design+Patterns&country=GB&maxResults=30",
-    "method" : "GET"
+  "request": {
+    "url": "/books/v1/volumes?q=+intitle:Design+Patterns+inauthor:Gamma&country=GB&maxResults=30",
+    "method": "GET"
   },
-  "response" : {
-    "status" : 200,
-    "bodyFileName" : "retrieveMultipleBooksFromGoogleBookApi1.json",
-    "headers" : {
-      "Content-Type" : "application/json"
+  "response": {
+    "status": 200,
+    "bodyFileName": "retrieveMultipleBooksFromGoogleBookApi1.json",
+    "headers": {
+      "Content-Type": "application/json"
     }
   }
 }

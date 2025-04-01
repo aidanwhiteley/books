@@ -8,17 +8,14 @@ import com.aidanwhiteley.books.repository.GoogleBooksDaoSync;
 import com.aidanwhiteley.books.util.JwtAuthenticationUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.security.Principal;
 import java.util.Collections;
 import java.util.Optional;
 
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
 class BookSecureControllerWithMocksTest {
@@ -26,11 +23,11 @@ class BookSecureControllerWithMocksTest {
     private static final String BOOK_ID_1 = "1234";
     private static final String GOOGLE_BOOK_ID_1 = "g1234";
     private static final String GOOGLE_BOOK_ID_2 = "g5678";
-    @MockBean
+    @MockitoBean
     private JwtAuthenticationUtils jwtAuthenticationUtils;
-    @MockBean
+    @MockitoBean
     private BookRepository bookRepository;
-    @MockBean
+    @MockitoBean
     private GoogleBooksDaoSync googleBooksDaoSync;
 
     @Test
@@ -55,7 +52,8 @@ class BookSecureControllerWithMocksTest {
         BookSecureController controller = new BookSecureController(bookRepository, googleBooksDaoSync, null, jwtAuthenticationUtils);
         controller.updateBook(book, principal);
 
-        verify(googleBooksDaoSync, times(1)).searchGoogleBooksByGoogleBookId(GOOGLE_BOOK_ID_1);
+        // Same googleBookId on existing book as the updated book
+        verify(googleBooksDaoSync, times(0)).searchGoogleBooksByGoogleBookId(GOOGLE_BOOK_ID_1);
         verify(bookRepository, times(1)).save(book);
     }
 

@@ -14,6 +14,8 @@ import com.aidanwhiteley.books.repository.GoogleBooksDaoAsync;
 import com.aidanwhiteley.books.repository.GoogleBooksDaoSync;
 import com.aidanwhiteley.books.repository.dtos.BooksByReader;
 import com.aidanwhiteley.books.util.JwtAuthenticationUtils;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,19 +25,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -75,6 +67,20 @@ public class BookSecureController {
         this.authUtils = jwtAuthenticationUtils;
     }
 
+    protected static Book mergeUpdatesOntoExistingBook(Book currentBookState, Book book) {
+
+        // Set the fields the owner / admin is allowed to manually update
+        currentBookState.setSummary(book.getSummary());
+        currentBookState.setGenre(book.getGenre());
+        currentBookState.setTitle(book.getTitle());
+        currentBookState.setSummary(book.getSummary());
+        currentBookState.setGoogleBookId(book.getGoogleBookId());
+        currentBookState.setRating(book.getRating());
+        currentBookState.setAuthor(book.getAuthor());
+
+        return currentBookState;
+    }
+
     @PostMapping(value = "/books")
     public ResponseEntity<Book> createBook(@Valid @RequestBody Book book, Principal principal) throws MalformedURLException, URISyntaxException {
 
@@ -87,7 +93,7 @@ public class BookSecureController {
 
             // If there were Google Book details specified, call an async method to
             // go and get the full details from Google and then update the Mongo document for the book
-            if (book.getGoogleBookId() != null && book.getGoogleBookId().length() > 0) {
+            if (book.getGoogleBookId() != null && !book.getGoogleBookId().isEmpty()) {
                 googleBooksDaoAsync.updateBookWithGoogleBookDetails(insertedBook, book.getGoogleBookId());
             }
 
@@ -100,7 +106,7 @@ public class BookSecureController {
             return ResponseEntity.created(location).build();
         } else {
             if (LOGGER.isErrorEnabled()) {
-                LOGGER.error("Couldnt create a book as user to own book not found! Principal: {}", logMessageDetaint(principal));
+                LOGGER.error("Couldn't create a book as user to own book not found! Principal: {}", logMessageDetaint(principal));
             }
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
@@ -112,23 +118,27 @@ public class BookSecureController {
         Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
         if (user.isPresent()) {
             Book currentBookState = bookRepository.findById(book.getId())
-                    .orElseThrow(() -> new IllegalArgumentException("Didnt find book to update"));
+                    .orElseThrow(() -> new IllegalArgumentException("Didn't find book to update"));
 
             if (currentBookState.isOwner(user.get()) || user.get().getRoles().contains(User.Role.ROLE_ADMIN)) {
+
                 boolean inputHasGoogleBookId = book.getGoogleBookId() != null && (!book.getGoogleBookId().isEmpty());
-                if ((inputHasGoogleBookId && currentBookState.getGoogleBookDetails() == null)
-                        ||
-                        (currentBookState.getGoogleBookId() != null && book.getGoogleBookId() != null &&
-                                (!currentBookState.getGoogleBookId().equalsIgnoreCase(book.getGoogleBookId())))
+                boolean currentBookHasGoogleBookId = currentBookState.getGoogleBookId() != null &&
+                        (!currentBookState.getGoogleBookId().isEmpty());
+
+                if (inputHasGoogleBookId && (currentBookHasGoogleBookId &&
+                        !currentBookState.getGoogleBookId().equalsIgnoreCase(book.getGoogleBookId()))
                 ) {
                     // Retrieve and update Google Book details synchronously
                     Item item = googleBooksDaoSync.searchGoogleBooksByGoogleBookId(book.getGoogleBookId());
-                    book.setGoogleBookDetails(item);
+                    currentBookState.setGoogleBookDetails(item);
                 } else if (book.getGoogleBookId() == null || book.getGoogleBookId().isEmpty()) {
-                    book.setGoogleBookDetails(null);
+                    currentBookState.setGoogleBookDetails(null);
                 }
 
-                bookRepository.save(book);
+                Book mergedBook = mergeUpdatesOntoExistingBook(currentBookState, book);
+
+                bookRepository.save(mergedBook);
                 return ResponseEntity.noContent().build();
             } else {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
@@ -144,7 +154,7 @@ public class BookSecureController {
         Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
         if (user.isPresent()) {
             Book currentBookState = bookRepository.findById(id)
-                    .orElseThrow(() -> new IllegalArgumentException("Couldnt find book to delete"));
+                    .orElseThrow(() -> new IllegalArgumentException("Couldn't find book to delete"));
 
             if (currentBookState.isOwner(user.get()) || user.get().getRoles().contains(User.Role.ROLE_ADMIN)) {
                 bookRepository.deleteById(id);
@@ -216,9 +226,9 @@ public class BookSecureController {
         return bookRepository.findByReaderOrderByCreatedDateTimeDesc(pageObj, reader);
     }
 
-    @GetMapping(value = {"/googlebooks", "googlebooks/"}, params = "title")
-    public BookSearchResult findGoogleBooksByTitle(@RequestParam String title) {
-        return googleBooksDaoSync.searchGoogBooksByTitle(title);
+    @GetMapping(value = {"/googlebooks", "googlebooks/"}, params = {"title", "author"})
+    public BookSearchResult findGoogleBooksByTitleAndAuthor(@RequestParam String title, @RequestParam String author) {
+        return googleBooksDaoSync.searchGoogleBooksByTitleAndAuthor(title, author);
     }
 
     @GetMapping(value = "/books/readers")

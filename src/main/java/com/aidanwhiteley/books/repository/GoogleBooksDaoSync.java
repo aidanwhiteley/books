@@ -2,6 +2,7 @@ package com.aidanwhiteley.books.repository;
 
 import com.aidanwhiteley.books.domain.googlebooks.BookSearchResult;
 import com.aidanwhiteley.books.domain.googlebooks.Item;
+import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -11,7 +12,6 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import jakarta.annotation.PostConstruct;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
@@ -35,22 +35,23 @@ public class GoogleBooksDaoSync {
         this.googleBooksRestTemplate = buildRestTemplate(restTemplateBuilder);
     }
 
-    public BookSearchResult searchGoogBooksByTitle(String title) {
+    public BookSearchResult searchGoogleBooksByTitleAndAuthor(String title, String author) {
 
-        String encodedTitle;
-        encodedTitle = URLEncoder.encode(title, StandardCharsets.UTF_8);
+        String encodedTitle = URLEncoder.encode(title, StandardCharsets.UTF_8);
+        String encodedAuthor = URLEncoder.encode(author, StandardCharsets.UTF_8);
 
-        googleBooksRestTemplate.getMessageConverters().add(0,
+        googleBooksRestTemplate.getMessageConverters().addFirst(
                 new StringHttpMessageConverter(StandardCharsets.UTF_8));
 
-        final String searchString = googleBooksApiConfig.getSearchUrl() + encodedTitle + "&" +
-                googleBooksApiConfig.getCountryCode() + "&" + googleBooksApiConfig.getMaxResults();
+        final String searchString = googleBooksApiConfig.getSearchUrl() + "+intitle:" + encodedTitle +
+                "+inauthor:" + encodedAuthor + "&" + googleBooksApiConfig.getCountryCode() +
+                "&" + googleBooksApiConfig.getMaxResults();
 
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("Google Books API called with API called: {}", searchString);
         }
 
-        BookSearchResult result =  googleBooksRestTemplate.getForObject(searchString, BookSearchResult.class);
+        BookSearchResult result = googleBooksRestTemplate.getForObject(searchString, BookSearchResult.class);
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Result of Google Books API call: {}", result);
@@ -61,7 +62,7 @@ public class GoogleBooksDaoSync {
 
     public Item searchGoogleBooksByGoogleBookId(String id) {
 
-        googleBooksRestTemplate.getMessageConverters().add(0, new StringHttpMessageConverter(StandardCharsets.UTF_8));
+        googleBooksRestTemplate.getMessageConverters().addFirst(new StringHttpMessageConverter(StandardCharsets.UTF_8));
         try {
             return googleBooksRestTemplate.getForObject(googleBooksApiConfig.getGetByIdUrl() + id + "/?" +
                     googleBooksApiConfig.getCountryCode(), Item.class);
@@ -77,7 +78,7 @@ public class GoogleBooksDaoSync {
 
     private RestTemplate buildRestTemplate(RestTemplateBuilder builder) {
 
-        return builder.setConnectTimeout(Duration.ofMillis(googleBooksApiConfig.getConnectTimeout())).
-                setReadTimeout(Duration.ofMillis(googleBooksApiConfig.getReadTimeout())).build();
+        return builder.connectTimeout(Duration.ofMillis(googleBooksApiConfig.getConnectTimeout())).
+                readTimeout(Duration.ofMillis(googleBooksApiConfig.getReadTimeout())).build();
     }
 }

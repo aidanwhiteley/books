@@ -1,14 +1,14 @@
 {
-  "request" : {
-    "url" : "/books/v1/volumes/slowbookid/?country=GB",
-    "method" : "GET"
+  "request": {
+    "url": "/books/v1/volumes/slowbookid/?country=GB",
+    "method": "GET"
   },
-  "response" : {
-    "status" : 200,
-    "bodyFileName" : "retrieveOneBookFromGoogleBookApi1.json",
+  "response": {
+    "status": 200,
+    "bodyFileName": "retrieveOneBookFromGoogleBookApi1.json",
     "fixedDelayMilliseconds": 2000,
-    "headers" : {
-      "Content-Type" : "application/json"
+    "headers": {
+      "Content-Type": "application/json"
     }
   }
 }

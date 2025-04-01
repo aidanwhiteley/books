@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en-GB" th:replace="~{layout :: layout(~{::title}, ~{::#detail}, false)}"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Cloudy Book Club - Help and T&amp;Cs</title>
+    <meta charset="utf-8">
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link href="../static/css/books-app.css" rel="stylesheet" th:href="@{/css/books-app.css}">
+</head>
+<body>
+
+<div id="detail" th:fragment="cloudy-privacy">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="privacy">
+
+                    <p class="lead">
+                        Here's the Privacy Policy for The Cloudy Book Club.
+                    </p>
+
+                    <h2>Data and The Cloudy Book Club</h2>
+
+                    <p>
+                        The Cloudy Book Club maintains and uses the following data
+                    </p>
+
+                    <ul>
+                        <li>
+                            <p>
+                                <b>Book review data</b> entered by users of the application (including book title, genre, rating and
+                                summary review).
+                            </p>
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th>Data item</th>
+                                    <th>Processing</th>
+                                    <th>Processing purpose</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>Book title</td>
+                                    <td>Stored</td>
+                                    <td>To be able to display the title (or name) of the book</td>
+                                </tr>
+                                <tr>
+                                    <td>Genre</td>
+                                    <td>Stored</td>
+                                    <td>To be able to display the genre of the book (e.g. novel, autobiography etc)</td>
+                                </tr>
+                                <tr>
+                                    <td>Rating</td>
+                                    <td>Stored</td>
+                                    <td>To be able rate the book as either great, good, ok, poor or terrible</td>
+                                </tr>
+                                <tr>
+                                    <td>Summary review</td>
+                                    <td>Stored</td>
+                                    <td>To be able to see what the reviewer thought of the book. Users are asked to avoid "spoilers" (i.e.
+                                        giving away key details of a novel's plot)</td>
+                                </tr>
+                                <tr>
+                                    <td>Google Books Data</td>
+                                    <td>Stored</td>
+                                    <td>To be able &quot;point&quot; to a selected Google Books entry enabling the display of an
+                                        appropriate book cover
+                                        image, Google Books book review and
+                                        (sometimes) a preview of the book on Google Books.</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <p><b>Requesting data deletion</b> The application developer is (in GDPR terms) both the "data controller"
+                                and "dataprocessor".
+                            </p>
+                            <p>
+                                If a user has created a book review then they have the ability to delete that book review at any time.
+                            </p>
+                            <p>
+                                If a user wants to request the amendment or deletion of any other book data in The Cloudy Book Club,
+                                please email <a href="mailto:support@cloudybookclub.com?subject=Book review data deletion request">
+                                support@cloudybookclub.com
+                            </a> to contact</a> the data controller and we'll agree what needs to be edited or entirely deleted.
+                            </p>
+                        </li>
+
+                        <li>
+                            <p>
+                                <b>Comments data</b> on book reviews on The Cloudy Book Club - logged on users with the necessary
+                                permissions can comment on any other users book reviews.
+                            </p>
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th>Data item</th>
+                                    <th>Processing</th>
+                                    <th>Processing purpose</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>Comment</td>
+                                    <td>Stored</td>
+                                    <td>To be able to see a user's comments on a book review</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <p>
+                                <b>Requesting data deletion</b> A user can always delete any comment that they have made on any book
+                                review.
+                                However, the comment will be replaced by <small>&quot;Comment deleted by __name__&quot;</small>
+                            </p>
+                            <p>
+                                If a user wants to request the amendment or complete deletion of any comment data in
+                                The Cloudy Book Club,
+                                please email
+                                <a href="mailto:support@cloudybookclub.com?subject=Book comment data deletion request">
+                                    contact
+                                </a>the data controller and we'll agree what needs to be edited or entirely deleted.
+                            </p>
+                        </li>
+
+                        <li>
+                            <p>
+                                <b>Logon details</b> when logging on to The Cloudy Book Club via Google or Facebook.
+                            </p>
+                            <p>
+                                Friends of the application developer are
+                                invited to log on to The Cloudy Book Club -
+                                after which the "data processor" may add permissions to their account such that book reviews can be added or comments made on existing book reviews.
+                                There is nothing to stop anyone else logging on to the application but unless and until the "data
+                                processor" adds
+                                permissions to that logon's account, then
+                                logging on gets a user no additional access.
+                            </p>
+                            <p>
+                                When you log on to The Cloudy Book Club, the application stores the following information (mostly
+                                provided by the Authorisation Server i.e. Google or Facebook):
+                            </p>
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th>Data item</th>
+                                    <th>Processing</th>
+                                    <th>Processing purpose</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>First name</td>
+                                    <td>Stored</td>
+                                    <td>To be able to display a friendly greeting when logging on (and to confirm your identity)</td>
+                                </tr>
+                                <tr>
+                                    <td>Last name</td>
+                                    <td>Stored</td>
+                                    <td>To be able to display a friendly greeting when logging on (and to confirm your identity)</td>
+                                </tr>
+                                <tr>
+                                    <td>Email address</td>
+                                    <td>Stored</td>
+                                    <td>To support communication to users if any change to The Cloudy Book Club will affect their usage of it
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>The "provider key" on the authorisation server</td>
+                                    <td>Stored</td>
+                                    <td>To enable successful completion of logon processing</td>
+                                </tr>
+                                <tr>
+                                    <td>Authorisation server used</td>
+                                    <td>Stored</td>
+                                    <td>To show the user whether they have logged on via Google or Facebook</td>
+                                </tr>
+                                <tr>
+                                    <td>URL to user's avatar (if any)</td>
+                                    <td>Stored</td>
+                                    <td>To be able to display an avatar when logging on (and to confirm your identity) and to display along side book reviews and comments</td>
+                                </tr>
+                                <tr>
+                                    <td>Last logon dates</td>
+                                    <td>Stored</td>
+                                    <td>So the user can see the last logon date/time from their account (to have confidence no-one else
+                                        has used
+                                        their account)</td>
+                                </tr>
+                                <tr>
+                                    <td>User's access level</td>
+                                    <td>Set by the administrator and stored</td>
+                                    <td>So that a user who has been given elevated access rights can do more on The Cloudy Book Club
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <p>
+                                <b>Requesting data deletion</b> If you no longer want The Cloudy Book Club to store the above data for
+                                you, please email
+                                <a href="mailto:support@cloudybookclub.com?subject=The Cloudy Book Club - data deletion request">
+                                    support@cloudybookclub.com
+                                </a> and we'll delete your data.
+                            </p>
+                            <p>
+                                If you want a copy of the above data that The Cloudy Book Club holds for you, please
+                                send a <a href="https://ico.org.uk/for-the-public/getting-copies-of-your-information-subject-access-request/">subject access request</a>
+                                to
+                                <a href="mailto:support@cloudybookclub.com?subject=The Cloudy Book Club - copy of my data">
+                                    support@cloudybookclub.com
+                                </a> the data controller</a>.
+                            </p>
+                        </li>
+                    </ul>
+                    <h2>Cookies and The Cloudy Book Club</h2>
+                    <p>The Cloudy Book Club makes minimal use of cookies (and no use of local or session storage).
+                        If you choose to logon to the application a couple of cookies will be dropped by the application
+                    </p>
+                    <ul>
+                        <li>A cookie named "CLOUDY-JWT" maintains a logon token for the user during their current logon session.
+                            This is a functional cookie - logged in access to the application won't work without it</li>
+                        <li>A cookie named "XSRF-TOKEN" is used to protect the user against a type of hacking
+                            called cross site request forgery. This is a functional cookie - updates to the application data won't work without it
+                        </li>
+                        <li>
+                            The current version of The Cloudy Book Club makes no use of any user tracking / tracking cookies - if you
+                            find any, please let me know!
+                        </li>
+                    </ul>
+                    <h2>APIs and The Cloudy Book Club</h2>
+                    <p>The Cloudy Book Club makes use of publicly available APIs. These include:</p>
+                    <ul>
+                        <li>The <a href="https://developers.google.com/books/docs/overview">Google Books API</a> -
+                            please see the <a href="https://policies.google.com/privacy">Google Privacy Policy</a></li>
+                    </ul>
+
+                    <hr />
+
+                    <h2>Contacting us</h2>
+                    <p>If you have any questions, concerns, or complaints regarding this privacy policy, we encourage you to contact us
+                        using the details below:</p>
+
+                    <p>
+                        <a target="_blank" rel="nofollow" href="mailto:support@cloudybookclub.com?subject=Enquiry">
+                            support@cloudybookclub.com
+                        </a>
+                    </p>
+
+                    <p>This document was last updated on March 28th, 2025</p>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

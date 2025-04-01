@@ -72,11 +72,11 @@ class RestApiExceptionHandlerTest extends IntegrationTest {
         RestApiExceptionHandler raeh = new RestApiExceptionHandler();
         final String errMsg = "Its all gone Pete Tong";
         LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
-        context.getLogger(RestApiExceptionHandler .class).setLevel(Level.valueOf("OFF"));
+        context.getLogger(RestApiExceptionHandler.class).setLevel(Level.valueOf("OFF"));
         ApiExceptionData aed = raeh.handleDefaultExceptions(new RuntimeException(errMsg), null);
-        context.getLogger(RestApiExceptionHandler .class).setLevel(Level.valueOf("ON"));
-        // We dont want to accidentally expose any internal implementation details so
-        // we dont want the text of the unexpected exception sent to the client.
+        context.getLogger(RestApiExceptionHandler.class).setLevel(Level.valueOf("ON"));
+        // We don't want to accidentally expose any internal implementation details so
+        // we don't want the text of the unexpected exception sent to the client.
         assertFalse(aed.getMessage().contains(errMsg));
     }
 

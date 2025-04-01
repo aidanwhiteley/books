@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en-GB" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>The Footer</title>
+    <meta charset="utf-8">
+    <link href="../../static/css/bootstrap.min.css" rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link href="../../static/css/books-app.css" rel="stylesheet" th:href="@{/css/books-app.css}">
+</head>
+<body>
+
+<footer id="footer" th:fragment="cloudy-footer">
+    <div class="container">
+        <div class="row">
+            <div class="footer-top-area">
+                <div class="row d-flex flex-wrap justify-content-between">
+                    <div class="col-lg-4 col-sm-6 pb-3">
+                        <div class="footer-menu">
+                            <a class="d-none d-md-block" href="/">
+                                <img alt="logo" src="../../static/images/book-club-logo.jpeg"
+                                     th:src="@{/images/book-club-logo.jpeg}">
+                            </a>
+                            <p>
+                                <b>The Cloudy Book Club</b> - <span class="fst-italic">reminding me of what books I have read recently so I don't buy them again!</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-sm-6 pb-3">
+                        <div class="footer-menu">
+                            <h5 class="widget-title pb-2">Usual stuff</h5>
+                            <ul class="menu-list list-unstyled">
+                                <li class="menu-item pb-2">
+                                    <a href="/statistics">Book review stats</a>
+                                </li>
+                                <li class="menu-item pb-2">
+                                    <a href="/tandcs">Help and T&amp;Cs</a>
+                                </li>
+                                <li class="menu-item pb-2">
+                                    <a href="/privacy">Privacy</a>
+                                </li>
+                                <li class="menu-item pb-2">
+                                    <a href="/feeds/rss">RSS feed</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-6 pb-3">
+                        <div class="footer-menu">
+                            <h5 class="widget-title pb-2">Software</h5>
+                            <ul class="menu-list list-unstyled ">
+                                <li class="menu-item pb-2">
+                                    <a href="https://github.com/aidanwhiteley/books">Code - server side</a>
+                                </li>
+                                <li class="menu-item pb-2">
+                                    <a href="https://github.com/aidanwhiteley/books/tree/develop/src/main/resources/static/templates">Code - front end (HTMX version)</a>
+                                </li>
+                                <li class="menu-item pb-2">
+                                    <a href="https://github.com/aidanwhiteley/books-react">Code - front end (React version)</a>
+                                </li>
+                                <li class="menu-item pb-2">
+                                    <a href="/swagger-ui/index.html">API - read only</a>
+                                </li>
+                                <li class="github-stars">
+                                <span>
+                                  <span></span>
+                                </span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-sm-6 pb-3">
+                        <div class="footer-menu contact-item">
+                            <h5 class="widget-title pb-2">Contact Us</h5>
+                            <p>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-envelope" viewBox="0 0 16 16">
+                                    <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1zm13 2.383-4.708 2.825L15 11.105zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741M1 11.105l4.708-2.897L1 5.383z"/>
+                                </svg>
+                                Do you have any queries or suggestions?
+                                <a href="mailto:support@cloudybookclub.com?subject=The Cloudy Book Club - contact from website">
+                                    support@cloudybookclub.com
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+<div id="footer-bottom">
+    <div class="container">
+        <div class="row d-flex flex-wrap justify-content-between">
+            <div class="col-md-4 col-sm-6"></div>
+            <div class="col-md-4 col-sm-6">
+                <div class="copyright">
+                    <p class="text-center">© Copyright 2024 <a href="https://aidanwhiteley.com/">Aidan Whiteley</a>.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-6"></div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

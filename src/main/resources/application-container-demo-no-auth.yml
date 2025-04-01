@@ -2,7 +2,7 @@ spring:
   data:
     mongodb:
       # Username, password and MongoDB database name are expected to be passed in as environment variables
-      uri: mongodb://${MONGO_INITDB_APP_USERNAME}:${MONGO_INITDB_APP_PASSWORD}@data-tier-mongo:27017/${MONGO_INITDB_DATABASE}?safe=true&journal=true&w=majority&connectTimeoutMS=1001&wtimeoutMS=1000&serverSelectionTimeoutMS=10000
+      uri: mongodb://${MONGO_INITDB_APP_USERNAME}:${MONGO_INITDB_APP_PASSWORD}@data-tier-mongo:27017/${MONGO_INITDB_DATABASE}?safe=true&journal=true&w=majority&connectTimeoutMS=1001&timeoutMS=1000&serverSelectionTimeoutMS=10000
 
   security:
     oauth2:
@@ -64,9 +64,6 @@ books:
   reload:
     development:
       data: ${JAVA_BOOKS_RELOAD_DEVELOPMENT_DATA}
-
-  client:
-    enableCORS: false
 
   users:
     registrationAdminEmail:

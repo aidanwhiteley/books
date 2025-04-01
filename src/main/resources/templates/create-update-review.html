@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en-GB"
+      th:replace="~{layout :: layout(~{::title}, ~{::#detail}, false)}" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Cloudy Book Club - Write a book review</title>
+    <meta charset="utf-8">
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link href="../static/css/books-app.css" rel="stylesheet" th:href="@{/css/books-app.css}">
+</head>
+
+<body>
+
+<div id="detail" th:fragment="cloudy-book-review-form" >
+
+    <div class="container">
+        <h4 th:if="${iscreate}">Enter your review of a book you have read</h4>
+        <h4 th:if="${isupdate}">Update book review</h4>
+
+        <form th:if="${user != null and (highestRole == 'EDITOR' or highestRole == 'ADMIN')}"
+              th:action="@{/dummy}" class="row g-3" id="createreviewform" method="post" novalidate
+              th:hx-post="@{${actionUrl}}" hx-target="#detail" th:object="${bookForm}">
+
+            <div class="col-md-6">
+                <label for="title">Book Title</label>
+                <input class="form-control" id="title" name="title" placeholder="Enter the book title"
+                       th:errorclass="is-invalid"
+                       th:field="*{title}" type="text"/>
+                <p class="invalid-feedback" th:if="${#fields.hasErrors('title')}"
+                   th:text="${#strings.listJoin(#fields.errors('title'), ', ')}"></p>
+            </div>
+
+            <div class="col-md-6">
+                <label for="title">Author</label>
+                <input class="form-control" hx-get="/googlebooks?index=0" hx-include="#title"
+                       hx-target="#googleBookCandidates"
+                       hx-target-error="#detail" hx-trigger="focusout" id="author"
+                       name="author" placeholder="Enter the author's name" th:errorclass="is-invalid"
+                       th:field="*{author}" type="text"/>
+                <p class="invalid-feedback" th:if="${#fields.hasErrors('author')}"
+                   th:text="${#strings.listJoin(#fields.errors('author'), ', ')}"></p>
+            </div>
+
+            <div class="col-md-4">
+                <label for="rating">Your Rating Of The Book</label>
+                <select class="form-control" id="rating" th:errorclass="is-invalid" th:field="*{rating}">
+                    <option th:text="'Select a rating...'" th:value="'NO_VALUE_SELECTED'"></option>
+                    <option th:text="Great" th:value="'GREAT'"></option>
+                    <option th:text="Good" th:value="'GOOD'"></option>
+                    <option th:text="OK" th:value="'OK'"></option>
+                    <option th:text="Poor" th:value="'POOR'"></option>
+                    <option th:text="Terrible" th:value="'TERRIBLE'"></option>
+                </select>
+                <p class="invalid-feedback" th:if="${#fields.hasErrors('rating')}"
+                   th:text="${#strings.listJoin(#fields.errors('rating'), ', ')}"></p>
+            </div>
+
+            <div class="col-md-8">
+                <label for="genre">Genre</label>
+                <select autocomplete="off" class="form-control tom-select-control-create" id="genre" name="genre"
+                        placeholder="Start typing a genre..." th:errorclass="is-invalid" th:field="*{genre}">
+                    <option value="">Start typing a genre...</option>
+                    <option th:each="genre : ${genres}" th:text="${genre.genre + ' - ' + genre.countOfBooks + ' books'}"
+                            th:value="${genre.genre}">Novel - 20 books
+                    </option>
+                </select>
+                <p class="invalid-feedback" th:if="${#fields.hasErrors('genre')}"
+                   th:text="${#strings.listJoin(#fields.errors('genre'), ', ')}"></p>
+            </div>
+
+            <div class="col-md-12">
+                <label for="summary">Your review / summary</label>
+                <textarea aria-describedby="summaryHelpBlock" class="form-control" id="summary" name="summary"
+                          placeholder="What did you think of the book?" rows="8"
+                          th:errorclass="is-invalid" th:field="*{summary}"></textarea>
+                <p class="invalid-feedback" th:errors="*{summary}" th:if="${#fields.hasErrors('summary')}">Invalid
+                    summary</p>
+                <small class="form-text" id="summaryHelpBlock">
+                    Enter anything you like that may help someone else to decide whether the book is
+                    worth reading or not.
+                    Probably best not to say what the ending is!
+                    HTML formatting is not supported.<br/>
+                    Remember: all entries are publicly visible.
+                </small>
+            </div>
+
+            <input id="bookId" name="bookId" th:value="*{bookId}" type="hidden">
+
+            <div class="row mt-5" id="googleBookCandidates" th:fragment="cloudy-google-book-candidates">
+
+                <input id="googleBookId" name="googleBookId" th:value="${googleBookId}" type="hidden">
+                <input id="index" name="index" th:value="${index}" type="hidden">
+
+                <div th:if="${(googleBookSearchResult != null) and (googleBookSearchResult.item == null)}">
+                    <div class="alert alert-warning" role="alert">
+                        We didn't find any matching books on Google Books. This may be correct but please do
+                        check what is entered in the <b>Book Title</b> and <b>Author</b> fields above.
+                    </div>
+                </div>
+
+                <div class="col-md-8"
+                     th:if="${googleBookSearchResult != null and googleBookSearchResult.item  != null}">
+                    <h5 th:if="${googleBookSearchResult.item.volumeInfo}"
+                        th:text="${googleBookSearchResult.item.volumeInfo.title}">A book title</h5>
+                    <p>
+                        <img alt="A book cover from Google"
+                             class="rounded float-start googleBookImageImport"
+                             src="https://books.google.com/books/content?id=VDRePgAACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
+                             th:if="${googleBookSearchResult.item.volumeInfo?.imageLinks?.thumbnail}"
+                             th:src="${#strings.replace(googleBookSearchResult.item.volumeInfo.imageLinks.thumbnail, 'http://', 'https://')}"/>
+                        <span hx-disable th:utext="${googleBookSearchResult.item.volumeInfo.description}">Google books description</span>
+                    </p>
+                    <p th:if="${googleBookSearchResult.item.volumeInfo.authors}">
+                        By: <span th:text="${#strings.arrayJoin(googleBookSearchResult.item.volumeInfo.authors, ',')}">An author</span>
+                    </p>
+                </div>
+
+                <div class="col-md-4" th:if="${googleBookSearchResult != null and googleBookSearchResult.item != null}">
+                    <div class="googleBookText card">
+                        <h5>Have we found the right book?</h5>
+                        <p>Does this look like the book you've read? If not, please try the scroll buttons to see
+                            alternatives
+                            and then click the check box if you find a good match.</p>
+                        <p>If none of the options look like a good match, please untick the check box.</p>
+
+                        <div class="bookMatchControl d-flex align-items-center justify-content-center">
+                            <input aria-label="Click if book matches" class="form-check-input" id="checkBoxBookMatch"
+                                   th:checked="true"
+                                   type="checkbox"/>
+                        </div>
+
+                        <div aria-label="Toolbar with button groups" class="btn-toolbar justify-content-between"
+                             role="toolbar">
+                            <button aria-label="Previous" class="btn btn-outline-primary previous-button"
+                                    hx-swap="outerHTML"
+                                    hx-target="#googleBookCandidates" hx-target-error="#detail"
+                                    th:disabled="${googleBookSearchResult.hasPrevious == false}"
+                                    th:hx-get="@{/googlebooks(index=${index - 1},title=${booktitle},author=${author})}"
+                                    type="button">&laquo;
+                                Previous
+                            </button>
+                            <button aria-label="Next" class="btn btn-outline-primary next-button"
+                                    hx-swap="outerHTML"
+                                    hx-target="#googleBookCandidates" hx-target-error="#detail"
+                                    th:disabled="${googleBookSearchResult.hasMore == false}"
+                                    th:hx-get="@{/googlebooks(index=${index + 1},title=${booktitle},author=${author})}"
+                                    type="button">Next &raquo;
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="text-center">
+                <button class="btn btn btn-outline-primary btn-wd me-3" th:if="${iscreate}" type="submit">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-save" viewBox="0 0 16 16">
+                        <path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1z"/>
+                    </svg>
+                    Save book review
+                </button>
+                <button class="btn btn btn-outline-primary btn-wd me-3" th:if="${isupdate}" type="submit">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+                        <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325"/>
+                    </svg>
+                    Update book review
+                </button>
+                <a href="/">
+                    <button class="btn btn btn-outline-secondary btn-wd" type="button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-escape" viewBox="0 0 16 16">
+                            <path d="M8.538 1.02a.5.5 0 1 0-.076.998 6 6 0 1 1-6.445 6.444.5.5 0 0 0-.997.076A7 7 0 1 0 8.538 1.02"/>
+                            <path d="M7.096 7.828a.5.5 0 0 0 .707-.707L2.707 2.025h2.768a.5.5 0 1 0 0-1H1.5a.5.5 0 0 0-.5.5V5.5a.5.5 0 0 0 1 0V2.732z"/>
+                        </svg>
+                        Cancel
+                    </button>
+                </a>
+            </div>
+
+        </form>
+
+        <div th:if="${user == null or (highestRole != 'EDITOR' and highestRole != 'ADMIN')}"
+             class="alert alert-warning" role="alert">
+            <p>Sorry - you do not have permission to create or edit a book review. Did you forget to logon?</p>
+        </div>
+    </div>
+
+</div>
+
+</body>
+
+</html>

@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 // See https://github.com/spring-projects/spring-boot/issues/19788 for why we use the syntax below to set the active profile
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        properties = {"spring.profiles.active=dev-mongo-java-server-no-auth", "books.client.enableCORS=false"})
+        properties = {"spring.profiles.active=dev-mongo-java-server-no-auth"})
 class UserControllerNoAuthTest extends IntegrationTest {
 
     @Autowired

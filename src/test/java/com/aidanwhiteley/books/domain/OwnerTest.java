@@ -9,53 +9,51 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 class OwnerTest {
 
-	@Test
-	void testBoilerPlateMethodsForCoverage() {
-		Owner owner1 = new Owner("serviceId", "firstname", "lastName", "fullName", "example@example.com", "a link",
-				"a picture", AuthenticationProvider.FACEBOOK);
-		Owner owner2 = new Owner("serviceId", "firstname", "lastName", "fullName", "example@example.com", "a link",
-				"a picture", AuthenticationProvider.FACEBOOK);
-		
-		assertEquals(owner1, owner2);
-		assertEquals(owner1.hashCode(), owner2.hashCode());
-		assertEquals(owner1.toString(), owner2.toString());
-	}
+    @Test
+    void testBoilerPlateMethodsForCoverage() {
+        Owner owner1 = new Owner("serviceId", "firstname", "lastName", "fullName", "example@example.com", "a link",
+                "a picture", AuthenticationProvider.FACEBOOK);
+        Owner owner2 = new Owner("serviceId", "firstname", "lastName", "fullName", "example@example.com", "a link",
+                "a picture", AuthenticationProvider.FACEBOOK);
 
-	@Test
-	void testForInvalidRole() {
-		User aUser = new User();
-		aUser.setRoles(Collections.singletonList(User.Role.ROLE_ACTUATOR));
-		Comment aComment = new Comment();
+        assertEquals(owner1, owner2);
+        assertEquals(owner1.hashCode(), owner2.hashCode());
+        assertEquals(owner1.toString(), owner2.toString());
+    }
 
-		LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
-		context.getLogger(Comment.class).setLevel(Level.valueOf("OFF"));
+    @Test
+    void testForInvalidRole() {
+        User aUser = new User();
+        aUser.setRoles(Collections.singletonList(User.Role.ROLE_ACTUATOR));
+        Comment aComment = new Comment();
 
-		Assertions.assertThrows(IllegalStateException.class, () -> aComment.setPermissionsAndContentForUser(aUser));
+        LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+        context.getLogger(Comment.class).setLevel(Level.valueOf("OFF"));
 
-		context.getLogger(Comment.class).setLevel(Level.valueOf("OFF"));
-	}
+        Assertions.assertThrows(IllegalStateException.class, () -> aComment.setPermissionsAndContentForUser(aUser));
 
-	@Test
-	void testEditorCanDeleteOwnComment() {
-		User aUser = new User();
-		aUser.setRoles(Collections.singletonList(User.Role.ROLE_EDITOR));
-		aUser.setAuthenticationServiceId("anAuthServId");
-		aUser.setAuthProvider(AuthenticationProvider.GOOGLE);
+        context.getLogger(Comment.class).setLevel(Level.valueOf("OFF"));
+    }
 
-		Owner owner = new Owner(aUser);
-		Comment aComment = new Comment("Some comment", owner);
-		aComment.setPermissionsAndContentForUser(aUser);
-		assertTrue(aComment.isAllowDelete());
+    @Test
+    void testEditorCanDeleteOwnComment() {
+        User aUser = new User();
+        aUser.setRoles(Collections.singletonList(User.Role.ROLE_EDITOR));
+        aUser.setAuthenticationServiceId("anAuthServId");
+        aUser.setAuthProvider(AuthenticationProvider.GOOGLE);
 
-		aUser.setRoles(Collections.singletonList(User.Role.ROLE_USER));
-		aComment.setPermissionsAndContentForUser(aUser);
-		assertFalse(aComment.isAllowDelete());
-	}
+        Owner owner = new Owner(aUser);
+        Comment aComment = new Comment("Some comment", owner);
+        aComment.setPermissionsAndContentForUser(aUser);
+        assertTrue(aComment.isAllowDelete());
+
+        aUser.setRoles(Collections.singletonList(User.Role.ROLE_USER));
+        aComment.setPermissionsAndContentForUser(aUser);
+        assertFalse(aComment.isAllowDelete());
+    }
 
 }

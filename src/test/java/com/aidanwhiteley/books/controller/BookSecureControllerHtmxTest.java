@@ -1,5 +1,7 @@
 package com.aidanwhiteley.books.controller;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.LoggerContext;
 import com.aidanwhiteley.books.controller.exceptions.NotFoundException;
 import com.aidanwhiteley.books.controller.jwt.JwtAuthenticationService;
 import com.aidanwhiteley.books.controller.jwt.JwtUtils;
@@ -9,6 +11,7 @@ import com.aidanwhiteley.books.repository.BookRepositoryTest;
 import jakarta.servlet.http.Cookie;
 import org.jsoup.Jsoup;
 import org.junit.jupiter.api.Test;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -92,6 +95,25 @@ public class BookSecureControllerHtmxTest {
     }
 
     @Test
+    void testUpdateNonExistentBookReview() throws Exception {
+
+        // Don't want test logs filled with expected exceptions. If the test fails, comment this out to debug!
+        LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+        context.getLogger(BookControllerHtmxExceptionHandling.class).setLevel(Level.valueOf("OFF"));
+
+        String token = jwtUtils.createTokenForUser(getEditorTestUser());
+        Cookie cookie = new Cookie(JwtAuthenticationService.JWT_COOKIE_NAME, token);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/updatereview/DOESNT-EXIST")
+                        .cookie(cookie))
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentTypeCompatibleWith("text/html"))
+                .andReturn();
+
+        context.getLogger(BookControllerHtmxExceptionHandling.class).setLevel(Level.valueOf("ON"));
+    }
+
+    @Test
     void testEditorCanCreateBookReview() throws Exception {
 
         String token = jwtUtils.createTokenForUser(getEditorTestUser());
@@ -124,6 +146,41 @@ public class BookSecureControllerHtmxTest {
         Book savedBook = bookRepository.findById(bookId).orElseThrow(() -> new NotFoundException("Book id " + bookId + " not found"));
         assertEquals(title, savedBook.getTitle());
         assertEquals(author, savedBook.getAuthor());
+    }
+
+    @Test
+    void testEditorCannotUpdateAnotherEditorsBookReview() throws Exception {
+
+        // Don't want test logs filled with expected exceptions. If the test fails, comment this out to debug!
+        LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+        context.getLogger(BookControllerHtmxExceptionHandling.class).setLevel(Level.valueOf("OFF"));
+
+        Book aBook = bookRepository.insert(BookRepositoryTest.createTestBook());
+
+        String token = jwtUtils.createTokenForUser(getADifferentEditorTestUser());
+        Cookie cookie = new Cookie(JwtAuthenticationService.JWT_COOKIE_NAME, token);
+
+        final String title = "Ask An Astronaut";
+        final String author = "Tim Peake";
+        final String updatedReviewSummary = "Here is an updated review";
+        MockHttpServletRequestBuilder createReview = post("/updatereview")
+                .cookie(cookie)
+                .with(csrf())
+                .param("bookId", ASK_AN_ASTRONAUT_EXISTING_BOOK_ID)
+                .param("title", title)
+                .param("author", author)
+                .param("genre", "Autobiography")
+                .param("summary", updatedReviewSummary)
+                .param("rating", "GREAT")
+                .param("googleBookId", "m141DwAAQBAJ")
+                .param("index", "0");
+
+        mockMvc.perform(createReview)
+                .andExpect(status().isUnauthorized())
+                .andExpect(content().contentTypeCompatibleWith("text/html"))
+                .andReturn();
+
+        context.getLogger(BookControllerHtmxExceptionHandling.class).setLevel(Level.valueOf("ON"));
     }
 
     @Test

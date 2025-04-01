@@ -22,9 +22,11 @@ public class BookControllerTestUtils {
     // into the mongo-java-server / Mongo at the start of the tests
     public static final String USER_WITH_ALL_ROLES_FULL_NAME = "Joe Dimagio";
     public static final String USER_WITH_EDITOR_ROLE_FULL_NAME = "Babe Ruth";
+    public static final String ANOTHER_USER_WITH_EDITOR_ROLE_FULL_NAME = "Brian Lara";
     public static final String DUMMY_EMAIL = "joe.dimagio@gmail.com";
     private static final String USER_WITH_ALL_ROLES = "107641999401234521888";
     private static final String USER_WITH_EDITOR_ROLE = "1632142143412347";
+    private static final String ANOTHER_USER_WITH_EDITOR_ROLE = "111222333444555666";
     private static final User.AuthenticationProvider PROVIDER_ALL_ROLES_USER = User.AuthenticationProvider.GOOGLE;
     private static final User.AuthenticationProvider PROVIDER_EDITOR_USER = User.AuthenticationProvider.FACEBOOK;
 
@@ -49,6 +51,17 @@ public class BookControllerTestUtils {
         User user = new User();
         user.setFullName(USER_WITH_EDITOR_ROLE_FULL_NAME);
         user.setAuthenticationServiceId(USER_WITH_EDITOR_ROLE);
+        user.setAuthProvider(PROVIDER_EDITOR_USER);
+        user.addRole(User.Role.ROLE_USER);
+        user.addRole(User.Role.ROLE_EDITOR);
+
+        return user;
+    }
+
+    public static User getADifferentEditorTestUser() {
+        User user = new User();
+        user.setFullName(ANOTHER_USER_WITH_EDITOR_ROLE_FULL_NAME);
+        user.setAuthenticationServiceId(ANOTHER_USER_WITH_EDITOR_ROLE);
         user.setAuthProvider(PROVIDER_EDITOR_USER);
         user.addRole(User.Role.ROLE_USER);
         user.addRole(User.Role.ROLE_EDITOR);

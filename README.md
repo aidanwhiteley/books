@@ -156,8 +156,6 @@ You must then make the client-id and client-secret available to the running code
 There are "placeholders" for these in /src/main/resources/application.yml i.e. replace the existing
 "NotInSCMx" (Not In Source Code Management!) values with your own.
 
-You should also set the redirect-uri to an appropriate value (and one that you have configured on Google and/or Facebook).
-
 ### Sample data
 There is some sample data provided to make initial understanding of the functionality a bit easier.
 It is in the /src/main/resources/sample_data. See the #README.txt in that directory.

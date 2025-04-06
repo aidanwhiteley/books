@@ -70,9 +70,6 @@ books:
     development:
       data: false
 
-  client:
-    postLogonUrl: https://cloudybookclub.com/?logged-on=y
-
   google:
     books:
       api:

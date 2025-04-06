@@ -1,11 +1,12 @@
 # books
 This project started as I wanted a simple "microservice" to use when trying out frameworks
-such as Docker, Docker Compose and Kubernetes.
+such as Docker, Docker Compose and Kubernetes. It then continued as my
+favourite project for sampling various web related technologies.
 
 It has developed a little further such that it is starting to provide some functionality that may 
 actually be useful. 
 
-So welcome to the "Cloudy Bookclub" microservice!
+So welcome to the "Cloudy Bookclub"!
 
 > [!NOTE]  
 > Now uplifted to the latest Spring Boot 3.x and Java 21 and with a default, HTMX based front end provided.
@@ -31,18 +32,22 @@ making the web application entirely free of http session state (see later for wh
 * new from 2025 - there is now a "built in" front end implementation using [HTMX](https://htmx.org/). The earlier JSON data APIs are still retained meaning that the alternative React / Typescript front end implementation still works.
 
 ### Live application
-This project runs live under Docker Compose using the HTMX front end at https://cloudybookclub.com/ and with a React / Typescript [client application](https://github.com/aidanwhiteley/books-react) available at https://react-typescript.cloudybookclub.com/
+This project runs live under Docker Compose using the HTMX front end at https://cloudybookclub.com/ and with an alternate React / Typescript [client application](https://github.com/aidanwhiteley/books-react) front end available at https://spa.cloudybookclub.com/
 
 ![The Cloudy Book Club](../media/screengrab.jpg?raw=true)
+
+## Quick Start (on Windows)
+* Install Java JDK 21
+* Clone the project
+* From the root of teh project, type `mvnw.cmd spring-boot:run`
+* Point a browser at http://localhost:8080/
 
 
 ### Running in development
 The checked in default Spring profile is "mongo-java-server-no-auth". This uses an in memory fake Mongo instance - 
 [mongo-java-server](https://github.com/bwaldvogel/mongo-java-server) - so there is no need to run MongoDb locally. It also
 auto logs you on with a dummy admin user so there is no need to set up OAuth config to explore the application. So you 
-should be able to just check out the code and run and test the application for development purposes with no other dependencies. Try
-`mvnw.cmd spring-boot:run`
-and then point a browser at http://localhost:8080/
+should be able to just check out the code and run and test the application for development purposes with no other dependencies. 
 
 To develop Mongo related code you should switch to the "dev" profile which does expect to be able to connect to a real MongoDb instance.
 
@@ -65,9 +70,9 @@ The tests are probably about 50/50 between unit tests and vastly more useful int
 
 #### Stress Test
 To support a simple load test, there is a Maven plugin configured that runs a basic Gatling load test.
-After starting the Spring Boot application (i.e. mvnw.cmd spring-boot:run or via your IDE) run the command:
+After starting the Spring Boot application (i.e. `mvnw.cmd spring-boot:run` or via your IDE) run the command:
 
-mvnw.cmd gatling:test
+`mvnw.cmd gatling:test`
 
 The source code of this test in at test/java/com/aidanwhiteley/books/loadtest/StressTestSimulation.java. The checked in config
 ensures that, by default, the number of request per second is low enough not to stress an average PC.
@@ -319,17 +324,17 @@ public class JwtHeaderProvider implements HttpHeadersProvider {
     * in the client application (i.e. this application) by setting the spring.boot.admin.client.username/password values 
     * configure the Spring Boot admin application with the same values by setting spring.security.user.name/password
 
-## The name
-
-Why "The Cloudy BookClub"? Well - it's going to run in the cloud innit. And I couldn't think
-of any other domain names that weren't already taken.
-
 ## Client Side Functionality
 
 There's a choice of two front end implementations.
 
 A Thymeleaf / HTMX based Multiple Page Application implementation is included in this project (see the src/main/resources/templates directory for the Thymeleaf templates and HTMX code). This implementation can be seen running at https://cloudybookclub.com/
 
-There is a React/Typescript based Single Page Application front end application that consumes the microservice is available at https://github.com/aidanwhiteley/books-react. This implementation can be seen running at https://cloudybookclub.com/react-typescript
+There is a React/Typescript based Single Page Application front end application that consumes the microservice is available at https://github.com/aidanwhiteley/books-react. This implementation can be seen running at https://spa.cloudybookclub.com/
+
+## The name
+
+Why "The Cloudy BookClub"? Well - it's going to run in the cloud innit. And I couldn't think
+of any other domain names that weren't already taken.
 
 

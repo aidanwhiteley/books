@@ -39,7 +39,7 @@ This project runs live under Docker Compose using the HTMX front end at https://
 ## Quick Start (on Windows)
 * Install Java JDK 21
 * Clone the project
-* From the root of teh project, type `mvnw.cmd spring-boot:run`
+* From the root of the project, type `mvnw.cmd spring-boot:run`
 * Point a browser at http://localhost:8080/
 
 

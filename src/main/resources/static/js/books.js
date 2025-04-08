@@ -12,11 +12,12 @@
 
 // Utility function to initialize a Swiper instance
 function initialiseSwiper(evt) {
-    new Swiper('.mySwiper', {
+    const swiper = new Swiper('.mySwiper', {
         effect: 'coverflow',
         grabCursor: true,
         centeredSlides: true,
         slidesPerView: 'auto',
+        initialSlide: 0,
         coverflowEffect: {
             rotate: 20,
             stretch: 10,

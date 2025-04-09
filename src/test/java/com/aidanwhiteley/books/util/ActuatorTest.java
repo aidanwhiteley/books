@@ -1,6 +1,5 @@
 package com.aidanwhiteley.books.util;
 
-import com.aidanwhiteley.books.controller.BookControllerTestUtils;
 import com.aidanwhiteley.books.controller.jwt.JwtAuthenticationService;
 import com.aidanwhiteley.books.controller.jwt.JwtUtils;
 import com.aidanwhiteley.books.domain.User;
@@ -27,14 +26,14 @@ class ActuatorTest extends IntegrationTest {
     @Test
     void checkActuatorEndpointsNotAvailableWithoutActuatorRole() {
         // Re-use existing test class functionality to get a user without the ACTUATOR role
-        User user = BookControllerTestUtils.getTestUser();
+        User user = BookTestUtils.getTestUser();
         ResponseEntity<String> response = getResponseStringEntity(user, "/actuator");
         assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode(), "User without ROLE_ACTUATOR should be forbidden");
     }
 
     @Test
     void checkActuatorEndpointsAreAvailableWithActuatorRole() {
-        User user = BookControllerTestUtils.getTestUser();
+        User user = BookTestUtils.getTestUser();
         user.addRole(User.Role.ROLE_ACTUATOR);
         ResponseEntity<String> response = getResponseStringEntity(user, "/actuator");
         assertEquals(HttpStatus.OK, response.getStatusCode(), "User with ROLE_ACTUATOR should be OK");
@@ -43,7 +42,7 @@ class ActuatorTest extends IntegrationTest {
     @Test
     void checkActuatorEndpointsNotAvailableWithAdminRole() {
         // Re-use existing test class functionality to get a user without the ACTUATOR role
-        User user = BookControllerTestUtils.getTestUser();
+        User user = BookTestUtils.getTestUser();
         user.addRole(User.Role.ROLE_ADMIN);
         ResponseEntity<String> response = getResponseStringEntity(user, "/actuator");
         assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode(), "User with only ROLE_ADMIN should be forbidden");
@@ -51,7 +50,7 @@ class ActuatorTest extends IntegrationTest {
 
     @Test
     void checkExpectedEndpointAvailable() {
-        User user = BookControllerTestUtils.getTestUser();
+        User user = BookTestUtils.getTestUser();
         user.addRole(User.Role.ROLE_ACTUATOR);
         ResponseEntity<String> response = getResponseStringEntity(user, "/actuator/scheduledtasks");
         assertEquals(HttpStatus.OK, response.getStatusCode(), "User with ROLE_ACTUATOR should be able to see scheduledtasks");
@@ -59,7 +58,7 @@ class ActuatorTest extends IntegrationTest {
 
     @Test
     void checkUnexpectedEndpointNotAvailable() {
-        User user = BookControllerTestUtils.getTestUser();
+        User user = BookTestUtils.getTestUser();
         user.addRole(User.Role.ROLE_ACTUATOR);
         ResponseEntity<String> response = getResponseStringEntity(user, "/actuator/shutdown");
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode(), "No user should see shutdown endpoint");
@@ -67,7 +66,7 @@ class ActuatorTest extends IntegrationTest {
 
     @Test
     void checkSampleActuatorValue() {
-        User user = BookControllerTestUtils.getTestUser();
+        User user = BookTestUtils.getTestUser();
         user.addRole(User.Role.ROLE_ACTUATOR);
         ResponseEntity<String> response = getResponseStringEntity(user, "/actuator/info");
         assertEquals(HttpStatus.OK, response.getStatusCode(), "Should be able to get actuator info");

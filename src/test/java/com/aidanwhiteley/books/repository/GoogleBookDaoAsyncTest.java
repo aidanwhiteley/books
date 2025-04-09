@@ -1,6 +1,7 @@
 package com.aidanwhiteley.books.repository;
 
 import com.aidanwhiteley.books.domain.Book;
+import com.aidanwhiteley.books.util.BookTestUtils;
 import com.aidanwhiteley.books.util.IntegrationTest;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import org.junit.jupiter.api.Test;
@@ -33,7 +34,7 @@ class GoogleBookDaoAsyncTest extends IntegrationTest {
             LOGGER.debug("Wiremock Mappings: {}", WireMock.listAllStubMappings().getMappings());
         }
 
-        Book book = BookRepositoryTest.createTestBook();
+        Book book = BookTestUtils.createTestBook();
         Book savedBook = bookRepository.insert(book);
         assertNull(savedBook.getGoogleBookDetails());
 

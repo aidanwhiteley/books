@@ -6,6 +6,7 @@ import com.aidanwhiteley.books.controller.dtos.ApiExceptionData;
 import com.aidanwhiteley.books.controller.jwt.JwtUtils;
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.User;
+import com.aidanwhiteley.books.util.BookTestUtils;
 import com.aidanwhiteley.books.util.IntegrationTest;
 import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
@@ -88,11 +89,11 @@ class RestApiExceptionHandlerTest extends IntegrationTest {
 
     @SuppressWarnings("SameParameterValue")
     private RequestBuilder getPostRequestBuilder(String url, Book book) {
-        User user = BookControllerTestUtils.getTestUser();
+        User user = BookTestUtils.getTestUser();
         String token = jwtUtils.createTokenForUser(user);
-        String xsrfToken = BookControllerTestUtils.getXsrfToken(testRestTemplate);
+        String xsrfToken = BookTestUtils.getXsrfToken(testRestTemplate);
 
-        HttpEntity<Book> entity = BookControllerTestUtils.getBookHttpEntity(book, token, xsrfToken);
+        HttpEntity<Book> entity = BookTestUtils.getBookHttpEntity(book, token, xsrfToken);
 
         return MockMvcRequestBuilders
                 .post(url)

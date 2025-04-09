@@ -43,13 +43,13 @@ class SignUpNotificationServiceTest extends IntegrationTest {
     private MailClient mailClient;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         smtpServer = new GreenMail(new ServerSetup(PORT, null, "smtp"));
         smtpServer.start();
     }
 
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         smtpServer.stop();
     }
 

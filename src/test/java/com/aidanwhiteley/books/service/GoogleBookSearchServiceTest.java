@@ -5,8 +5,8 @@ import ch.qos.logback.classic.LoggerContext;
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.googlebooks.Item;
 import com.aidanwhiteley.books.repository.BookRepository;
-import com.aidanwhiteley.books.repository.BookRepositoryTest;
 import com.aidanwhiteley.books.service.dtos.GoogleBookSearchResult;
+import com.aidanwhiteley.books.util.BookTestUtils;
 import com.aidanwhiteley.books.util.IntegrationTest;
 import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
@@ -67,7 +67,7 @@ class GoogleBookSearchServiceTest extends IntegrationTest {
         var result = googleBookSearchService.getGoogleBooks("Design Patterns", "Gamma", 0);
         assertTrue(result.isFromCache());
 
-        Book aBook = bookRepository.insert(BookRepositoryTest.createTestBook());
+        Book aBook = bookRepository.insert(BookTestUtils.createTestBook());
         Book updatedBook = googleBookSearchService.updateBookWithGoogleBookDetails(aBook,
                 "Design Patterns", "Gamma", 0);
         assertNotNull(updatedBook.getGoogleBookDetails());

@@ -5,40 +5,42 @@
     <meta charset="utf-8">
     <link href="../../static/css/bootstrap.min.css" rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
     <link href="../../static/css/books-app.css" rel="stylesheet" th:href="@{/css/books-app.css}">
+
+    <script src="../../static/js/bootstrap.bundle.min.js" th:src="@{/js/bootstrap.bundle.min.js}" defer></script>
 </head>
 <body>
-<nav class="navbar navbar-expand-xl navbar-light bg-light sticky-top" data-bs-theme="light" th:fragment="cloudy-nav">
-    <div class="container">
-        <a class="navbar-brand" href="/">
-            <img alt="Site logo" class="d-inline-block align-top"
-                 height="30" src="../../static/images/book-club-logo.png" th:src="@{/images/book-club-logo.png}"> The
-            Cloudy Book
-            Club </a>
-        <button aria-controls="basic-navbar-nav" aria-label="Toggle navigation" class="navbar-toggler collapsed"
-                type="button">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="navbar-collapse collapse" id="basic-navbar-nav">
-            <div class="me-auto navbar-nav">
-                <a class="nav-link" href="/">Home</a>
-                <a class="nav-link" href="/recent">Recently Reviewed</a>
-                <a class="nav-link" href="/find">Find a review</a>
-                <a class="nav-link" href="/createreview"
-                   th:if="${(user != null) and ((highestRole == 'EDITOR' or highestRole == 'ADMIN'))}">Add a book review</a>
-                <a class="nav-link" href="/useradmin" th:if="${(user != null) and (highestRole == 'ADMIN')}">User Admin</a>
-                <a class="nav-link" href="/log-on" th:if="${user == null}">Logon</a>
-                <form action="#" th:action="@{/logout}" method="post" th:if="${user != null}">
-                    <button class="nav-link">Logoff</button>
-                </form>
-            </div>
-            <div id="book-search">
-                <form action="/search?pagenum=1" id="search-form" method="get" role="search">
-                    <input aria-label="Search book reviews" id="term" name="term" placeholder="Search book reviews"
-                           type="search" value="">
-                </form>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top" data-bs-theme="light" th:fragment="cloudy-nav">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <img alt="Site logo" class="d-inline-block align-top"
+                     height="30" src="../../static/images/book-club-logo.png" th:src="@{/images/book-club-logo.png}"> The
+                    Cloudy Book Club
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="navbar-collapse collapse" id="navbarSupportedContent">
+                <div class="me-auto navbar-nav">
+                    <a class="nav-link" href="/">Home</a>
+                    <a class="nav-link" href="/recent">Recently Reviewed</a>
+                    <a class="nav-link" href="/find">Find a review</a>
+                    <a class="nav-link" href="/createreview"
+                       th:if="${(user != null) and ((highestRole == 'EDITOR' or highestRole == 'ADMIN'))}">Add a book review</a>
+                    <a class="nav-link" href="/useradmin" th:if="${(user != null) and (highestRole == 'ADMIN')}">User Admin</a>
+                    <a class="nav-link" href="/log-on" th:if="${user == null}">Logon</a>
+                    <form action="#" th:action="@{/logout}" method="post" th:if="${user != null}">
+                        <button class="nav-link">Logoff</button>
+                    </form>
+                </div>
+                <div id="book-search">
+                    <form action="/search?pagenum=1" id="search-form" method="get" role="search">
+                        <input aria-label="Search book reviews" id="term" name="term" placeholder="Search book reviews"
+                               type="search" value="">
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
-</nav>
+    </nav>
 </body>
 </html>

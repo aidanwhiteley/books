@@ -3,9 +3,9 @@ package com.aidanwhiteley.books.controller;
 import com.aidanwhiteley.books.controller.jwt.JwtUtils;
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.User;
-import com.aidanwhiteley.books.repository.BookRepositoryTest;
 import com.aidanwhiteley.books.repository.dtos.BooksByGenre;
 import com.aidanwhiteley.books.repository.dtos.BooksByRating;
+import com.aidanwhiteley.books.util.BookTestUtils;
 import com.aidanwhiteley.books.util.IntegrationTest;
 import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.Test;
@@ -22,7 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.aidanwhiteley.books.controller.BookController.PAGE_REQUEST_TOO_BIG_MESSAGE;
-import static com.aidanwhiteley.books.repository.BookRepositoryTest.J_UNIT_TESTING_FOR_BEGINNERS;
+import static com.aidanwhiteley.books.util.BookTestUtils.J_UNIT_TESTING_FOR_BEGINNERS;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("ConstantConditions")
@@ -50,7 +50,7 @@ public class BookControllerTest extends IntegrationTest {
 
     @Test
     void findBookById() {
-        ResponseEntity<Book> response = BookControllerTestUtils.postBookToServer(jwtUtils, testRestTemplate);
+        ResponseEntity<Book> response = BookTestUtils.postBookToServer(jwtUtils, testRestTemplate);
         HttpHeaders headers = response.getHeaders();
         URI uri = headers.getLocation();
 
@@ -60,9 +60,9 @@ public class BookControllerTest extends IntegrationTest {
 
     @Test
     void findByAuthor() {
-        BookControllerTestUtils.postBookToServer(jwtUtils, testRestTemplate);
+        BookTestUtils.postBookToServer(jwtUtils, testRestTemplate);
 
-        ResponseEntity<String> response = testRestTemplate.exchange("/api/books?author=" + BookRepositoryTest.DR_ZEUSS + "&page=0&size=10", HttpMethod.GET,
+        ResponseEntity<String> response = testRestTemplate.exchange("/api/books?author=" + BookTestUtils.DR_ZEUSS + "&page=0&size=10", HttpMethod.GET,
                 null, String.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
@@ -75,7 +75,7 @@ public class BookControllerTest extends IntegrationTest {
 
     @Test
     void testSensitiveDataNotReturnedToAnonymousUser() {
-        ResponseEntity<Book> response = BookControllerTestUtils.postBookToServer(jwtUtils, testRestTemplate);
+        ResponseEntity<Book> response = BookTestUtils.postBookToServer(jwtUtils, testRestTemplate);
         String location = response.getHeaders().getLocation().toString();
         Book book = testRestTemplate.getForObject(location, Book.class);
 
@@ -93,7 +93,7 @@ public class BookControllerTest extends IntegrationTest {
 
         // Now update the book and check that details about who updated the book are not returned
         String updatedTitle = "An updated title";
-        User user = BookControllerTestUtils.getTestUser();
+        User user = BookTestUtils.getTestUser();
         BookSecureControllerTest.updateBook(user, book, updatedTitle, this.jwtUtils, this.testRestTemplate);
 
         // Check that the book was actually updated
@@ -108,11 +108,11 @@ public class BookControllerTest extends IntegrationTest {
 
     @Test
     void testSensitiveDataIsReturnedToAdminUser() {
-        Book testBook = BookRepositoryTest.createTestBook();
-        User user = BookControllerTestUtils.getTestUser();
+        Book testBook = BookTestUtils.createTestBook();
+        User user = BookTestUtils.getTestUser();
         String token = jwtUtils.createTokenForUser(user);
-        String xsrfToken = BookControllerTestUtils.getXsrfToken(testRestTemplate);
-        HttpEntity<Book> request = BookControllerTestUtils.getBookHttpEntity(testBook, token, xsrfToken);
+        String xsrfToken = BookTestUtils.getXsrfToken(testRestTemplate);
+        HttpEntity<Book> request = BookTestUtils.getBookHttpEntity(testBook, token, xsrfToken);
 
         ResponseEntity<Book> response = testRestTemplate
                 .exchange("/secure/api/books", HttpMethod.POST, request, Book.class);
@@ -124,7 +124,7 @@ public class BookControllerTest extends IntegrationTest {
         // Title should be available to everyone
         assertEquals(J_UNIT_TESTING_FOR_BEGINNERS, book.getTitle());
         // Email should only be available to admins
-        assertEquals(BookControllerTestUtils.DUMMY_EMAIL, book.getCreatedBy().getEmail());
+        assertEquals(BookTestUtils.DUMMY_EMAIL, book.getCreatedBy().getEmail());
 
 
         // Now update the book and check that details about who updated the book are returned to an authorised user
@@ -140,12 +140,12 @@ public class BookControllerTest extends IntegrationTest {
 
     @Test
     void testUserDataIsReturnedToEditorUser() {
-        Book testBook = BookRepositoryTest.createTestBook();
-        User user = BookControllerTestUtils.getEditorTestUser();
+        Book testBook = BookTestUtils.createTestBook();
+        User user = BookTestUtils.getEditorTestUser();
         String token = jwtUtils.createTokenForUser(user);
-        String xsrfToken = BookControllerTestUtils.getXsrfToken(testRestTemplate);
+        String xsrfToken = BookTestUtils.getXsrfToken(testRestTemplate);
 
-        HttpEntity<Book> request = BookControllerTestUtils.getBookHttpEntity(testBook, token, xsrfToken);
+        HttpEntity<Book> request = BookTestUtils.getBookHttpEntity(testBook, token, xsrfToken);
 
         ResponseEntity<Book> response = testRestTemplate
                 .exchange("/secure/api/books", HttpMethod.POST, request, Book.class);
@@ -159,7 +159,7 @@ public class BookControllerTest extends IntegrationTest {
         // Email should only be available to admins - not editors
         assertEquals("", book.getCreatedBy().getEmail());
         // But the name of the person who created the Book should be available
-        assertEquals(BookControllerTestUtils.USER_WITH_EDITOR_ROLE_FULL_NAME, book.getCreatedBy().getFullName());
+        assertEquals(BookTestUtils.USER_WITH_EDITOR_ROLE_FULL_NAME, book.getCreatedBy().getFullName());
 
     }
 
@@ -173,9 +173,9 @@ public class BookControllerTest extends IntegrationTest {
             return;
         }
 
-        BookControllerTestUtils.postBookToServer(jwtUtils, testRestTemplate);
+        BookTestUtils.postBookToServer(jwtUtils, testRestTemplate);
 
-        ResponseEntity<String> response = testRestTemplate.exchange("/api/books?search=" + BookRepositoryTest.DR_ZEUSS + "&page=0&size=10", HttpMethod.GET,
+        ResponseEntity<String> response = testRestTemplate.exchange("/api/books?search=" + BookTestUtils.DR_ZEUSS + "&page=0&size=10", HttpMethod.GET,
                 null, String.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
@@ -197,7 +197,7 @@ public class BookControllerTest extends IntegrationTest {
             return;
         }
 
-        BookControllerTestUtils.postBookToServer(jwtUtils, testRestTemplate);
+        BookTestUtils.postBookToServer(jwtUtils, testRestTemplate);
 
         // First check that we find the expected data
         final String bookDescription = "A guide to poking software";

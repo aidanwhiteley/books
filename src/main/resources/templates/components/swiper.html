@@ -22,6 +22,8 @@
                              src="../../static/images/book-club-logo.jpeg" th:alt="${'Book cover for ' + book.title}"
                              th:src="${#strings.replace(book.googleBookDetails.volumeInfo.imageLinks.thumbnail, 'http://', 'https://')}"></a>
                 </div>
+
+                <div class="rating-update" hx-swap-oob="innerHTML:#rating" th:text="${rating}">a rating level</div>
             </div>
             <div class="swiper-pagination"></div>
             <div class="swiper-button-prev"></div>
@@ -30,7 +32,7 @@
 
         <div class="text-center">
             <p class="text-center carousel-info">Books recently reviewed on The Cloudy Book Club with
-                a <span th:text="${rating}"></span> rating</p>
+                a <span id="rating" th:text="${rating}"></span> rating</p>
 
             <div aria-label="Book rating selection button group" class="btn-group" role="group">
                 <input class="btn-check" hx-get="/getBooksByRating?rating=great"

@@ -11,7 +11,7 @@ import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class OpenApiConfigTest extends IntegrationTest {
+class OpenApiConfigTest extends IntegrationTest {
 
     @Autowired
     private TestRestTemplate testRestTemplate;

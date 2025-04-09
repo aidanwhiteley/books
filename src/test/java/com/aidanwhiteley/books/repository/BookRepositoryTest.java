@@ -1,7 +1,7 @@
 package com.aidanwhiteley.books.repository;
 
 import com.aidanwhiteley.books.controller.BookControllerTest;
-import com.aidanwhiteley.books.controller.BookControllerTestUtils;
+import com.aidanwhiteley.books.util.BookTestUtils;
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.Comment;
 import com.aidanwhiteley.books.domain.Owner;
@@ -19,7 +19,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -28,12 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class BookRepositoryTest extends IntegrationTest {
 
-    public static final String DR_ZEUSS = "Dr Zuess";
-    public static final String J_UNIT_TESTING_FOR_BEGINNERS = "JUnit testing for beginners";
     public static final String REVIEWER = "Quasimodo";
-    private static final Logger LOGGER = LoggerFactory.getLogger(BookRepositoryTest.class);
-    private static final String A_GUIDE_TO_POKING_SOFTWARE = "A guide to poking software";
-    private static final String COMPUTING = "Computing";
 
     private static final String A_COMMENT = "Comments can be tested";
     private static final String ANOTHER_COMMENT = "Especially when there is more than one of them";
@@ -42,33 +36,25 @@ public class BookRepositoryTest extends IntegrationTest {
     private static final int PAGE = 0;
     private static final int PAGE_SIZE = 10;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(BookRepositoryTest.class);
+
     @Autowired
     private BookRepository bookRepository;
 
     @Autowired
     private Environment environment;
 
-    public static Book createTestBook() {
-        Owner owner = new Owner(BookControllerTestUtils.getTestUser());
-        return Book.builder().title(J_UNIT_TESTING_FOR_BEGINNERS)
-                .summary(A_GUIDE_TO_POKING_SOFTWARE).genre(COMPUTING)
-                .author(DR_ZEUSS).rating(Book.Rating.POOR)
-                .createdDateTime(LocalDateTime.of(2016, 11, 20, 0, 0))
-                .createdBy(owner)
-                .build();
-    }
-
     @BeforeEach
     public void setUp() {
-        bookRepository.insert(createTestBook());
+        bookRepository.insert(BookTestUtils.createTestBook());
     }
 
     @Test
     void findByAuthor() {
         PageRequest pageObj = PageRequest.of(PAGE, PAGE_SIZE);
-        Page<Book> books = bookRepository.findAllByAuthorOrderByCreatedDateTimeDesc(pageObj, DR_ZEUSS);
+        Page<Book> books = bookRepository.findAllByAuthorOrderByCreatedDateTimeDesc(pageObj, BookTestUtils.DR_ZEUSS);
         assertFalse(books.getContent().isEmpty());
-        assertEquals(DR_ZEUSS, books.getContent().getFirst().getAuthor());
+        assertEquals(BookTestUtils.DR_ZEUSS, books.getContent().getFirst().getAuthor());
 
         // The book should have a system created id value.
         assertNotNull(books.getContent().getFirst().getId());
@@ -105,7 +91,7 @@ public class BookRepositoryTest extends IntegrationTest {
 
     @Test
     void addCommentToBook() {
-        Book book = createTestBook();
+        Book book = BookTestUtils.createTestBook();
 
         Book savedBook = bookRepository.insert(book);
 
@@ -122,7 +108,7 @@ public class BookRepositoryTest extends IntegrationTest {
     void removeCommentFromBook() {
 
         // Set up a couple of comments
-        Book book = createTestBook();
+        Book book = BookTestUtils.createTestBook();
         Book savedBook = bookRepository.insert(book);
         Comment comment = new Comment(A_COMMENT, new Owner());
         bookRepository.addCommentToBook(savedBook.getId(), comment);

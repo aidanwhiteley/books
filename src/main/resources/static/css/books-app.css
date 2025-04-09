@@ -451,3 +451,7 @@ li.comment-entry {
 .role-btn-group.htmx-request {
     opacity: .3;
 }
+
+.rating-update {
+    display: none;
+}

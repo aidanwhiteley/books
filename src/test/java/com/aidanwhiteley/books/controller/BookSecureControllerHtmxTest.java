@@ -7,7 +7,6 @@ import com.aidanwhiteley.books.controller.jwt.JwtAuthenticationService;
 import com.aidanwhiteley.books.controller.jwt.JwtUtils;
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.repository.BookRepository;
-import com.aidanwhiteley.books.repository.BookRepositoryTest;
 import jakarta.servlet.http.Cookie;
 import org.jsoup.Jsoup;
 import org.junit.jupiter.api.Test;
@@ -21,7 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import static com.aidanwhiteley.books.controller.BookControllerTestUtils.*;
+import static com.aidanwhiteley.books.util.BookTestUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -155,7 +154,7 @@ public class BookSecureControllerHtmxTest {
         LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
         context.getLogger(BookControllerHtmxExceptionHandling.class).setLevel(Level.valueOf("OFF"));
 
-        bookRepository.insert(BookRepositoryTest.createTestBook());
+        bookRepository.insert(createTestBook());
 
         String token = jwtUtils.createTokenForUser(getADifferentEditorTestUser());
         Cookie cookie = new Cookie(JwtAuthenticationService.JWT_COOKIE_NAME, token);
@@ -291,7 +290,7 @@ public class BookSecureControllerHtmxTest {
     @Test
     void testAdminCanDeleteBookReview() throws Exception {
 
-        Book aBook = bookRepository.insert(BookRepositoryTest.createTestBook());
+        Book aBook = bookRepository.insert(createTestBook());
         String bookId = aBook.getId();
         assertTrue(bookRepository.findById(bookId).isPresent());
 
@@ -316,7 +315,7 @@ public class BookSecureControllerHtmxTest {
     void testEditorCannotDeleteBookReviewTheyDidntCreate() throws Exception {
 
         // This book is created with an admin owner rather than the editor user used later on in this test
-        Book aBook = bookRepository.insert(BookRepositoryTest.createTestBook());
+        Book aBook = bookRepository.insert(createTestBook());
         String bookId = aBook.getId();
         assertTrue(bookRepository.findById(bookId).isPresent());
 
@@ -339,7 +338,7 @@ public class BookSecureControllerHtmxTest {
     void testEditorCanAddCommentToAnyBook() throws Exception {
 
         // This book is created with an admin owner rather than the editor user used later on in this test
-        Book aBook = bookRepository.insert(BookRepositoryTest.createTestBook());
+        Book aBook = bookRepository.insert(createTestBook());
         String bookId = aBook.getId();
         assertTrue(bookRepository.findById(bookId).isPresent());
 
@@ -369,7 +368,7 @@ public class BookSecureControllerHtmxTest {
     void testAddCommentBadData() throws Exception {
 
         // This book is created with an admin owner rather than the editor user used later on in this test
-        Book aBook = bookRepository.insert(BookRepositoryTest.createTestBook());
+        Book aBook = bookRepository.insert(createTestBook());
         String bookId = aBook.getId();
         assertTrue(bookRepository.findById(bookId).isPresent());
 
@@ -403,7 +402,7 @@ public class BookSecureControllerHtmxTest {
     void testAddAndDeleteComment() throws Exception {
 
         // This book is created with an admin owner rather than the editor user used later on in this test
-        Book aBook = bookRepository.insert(BookRepositoryTest.createTestBook());
+        Book aBook = bookRepository.insert(createTestBook());
         String bookId = aBook.getId();
         assertTrue(bookRepository.findById(bookId).isPresent());
 

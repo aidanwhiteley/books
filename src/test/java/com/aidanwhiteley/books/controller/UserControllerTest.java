@@ -66,7 +66,8 @@ class UserControllerTest extends IntegrationTest {
         ResponseEntity<User> logoutResponse = testRestTemplate.exchange("/secure/api/logout", HttpMethod.POST, request, User.class);
         assertEquals(HttpStatus.OK, logoutResponse.getStatusCode());
 
-        // TODO - check that the cookies have been cleared down
+        var cookies = logoutResponse.getHeaders().get("Set-Cookie");
+        assertEquals(1, cookies.stream().filter(s -> s.contains("CLOUDY-JWT=;")).count());
     }
 
     @Test

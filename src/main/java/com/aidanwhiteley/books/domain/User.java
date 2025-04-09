@@ -87,7 +87,7 @@ public class User {
     }
 
     public void addRole(Role role) {
-
+        
         if (this.roles == null) {
             this.roles = new ArrayList<>();
         }
@@ -101,7 +101,6 @@ public class User {
     // A user gets the ROLE_USER as soon as they log on via an authentication provider.
     // It does not mean they are "trusted" users of the application. That only happens
     // when an admin gives them the ROLE_EDITOR role.
-    @Getter
     public enum Role {
         ROLE_USER(0),
         ROLE_EDITOR(1),
@@ -110,24 +109,28 @@ public class User {
 
         private static final Map<Integer, Role> map = new HashMap<>();
 
-        static {
-            for (Role aRole : Role.values()) {
-                map.put(aRole.getRoleNumber(), aRole);
-            }
-        }
-
         private final int roleNumber;
 
         Role(int roleNumber) {
             this.roleNumber = roleNumber;
         }
 
-        public static Role getRole(int roleNumber) {
-            return map.get(roleNumber);
-        }
-
         public String getShortName() {
             return this.toString().split("ROLE_")[1];
+        }
+
+        public int getRoleNumber() {
+            return this.roleNumber;
+        }
+
+        static {
+            for (Role aRole : Role.values()) {
+                map.put(aRole.getRoleNumber(), aRole);
+            }
+        }
+
+        public static Role getRole(int roleNumber) {
+            return map.get(roleNumber);
         }
 
     }
@@ -144,7 +147,7 @@ public class User {
         }
 
         public int getAuthProvider() {
-            return this.provider;
+        	return this.provider;
         }
     }
 }

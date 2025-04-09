@@ -75,7 +75,7 @@ public class BookControllerHtmxTest {
     void findByAuthor() throws Exception {
         createTestBook();
         var result = mockMvc.perform(get("/find?pagenum=1&author=" + BookTestUtils.DR_ZEUSS)
-                    .header(BookControllerHtmx.HX_REQUEST, true))
+                        .header(BookControllerHtmx.HX_REQUEST, true))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith("text/html"))
                 .andReturn();

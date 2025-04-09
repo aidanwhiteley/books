@@ -22,6 +22,7 @@
                              src="../../static/images/book-club-logo.jpeg" th:alt="${'Book cover for ' + book.title}"
                              th:src="${#strings.replace(book.googleBookDetails.volumeInfo.imageLinks.thumbnail, 'http://', 'https://')}"></a>
                 </div>
+
                 <div class="rating-update" hx-swap-oob="innerHTML:#rating" th:text="${rating}">a rating level</div>
             </div>
             <div class="swiper-pagination"></div>

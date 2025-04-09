@@ -42,12 +42,11 @@ This project runs live under Docker Compose using the HTMX front end at https://
 * From the root of the project, type `mvnw.cmd spring-boot:run`
 * Point a browser at http://localhost:8080/
 
-
 ### Running in development
 The checked in default Spring profile is "mongo-java-server-no-auth". This uses an in memory fake Mongo instance - 
 [mongo-java-server](https://github.com/bwaldvogel/mongo-java-server) - so there is no need to run MongoDb locally. It also
-auto logs you on with a dummy admin user so there is no need to set up OAuth config to explore the application. So you 
-should be able to just check out the code and run and test the application for development purposes with no other dependencies. 
+auto logs you on with a dummy admin user so there is no need to set up OAuth config to explore the application. So you
+should be able to just check out the code and run and test the application for development purposes with no other dependencies.
 
 To develop Mongo related code you should switch to the "dev" profile which does expect to be able to connect to a real MongoDb instance.
 

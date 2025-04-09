@@ -1,6 +1,6 @@
 package com.aidanwhiteley.books.controller.jwt;
 
-import com.aidanwhiteley.books.controller.BookControllerTestUtils;
+import com.aidanwhiteley.books.util.BookTestUtils;
 import com.aidanwhiteley.books.domain.User;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
@@ -24,7 +24,7 @@ class JwtUtilsTest {
         jwt.setExpiryInMilliSeconds(60 * 1000);
         jwt.setSecretKey(JwtUtils.createRandomBase64EncodedSecretKey());
 
-        User testUser = BookControllerTestUtils.getTestUser();
+        User testUser = BookTestUtils.getTestUser();
         testUser.addRole(User.Role.ROLE_ADMIN);
         String token = jwt.createTokenForUser(testUser);
         LOGGER.debug("Token was: {}", token);
@@ -41,7 +41,7 @@ class JwtUtilsTest {
         jwt.setExpiryInMilliSeconds(60 * 1000);
         jwt.setSecretKey(JwtUtils.createRandomBase64EncodedSecretKey());
 
-        User testUser = BookControllerTestUtils.getTestUser();
+        User testUser = BookTestUtils.getTestUser();
         String token = jwt.createTokenForUser(testUser);
 
         StringBuilder tampered = new StringBuilder(token);
@@ -68,7 +68,7 @@ class JwtUtilsTest {
         jwt.setExpiryInMilliSeconds(-1);
         jwt.setSecretKey(JwtUtils.createRandomBase64EncodedSecretKey());
 
-        User testUser = BookControllerTestUtils.getTestUser();
+        User testUser = BookTestUtils.getTestUser();
         String token = jwt.createTokenForUser(testUser);
 
         Assertions.assertThrows(ExpiredJwtException.class, () -> jwt.getUserFromToken(token));

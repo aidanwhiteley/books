@@ -3,6 +3,7 @@ package com.aidanwhiteley.books.controller;
 import com.aidanwhiteley.books.controller.jwt.JwtUtils;
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.User;
+import com.aidanwhiteley.books.util.BookTestUtils;
 import com.aidanwhiteley.books.util.IntegrationTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +50,7 @@ class UserControllerTest extends IntegrationTest {
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         //noinspection ConstantConditions
-        assertEquals(BookControllerTestUtils.USER_WITH_ALL_ROLES_FULL_NAME, response.getBody().getFullName());
+        assertEquals(BookTestUtils.USER_WITH_ALL_ROLES_FULL_NAME, response.getBody().getFullName());
     }
 
     @Test
@@ -57,12 +58,12 @@ class UserControllerTest extends IntegrationTest {
         ResponseEntity<User> response = getUserDetails();
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
-        User user = BookControllerTestUtils.getTestUser();
+        User user = BookTestUtils.getTestUser();
         String token = jwtUtils.createTokenForUser(user);
-        String xsrfToken = BookControllerTestUtils.getXsrfToken(testRestTemplate);
+        String xsrfToken = BookTestUtils.getXsrfToken(testRestTemplate);
 
         // The Book generic is irrelevant in next call when used in the follow on API call
-        HttpEntity<Book> request = BookControllerTestUtils.getBookHttpEntity(null, token, xsrfToken);
+        HttpEntity<Book> request = BookTestUtils.getBookHttpEntity(null, token, xsrfToken);
         ResponseEntity<User> logoutResponse = testRestTemplate.exchange("/secure/api/logout", HttpMethod.POST, request, User.class);
         assertEquals(HttpStatus.OK, logoutResponse.getStatusCode());
 
@@ -79,8 +80,8 @@ class UserControllerTest extends IntegrationTest {
         assertNotNull(user);
 
         String token = jwtUtils.createTokenForUser(user);
-        String xsrfToken = BookControllerTestUtils.getXsrfToken(testRestTemplate);
-        HttpEntity<Book> request = BookControllerTestUtils.getBookHttpEntity(null, token, xsrfToken);
+        String xsrfToken = BookTestUtils.getXsrfToken(testRestTemplate);
+        HttpEntity<Book> request = BookTestUtils.getBookHttpEntity(null, token, xsrfToken);
 
         // Shouldn't be able to delete own userid!
         assertNotNull(user);
@@ -103,8 +104,8 @@ class UserControllerTest extends IntegrationTest {
         assertNotNull(aUser);
 
         String token = jwtUtils.createTokenForUser(aUser);
-        String xsrfToken = BookControllerTestUtils.getXsrfToken(testRestTemplate);
-        HttpEntity<User> request = BookControllerTestUtils.getUserHttpEntity(aUser, token, xsrfToken);
+        String xsrfToken = BookTestUtils.getXsrfToken(testRestTemplate);
+        HttpEntity<User> request = BookTestUtils.getUserHttpEntity(aUser, token, xsrfToken);
 
         // Shouldn't be able to patch own userid!
         String userPatchResponse = testRestTemplate.patchForObject("/secure/api/users/" + aUser.getId(), request, String.class);
@@ -112,10 +113,10 @@ class UserControllerTest extends IntegrationTest {
     }
 
     private ResponseEntity<User> getUserDetails() {
-        User user = BookControllerTestUtils.getTestUser();
+        User user = BookTestUtils.getTestUser();
         String token = jwtUtils.createTokenForUser(user);
-        String xsrfToken = BookControllerTestUtils.getXsrfToken(testRestTemplate);
-        HttpEntity<Book> request = BookControllerTestUtils.getBookHttpEntity(null, token, xsrfToken);
+        String xsrfToken = BookTestUtils.getXsrfToken(testRestTemplate);
+        HttpEntity<Book> request = BookTestUtils.getBookHttpEntity(null, token, xsrfToken);
         return testRestTemplate.exchange("/secure/api/user", HttpMethod.GET, request, User.class);
     }
 

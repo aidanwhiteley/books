@@ -6,7 +6,7 @@ import com.aidanwhiteley.books.controller.jwt.JwtAuthenticationService;
 import com.aidanwhiteley.books.controller.jwt.JwtUtils;
 import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.repository.BookRepository;
-import com.aidanwhiteley.books.repository.BookRepositoryTest;
+import com.aidanwhiteley.books.util.BookTestUtils;
 import de.bwaldvogel.mongo.wire.MongoWireProtocolHandler;
 import jakarta.servlet.http.Cookie;
 import org.jsoup.Jsoup;
@@ -68,20 +68,20 @@ public class BookControllerHtmxTest {
                 .andReturn();
         var output = result.getResponse().getContentAsString();
         var element = Jsoup.parse(output).selectFirst("p");
-        assertTrue(element.html().contains(BookRepositoryTest.J_UNIT_TESTING_FOR_BEGINNERS));
+        assertTrue(element.html().contains(BookTestUtils.J_UNIT_TESTING_FOR_BEGINNERS));
     }
 
     @Test
     void findByAuthor() throws Exception {
         createTestBook();
-        var result = mockMvc.perform(get("/find?pagenum=1&author=" + BookRepositoryTest.DR_ZEUSS)
+        var result = mockMvc.perform(get("/find?pagenum=1&author=" + BookTestUtils.DR_ZEUSS)
                     .header(BookControllerHtmx.HX_REQUEST, true))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith("text/html"))
                 .andReturn();
         var output = result.getResponse().getContentAsString();
         var element = Jsoup.parse(output).selectFirst("td.firstTableCol");
-        assertTrue(element.html().contains(BookRepositoryTest.J_UNIT_TESTING_FOR_BEGINNERS));
+        assertTrue(element.html().contains(BookTestUtils.J_UNIT_TESTING_FOR_BEGINNERS));
         assertTrue(result.getResponse().containsHeader(BookControllerHtmx.HX_TRIGGER_AFTER_SWAP));
     }
 
@@ -92,7 +92,7 @@ public class BookControllerHtmxTest {
         context.getLogger(BookControllerHtmxExceptionHandling.class).setLevel(Level.valueOf("OFF"));
 
         createTestBook();
-        var result = mockMvc.perform(get("/find?pagenum=0&author=" + BookRepositoryTest.DR_ZEUSS))
+        var result = mockMvc.perform(get("/find?pagenum=0&author=" + BookTestUtils.DR_ZEUSS))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentTypeCompatibleWith("text/html"))
                 .andReturn();
@@ -292,7 +292,7 @@ public class BookControllerHtmxTest {
     void testUserDataIsReturnedToEditorUser() throws Exception {
         String bookId = createTestBook().getId();
 
-        String token = jwtUtils.createTokenForUser(BookControllerTestUtils.getEditorTestUser());
+        String token = jwtUtils.createTokenForUser(BookTestUtils.getEditorTestUser());
         Cookie cookie = new Cookie(JwtAuthenticationService.JWT_COOKIE_NAME, token);
 
         var result = mockMvc.perform(MockMvcRequestBuilders.get("/bookreview?bookId=" + bookId)
@@ -303,7 +303,7 @@ public class BookControllerHtmxTest {
         var output = result.getResponse().getContentAsString();
 
         var element = Jsoup.parse(output).selectFirst("span.reviewer");
-        assertTrue(element.html().contains(BookControllerTestUtils.USER_WITH_ALL_ROLES_FULL_NAME));
+        assertTrue(element.html().contains(BookTestUtils.USER_WITH_ALL_ROLES_FULL_NAME));
     }
 
     @Test
@@ -323,7 +323,7 @@ public class BookControllerHtmxTest {
     @Test
     void testAdminCanDeleteSomeoneElsesReview() throws Exception {
 
-        String token = jwtUtils.createTokenForUser(BookControllerTestUtils.getTestUser());
+        String token = jwtUtils.createTokenForUser(BookTestUtils.getTestUser());
         Cookie cookie = new Cookie(JwtAuthenticationService.JWT_COOKIE_NAME, token);
 
         var result = mockMvc.perform(MockMvcRequestBuilders.get("/bookreview?bookId=" + EXISTING_BOOK_ID)
@@ -339,7 +339,7 @@ public class BookControllerHtmxTest {
     @Test
     void testEditorCantDeleteSomeoneElsesReview() throws Exception {
 
-        String token = jwtUtils.createTokenForUser(BookControllerTestUtils.getEditorTestUser());
+        String token = jwtUtils.createTokenForUser(BookTestUtils.getEditorTestUser());
         Cookie cookie = new Cookie(JwtAuthenticationService.JWT_COOKIE_NAME, token);
 
         var result = mockMvc.perform(MockMvcRequestBuilders.get("/bookreview?bookId=" + EXISTING_BOOK_ID)
@@ -353,7 +353,7 @@ public class BookControllerHtmxTest {
     }
 
     private Book createTestBook() {
-        return bookRepository.insert(BookRepositoryTest.createTestBook());
+        return bookRepository.insert(BookTestUtils.createTestBook());
     }
 
 }

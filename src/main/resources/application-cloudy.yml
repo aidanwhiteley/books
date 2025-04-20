@@ -31,6 +31,8 @@ spring:
 
   devtools:
     add-properties: false
+    livereload:
+      enabled: false
 
 server:
   port: ${CLOUDY_SERVER_PORT:8100}

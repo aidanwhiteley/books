@@ -136,7 +136,7 @@
                                     hx-target="#googleBookCandidates" hx-target-error="#detail"
                                     th:disabled="${googleBookSearchResult.hasPrevious == false}"
                                     th:hx-get="@{/googlebooks(index=${index - 1},title=${booktitle},author=${author})}"
-                                    type="button">&laquo;
+                                    type="button" data-umami-event="Scrolled to previous Google book review">&laquo;
                                 Previous
                             </button>
                             <button aria-label="Next" class="btn btn-outline-primary next-button"
@@ -144,7 +144,7 @@
                                     hx-target="#googleBookCandidates" hx-target-error="#detail"
                                     th:disabled="${googleBookSearchResult.hasMore == false}"
                                     th:hx-get="@{/googlebooks(index=${index + 1},title=${booktitle},author=${author})}"
-                                    type="button">Next &raquo;
+                                    type="button" data-umami-event="Scrolled to next Google book review">Next &raquo;
                             </button>
                         </div>
 
@@ -154,20 +154,20 @@
             </div>
 
             <div class="text-center">
-                <button class="btn btn btn-outline-primary btn-wd me-3" th:if="${iscreate}" type="submit">
+                <button class="btn btn btn-outline-primary btn-wd me-3" th:if="${iscreate}" type="submit" data-umami-event="Book review created">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-save" viewBox="0 0 16 16">
                         <path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1z"/>
                     </svg>
                     Save book review
                 </button>
-                <button class="btn btn btn-outline-primary btn-wd me-3" th:if="${isupdate}" type="submit">
+                <button class="btn btn btn-outline-primary btn-wd me-3" th:if="${isupdate}" type="submit" data-umami-event="Book review updated">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
                         <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325"/>
                     </svg>
                     Update book review
                 </button>
                 <a href="/">
-                    <button class="btn btn btn-outline-secondary btn-wd" type="button">
+                    <button class="btn btn btn-outline-secondary btn-wd" type="button" data-umami-event="Book review ceartion form cancelled">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-escape" viewBox="0 0 16 16">
                             <path d="M8.538 1.02a.5.5 0 1 0-.076.998 6 6 0 1 1-6.445 6.444.5.5 0 0 0-.997.076A7 7 0 1 0 8.538 1.02"/>
                             <path d="M7.096 7.828a.5.5 0 0 0 .707-.707L2.707 2.025h2.768a.5.5 0 1 0 0-1H1.5a.5.5 0 0 0-.5.5V5.5a.5.5 0 0 0 1 0V2.732z"/>

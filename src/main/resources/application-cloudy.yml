@@ -103,3 +103,10 @@ books:
   xsrf:
     cookieOverHttpsOnly: true
 
+  analytics:
+    umami:
+      websiteId: ${CLOUDY_UMAMI_WEBSITE_ID}     # leave blank to turn off umami analytics otherwise use website id from umami
+      doNotTrack: ${CLOUDY_UMAMI_DNT}    # Set to true to not send analytics when user browser sets DNT
+      domains: ${CLOUDY_UMAMI_DOMAINS}       # which domain(s) to send tracking data for
+      host-url: ${CLOUDY_UMAMI_HOST_URL}      # the domain that hosts the umami application
+

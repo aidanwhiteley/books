@@ -436,6 +436,28 @@ public class BookSecureControllerHtmxTest {
 
         Book bookWithoutComment = bookRepository.findById(bookId).get();
         assertTrue(bookWithoutComment.getComments().getFirst().isDeleted());
+
+        deleteComment = delete("/deletecomment/?bookId=" + "" +
+                "&commentId=" + "")
+                .cookie(cookie)
+                .with(csrf());
+
+        // Temporarily turn off unwanted logging during this specific test
+        LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+        context.getLogger(BookControllerHtmxExceptionHandling.class).setLevel(Level.valueOf("OFF"));
+
+        mockMvc.perform(deleteComment)
+                .andExpect(status().isBadRequest());
+
+        deleteComment = delete("/deletecomment/?bookId=" +  bookId +
+                "&commentId=" + "")
+                .cookie(cookie)
+                .with(csrf());
+        mockMvc.perform(deleteComment)
+                .andExpect(status().isBadRequest());
+
+        context.getLogger(BookControllerHtmxExceptionHandling.class).setLevel(Level.valueOf("ON"));
+
     }
 
     @Test

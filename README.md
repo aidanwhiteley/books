@@ -275,7 +275,7 @@ The checked in docker-compose.yaml and .env file should result in a deployment a
 
 ![Cloudy Docker Deployment Diagram](../media/docker1.png?raw=true)
 
-If you have a recentish Docker available, from the root of this project type:
+If you have Docker available, from the root of this project type:
 ~~~~
 docker compose pull
 docker compose up -d --scale api-tier-java=2
@@ -284,9 +284,6 @@ docker compose up -d --scale api-tier-java=2
 Then try accessing http://localhost/ 
 
 You may get 503 errors for a short period while the whole stack is starting up.
-
-Note: If you want to persist data in Mongo between restarts of the container, rename the file docker-compose.override.yaml.persistent-data to docker-compose.override.yaml
-If you do this and are running on Windows, make sure to read the Caveats section of https://hub.docker.com/_/mongo/
 
 |Tier |URL | Notes and screen grab                                                                                                                                                                                                                                                                            |
 |-----|----|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|

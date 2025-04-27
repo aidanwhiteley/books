@@ -65,7 +65,7 @@
                         <td>
                             <div class="btn-group role-btn-group" role="group" aria-label="User role selector">
                                 <button type="button" class="btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"
-                                        th:text=${user.highestRole}>
+                                        th:text=${user.highestRole} data-umami-event="User role changed">
                                     ROLE_ADMIN
                                 </button>
                                 <ul class="dropdown-menu" hx-target="closest tr" hx-swap="outerHTML" hx-indicator="closest .role-btn-group">
@@ -86,7 +86,7 @@
                             <button aria-label="Delete user" class="btn btn-sm btn-outline-danger"
                                          hx-confirm="Are you sure you wish to delete this user?"
                                          hx-target="#table-wrapper" hx-target-error="#detail" hx-disabled-elt="this"
-                                         th:hx-delete="@{/deleteuser/{id}(id = ${user.id})}" type="submit">
+                                         th:hx-delete="@{/deleteuser/{id}(id = ${user.id})}" type="submit" data-umami-event="User deleted">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash-circle" viewBox="0 0 16 16">
                                     <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"></path>
                                     <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8"></path>

@@ -21,7 +21,7 @@
             <select autocomplete="off" class="form-control tom-select-control-readonly" data-placeholder="Select a review rating"
                     hx-get="/find?pagenum=1" hx-push-url="true"
                     hx-target="#cloudy-find-by-results"
-                    hx-target-error="#detail" id="select-by-rating" name="rating">
+                    hx-target-error="#detail" id="select-by-rating" name="rating" data-umami-event="Find by rating selected">
                 <optgroup id="select-by-rating-options" th:fragment="cloudy-find-by-ratings-options">
                     <option th:each="rating : ${ratings}" th:text="${#strings.capitalize(#strings.toLowerCase(rating))}"
                             th:value="${#strings.toLowerCase(rating)}">Great
@@ -35,7 +35,7 @@
             <select autocomplete="off" class="form-control tom-select-control-readonly" data-placeholder="Start typing an author's name..."
                     hx-get="/find?pagenum=1" hx-push-url="true"
                     hx-target="#cloudy-find-by-results"
-                    hx-target-error="#detail" id="select-by-author" name="author">
+                    hx-target-error="#detail" id="select-by-author" name="author" data-umami-event="Find by author selected">
                 <optgroup id="select-by-author-options" th:fragment="cloudy-find-by-author-options">
                     <option th:each="author : ${authors}"
                             th:text="${author.author + ' - ' + author.countOfBooks + ' books'}"
@@ -50,7 +50,7 @@
             <select autocomplete="off" class="form-control tom-select-control-readonly" data-placeholder="Start typing a genre..."
                     hx-get="/find?pagenum=1" hx-push-url="true"
                     hx-target="#cloudy-find-by-results"
-                    hx-target-error="#detail" id="select-by-genre" name="genre">
+                    hx-target-error="#detail" id="select-by-genre" name="genre" data-umami-event="Find by genre selected">
                 <optgroup id="select-by-genre-options" th:fragment="cloudy-find-by-genre-options">
                     <option th:each="genre : ${genres}" th:text="${genre.genre + ' - ' + genre.countOfBooks + ' books'}"
                             th:value="${genre.genre}">Novel - 20
@@ -65,7 +65,7 @@
             <select autocomplete="off" class="form-control tom-select-control-readonly" data-placeholder="Start typing a reviewer..."
                     hx-get="/find?pagenum=1" hx-push-url="true"
                     hx-target="#cloudy-find-by-results"
-                    hx-target-error="#detail" id="select-by-reviewer" name="reviewer">
+                    hx-target-error="#detail" id="select-by-reviewer" name="reviewer" data-umami-event="Find by reviewer selected">
                 <optgroup id="select-by-reviewer-options" th:fragment="cloudy-find-by-reviewer-options">
                     <option th:each="reviewer : ${reviewers}"
                             th:text="${reviewer.reader + ' - ' + reviewer.countOfBooks + ' books'}"

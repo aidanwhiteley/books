@@ -16,7 +16,7 @@
         <div class="swiper mySwiper">
             <div class="swiper-wrapper" id="swiper-slides" th:fragment="cloudy-swiper-slides">
                 <div class="swiper-slide" th:each="book : ${books}">
-                    <a href="#" th:href="@{/bookreview(bookId=${book.id})}">
+                    <a href="#" th:href="@{/bookreview(bookId=${book.id})}" data-umami-event="Swiper image clicked">
                         <img alt="Book cover"
                              loading="lazy"
                              src="../../static/images/book-club-logo.jpeg" th:alt="${'Book cover for ' + book.title}"
@@ -37,17 +37,17 @@
             <div aria-label="Book rating selection button group" class="btn-group" role="group">
                 <input class="btn-check" hx-get="/getBooksByRating?rating=great"
                        hx-swap="outerHTML" hx-target="#swiper-slides" hx-target-error="#detail" id="greatBooks"
-                       name="bookRating" th:checked="${rating=='great'}" type="radio">
+                       name="bookRating" th:checked="${rating=='great'}" type="radio" data-umami-event="Show great book images">
                 <label class="btn btn-outline-primary" for="greatBooks">Great books</label>
 
                 <input class="btn-check" hx-get="/getBooksByRating?rating=good"
                        hx-swap="outerHTML" hx-target="#swiper-slides" hx-target-error="#detail" id="goodBooks"
-                       name="bookRating" th:checked="${rating=='good'}" type="radio">
+                       name="bookRating" th:checked="${rating=='good'}" type="radio" data-umami-event="Show good book images">
                 <label class="btn btn-outline-primary" for="goodBooks">Good books</label>
 
                 <input class="btn-check" hx-get="/getBooksByRating?rating=ok"
                        hx-swap="outerHTML" hx-target="#swiper-slides" hx-target-error="#detail" id="okBooks"
-                       name="bookRating" th:checked="${rating=='ok'}" type="radio">
+                       name="bookRating" th:checked="${rating=='ok'}" type="radio" data-umami-event="Show OK book images">
                 <label class="btn btn-outline-primary" for="okBooks">OK books</label>
             </div>
         </div>

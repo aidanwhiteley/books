@@ -14,7 +14,7 @@
     <p>If you know Aidan or Liz, why not logon here so you can add your own book reviews (or comments of other book reviews). After you have logged on once, we'll
         add the "book reviewer" role to your account so that you can start entering your own book reviews.
     </p>
-    <a href="/login/google" class="me-4">
+    <a href="/login/google" class="me-4" data-umami-event="Login via Google">
         <button class="gsi-material-button">
             <div class="gsi-material-button-state"></div>
             <div class="gsi-material-button-content-wrapper">
@@ -31,7 +31,7 @@
             </div>
         </button>
     </a>
-    <a href="/login/facebook">
+    <a href="/login/facebook" data-umami-event="Login via Facebook">
         <img src="../static/images/facebook2.png" th:src="@{/images/facebook2.png}"
              alt="Continue with Facebook" height="50" class="facebook-logon" />
     </a>

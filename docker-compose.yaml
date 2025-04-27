@@ -1,7 +1,7 @@
 # Creates and run the Docker containers for the
 #
 # a) the books web tier SPA
-#   - github repository - https://github.com/aidanwhiteley/books-react
+  #   - github repository - https://github.com/aidanwhiteley/books-react
 # b) the books Spring Cloud API gateway
 #   - github repository - https://github.com/aidanwhiteley/books-gateway
 # b) the books Eureka service registry
@@ -105,7 +105,7 @@ services:
     # The container_name must be commented out if starting multiple containers for this tier e.g.
     # "docker compose up --scale api-tier-java=2"
     # container_name: books-api-java-container
-    image: aidanwhiteley/books-api-java:0.50.3-RELEASE
+    image: aidanwhiteley/books-api-java:0.70.23-RELEASE
     restart: unless-stopped
     environment:
       - "SPRING_PROFILES_ACTIVE=${JAVA_BOOKS_SPRING_PROFILE}"

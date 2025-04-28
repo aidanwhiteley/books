@@ -53,7 +53,7 @@
          th:if="${pageOfBooks.totalPages > 1}">
         <ul class="pagination">
             <li class="page-item" th:classappend="${pageOfBooks.first} ? 'disabled'">
-                <a aria-label="First" class="page-link" hx-push-url="true" data-umami-event="Table first"
+                <a aria-label="First" class="page-link" hx-push-url="true"
                    hx-target="#table-detail" hx-target-error="#detail" th:hx-get="@{${paginationLink}(pagenum=1)}">
                     <span aria-hidden="true">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-double-left" viewBox="0 0 16 16">
@@ -64,7 +64,7 @@
                 </a>
             </li>
             <li class="page-item" th:classappend="${pageOfBooks.first} ? 'disabled'">
-                <a aria-label="Previous" class="page-link" href="" hx-push-url="true" data-umami-event="Table previous"
+                <a aria-label="Previous" class="page-link" href="" hx-push-url="true"
                    hx-target="#table-detail" hx-target-error="#detail"
                    th:hx-get="@{${paginationLink}(pagenum=${pageOfBooks.number})}">
                     <span aria-hidden="true">
@@ -93,7 +93,7 @@
                 <a class="page-link" href="#">...</a>
             </li>
             <li class="page-item" th:classappend="${pageOfBooks.last} ? 'disabled'">
-                <a aria-label="Next" class="page-link" href="" hx-push-url="true" data-umami-event="Table next"
+                <a aria-label="Next" class="page-link" href="" hx-push-url="true"
                    hx-target="#table-detail" hx-target-error="#detail"
                    th:hx-get="@{${paginationLink}(pagenum=${pageOfBooks.number + 2})}">
                     <span aria-hidden="true">
@@ -104,7 +104,7 @@
                 </a>
             </li>
             <li class="page-item" th:classappend="${pageOfBooks.last} ? 'disabled'">
-                <a aria-label="Last" class="page-link" href="" hx-push-url="true" data-umami-event="Table last"
+                <a aria-label="Last" class="page-link" href="" hx-push-url="true"
                    hx-target="#table-detail"
                    hx-target-error="#detail" th:hx-get="@{${paginationLink}(pagenum=${pageOfBooks.totalPages})}">
                     <span aria-hidden="true">

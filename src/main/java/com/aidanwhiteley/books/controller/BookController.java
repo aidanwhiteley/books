@@ -16,6 +16,16 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.List;
 
+/**
+* The BookController is a Spring Boot REST API endpoint manager for book-related operations, providing comprehensive book retrieval 
+* capabilities with advanced filtering, pagination, and data visibility controls. It interfaces with BookRepository to enable flexible 
+* querying of book data across multiple dimensions like author, genre, and rating. The controller supports retrieving book statistics, 
+* listing genres and authors, and implements robust error handling through custom exceptions. Key features include paginated search results,
+* input validation, and the @LimitDataVisibility annotation for controlling data access. By integrating with StatsService and BookRepository, 
+* the controller offers a flexible and efficient mechanism for book information retrieval, supporting complex search scenarios and providing 
+* a structured approach to managing book-related data in a web application context.
+*/
+
 @LimitDataVisibility
 @RestController
 @RequestMapping("/api")

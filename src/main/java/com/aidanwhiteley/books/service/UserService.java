@@ -18,6 +18,18 @@ import java.util.*;
 
 import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.*;
 
+/**
+* The UserService is a critical component in a book application's user management system, 
+* responsible for handling user authentication, registration, and profile management across 
+* multiple platforms (Google, Facebook, and local login). Leveraging Spring Security's OAuth2 
+* authentication and interacting with UserRepository, the service provides comprehensive user 
+* lifecycle management. It supports creating and updating user profiles, 
+* assigning roles (including special provisions for actuator and admin users), and seamlessly 
+* integrating different authentication providers. The service acts as a central orchestrator for 
+* user-related operations, ensuring secure and flexible user management within the application's 
+* authentication ecosystem, with a focus on maintaining user data integrity and supporting diverse authentication strategies.
+*/
+
 @Service
 public class UserService {
 

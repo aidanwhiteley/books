@@ -14,15 +14,16 @@ class HtmlSanitiserUtilsTest {
                 <p>Here is some text in a para</p>
                 <p><b>Bold text</b></p>
                 <p>Text with <em>em</em> and <i>i</i></p>
-                <p>Text with a <br>
-                  line break</p>
+                <p>Text with a
+                 <br>
+                 line break</p>
                 """;
         String sanitised = HtmlSanitiserUtils.allowBasicTextFormattingOnly(testString1);
         assertEquals(testString1.trim(), sanitised.trim());
     }
 
     @Test
-    void testTagsNotExpectedInGoogleBookDescriptionsAllowed() {
+    void testTagsNotExpectedInGoogleBookDescriptionsNotAllowed() {
         final String testString2 = """
                 <p>Here is some text in a para</p>
                 <p><b>Bold text</b></p>

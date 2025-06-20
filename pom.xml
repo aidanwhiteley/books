@@ -348,7 +348,7 @@
                     <plugin>
                         <groupId>org.pitest</groupId>
                         <artifactId>pitest-maven</artifactId>
-                        <version>1.19.5</version>
+                        <version>1.20.0</version>
                         <executions>
                             <execution>
                                 <id>pitest</id>

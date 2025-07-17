@@ -284,7 +284,7 @@
             <plugin>
                 <groupId>io.gatling</groupId>
                 <artifactId>gatling-maven-plugin</artifactId>
-                <version>4.19.0</version>
+                <version>4.20.0</version>
             </plugin>
 
             <!-- To build to local Docker daemon use:

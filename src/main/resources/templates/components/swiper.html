@@ -15,10 +15,11 @@
     <div id="detail" th:fragment="cloudy-swiper">
         <div class="swiper mySwiper">
             <div class="swiper-wrapper" id="swiper-slides" th:fragment="cloudy-swiper-slides">
-                <div class="swiper-slide" th:each="book : ${books}">
+                <div class="swiper-slide" th:each="book, bookStat : ${books}">
                     <a href="#" th:href="@{/bookreview(bookId=${book.id})}" data-umami-event="Swiper image clicked">
+                        <!--/* The smallest client devices initially show at least three book cover images */-->
                         <img alt="Book cover"
-                             loading="lazy"
+                             th:loading="${bookStat.first || bookStat.last || bookStat.count == 2}? 'eager' : 'lazy'"
                              src="../../static/images/book-club-logo.jpeg" th:alt="${'Book cover for ' + book.title}"
                              th:src="${#strings.replace(book.googleBookDetails.volumeInfo.imageLinks.thumbnail, 'http://', 'https://')}"></a>
                 </div>

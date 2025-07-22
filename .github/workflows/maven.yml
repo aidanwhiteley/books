@@ -1,3 +1,5 @@
+permissions:
+  contents: read
 name: Actions CI Build
 
 on:
@@ -7,7 +9,6 @@ on:
     branches: [ develop, master ]
   schedule:
     - cron: '30 0 * * 0'
-
 jobs:
   build:
 

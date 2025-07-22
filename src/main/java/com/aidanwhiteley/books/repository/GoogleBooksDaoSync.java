@@ -16,6 +16,10 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 
+import static com.aidanwhiteley.books.util.ClientInputSanitiserUtils.isValidTitleOrAuthor;
+import static com.aidanwhiteley.books.util.ClientInputSanitiserUtils.sanitiseGoogleBookId;
+import static com.aidanwhiteley.books.util.LogDetaint.logMessageDetaint;
+
 @Repository
 public class GoogleBooksDaoSync {
 
@@ -36,6 +40,13 @@ public class GoogleBooksDaoSync {
     }
 
     public BookSearchResult searchGoogleBooksByTitleAndAuthor(String title, String author) {
+
+        if (!isValidTitleOrAuthor(title) || !isValidTitleOrAuthor(author)) {
+            LOGGER.warn("Invalid input for title or author {} {}",
+                    logMessageDetaint(title), logMessageDetaint(author));
+
+            throw new IllegalArgumentException("Invalid input for title or author");
+        }
 
         String encodedTitle = URLEncoder.encode(title, StandardCharsets.UTF_8);
         String encodedAuthor = URLEncoder.encode(author, StandardCharsets.UTF_8);
@@ -64,7 +75,8 @@ public class GoogleBooksDaoSync {
 
         googleBooksRestTemplate.getMessageConverters().addFirst(new StringHttpMessageConverter(StandardCharsets.UTF_8));
         try {
-            return googleBooksRestTemplate.getForObject(googleBooksApiConfig.getGetByIdUrl() + id + "/?" +
+            return googleBooksRestTemplate.getForObject(googleBooksApiConfig.getGetByIdUrl() +
+                    sanitiseGoogleBookId(id) + "/?" +
                     googleBooksApiConfig.getCountryCode(), Item.class);
         } catch (HttpStatusCodeException e) {
             String errorpayload = e.getResponseBodyAsString();

@@ -153,7 +153,7 @@ public class DataLoader {
                     .onField("googleBookDetails.volumeInfo.description", 1F)
                     .named("fullTextIndexForTests")
                     .build();
-            template.indexOps(Book.class).ensureIndex(textIndex);
+            template.indexOps(Book.class).createIndex(textIndex);
         }
     }
 

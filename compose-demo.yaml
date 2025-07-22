@@ -1,0 +1,88 @@
+
+x-logging: &default-logging
+  logging:
+    driver: local
+    options:
+      max-size: "10m"
+      max-file: "10"
+
+x-health: &default-healthcheck-config
+  interval: "300s"
+  timeout: "15s"
+  start_period: "15m"
+  start_interval: "5s"
+  retries: 3
+
+services:
+
+  # #####################################################################################################################################
+  # This container runs a Java / Mongo app that is the Cloudy Book Club.
+  # docker exec -it cloudy-app bash
+  # #####################################################################################################################################
+  cloudy-app-demo:
+    container_name: cloudy-app-demo
+    image: ${REGISTRY_SERVER_URL}${CLOUDY_DEMO_IMAGE}
+    restart: ${CONTAINER_RESTART_POLICY}
+    <<: *default-logging
+    depends_on:
+      - mongodb-demo
+    environment:
+      - "SPRING_PROFILES_ACTIVE=${CLOUDY_DEMO_SPRING_PROFILE}"
+      - "CLOUDY_DEMO_SERVER_PORT=${CLOUDY_DEMO_SERVER_PORT}"
+      - "CLOUDY_DEMO_JWT_SECRET_KEY=${CLOUDY_DEMO_JWT_SECRET_KEY}"
+      - "CLOUDY_DEMO_OUATH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_ID=${CLOUDY_DEMO_OUATH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_ID}"
+      - "CLOUDY_DEMO_OUATH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_SECRET=${CLOUDY_DEMO_OUATH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_SECRET}"
+      - "CLOUDY_DEMO_OUATH2_CLIENT_REGISTRATION_FACEBOOK_CLIENT_ID=${CLOUDY_DEMO_OUATH2_CLIENT_REGISTRATION_FACEBOOK_CLIENT_ID}"
+      - "CLOUDY_DEMO_OUATH2_CLIENT_REGISTRATION_FACEBOOK_CLIENT_SECRET=${CLOUDY_DEMO_OUATH2_CLIENT_REGISTRATION_FACEBOOK_CLIENT_SECRET}"
+      - "CLOUDY_DEMO_MONGO_DEMO_APP_USERNAME=${CLOUDY_DEMO_MONGO_DEMO_APP_USERNAME}"
+      - "CLOUDY_DEMO_MONGO_DEMO_APP_PASSWORD=${CLOUDY_DEMO_MONGO_DEMO_APP_PASSWORD}"
+      - "CLOUDY_DEMO_MONGO_DEMO_HOST=${CLOUDY_DEMO_MONGO_DEMO_HOST}"
+      - "CLOUDY_DEMO_MONGO_DEMO_PORT=${CLOUDY_DEMO_MONGO_DEMO_PORT}"
+      - "CLOUDY_DEMO_MONGO_DEMO_DATABASE=${CLOUDY_DEMO_MONGO_DEMO_DATABASE}"
+      - "CLOUDY_DEMO_ACTUATOR_ENABLED=${CLOUDY_DEMO_ACTUATOR_ENABLED}"
+      - "CLOUDY_DEMO_ACTUATOR_ENDPOINTS=${CLOUDY_DEMO_ACTUATOR_ENDPOINTS}"
+      - "CLOUDY_DEMO_ACTUATOR_HEALTH_SHOW_DETAILS=${CLOUDY_DEMO_ACTUATOR_HEALTH_SHOW_DETAILS}"
+      - "CLOUDY_DEMO_UMAMI_WEBSITE_ID=${CLOUDY_DEMO_UMAMI_WEBSITE_ID}"
+      - "CLOUDY_DEMO_UMAMI_DNT=${CLOUDY_DEMO_UMAMI_DNT}"
+      - "CLOUDY_DEMO_UMAMI_DOMAINS=${CLOUDY_DEMO_UMAMI_DOMAINS}"
+      - "CLOUDY_DEMO_UMAMI_HOST_URL=${CLOUDY_DEMO_UMAMI_HOST_URL}"
+    healthcheck:
+      test: "curl --fail --silent localhost:8100/actuator/health | grep UP || exit 1"
+      <<: *default-healthcheck-config
+
+      # #####################################################################################################################################
+      # docker exec -it mongodb bash
+      # #####################################################################################################################################
+  mongodb-demo:
+    build:
+      context: .
+      dockerfile: mongo/Dockerfile
+    image: ${REGISTRY_SERVER_URL}${MONGODB_IMAGE}
+    container_name: mongodb-demo
+    command: [ --wiredTigerCacheSizeGB=0.3, --quiet ]
+    #command: mongod --quiet
+    restart: ${CONTAINER_RESTART_POLICY}
+    <<: *default-logging
+    # The default Mongo log level is too verbose and the above --quiet doesnt seem to help
+    # Comment out for debugging / production
+    #logging:
+    #  driver: "none"
+    # Leaving port exposed to localhost only to allow admin tool access over tunneled SSH
+    ports:
+      - 127.0.0.1:${MONGODB_HOST_PORT:-27017}:27017
+    environment:
+      - MONGO_DEMO_INITDB_ROOT_USERNAME=${MONGODB_INITDB_ROOT_USERNAME}
+      - MONGO_DEMO_INITDB_ROOT_PASSWORD=${MONGODB_INITDB_ROOT_PASSWORD}
+      - MONGO_DEMO_DATA_DIR=/data/db
+      # MONGO_DEMO_LOG_DIR=/dev/null
+      - MONGO_DEMO_CLOUDY_APP_USERNAME=${CLOUDY_DEMO_MONGO_DEMO_APP_USERNAME}
+      - MONGO_DEMO_CLOUDY_APP_PASSWORD=${CLOUDY_DEMO_MONGO_DEMO_APP_PASSWORD}
+      - MONGO_DEMO_CLOUDY_APP_DB=${CLOUDY_DEMO_MONGO_DEMO_DATABASE}
+      - MONGO_DEMO_BIGDATA_APP_USERNAME=${BIG_DATA_MONGO_DEMO_APP_USERNAME}
+      - MONGO_DEMO_BIGDATA_APP_PASSWORD=${BIG_DATA_MONGO_DEMO_APP_PASSWORD}
+      - MONGO_DEMO_BIGDATA_APP_DB=${BIG_DATA_MONGO_DEMO_DATABASE}
+    # We deliberately don't declare any volumes for Mongo data as we want all data to be lost and
+    # reloaded on every restart of the containers.
+    healthcheck:
+      test: echo 'db.runCommand({serverStatus:1}).ok' | mongo admin -u $MONGODB_INITDB_ROOT_USERNAME -p $MONGODB_INITDB_ROOT_PASSWORD --quiet | grep 1
+      #<<: *default-healthcheck-config

@@ -16,6 +16,8 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 
+import static com.aidanwhiteley.books.util.ClientInputSanitiserUtils.sanitiseGoogleBookId;
+
 @Repository
 public class GoogleBooksDaoSync {
 
@@ -64,7 +66,8 @@ public class GoogleBooksDaoSync {
 
         googleBooksRestTemplate.getMessageConverters().addFirst(new StringHttpMessageConverter(StandardCharsets.UTF_8));
         try {
-            return googleBooksRestTemplate.getForObject(googleBooksApiConfig.getGetByIdUrl() + id + "/?" +
+            return googleBooksRestTemplate.getForObject(googleBooksApiConfig.getGetByIdUrl() +
+                    sanitiseGoogleBookId(id) + "/?" +
                     googleBooksApiConfig.getCountryCode(), Item.class);
         } catch (HttpStatusCodeException e) {
             String errorpayload = e.getResponseBodyAsString();

@@ -43,6 +43,13 @@ class GoogleBooksDaoSyncTest extends IntegrationTest {
     }
 
     @Test
+    void findByTitleAndAuthorInvalidInput() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            theDao.searchGoogleBooksByTitleAndAuthor("https://evil.com/Design Patterns", "Gamma");
+        });
+    }
+
+    @Test
     void findByGoogleBookId() {
         Item result = theDao.searchGoogleBooksByGoogleBookId(SPRING_FRAMEWORK_GOOGLE_BOOK_ID);
         assertNotNull(result);

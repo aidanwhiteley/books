@@ -301,12 +301,6 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
         return "book-stats";
     }
 
-    @GetMapping(value = {"/lighthouse"})
-    public String lighthouse(Model model, Principal principal) {
-        addUserToModel(principal, model);
-        return "components/lighthouse-2025-07-20";
-    }
-
     @GetMapping(value = {"/log-on"})
     public String logon(Model model, Principal principal) {
         addUserToModel(principal, model);

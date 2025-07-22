@@ -42,8 +42,10 @@ public class GoogleBooksDaoSync {
     public BookSearchResult searchGoogleBooksByTitleAndAuthor(String title, String author) {
 
         if (!isValidTitleOrAuthor(title) || !isValidTitleOrAuthor(author)) {
-            LOGGER.warn("Invalid input for title or author {} {}",
-                    logMessageDetaint(title), logMessageDetaint(author));
+            if (LOGGER.isWarnEnabled()) {
+                LOGGER.warn("Invalid input for title or author {} {}",
+                        logMessageDetaint(title), logMessageDetaint(author));
+            }
 
             throw new IllegalArgumentException("Invalid input for title or author");
         }

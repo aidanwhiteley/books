@@ -18,7 +18,7 @@ public class ClientInputSanitiserUtils {
         if (input == null) {
             return false;
         }
-        if (input.length() < 1 || input.length() > 150) {
+        if (input.isEmpty() || input.length() > 150) {
             return false;
         }
         if (input.contains("\n") || input.contains("\r")) {

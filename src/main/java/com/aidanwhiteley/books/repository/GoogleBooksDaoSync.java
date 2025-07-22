@@ -16,7 +16,9 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 
+import static com.aidanwhiteley.books.util.ClientInputSanitiserUtils.isValidTitleOrAuthor;
 import static com.aidanwhiteley.books.util.ClientInputSanitiserUtils.sanitiseGoogleBookId;
+import static com.aidanwhiteley.books.util.LogDetaint.logMessageDetaint;
 
 @Repository
 public class GoogleBooksDaoSync {
@@ -39,7 +41,10 @@ public class GoogleBooksDaoSync {
 
     public BookSearchResult searchGoogleBooksByTitleAndAuthor(String title, String author) {
 
-        if (!isValidInput(title) || !isValidInput(author)) {
+        if (!isValidTitleOrAuthor(title) || !isValidTitleOrAuthor(author)) {
+            LOGGER.warn("Invalid input for title or author {} {}",
+                    logMessageDetaint(title), logMessageDetaint(author));
+
             throw new IllegalArgumentException("Invalid input for title or author");
         }
 
@@ -64,11 +69,6 @@ public class GoogleBooksDaoSync {
         }
 
         return result;
-    }
-
-    private boolean isValidInput(String input) {
-        // Example validation: input must be alphanumeric and between 1-100 characters
-        return input != null && input.matches("^[a-zA-Z0-9\\s]{1,100}$");
     }
 
     public Item searchGoogleBooksByGoogleBookId(String id) {

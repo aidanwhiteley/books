@@ -17,5 +17,4 @@ public class Item {
     private String selfLink;
     private VolumeInfo volumeInfo;
     private AccessInfo accessInfo;
-    private List<IndustryIdentifiers> industryIdentifiers = new ArrayList<>();
 }

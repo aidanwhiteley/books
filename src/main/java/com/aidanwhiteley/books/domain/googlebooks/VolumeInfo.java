@@ -18,6 +18,7 @@ public class VolumeInfo {
     private String subtitle;
     private List<String> authors = new ArrayList<>();
     private String description;
+    private List<IndustryIdentifiers> industryIdentifiers = new ArrayList<>();
     private ImageLinks imageLinks;
     private String previewLink;
 }

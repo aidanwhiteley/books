@@ -1,17 +1,22 @@
 package com.aidanwhiteley.books.util;
 
 import com.aidanwhiteley.books.domain.Book;
+import com.aidanwhiteley.books.domain.googlebooks.IndustryIdentifiers;
 import com.aidanwhiteley.books.domain.googlebooks.Item;
 import com.aidanwhiteley.books.domain.googlebooks.VolumeInfo;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-/**
- * I couldn't find any documentation of the GoodReads export format so this code mimics a couple of
- * Gists found online and also the export / import functionality on StoryGraph.
- */
 public class GoodReadsBookExportTest {
+
+    public static String MULTI_LINE_SUMMARY = """
+            Here is a multiline string
+            with data on more than one line.
+            """;
 
     @Test
     void testTitleWithQuotes() {
@@ -25,16 +30,49 @@ public class GoodReadsBookExportTest {
         assertTrue(export.contains("\"Martin, George R.R.\""));
     }
 
+    @Test
+    void testGoodReadsRating() {
+        var export = getTestBookAsGoodReadsExport();
+        assertTrue(export.contains(",5,"));
+    }
+
+    @Test
+    void testReadDate() {
+        var export = getTestBookAsGoodReadsExport();
+        assertTrue(export.contains("/" + LocalDateTime.now().getYear()));
+    }
+
+    @Test
+    void testNewLinesRemoved() {
+        var header = GoodReadsBookExport.goodReadsExportHeaderRow();
+        assertTrue(header.indexOf("\r\n") == -1);
+        assertTrue(header.indexOf("\n") == -1);
+
+        var export = getTestBookAsGoodReadsExport();
+        assertTrue(export.indexOf("\r\n") == -1);
+        assertTrue(export.indexOf("\n") == -1);
+    }
+
     private String getTestBookAsGoodReadsExport() {
         var book = new Book();
         book.setTitle("First \"second\" third");
         book.setAuthor("George R.R. Martin");
+        book.setSummary(MULTI_LINE_SUMMARY);
 
         var item = new Item();
         var volumeInfo = new VolumeInfo();
+        var industryIdentifiersList = new ArrayList<IndustryIdentifiers>();
+        var isbn10 = new IndustryIdentifiers(IndustryIdentifiers.TYPE_ISBN_10, "anISBN10");
+        var isbn13 = new IndustryIdentifiers(IndustryIdentifiers.TYPE_ISBN_13, "anISBN13");
+        industryIdentifiersList.add(isbn10);
+        industryIdentifiersList.add(isbn13);
+        volumeInfo.setIndustryIdentifiers(industryIdentifiersList);
+        item.setVolumeInfo(volumeInfo);
+        book.setGoogleBookDetails(item);
 
-        var outputAsCsv = GoodReadsBookExport.goodReadsExportAsCsv(book);
-        System.out.println(outputAsCsv);
-        return outputAsCsv;
+        book.setRating(Book.Rating.GREAT);
+        book.setCreatedDateTime(LocalDateTime.now());
+
+        return GoodReadsBookExport.goodReadsExportAsCsv(book);
     }
 }

@@ -7,7 +7,6 @@ import com.aidanwhiteley.books.util.JwtAuthenticationUtils;
 import com.aidanwhiteley.books.util.SiteRssFeed;
 import com.rometools.rome.feed.rss.Channel;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.SneakyThrows;
 import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

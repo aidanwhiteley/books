@@ -87,7 +87,8 @@ public class Book extends Auditable {
     @Builder
     // See https://reinhard.codes/2015/09/16/lomboks-builder-annotation-and-inheritance/ for why this seems necessary
     private Book(Owner createdBy, LocalDateTime createdDateTime, Owner lastModifiedBy, LocalDateTime lastModifiedDateTime,
-                 String id, @NotNull String title, @NotNull String author, @NotNull String genre, @NotNull String summary, @NotNull Rating rating, String googleBookId, Item googleBookDetails) {
+                 String id, @NotNull String title, @NotNull String author, @NotNull String genre, @NotNull String summary, @NotNull Rating rating,
+                 String googleBookId, Item googleBookDetails) {
         super(createdBy, createdDateTime, lastModifiedBy, lastModifiedDateTime);
         this.id = id;
         this.title = title;

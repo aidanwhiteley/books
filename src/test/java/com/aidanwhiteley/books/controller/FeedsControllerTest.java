@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -46,5 +48,18 @@ class FeedsControllerTest extends IntegrationTest {
         for (SyndEntry entry : syndFeed.getEntries()) {
             assertFalse(entry.getContents().getFirst().getValue().isEmpty());
         }
+    }
+
+    @Test
+    void checkBooksExportNotLoggedOnHasNoBooks() {
+        String rootUri = this.testRestTemplate.getRootUri();
+        String url = rootUri + "/feeds/exportbooks";
+
+        ResponseEntity<String> response = testRestTemplate.
+                getForEntity(url, String.class);
+
+        // 404 on resource for not logged on user
+        assertEquals(response.getStatusCode(), HttpStatusCode.valueOf(404));
+
     }
 }

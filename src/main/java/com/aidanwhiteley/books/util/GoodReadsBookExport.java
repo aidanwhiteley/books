@@ -129,7 +129,7 @@ public class GoodReadsBookExport {
         }
 
         if (field.indexOf(DELIMTER) > -1) {
-            return DOUBLE_QUOTE + field.replaceAll(DOUBLE_QUOTE, "") + DOUBLE_QUOTE;
+            return DOUBLE_QUOTE + field.replace(DOUBLE_QUOTE, "") + DOUBLE_QUOTE;
         } else {
             return field;
         }

@@ -18,6 +18,8 @@ public class GoodReadsBookExportTest {
             with data on more than one line.
             """;
 
+    public static String SUMMARY_WITH_DOUBLE_QOUTE = "Here is \"some\" text";
+
     @Test
     void testTitleWithQuotes() {
         var export = getTestBookAsGoodReadsExport();
@@ -39,7 +41,7 @@ public class GoodReadsBookExportTest {
     @Test
     void testReadDate() {
         var export = getTestBookAsGoodReadsExport();
-        assertTrue(export.contains("/" + LocalDateTime.now().getYear()));
+        assertTrue(export.contains(LocalDateTime.now().getYear()+ "/" ));
     }
 
     @Test
@@ -53,7 +55,13 @@ public class GoodReadsBookExportTest {
         assertTrue(export.indexOf("\n") == -1);
     }
 
+
     private String getTestBookAsGoodReadsExport() {
+        var book = createTestBook();
+        return GoodReadsBookExport.goodReadsExportAsCsv(book);
+    }
+
+    private static Book createTestBook() {
         var book = new Book();
         book.setTitle("First \"second\" third");
         book.setAuthor("George R.R. Martin");
@@ -72,7 +80,6 @@ public class GoodReadsBookExportTest {
 
         book.setRating(Book.Rating.GREAT);
         book.setCreatedDateTime(LocalDateTime.now());
-
-        return GoodReadsBookExport.goodReadsExportAsCsv(book);
+        return book;
     }
 }

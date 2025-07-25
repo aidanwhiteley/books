@@ -17,12 +17,13 @@ public class GoodReadsBookExport {
     private static final String SPACE = " ";
     private static final String EMPTY_FIELD = "";
 
-    private static final String HEADER_ROW = """
-        Book Id,Title,Author,Author l-f,Additional Authors,ISBN,ISBN13,My Rating,Average Rating,Publisher,
-        Binding,Number of Pages,Year Published,Original Publication Year,Date Read,Date Added,
-        Bookshelves,Bookshelves with positions,Exclusive Shelf,My Review,Spoiler,Private Notes,
-        Read Count,Owned Copies
-    """;
+    // Multiline string not used because of additional whitespace it can introduce
+    private static final String HEADER_ROW_PART1 = "Book Id,Title,Author,Author l-f,Additional Authors,ISBN,ISBN13,My Rating,";
+    private static final String HEADER_ROW_PART2 = "Average Rating,Publisher,Binding,Number of Pages,Year Published,";
+    private static final String HEADER_ROW_PART3 = "Original Publication Year,Date Read,Date Added,Bookshelves,";
+    private static final String HEADER_ROW_PART4 = "Bookshelves with positions,Exclusive Shelf,My Review,Spoiler,Private Notes,";
+    private static final String HEADER_ROW_PART5 = "Read Count,Owned Copies";
+    private static final String HEADER_ROW = HEADER_ROW_PART1 + HEADER_ROW_PART2 + HEADER_ROW_PART3 + HEADER_ROW_PART4 + HEADER_ROW_PART5;
 
     private GoodReadsBookExport() {
         // Private - only static utility methods supported
@@ -36,8 +37,8 @@ public class GoodReadsBookExport {
 
         var bookExport = new StringBuilder();
         bookExport.append(book.getId()).append(DELIMTER);
-        bookExport.append(encloseInDoubleQuotes(book.getTitle())).append(DELIMTER);
-        bookExport.append(encloseInDoubleQuotes(book.getAuthor())).append(DELIMTER);
+        bookExport.append(encloseInDoubleQuotes(escapeDoubleQuote(book.getTitle()))).append(DELIMTER);
+        bookExport.append(encloseInDoubleQuotes(escapeDoubleQuote(book.getAuthor()))).append(DELIMTER);
         bookExport.append(lastFirst(book.getAuthor())).append(DELIMTER);
         // Additional Authors not supported
         bookExport.append(EMPTY_FIELD).append(DELIMTER);
@@ -62,9 +63,11 @@ public class GoodReadsBookExport {
         bookExport.append(EMPTY_FIELD).append(DELIMTER);
         // Bookshelves with positions not supported
         bookExport.append(EMPTY_FIELD).append(DELIMTER);
-        // Exclusive shelf not supported
+        // Exclusive shelf is hard coded to read
+        bookExport.append("read").append(DELIMTER);
+        // Sigh - Good Reads dont appear to output the "My Review" field!
+        // bookExport.append(removeNewLines(encloseInDoubleQuotes(escapeDoubleQuote(book.getSummary())))).append(DELIMTER);
         bookExport.append(EMPTY_FIELD).append(DELIMTER);
-        bookExport.append(removeNewLines(encloseInDoubleQuotes(book.getSummary()))).append(DELIMTER);
         // Spoiler shelf not supported
         bookExport.append(EMPTY_FIELD).append(DELIMTER);
         // Private notes not supported
@@ -82,13 +85,15 @@ public class GoodReadsBookExport {
                     "0" + book.getCreatedDateTime().getDayOfMonth() : book.getCreatedDateTime().getDayOfMonth();
             var month = book.getCreatedDateTime().getMonthValue() < 10 ?
                     "0" + book.getCreatedDateTime().getMonthValue() : book.getCreatedDateTime().getMonthValue();
-            return day + "/" +
+
+            // Good Reads follows US date pattern
+            return book.getCreatedDateTime().getYear() + "/" +
                     month + "/" +
-                    book.getCreatedDateTime().getYear();
+                    day;
         } else {
             // A very basic fallback implementation
-            return LocalDateTime.now().getDayOfMonth() + "/" + LocalDateTime.now().getMonthValue() +
-                    "/" + LocalDateTime.now().getYear();
+            return LocalDateTime.now().getYear() + "/" + LocalDateTime.now().getMonthValue() +
+                    "/" + LocalDateTime.now().getDayOfMonth();
         }
     }
 
@@ -98,6 +103,9 @@ public class GoodReadsBookExport {
         return (rating.getRatingLevel() + 1) + "";
     }
 
+    // So here's an example of what these two wierd fields look like in an actual export
+    // from Good Reads
+    // ,"=""0752889516""","=""9780752889511""",
     private static StringBuilder getIsbnNumbers(Book book, StringBuilder bookExport) {
         if (book.getGoogleBookDetails() != null && book.getGoogleBookDetails().getVolumeInfo() != null
             && book.getGoogleBookDetails().getVolumeInfo().getIndustryIdentifiers() != null) {
@@ -105,13 +113,13 @@ public class GoodReadsBookExport {
                     stream().filter(s -> s.getType().equals(IndustryIdentifiers.TYPE_ISBN_10)).
                     map(s -> s.getIdentifier()).
                     findFirst().orElse("");
-            bookExport.append(isbn10).append(DELIMTER);
+            bookExport.append("\"=\"\"").append(isbn10).append("\"\"\"").append(DELIMTER);
 
             var isbn13 = book.getGoogleBookDetails().getVolumeInfo().getIndustryIdentifiers().
                     stream().filter(s -> s.getType().equals(IndustryIdentifiers.TYPE_ISBN_13)).
                     map(s -> s.getIdentifier()).
                     findFirst().orElse("");
-            bookExport.append(isbn13).append(DELIMTER);
+            bookExport.append("\"=\"\"").append(isbn13).append("\"\"\"").append(DELIMTER);
         }
         return bookExport;
     }
@@ -126,6 +134,14 @@ public class GoodReadsBookExport {
         } else {
             return field;
         }
+    }
+
+    private static String escapeDoubleQuote(String field) {
+        if (field == null) {
+            return SPACE;
+        }
+
+        return field.replaceAll("\"", "\"\"");
     }
 
     private static String removeNewLines(String field) {

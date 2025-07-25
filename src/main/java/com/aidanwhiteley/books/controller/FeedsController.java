@@ -7,6 +7,7 @@ import com.aidanwhiteley.books.util.JwtAuthenticationUtils;
 import com.aidanwhiteley.books.util.SiteRssFeed;
 import com.rometools.rome.feed.rss.Channel;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.SneakyThrows;
 import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +50,6 @@ public class FeedsController {
         Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
 
         if (user.isPresent()) {
-            goodReadsExportService.getExportInGoodReadsFormat(user.get()).forEach(s -> {
                 try {
                     response.setContentType("text/csv");
                     DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
@@ -60,7 +60,15 @@ public class FeedsController {
                     response.setHeader(headerKey, headerValue);
 
                     var responseStream = response.getOutputStream();
-                    responseStream.println(s);
+                    // The logged on user can only export their own books reviews
+                    var csvRows = goodReadsExportService.getExportInGoodReadsFormat(user.get());
+                    for (int i = 0; i < csvRows.size(); i++) {
+                        if (i < csvRows.size() - 1) {
+                            responseStream.println(csvRows.get(i));
+                        } else {
+                            responseStream.print(csvRows.get(i));
+                        }
+                    }
                 } catch (IOException ioe) {
                     LOGGER.error("There was an unexpected error creating a Goodreads format export", ioe);
                     try {
@@ -70,9 +78,9 @@ public class FeedsController {
                         LOGGER.error("Cannot send an error status code while creating a Goodreads format export", ioe2);
                     }
                 }
-            });
+
         } else {
-            LOGGER.error("A user that doesn't exist in the database for the user trying to export book reviews");
+            LOGGER.error("A user that doesn't exist in the database was trying to export book reviews - {}", user);
             throw new NotFoundException("User not found when trying export books");
         }
 

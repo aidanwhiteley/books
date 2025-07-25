@@ -7,15 +7,10 @@ import com.aidanwhiteley.books.domain.googlebooks.VolumeInfo;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class GoodReadsBookExportTest {
-
     public static final String MULTI_LINE_SUMMARY = """
             Here is a multiline string
             with data on more than one line.

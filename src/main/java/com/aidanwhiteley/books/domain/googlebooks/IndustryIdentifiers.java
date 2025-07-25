@@ -14,7 +14,6 @@ import lombok.ToString;
 @EqualsAndHashCode
 @ToString
 public class IndustryIdentifiers {
-
     public static final String TYPE_ISBN_10 = "ISBN_10";
     public static final String TYPE_ISBN_13 = "ISBN_13";
 

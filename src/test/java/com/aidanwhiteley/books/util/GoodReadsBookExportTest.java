@@ -5,37 +5,28 @@ import com.aidanwhiteley.books.domain.googlebooks.IndustryIdentifiers;
 import com.aidanwhiteley.books.domain.googlebooks.Item;
 import com.aidanwhiteley.books.domain.googlebooks.VolumeInfo;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class GoodReadsBookExportTest {
-
-    public static String MULTI_LINE_SUMMARY = """
+    public static final String MULTI_LINE_SUMMARY = """
             Here is a multiline string
             with data on more than one line.
             """;
 
-    public static String SUMMARY_WITH_DOUBLE_QOUTE = "Here is \"some\" text";
+    public static final String SUMMARY_WITH_DOUBLE_QOUTE = "Here is \"some\" text";
 
-    @Test
-    void testTitleWithQuotes() {
+    @ParameterizedTest
+    @ValueSource(strings = {"George R.R. Martin", "\"Martin, George R.R.\"", "\",5,"})
+    void testExpectedContents(String arg) {
         var export = getTestBookAsGoodReadsExport();
-        assertTrue(export.contains("George R.R. Martin"));
-    }
-
-    @Test
-    void testAuthorLastFirst() {
-        var export = getTestBookAsGoodReadsExport();
-        assertTrue(export.contains("\"Martin, George R.R.\""));
-    }
-
-    @Test
-    void testGoodReadsRating() {
-        var export = getTestBookAsGoodReadsExport();
-        assertTrue(export.contains(",5,"));
+        assertTrue(export.contains(arg));
     }
 
     @Test
@@ -47,14 +38,13 @@ public class GoodReadsBookExportTest {
     @Test
     void testNewLinesRemoved() {
         var header = GoodReadsBookExport.goodReadsExportHeaderRow();
-        assertTrue(header.indexOf("\r\n") == -1);
-        assertTrue(header.indexOf("\n") == -1);
+        assertEquals(-1, header.indexOf("\r\n"));
+        assertEquals(-1, header.indexOf("\n"));
 
         var export = getTestBookAsGoodReadsExport();
-        assertTrue(export.indexOf("\r\n") == -1);
-        assertTrue(export.indexOf("\n") == -1);
+        assertEquals(-1, export.indexOf("\r\n"));
+        assertEquals(-1, export.indexOf("\n"));
     }
-
 
     private String getTestBookAsGoodReadsExport() {
         var book = createTestBook();

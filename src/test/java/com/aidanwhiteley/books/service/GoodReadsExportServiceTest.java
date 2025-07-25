@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class GoodReadsExportServiceTest extends IntegrationTest {
+class GoodReadsExportServiceTest extends IntegrationTest {
 
     @Autowired
     private GoodReadsExportService goodReadsExportService;

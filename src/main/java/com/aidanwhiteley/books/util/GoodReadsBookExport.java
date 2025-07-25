@@ -66,7 +66,6 @@ public class GoodReadsBookExport {
         // Exclusive shelf is hard coded to read
         bookExport.append("read").append(DELIMTER);
         // Sigh - Good Reads dont appear to output the "My Review" field!
-        // bookExport.append(removeNewLines(encloseInDoubleQuotes(escapeDoubleQuote(book.getSummary())))).append(DELIMTER);
         bookExport.append(EMPTY_FIELD).append(DELIMTER);
         // Spoiler shelf not supported
         bookExport.append(EMPTY_FIELD).append(DELIMTER);
@@ -99,7 +98,7 @@ public class GoodReadsBookExport {
 
     private static String getRating(Book book) {
         var rating = book.getRating();
-        // Cloudy 0 to 4. GoodReads 1 to 5;
+        // Cloudy use a range of 0 to 4 where as uses 1 to 5;
         return (rating.getRatingLevel() + 1) + "";
     }
 
@@ -141,12 +140,12 @@ public class GoodReadsBookExport {
             return SPACE;
         }
 
-        return field.replaceAll("\"", "\"\"");
+        return field.replace("\"", "\"\"");
     }
 
     private static String removeNewLines(String field) {
-        var output = field.replaceAll("\r\n", SPACE);
-        return output.replaceAll("\n", SPACE);
+        var output = field.replace("\r\n", SPACE);
+        return output.replace("\n", SPACE);
     }
 
     private static String lastFirst(String field) {

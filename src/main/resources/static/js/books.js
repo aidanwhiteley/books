@@ -77,7 +77,6 @@ document.addEventListener("showFlashMessage", function(evt) {
                     if (!el.tomselect) {
                         try {
                             selectControls.push(new TomSelect(el, { ...options, sortField: [{ field: '$order' }, { field: '$score' }] }));
-                            console.debug(`Created a Tom Select for ${className}`);
                         } catch (err) {
                             console.error(`Error initializing Tom Select for ${className}:`, err);
                         }
@@ -91,7 +90,6 @@ document.addEventListener("showFlashMessage", function(evt) {
         selectControls.forEach((control) => {
             if (control.inputId !== targetId) {
                 control.clear(true);
-                console.debug(`Cleared select control with ID: ${control.inputId}`);
             }
         });
     }
@@ -119,13 +117,11 @@ document.addEventListener("showFlashMessage", function(evt) {
         const options = { searchable: true, perPage: 10 };
         const table = new window.simpleDatatables.DataTable("#users-table", options);
         userAdminTables.push(table);
-        console.debug("Initialized DataTable");
     }
 
     function refreshSimpleDataTables() {
         userAdminTables.forEach((table) => {
             table.destroy();
-            console.debug("Destroyed DataTable");
         });
         initialiseSimpleDataTables();
     }
@@ -158,7 +154,6 @@ document.body.addEventListener("htmx:configRequest", function(evt) {
 
     if (!isSafeVerb && xsrfToken && !Object.keys(evt.detail.headers).some((key) => key.toLowerCase() === "x-xsrf-token")) {
         evt.detail.headers["X-XSRF-TOKEN"] = xsrfToken;
-        console.debug("Added X-XSRF-TOKEN header:", xsrfToken);
     }
 });
 

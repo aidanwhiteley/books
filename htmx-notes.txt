@@ -24,6 +24,8 @@ c) and static file changes (JS/CSS etc) are usually visible immediately even wit
 (see the config for this in application.yaml). However, much of the CSS work is done using the plain template loaded in a browser
 d) no separate front end build process!
 e) thymeleaf exception stack traces in Spring Boot are horrible and I've been looking at java stack traces for 25 years
+f) Having the server side build create "finger printed static files" is great. Lack of file bundling in the build isn't really
+   an issue with HTTP2 / HTTP3 performance improvements (see Chrome Waterfall diagram for live example of fast parallel file delivery)
 
 The test app - The Cloudy Book Club
 A crud(ish) that is just a bit more than the typical ToDos app.

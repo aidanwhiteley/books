@@ -1,16 +1,22 @@
-# Creates and run the Docker containers for the
 #
-# a) the books web tier SPA
-  #   - github repository - https://github.com/aidanwhiteley/books-react
+# Runs the following Docker images:
+#
+# a1) the books web tier SPA based on React / Typescript and run by nginx
+#   - github repository - https://github.com/aidanwhiteley/books-react
+#     OR
+# a2) the books web tier MPA based on HTMX and run by Caddy
+#   - in this github repository
 # b) the books Spring Cloud API gateway
 #   - github repository - https://github.com/aidanwhiteley/books-gateway
-# b) the books Eureka service registry
+# c) the books Eureka service registry
 #   - github repository - https://github.com/aidanwhiteley/books-eureka
 # d) books api microservice i.e. this project
-#   - github registry - https://github.com/aidanwhiteley/books
+#   - github repository - https://github.com/aidanwhiteley/books
 # e) the books Mongo datastore
 #   - also in this github project - see the src/main/resources/mongo-docker directory
-#
+# f) - the Spring Boot admin service
+# - github repository - https://github.com/aidanwhiteley/books-springbootadmin
+
 #
 # Run with commands like the following:
 # docker-compose up
@@ -24,7 +30,40 @@
 # This version retrieved from Git should be edited for your usage but will basically work without any edits
 # if you just want to try stuff out (insecurely!).
 
+# ####################################################################################
+# This is NOT intended to be a production ready docker compose configuration!
+# It is only intended to support development.
+# ####################################################################################
+
+x-health: &default-healthcheck-config
+  interval: "300s"
+  timeout: "15s"
+  start_period: "15m"
+  start_interval: "5s"
+  retries: 3
+
 services:
+
+  web-tier-caddy-htmx:
+    image: aidanwhiteley/books-web-caddy-htmx:${CADDY_HTMX_IMAGE_VERSION}
+    container_name: books-web-htmx-container
+    restart: unless-stopped
+    profiles: [ htmx ]
+    ports:
+      - "80:80"
+      - "443:443/udp"
+    build:
+      context: .
+      dockerfile: src/main/resources/caddy-docker/Dockerfile
+      tags:
+        - "aidanwhiteley/books-web-caddy-htmx:${CADDY_HTMX_IMAGE_VERSION}"
+    init: true
+    depends_on:
+      data-tier-mongo:
+        condition: service_healthy
+    healthcheck:
+      test: "${HTMX_WEB_HEALTHCHECK_TEST:-curl --fail localhost/api/books || exit 1}"
+  #<<: *default-healthcheck-config
 
   # This container is built using the commands detailed in the Dockerfile
   # at https://github.com/aidanwhiteley/books-react
@@ -35,19 +74,17 @@ services:
   # Change the "depends_on" as appropriate.
   web-tier-react:
     container_name: books-web-react-container
-    image: aidanwhiteley/books-web-react-gateway:v0.1.1
+    image: aidanwhiteley/books-web-react-gateway:v0.1.2
     restart: unless-stopped
+    profiles: [ react ]
     ports:
       - 80:80
     # The health check is an API call that should traverse the web tier, API gateway tier (using the service registry tier)
     # to the Java API tier which then makes a call to the Mongo data tier.
     # "docker ps" should show the health status
     healthcheck:
-      test: "${WEB_HEALTHCHECK_TEST:-curl --fail localhost/api/books || exit 1}"
-      interval: "30s"
-      timeout: "5s"
-      start_period: "30s"
-      retries: 3
+      test: "${REACT_WEB_HEALTHCHECK_TEST:-curl --fail localhost/api/books || exit 1}"
+    #<<: *default-healthcheck-config
     depends_on:
       api-gateway-tier:
         condition: service_started
@@ -66,6 +103,7 @@ services:
     container_name: books-gateway-container
     image: aidanwhiteley/books-gateway:0.0.7-RELEASE
     restart: unless-stopped
+    profiles: [ react ]
     environment:
       - "SPRING_PROFILES_ACTIVE=default"
       - "SERVICE_REGISTRY=${SERVICE_REGISTRY}"
@@ -105,7 +143,7 @@ services:
     # The container_name must be commented out if starting multiple containers for this tier e.g.
     # "docker compose up --scale api-tier-java=2"
     # container_name: books-api-java-container
-    image: aidanwhiteley/books-api-java:0.70.23-RELEASE
+    image: aidanwhiteley/books-api-java:0.74.02-RELEASE
     restart: unless-stopped
     environment:
       - "SPRING_PROFILES_ACTIVE=${JAVA_BOOKS_SPRING_PROFILE}"
@@ -126,13 +164,16 @@ services:
       - "SERVICE_REGISTRY=${SERVICE_REGISTRY}"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+    #<<: *default-healthcheck-config
     depends_on:
       data-tier-mongo:
         condition: service_healthy
       service-registry-tier:
         condition: service_started
 
-  # This container is built dynamically when the docker-compose up command is issued.
+  # This container runs in demo data whenever it is restarted because there
+  # is no docker volume specified for the mongo data files.
+  #
   # The service name is known to the spring-boot application-xxxxx.properties file
   # used by the active Spring profile specified when starting the api-tier-java service.
   #
@@ -163,10 +204,7 @@ services:
     #  driver: "none"
     healthcheck:
       test: echo 'db.runCommand({serverStatus:1}).ok' | mongo admin -u $MONGO_INITDB_ROOT_USERNAME -p $MONGO_INITDB_ROOT_PASSWORD --quiet | grep 1
-      interval: "20s"
-      timeout: "5s"
-      start_period: "30s"
-      retries: 3
+    #<<: *default-healthcheck-config
 
   # This container is built using Google Jib using the following maven command
   # for the project at https://github.com/aidanwhiteley/books-springbootadmin

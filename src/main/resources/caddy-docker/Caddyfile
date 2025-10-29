@@ -1,0 +1,51 @@
+{
+    # debug
+
+	# Write an access log in Caddy JSON format
+	log main {
+		include http.log.access.main
+		output file /var/log/caddy/access.log {
+			roll_size 10MiB
+			roll_keep 5
+		}
+	}
+}
+
+# Cache static assets for 1 year (because the build adds "file fingerprinting")
+(cache-headers) {
+	@static {
+		path *.css *.js *.woff2 *.woff *.ttf *.eot *.svg *.png *.jpg *.jpeg *.gif *.ico *.pdf *.svg *.mp4 *.mp3 *.webp
+	}
+	header @static Cache-Control "public, max-age=31536000, immutable"
+}
+
+# Common security headers
+(security-headers) {
+	header {
+		X-Content-Type-Options nosniff
+		X-XSS-Protection "1; mode=block"
+		X-Frame-Options "SAMEORIGIN"
+		Referrer-Policy strict-origin-when-cross-origin
+		-X-Powered-By
+		-Server
+		-Via
+	}
+}
+
+
+# ############################################################################################
+# cloudybookclub.com - the Cloudy Book Club website
+# ############################################################################################
+http://localhost {
+	log main
+
+	header Content-Security-Policy "connect-src 'self' api.github.com; script-src 'self'; font-src 'self' data: ; img-src 'self' books.google.com data: ; script-src-elem 'self'; style-src-attr 'self' 'unsafe-inline'; style-src-elem 'self' 'sha256-Jb11pePfz0oLKVzEK6WLuM/bMRvHS2bnnMEROG6KDR8='; object-src 'none'; base-uri 'self';"
+
+	encode
+	import cache-headers
+	import security-headers
+
+	handle {
+		reverse_proxy api-tier-java:8080
+	}
+}

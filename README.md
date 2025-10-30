@@ -29,7 +29,8 @@ making the web application entirely free of http session state (see later for wh
     * except for some Mongo aggregation queries added to the Repository implementation
 * accessing the Google Books API with the Spring RestTemplate
 * and Docker images and a Docker Compose file that runs all the tiers of the application with one `docker compose up -d` command
-* new from 2025 - there is now a "built in" front end implementation using [HTMX](https://htmx.org/). The earlier JSON data APIs are still retained meaning that the alternative React / Typescript front end implementation still works.
+* new from 2025 - there is now a "built in" front end implementation using [HTMX](https://htmx.org/). There's a blog post [available](https://blather.aidanwhiteley.com/htmx-with-java-spring-boot-and-thymeleaf/) about migrating a React front end to Java/Spring Boot/Thymeleaf. 
+* The earlier JSON data APIs are still retained meaning that the alternative React / Typescript front end implementation still works.
 
 ### Live application
 This project runs live under Docker Compose using the HTMX front end at https://cloudybookclub.com/ and with an alternate React / Typescript [client application](https://github.com/aidanwhiteley/books-react) front end available at https://spa.cloudybookclub.com/

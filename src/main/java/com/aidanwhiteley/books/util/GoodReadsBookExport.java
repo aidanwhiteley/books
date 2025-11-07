@@ -111,14 +111,14 @@ public class GoodReadsBookExport {
             var isbn10 = book.getGoogleBookDetails().getVolumeInfo().getIndustryIdentifiers().
                     stream().filter(s -> s.getType().equals(IndustryIdentifiers.TYPE_ISBN_10)).
                     map(s -> s.getIdentifier()).
-                    findFirst().orElse("");
-            bookExport.append("\"=\"\"").append(isbn10).append("\"\"\"").append(DELIMTER);
+                    findFirst().orElse(DELIMTER);
+            bookExport.append("").append(isbn10).append("").append(DELIMTER);
 
             var isbn13 = book.getGoogleBookDetails().getVolumeInfo().getIndustryIdentifiers().
                     stream().filter(s -> s.getType().equals(IndustryIdentifiers.TYPE_ISBN_13)).
                     map(s -> s.getIdentifier()).
-                    findFirst().orElse("");
-            bookExport.append("\"=\"\"").append(isbn13).append("\"\"\"").append(DELIMTER);
+                    findFirst().orElse(DELIMTER);
+            bookExport.append("").append(isbn13).append("").append(DELIMTER);
         }
         return bookExport;
     }

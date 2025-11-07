@@ -23,9 +23,10 @@ public class GoodReadsBookExportTest {
     public static final String SUMMARY_WITH_DOUBLE_QOUTE = "Here is \"some\" text";
 
     @ParameterizedTest
-    @ValueSource(strings = {"George R.R. Martin", "\"Martin, George R.R.\"", "\",5,"})
+    @ValueSource(strings = {"George R.R. Martin", "\"Martin, George R.R.\"", ",5,"})
     void testExpectedContents(String arg) {
         var export = getTestBookAsGoodReadsExport();
+        System.out.println(export);
         assertTrue(export.contains(arg));
     }
 

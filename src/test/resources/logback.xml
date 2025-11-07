@@ -3,7 +3,7 @@
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>
-                [%thread] %-5level %logger{25} - %msg%n
+                [%thread] %-5level %logger{55} - %msg%n
             </pattern>
         </encoder>
     </appender>
@@ -27,6 +27,7 @@
     <!-- Not using Netflix Archaius / config server -->
     <logger name="com.netflix.config.sources.URLConfigurationSource" level="ERROR"/>
     <logger name="org.springframework.cloud.netflix.archaius.ArchaiusAutoConfiguration" level="ERROR"/>
+    <logger name="org.springdoc.core.events.SpringDocAppInitializer" level="ERROR"/>
     <!-- Temporary log suppression until https://github.com/spring-cloud/spring-cloud-commons/issues/1315 included in a release -->
     <logger name="org.springframework.context.support.PostProcessorRegistrationDelegate" level="ERROR"/>
 

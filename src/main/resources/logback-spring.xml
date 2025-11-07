@@ -33,6 +33,7 @@
     <logger name="de.bwaldvogel.mongo.wire" level="WARN"/>
     <logger name="de.codecentric.boot.admin.client" level="WARN"/>
     <logger name="org.springdoc.core.SpringDocAnnotationsUtils" level="ERROR"/>
+    <logger name="org.springdoc.core.events.SpringDocAppInitializer" level="ERROR"/>
     <!-- Not using Netflix Archaius / config server -->
     <logger name="com.netflix.config.sources.URLConfigurationSource" level="ERROR"/>
     <logger name="org.springframework.cloud.netflix.archaius.ArchaiusAutoConfiguration" level="ERROR"/>

@@ -6,7 +6,7 @@
 
     <groupId>com.aidanwhiteley</groupId>
     <artifactId>books</artifactId>
-    <version>0.74.02-RELEASE</version>
+    <version>0.74.03-RELEASE</version>
     <packaging>jar</packaging>
 
     <name>Books Microservice</name>
@@ -294,7 +294,7 @@
                 <version>3.4.6</version>
                 <configuration>
                     <from>
-                        <image>openjdk:21-jdk</image>
+                        <image>eclipse-temurin:21-jre</image>
                         <!-- <image>amazoncorretto:21.0.0</image>-->
                     </from>
                     <to>

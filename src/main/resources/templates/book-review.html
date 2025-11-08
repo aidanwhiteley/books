@@ -51,7 +51,9 @@
                 <p th:if="${book.createdDateTime}"><b>Review Date: </b><span
                         th:text="${#temporals.format(book.createdDateTime, 'dd-MM-yyyy')}">20-7-2024</span></p>
                 <p><b>Genre: </b><span th:text="${book.genre}">Novel</span></p>
-
+                <p th:if="${book.googleBookDetails != null and book.googleBookDetails.volumeInfo != null and book.googleBookDetails.volumeInfo.industryIdentifiers != null and #arrays.length(book.googleBookDetails.volumeInfo.industryIdentifiers) gt 0}">
+                    <b>ISBN: </b><span th:text="${book.googleBookDetails.volumeInfo.industryIdentifiers[0].identifier}">123456789012</span>
+                </p>
                 <p th:if="${book.googleBookDetails != null and book.googleBookDetails.accessInfo.embeddable != null and book.googleBookDetails.accessInfo.viewability != 'NO_PAGES'}">
                     <b class="me-3">Book Preview:</b>
                     <a th:href="@{https://books.google.co.uk/books?printsec=frontcover#v=onepage&q&f=true&gbpv=1(id=${book.googleBookId})}"

@@ -43,6 +43,9 @@
                                 <li class="menu-item pb-2">
                                     <a href="/feeds/rss">RSS feed</a>
                                 </li>
+                                <li th:if="${(user != null) and (highestRole == 'ADMIN')}" class="menu-item pb-2">
+                                    <a href="/feeds/exportbooks">Goodreads export</a>
+                                </li>
                             </ul>
                         </div>
                     </div>

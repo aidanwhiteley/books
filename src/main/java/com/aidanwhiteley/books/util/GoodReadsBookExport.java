@@ -98,7 +98,7 @@ public class GoodReadsBookExport {
 
     private static String getRating(Book book) {
         var rating = book.getRating();
-        // Cloudy use a range of 0 to 4 where as uses 1 to 5;
+        // Cloudy use a range of 0 to 4 where as Goodreads uses 1 to 5;
         return (rating.getRatingLevel() + 1) + "";
     }
 
@@ -111,13 +111,13 @@ public class GoodReadsBookExport {
             var isbn10 = book.getGoogleBookDetails().getVolumeInfo().getIndustryIdentifiers().
                     stream().filter(s -> s.getType().equals(IndustryIdentifiers.TYPE_ISBN_10)).
                     map(s -> s.getIdentifier()).
-                    findFirst().orElse(DELIMTER);
+                    findFirst().orElse("");
             bookExport.append("\"=\"\"").append(isbn10).append("\"\"\"").append(DELIMTER);
 
             var isbn13 = book.getGoogleBookDetails().getVolumeInfo().getIndustryIdentifiers().
                     stream().filter(s -> s.getType().equals(IndustryIdentifiers.TYPE_ISBN_13)).
                     map(s -> s.getIdentifier()).
-                    findFirst().orElse(DELIMTER);
+                    findFirst().orElse("");
             bookExport.append("\"=\"\"").append(isbn13).append("\"\"\"").append(DELIMTER);
         }
         return bookExport;

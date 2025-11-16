@@ -366,7 +366,7 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
         return page.getContent().stream().filter(b ->
                 (b.getGoogleBookId() != null &&
                         !b.getGoogleBookId().isBlank() &&
-                        !(b.getGoogleBookDetails().getVolumeInfo().getImageLinks() == null) &&
+                        (b.getGoogleBookDetails().getVolumeInfo().getImageLinks() != null) &&
                         (b.getGoogleBookDetails().getVolumeInfo().getImageLinks().getThumbnail() != null) &&
                         !b.getGoogleBookDetails().getVolumeInfo().getImageLinks().getThumbnail().isBlank()
                 )).toList();

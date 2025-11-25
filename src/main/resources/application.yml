@@ -21,12 +21,11 @@ spring:
           no-cache: false
           no-store: false
           cache-public: true
+  main:
+    allow-bean-definition-overriding: true
 
   application:
     name: BooksApiService
-  data:
-    mongodb:
-      uri: mongodb://localhost:27017/books?safe=true&journal=true&w=majority&connectTimeoutMS=1001&timeoutMS=1000&serverSelectionTimeoutMS=10000
   aop:
   #proxy-target-class: false
   devtools:
@@ -43,11 +42,11 @@ spring:
           google:
             client-id: NotInSCM1
             client-secret: NotInSCM1
-            # redirect-uri: https://cloudybookclub.com/login/oauth2/code/google
+          # redirect-uri: https://cloudybookclub.com/login/oauth2/code/google
           facebook:
             client-id: NotInSCM2
             client-secret: NotInSCM2
-            # redirect-uri: https://cloudybookclub.com/login/oauth2/code/facebook
+        # redirect-uri: https://cloudybookclub.com/login/oauth2/code/facebook
         provider:
           # Google provides all the info this app needs by default. Facebook needs configuring.
           facebook:
@@ -74,7 +73,8 @@ spring:
         enabled: false
   threads:
     virtual:
-      enabled: true    # RibbonLoadBalancerClient deprecated. This setting uses BlockingLoadBalancerClient
+      enabled: true
+  mongodb.uri: mongodb://localhost:27017/books?safe=true&journal=true&w=majority&connectTimeoutMS=1001&timeoutMS=1000&serverSelectionTimeoutMS=10000    # RibbonLoadBalancerClient deprecated. This setting uses BlockingLoadBalancerClient
 
 # If running in containers we want to set a random port (i.e. override to set to 0)
 server:
@@ -93,15 +93,12 @@ eureka:
 # If you want to enable for your application, see the application-dev-mongo-java-server.yml for an example where these values are overriden
 management:
   endpoints:
-    enabled-by-default: false
+    access.default: none
 
   # New in SB 2.5.0 and doesnt work with in memory mongo java server in tests
   metrics:
-    mongo:
-      command:
-        enabled: false
-      connectionpool:
-        enabled: false
+      mongodb.command.enabled: false
+      mongodb.connectionpool.enabled: false
 
 info:
   build:

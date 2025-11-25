@@ -5,16 +5,15 @@ import com.aidanwhiteley.books.domain.googlebooks.Item;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
 
 import static com.aidanwhiteley.books.util.ClientInputSanitiserUtils.isValidTitleOrAuthor;
 import static com.aidanwhiteley.books.util.ClientInputSanitiserUtils.sanitiseGoogleBookId;
@@ -35,8 +34,7 @@ public class GoogleBooksDaoSync {
     public void init() {
         // Using a PostConstruct as we need the bean initialised to be able to
         // access the configurable connect and read timeouts
-        RestTemplateBuilder restTemplateBuilder = new RestTemplateBuilder();
-        this.googleBooksRestTemplate = buildRestTemplate(restTemplateBuilder);
+        this.googleBooksRestTemplate = buildRestTemplate();
     }
 
     public BookSearchResult searchGoogleBooksByTitleAndAuthor(String title, String author) {
@@ -90,9 +88,14 @@ public class GoogleBooksDaoSync {
         }
     }
 
-    private RestTemplate buildRestTemplate(RestTemplateBuilder builder) {
+    private RestTemplate buildRestTemplate() {
+        SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
+        // SimpleClientHttpRequestFactory expects int milliseconds
+        factory.setConnectTimeout(googleBooksApiConfig.getConnectTimeout());
+        factory.setReadTimeout(googleBooksApiConfig.getReadTimeout());
 
-        return builder.connectTimeout(Duration.ofMillis(googleBooksApiConfig.getConnectTimeout())).
-                readTimeout(Duration.ofMillis(googleBooksApiConfig.getReadTimeout())).build();
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.setRequestFactory(factory);
+        return restTemplate;
     }
 }

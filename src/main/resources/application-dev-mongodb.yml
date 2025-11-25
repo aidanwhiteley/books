@@ -1,7 +1,4 @@
 spring:
-  data:
-    mongodb:
-      uri: mongodb://localhost:27017/books-mongo-dev?safe=true&journal=true&w=majority&connectTimeoutMS=1001&timeoutMS=1000&serverSelectionTimeoutMS=10000
   mail:
     port: 3026    # Must match the value specified in the SignUpNotificationServiceTest. Set hight to avoid problems on Unix envs
 
@@ -16,12 +13,13 @@ spring:
           metadata:
             tags:
               environment: mongo-java-server
+  mongodb.uri: mongodb://localhost:27017/books-mongo-dev?safe=true&journal=true&w=majority&connectTimeoutMS=1001&timeoutMS=1000&serverSelectionTimeoutMS=10000
 
 # By default actuator is disabled.
 # These values are overriden here to values that could be used on production
 management:
   endpoints:
-    enabled-by-default: true
+    access.default: read-only
     web:
       exposure:
         # Exposing only read only items and not large data amounts - so no heapdump or shutdown. No project use of flyway, integrationgraph, liquibase, prometheus

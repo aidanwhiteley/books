@@ -32,7 +32,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.3</version>
+        <version>3.5.9</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -163,11 +163,10 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!-- An easy way to bring in the Wiremock dependency via Spring Cloud Contract -->
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-contract-wiremock</artifactId>
-            <scope>test</scope>
+            <groupId>org.wiremock.integrations</groupId>
+            <artifactId>wiremock-spring-boot</artifactId>
+            <version>3.10.0</version>
         </dependency>
         <dependency>
             <groupId>io.gatling.highcharts</groupId>
@@ -210,7 +209,7 @@
 
     <dependencyManagement>
         <dependencies>
-            <!-- For the Spring Cloud Wiremock / Eureka client dependencies -->
+            <!-- For the Spring Eureka client dependencies -->
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>

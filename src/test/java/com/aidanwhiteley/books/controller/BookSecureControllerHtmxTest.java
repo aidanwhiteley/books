@@ -14,11 +14,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.wiremock.spring.ConfigureWireMock;
+import org.wiremock.spring.EnableWireMock;
 
 import static com.aidanwhiteley.books.util.BookTestUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -29,7 +30,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@AutoConfigureWireMock(port = 0, httpsPort = 0)
+@EnableWireMock({
+        @ConfigureWireMock(
+                httpsPort = 0,
+                port = 0)
+})
 @ActiveProfiles("dev-mongo-java-server")
 public class BookSecureControllerHtmxTest {
 

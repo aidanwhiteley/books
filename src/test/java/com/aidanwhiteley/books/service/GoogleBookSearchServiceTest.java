@@ -11,14 +11,19 @@ import com.aidanwhiteley.books.util.IntegrationTest;
 import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.context.annotation.Profile;
 import org.springframework.test.context.ActiveProfiles;
+import org.wiremock.spring.ConfigureWireMock;
+import org.wiremock.spring.EnableWireMock;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @Profile({"dev-mongo-java-server", "dev-mongo-java-server-no-auth", "dev-mongodb-no-auth", "dev-mongodb", "ci"})
-@AutoConfigureWireMock(port = 0, httpsPort = 0)
+@EnableWireMock({
+        @ConfigureWireMock(
+                httpsPort = 0,
+                port = 0)
+})
 @ActiveProfiles("dev-mongo-java-server")
 class GoogleBookSearchServiceTest extends IntegrationTest {
 

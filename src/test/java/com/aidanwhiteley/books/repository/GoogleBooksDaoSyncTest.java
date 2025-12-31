@@ -5,6 +5,7 @@ import ch.qos.logback.classic.LoggerContext;
 import com.aidanwhiteley.books.domain.googlebooks.BookSearchResult;
 import com.aidanwhiteley.books.domain.googlebooks.Item;
 import com.aidanwhiteley.books.util.IntegrationTest;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,6 +65,7 @@ class GoogleBooksDaoSyncTest extends IntegrationTest {
     }
 
     @Test
+    @Disabled("Disabled as RestTemplateBuilder based timeouts removed to aid SB4 boot upgrade")
     void confirmFindbyBookTimesOut() {
 
         // Turn off unwanted logging for read timeout. Prevents JUnit output having unnecessary stack traces etc.

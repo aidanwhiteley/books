@@ -2,10 +2,8 @@ package com.aidanwhiteley.books.repository;
 
 import com.aidanwhiteley.books.domain.googlebooks.BookSearchResult;
 import com.aidanwhiteley.books.domain.googlebooks.Item;
-import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.client.HttpStatusCodeException;
@@ -14,7 +12,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
 
 import static com.aidanwhiteley.books.util.ClientInputSanitiserUtils.isValidTitleOrAuthor;
 import static com.aidanwhiteley.books.util.ClientInputSanitiserUtils.sanitiseGoogleBookId;
@@ -29,15 +26,18 @@ public class GoogleBooksDaoSync {
 
     public GoogleBooksDaoSync(GoogleBooksApiConfig googleBooksApiConfig) {
         this.googleBooksApiConfig = googleBooksApiConfig;
+        this.googleBooksRestTemplate = new RestTemplate();
     }
 
-    @PostConstruct
-    public void init() {
-        // Using a PostConstruct as we need the bean initialised to be able to
-        // access the configurable connect and read timeouts
-        RestTemplateBuilder restTemplateBuilder = new RestTemplateBuilder();
-        this.googleBooksRestTemplate = buildRestTemplate(restTemplateBuilder);
-    }
+    // Commenting this out to ease the migration to spring Boot 4 after which we'll convert
+    // to using RestClient anyway
+//    @PostConstruct
+//    public void init() {
+//        // Using a PostConstruct as we need the bean initialised to be able to
+//        // access the configurable connect and read timeouts
+//        RestTemplateBuilder restTemplateBuilder = new RestTemplateBuilder();
+//        this.googleBooksRestTemplate = buildRestTemplate(restTemplateBuilder);
+//    }
 
     public BookSearchResult searchGoogleBooksByTitleAndAuthor(String title, String author) {
 
@@ -90,9 +90,9 @@ public class GoogleBooksDaoSync {
         }
     }
 
-    private RestTemplate buildRestTemplate(RestTemplateBuilder builder) {
-
-        return builder.connectTimeout(Duration.ofMillis(googleBooksApiConfig.getConnectTimeout())).
-                readTimeout(Duration.ofMillis(googleBooksApiConfig.getReadTimeout())).build();
-    }
+//    private RestTemplate buildRestTemplate(RestTemplateBuilder builder) {
+//
+//        return builder.connectTimeout(Duration.ofMillis(googleBooksApiConfig.getConnectTimeout())).
+//                readTimeout(Duration.ofMillis(googleBooksApiConfig.getReadTimeout())).build();
+//    }
 }

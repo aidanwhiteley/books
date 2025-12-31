@@ -8,13 +8,17 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.context.annotation.Profile;
+import org.wiremock.spring.ConfigureWireMock;
+import org.wiremock.spring.EnableWireMock;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 @Profile({"dev-mongo-java-server", "dev-mongo-java-server-no-auth", "dev-mongodb-no-auth", "dev-mongodb", "ci"})
-@AutoConfigureWireMock(port = 0)
+@EnableWireMock({
+        @ConfigureWireMock(
+                port = 0)
+})
 class GoogleBookDaoAsyncTest extends IntegrationTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GoogleBookDaoAsyncTest.class);

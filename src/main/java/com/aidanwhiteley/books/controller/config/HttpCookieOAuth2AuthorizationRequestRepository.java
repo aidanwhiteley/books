@@ -1,7 +1,6 @@
 package com.aidanwhiteley.books.controller.config;
 
 import com.aidanwhiteley.books.controller.exceptions.JwtAuthAuzException;
-import tools.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -11,8 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
-import java.io.IOException;
 import java.util.Base64;
 import java.util.Optional;
 

@@ -187,7 +187,7 @@ public class UserService {
             }
             default: {
                 LOGGER.error("Unexpected oauth user type {}", updateUserDetails.getProvider());
-                throw new IllegalArgumentException(String.format("Unexpected oauth type: %s", updateUserDetails.getProvider()));
+                throw new IllegalArgumentException("Unexpected oauth type: %s".formatted(updateUserDetails.getProvider()));
             }
         }
 

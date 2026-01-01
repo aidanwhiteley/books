@@ -1,8 +1,7 @@
 package com.aidanwhiteley.books.controller.config;
 
 import com.aidanwhiteley.books.controller.exceptions.JwtAuthAuzException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -11,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
+import tools.jackson.core.JacksonException;
 
 import java.io.IOException;
 import java.util.Base64;
@@ -64,7 +64,7 @@ class HttpCookieOAuth2AuthorizationRequestRepository implements AuthorizationReq
     private String fromAuthorizationRequest(OAuth2AuthorizationRequest authorizationRequest) {
         try {
             return Base64.getEncoder().encodeToString(authRequestJsonMapper.writeValueAsString(authorizationRequest).getBytes());
-        } catch (JsonProcessingException jspe) {
+        } catch (JacksonException jspe) {
             var msg = "Failed to serialise OAuth auth to JSON";
             LOGGER.error(msg, jspe);
             throw new JwtAuthAuzException(msg);
@@ -102,9 +102,9 @@ class HttpCookieOAuth2AuthorizationRequestRepository implements AuthorizationReq
         try {
             return authRequestJsonMapper.readValue(new String(Base64.getDecoder().decode(cookie.getValue())),
                     OAuth2AuthorizationRequest.class);
-        } catch (IOException jspe) {
+        } catch (JacksonException je) {
             var msg = "Failed to deserialise OAuth auth from JSON";
-            LOGGER.error(msg, jspe);
+            LOGGER.error(msg, je);
             throw new JwtAuthAuzException(msg);
         }
     }

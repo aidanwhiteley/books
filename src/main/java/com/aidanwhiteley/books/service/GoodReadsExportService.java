@@ -3,7 +3,6 @@ package com.aidanwhiteley.books.service;
 import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.repository.BookRepository;
 import com.aidanwhiteley.books.util.GoodReadsBookExport;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -13,7 +12,7 @@ import java.util.List;
 public class GoodReadsExportService {
     private final BookRepository bookRepository;
 
-    public GoodReadsExportService(@Autowired BookRepository bookRepository) {
+    public GoodReadsExportService(BookRepository bookRepository) {
         this.bookRepository = bookRepository;
     }
 

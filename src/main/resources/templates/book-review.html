@@ -71,7 +71,7 @@
 
                 <a th:if="${user != null and (isOwner == true or highestRole == 'ADMIN')}"
                         th:href="@{/updatereview/{id}(id = ${book.id})}">
-                    <button id="updateButton" aria-label="Update book review" class="me-4 mt-4 btn btn-outline-primary" type="button"
+                    <button id="updateButton" aria-label="Update this book review" class="me-4 mt-4 btn btn-outline-primary" type="button"
                             data-umami-event="Update book review clicked">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
                             <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325"/>
@@ -80,7 +80,7 @@
                     </button>
                 </a>
                 <button id="deleteButton" th:if="${user != null and (isOwner == true or highestRole == 'ADMIN')}"
-                        aria-label="Delete book review" class="mt-4 btn btn-outline-danger"
+                        aria-label="Delete this book review" class="mt-4 btn btn-outline-danger"
                         hx-confirm="Are you sure you wish to delete this book review?"
                         hx-target="#detail" hx-target-error="#detail" hx-trigger="click"
                         th:hx-delete="@{/deletereview/{id}(id = ${book.id})}" type="submit"
@@ -141,7 +141,7 @@
                         </span>
 
                         <button th:if="${!comment.deleted and user != null and (highestRole == 'EDITOR' or highestRole == 'ADMIN')}"
-                                aria-label="Delete book comment" class="btn btn-sm btn-outline-danger d-block"
+                                aria-label="Delete comment?" class="btn btn-sm btn-outline-danger d-block"
                                 hx-confirm="Are you sure you wish to delete this book review comment?"
                                 hx-target="#comments-list" hx-target-error="#detail" hx-trigger="click"
                                 th:hx-delete="@{/deletecomment/(bookId = ${book.id}, commentId = ${comment.id})}" type="submit"
@@ -171,7 +171,7 @@
 
                     <input type="hidden" id="bookId" name="bookId" th:value="${book.id}" />
 
-                    <button aria-label="Comment on book review" id="comment-add" class="me-4 mt-4 btn btn-outline-primary" type="submit"
+                    <button aria-label="Comment on this book review" id="comment-add" class="me-4 mt-4 btn btn-outline-primary" type="submit"
                             data-umami-event="Add comment clicked">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chat-dots" viewBox="0 0 16 16">
                             <path d="M5 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0m3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/>

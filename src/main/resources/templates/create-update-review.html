@@ -131,7 +131,7 @@
 
                         <div aria-label="Toolbar with button groups" class="btn-toolbar justify-content-between"
                              role="toolbar">
-                            <button aria-label="Previous" class="btn btn-outline-primary previous-button"
+                            <button aria-label="<< Previous" class="btn btn-outline-primary previous-button"
                                     hx-swap="outerHTML"
                                     hx-target="#googleBookCandidates" hx-target-error="#detail"
                                     th:disabled="${googleBookSearchResult.hasPrevious == false}"
@@ -139,7 +139,7 @@
                                     type="button" data-umami-event="Scrolled to previous Google book review">&laquo;
                                 Previous
                             </button>
-                            <button aria-label="Next" class="btn btn-outline-primary next-button"
+                            <button aria-label="Next >>" class="btn btn-outline-primary next-button"
                                     hx-swap="outerHTML"
                                     hx-target="#googleBookCandidates" hx-target-error="#detail"
                                     th:disabled="${googleBookSearchResult.hasMore == false}"

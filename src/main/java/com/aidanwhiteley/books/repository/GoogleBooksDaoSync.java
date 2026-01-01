@@ -29,15 +29,11 @@ public class GoogleBooksDaoSync {
 
     public GoogleBooksDaoSync(GoogleBooksApiConfig googleBooksApiConfig) {
         this.googleBooksApiConfig = googleBooksApiConfig;
+        this.googleBooksRestTemplate = new RestTemplate();
     }
 
-    @PostConstruct
-    public void init() {
-        // Using a PostConstruct as we need the bean initialised to be able to
-        // access the configurable connect and read timeouts
-        RestTemplateBuilder restTemplateBuilder = new RestTemplateBuilder();
-        this.googleBooksRestTemplate = buildRestTemplate(restTemplateBuilder);
-    }
+    // Commenting out the previous init() method to ease the migration to spring Boot 4 after which we'll convert
+    // to using RestClient anyway
 
     public BookSearchResult searchGoogleBooksByTitleAndAuthor(String title, String author) {
 
@@ -88,11 +84,5 @@ public class GoogleBooksDaoSync {
             LOGGER.error("Rest client error calling Google Books API: ", e);
             throw e;
         }
-    }
-
-    private RestTemplate buildRestTemplate(RestTemplateBuilder builder) {
-
-        return builder.connectTimeout(Duration.ofMillis(googleBooksApiConfig.getConnectTimeout())).
-                readTimeout(Duration.ofMillis(googleBooksApiConfig.getReadTimeout())).build();
     }
 }

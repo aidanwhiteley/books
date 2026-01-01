@@ -11,7 +11,6 @@ import com.aidanwhiteley.books.repository.dtos.BooksByReader;
 import com.aidanwhiteley.books.service.StatsService;
 import com.aidanwhiteley.books.service.dtos.SummaryStats;
 import com.aidanwhiteley.books.util.JwtAuthenticationUtils;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -136,7 +135,7 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
     }
 
     @GetMapping(value = "/bookreview", params = {"bookId"})
-    public String bookReview(@RequestParam String bookId, Model model, Principal principal, HttpServletRequest request) {
+    public String bookReview(@RequestParam String bookId, Model model, Principal principal) {
         Book aBook = bookRepository.findById(bookId).orElseThrow(() -> new NotFoundException("Book id " + bookId + " not found"));
 
         model.addAttribute("book", aBook);
@@ -366,7 +365,7 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
         return page.getContent().stream().filter(b ->
                 (b.getGoogleBookId() != null &&
                         !b.getGoogleBookId().isBlank() &&
-                        (b.getGoogleBookDetails().getVolumeInfo().getImageLinks() != null) &&
+                        !(b.getGoogleBookDetails().getVolumeInfo().getImageLinks() == null) &&
                         (b.getGoogleBookDetails().getVolumeInfo().getImageLinks().getThumbnail() != null) &&
                         !b.getGoogleBookDetails().getVolumeInfo().getImageLinks().getThumbnail().isBlank()
                 )).toList();

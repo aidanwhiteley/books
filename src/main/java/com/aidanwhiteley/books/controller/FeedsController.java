@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.apache.hc.core5.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,7 +39,7 @@ public class FeedsController {
         this.authUtils = authUtils;
     }
 
-    @GetMapping(value = "/rss")
+    @GetMapping(value = "/rss", produces = MediaType.APPLICATION_XML_VALUE)
     public Channel findRecentActivity() {
         return siteRssFeed.createSiteRssFeed();
     }

@@ -133,6 +133,12 @@
             <artifactId>jaxb-runtime</artifactId>
         </dependency>
 
+        <!-- For the Rome based RSS feed -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-xml</artifactId>
+        </dependency>
+
         <!-- Runtime monitoring dependencies -->
 <!--        <dependency>-->
 <!--            <groupId>de.codecentric</groupId>-->

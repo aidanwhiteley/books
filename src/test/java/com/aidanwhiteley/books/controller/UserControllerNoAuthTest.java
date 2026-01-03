@@ -4,6 +4,7 @@ import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.util.IntegrationTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.resttestclient.TestRestTemplate;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 // See https://github.com/spring-projects/spring-boot/issues/19788 for why we use the syntax below to set the active profile
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = {"spring.profiles.active=dev-mongo-java-server-no-auth"})
+@AutoConfigureTestRestTemplate
 class UserControllerNoAuthTest extends IntegrationTest {
 
     @Autowired

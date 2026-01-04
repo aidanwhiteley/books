@@ -20,7 +20,13 @@ spring:
 # These values are overriden here to allow for testing
 management:
   endpoints:
-    access.default: read-only
+    access:
+      default: unrestricted
+    health:
+      access: read-only
+      show-details: always
+    info:
+      access: read-only
     web:
       exposure:
         # Exposing only read only items and not large data amounts - so no heapdump, threaddump or shutdown. No project use of flyway, integrationgraph, liquibase, prometheus

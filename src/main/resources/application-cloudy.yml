@@ -29,6 +29,7 @@ spring:
     add-properties: false
     livereload:
       enabled: false
+
   mongodb.uri: mongodb://${CLOUDY_MONGO_APP_USERNAME}:${CLOUDY_MONGO_APP_PASSWORD}@${CLOUDY_MONGO_HOST}:${CLOUDY_MONGO_PORT}/${CLOUDY_MONGO_DATABASE}?safe=true&journal=true&w=majority&connectTimeoutMS=1001&timeoutMS=1000&serverSelectionTimeoutMS=10000
 
 server:
@@ -47,9 +48,13 @@ eureka:
 
 management:
   endpoints:
-    access.default: ${CLOUDY_ACTUATOR_ENABLED:false}
+    access:
+      default: ${CLOUDY_ACTUATOR_ENABLED:none}
     health:
-      show-details: ${CLOUDY_ACTUATOR_HEALTH_SHOW_DETAILS:false}
+      access: read-only
+      show-details: ${CLOUDY_ACTUATOR_HEALTH_SHOW_DETAILS:always}
+    info:
+      access: read-only
     web:
       exposure:
         include: ${CLOUDY_ACTUATOR_ENDPOINTS:health, info}

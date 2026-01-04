@@ -41,7 +41,7 @@ public class FeedsController {
         this.authUtils = authUtils;
     }
 
-    @GetMapping(value = "/rss", produces = MediaType.APPLICATION_XML_VALUE)
+    @GetMapping(value = "/rss", produces = MediaType.APPLICATION_RSS_XML_VALUE)
     public String findRecentActivity() {
         Channel channel = siteRssFeed.createSiteRssFeed();
         WireFeedOutput output = new WireFeedOutput();

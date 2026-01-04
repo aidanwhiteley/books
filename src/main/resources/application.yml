@@ -29,11 +29,7 @@ spring:
   devtools:
     livereload:
       enabled: true
-#  jackson:
-#    serialization:
-#      write-dates-as-timestamps: true
   jackson:
-    #date-format: com.fasterxml.jackson.databind.util.StdDateFormat
     datatype:
       datetime:
         write-dates-as-timestamps: true

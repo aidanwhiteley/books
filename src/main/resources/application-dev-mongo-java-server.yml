@@ -13,6 +13,7 @@ spring:
           metadata:
             tags:
               environment: development
+
   mongodb.uri: mongodb://localhost:27017/books-dev-mongo-java-server?safe=true&journal=true&w=majority&connectTimeoutMS=1001&timeoutMS=1000&serverSelectionTimeoutMS=10000
 
 # By default actuator is disabled.

@@ -8,7 +8,7 @@
     <logger name="org.springframework.data" level="WARN"/>
     <logger name="org.springframework.boot.autoconfigure.security.oauth2" level="WARN"/>
     <logger name="org.springframework.boot" level="WARN"/>
-    <logger name="org.springframework.boot.web.embedded.tomcat" level="INFO"/>
+    <logger name="org.springframework.boot.tomcat.TomcatWebServer" level="INFO"/>
     <logger name="org.springframework.security" level="WARN"/>
     <logger name="org.springframework.security.web.csrf" level="WARN" />
     <logger name="org.springframework.jmx" level="WARN"/>
@@ -18,7 +18,7 @@
     <logger name="org.springframework.context" level="WARN"/>
     <logger name="org.springframework.boot.availability.ApplicationAvailabilityBean" level="INFO"/>
     <logger name="org.springframework.boot.devtools" level="INFO"/>
-    <logger name="org.thymeleaf" level="INFO"/>
+    <logger name="org.thymeleaf" level="WARN"/>
 
     <!-- Possibly related to https://github.com/spring-cloud/spring-cloud-commons/issues/1315 -->
     <logger name="org.springframework.context.support.PostProcessorRegistrationDelegate$BeanPostProcessorChecker"

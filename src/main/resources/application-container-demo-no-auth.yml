@@ -22,6 +22,7 @@ spring:
         enabled: true
     discovery:
       enabled: true
+
   mongodb.uri: mongodb://${MONGO_INITDB_APP_USERNAME}:${MONGO_INITDB_APP_PASSWORD}@data-tier-mongo:27017/${MONGO_INITDB_DATABASE}?safe=true&journal=true&w=majority&connectTimeoutMS=1001&timeoutMS=1000&serverSelectionTimeoutMS=10000
 
 # If running in containers we usually want to set a random port by setting the port to 0.

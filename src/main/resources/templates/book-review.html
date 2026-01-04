@@ -56,7 +56,7 @@
                 </p>
                 <p th:if="${book.googleBookDetails != null and book.googleBookDetails.accessInfo.embeddable != null and book.googleBookDetails.accessInfo.viewability != 'NO_PAGES'}">
                     <b class="me-3">Book Preview:</b>
-                    <a th:href="@{https://books.google.co.uk/books?printsec=frontcover#v=onepage&q&f=true&gbpv=1(id=${book.googleBookId})}"
+                    <a th:href="@{https://books.google.co.uk/books?id={id}&printsec=frontcover#v=onepage&q&f=true&gbpv=1(id=${book.googleBookId})}"
                        target="_blank">
                         <img alt="Google book preview button"
                              th:src="@{/images/gbs_preview_button1.gif}" src="../static/images/gbs_preview_button1.gif"/>

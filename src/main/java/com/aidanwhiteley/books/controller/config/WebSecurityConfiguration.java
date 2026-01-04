@@ -138,7 +138,7 @@ public class WebSecurityConfiguration {
                         // Actuator endpoints are the only ones protected by request level security - everything else by method level security
                         .requestMatchers(EndpointRequest.toAnyEndpoint().excluding(HealthEndpoint.class).excluding(InfoEndpoint.class)).
                         hasRole(ROLE_ACTUATOR.getShortName())
-                        // We permitAll here - see the method level JavaDocs for why we do this
+                        // We permitAll here - see the method level Javadocs for why we do this
                         .anyRequest().permitAll()
                 )
                 .logout(logout -> logout.addLogoutHandler(jwtCookie).addLogoutHandler(clearSiteData)
@@ -163,7 +163,6 @@ public class WebSecurityConfiguration {
                         .withSetterVisibility(JsonAutoDetect.Visibility.ANY)
                         .withCreatorVisibility(JsonAutoDetect.Visibility.ANY))
                 .addModule(new OAuth2ClientJacksonModule())
-                // See https://github.com/spring-projects/spring-security/issues/4370
                 .addModule(new CoreJacksonModule())
                 .build();
     }

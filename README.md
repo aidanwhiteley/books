@@ -9,7 +9,7 @@ actually be useful.
 So welcome to the "Cloudy Bookclub"!
 
 > [!NOTE]  
-> Now uplifted to the latest Spring Boot 3.x and Java 21 and with a default, HTMX based front end provided.
+> Now uplifted to the latest Spring Boot 4.x and Java 21 and with a default, HTMX based front end provided.
 
 [![Actions CI Build](https://github.com/aidanwhiteley/books/workflows/Actions%20CI%20Build/badge.svg)](https://github.com/aidanwhiteley/books/actions?query=workflow%3A%22Actions+CI+Build%22)
 [![Sonar Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=com.aidanwhiteley%3Abooks&metric=alert_status)](https://sonarcloud.io/dashboard?id=com.aidanwhiteley%3Abooks)
@@ -17,7 +17,7 @@ So welcome to the "Cloudy Bookclub"!
 ## Implementation
 
 The main functionality included in the microservice includes
-* being based on latest Spring Boot 3.x and Java 21
+* being based on latest Spring Boot 4.x and Java 21
 * Oauth2 based logon using
     * Google
     * Facebook
@@ -29,7 +29,7 @@ making the web application entirely free of http session state (see later for wh
     * except for some Mongo aggregation queries added to the Repository implementation
 * accessing the Google Books API with the Spring RestTemplate
 * and Docker images and a Docker Compose file that runs all the tiers of the application with one `docker compose up -d` command
-* new from 2025 - there is now a "built in" front end implementation using [HTMX](https://htmx.org/). There's a blog post [available](https://blather.aidanwhiteley.com/htmx-with-java-spring-boot-and-thymeleaf/) about migrating a React front end to Java/Spring Boot/Thymeleaf. 
+* new in 2025 - there is now a "built in" front end implementation using [HTMX](https://htmx.org/). There's a blog post [available](https://blather.aidanwhiteley.com/htmx-with-java-spring-boot-and-thymeleaf/) about migrating a React front end to Java/Spring Boot/Thymeleaf. 
 * The earlier JSON data APIs are still retained meaning that the alternative React / Typescript front end implementation still works.
 
 ### Live application
@@ -62,7 +62,7 @@ By default, the tests run against mongo-java-server so there is no need to insta
 MongoDb to test most of the application. Functionality not supported by mogo-java-server such as full text indexes results in some tests being skipped when 
 running with the mongo-java-server Spring profile.
 
-When running the CI builds with Github Actions, all tests run against a real Mongo instance.
+When running the CI builds with GitHub Actions, all tests run against a real Mongo instance.
 
 Some of the integration tests make use of WireMock - see the /src/test/resources/mappings and __files directories for the configuration details.
 
@@ -296,30 +296,10 @@ You may get 503 errors for a short period while the whole stack is starting up.
 
 ## Spring Boot Admin
 The application supports exposing [Actuator](https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready.html) 
-endpoints to be consumed by [Spring Boot Admin](http://codecentric.github.io/spring-boot-admin/current/). We need security applied to 
-the Actuator end points but don't want to introduce another security layer into the application - we want to stick with the JWT based implemetation 
-we already have. So we need Spring Boot Admin to be able to supply a suitable JWT token when calling the Actuator end points. 
+endpoints to be consumed by [Spring Boot Admin](http://codecentric.github.io/spring-boot-admin/current/). 
 
-To do this, set books.allow.actuator.user.creation to true and run the application. A JWT will be printed to the application logs for a 
-user that **only** jas the Actuator role. Plug this JWT token into a Spring Boot Admin application that is configured to send the above JWT token with each 
-request to the Actuator endpoints in this application. A extract of the required configuration of a class that
-implements de.codecentric.boot.admin.server.web.client.HttpHeadersProvider is listed below 
-with a fully working example project being available at https://github.com/aidanwhiteley/books-springbootadmin
-```java
-@Component
-public class JwtHeaderProvider implements HttpHeadersProvider {
-    
-    @Override
-    public HttpHeaders getHeaders(Instance instance) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.COOKIE, JWT_COOKIE_NAME + "=" + jwtTokenActuatorUser);
-        return headers;
-    }
-}
-```
-* Set HTTP basic username/password values required when the client application registers with the Spring Boot Admin instance
-    * in the client application (i.e. this application) by setting the spring.boot.admin.client.username/password values 
-    * configure the Spring Boot admin application with the same values by setting spring.security.user.name/password
+However, as Spring Boot Admin does not yet support Spring Boot 4.x, the Spring Boot Admin client functionality 
+has been removed in the current version of this application.
 
 ## Client Side Functionality
 

@@ -92,8 +92,7 @@ public interface BookControllerHtmxExceptionHandling {
             LOGGER.warn(errMsg.toString());
         }
         String description = "Sorry - you are not permitted to access this functionality";
-        return addAttributesToErrorPage(description, "e-403", model, principal,
-                request == null ? null : request);
+        return addAttributesToErrorPage(description, "e-403", model, principal, request);
     }
 
     // Exception handler of last resort!

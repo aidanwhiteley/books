@@ -42,6 +42,7 @@ public class GoodReadsBookExport {
         bookExport.append(lastFirst(book.getAuthor())).append(DELIMTER);
         // Additional Authors not supported
         bookExport.append(EMPTY_FIELD).append(DELIMTER);
+        // The getIsbnNumbers method appends both ISBN and ISBN13 fields
         bookExport = getIsbnNumbers(book, bookExport);
         bookExport.append(getRating(book)).append(DELIMTER);
         // Average rating not supported
@@ -65,7 +66,7 @@ public class GoodReadsBookExport {
         bookExport.append(EMPTY_FIELD).append(DELIMTER);
         // Exclusive shelf is hard coded to read
         bookExport.append("read").append(DELIMTER);
-        // Sigh - Good Reads dont appear to output the "My Review" field!
+        // Sigh - Good Reads don't appear to output the "My Review" field!
         bookExport.append(EMPTY_FIELD).append(DELIMTER);
         // Spoiler shelf not supported
         bookExport.append(EMPTY_FIELD).append(DELIMTER);
@@ -128,7 +129,7 @@ public class GoodReadsBookExport {
             return SPACE;
         }
 
-        if (field.indexOf(DELIMTER) > -1) {
+        if (field.contains(DELIMTER)) {
             return DOUBLE_QUOTE + field.replace(DOUBLE_QUOTE, "") + DOUBLE_QUOTE;
         } else {
             return field;
@@ -149,7 +150,7 @@ public class GoodReadsBookExport {
     }
 
     private static String lastFirst(String field) {
-        if (field == null || field.indexOf(SPACE) == -1) {
+        if (field == null || !field.contains(SPACE)) {
             return SPACE;
         }
         int lastSpace = field.lastIndexOf(SPACE);

@@ -13,7 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.resttestclient.TestRestTemplate;
+import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate;
 import org.springframework.core.env.Environment;
 import org.springframework.http.*;
 
@@ -26,6 +27,7 @@ import static com.aidanwhiteley.books.util.BookTestUtils.J_UNIT_TESTING_FOR_BEGI
 import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("ConstantConditions")
+@AutoConfigureTestRestTemplate
 public class BookControllerTest extends IntegrationTest {
 
     public static final String IN_MEMORY_MONGODB_SPRING_PROFILE = "mongo-java-server";

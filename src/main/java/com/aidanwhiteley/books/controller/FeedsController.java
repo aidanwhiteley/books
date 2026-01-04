@@ -6,10 +6,13 @@ import com.aidanwhiteley.books.service.GoodReadsExportService;
 import com.aidanwhiteley.books.util.JwtAuthenticationUtils;
 import com.aidanwhiteley.books.util.SiteRssFeed;
 import com.rometools.rome.feed.rss.Channel;
+import com.rometools.rome.io.FeedException;
+import com.rometools.rome.io.WireFeedOutput;
 import jakarta.servlet.http.HttpServletResponse;
-import org.apache.http.HttpStatus;
+import org.apache.hc.core5.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,9 +41,16 @@ public class FeedsController {
         this.authUtils = authUtils;
     }
 
-    @GetMapping(value = "/rss")
-    public Channel findRecentActivity() {
-        return siteRssFeed.createSiteRssFeed();
+    @GetMapping(value = "/rss", produces = MediaType.APPLICATION_RSS_XML_VALUE)
+    public String findRecentActivity() {
+        Channel channel = siteRssFeed.createSiteRssFeed();
+        WireFeedOutput output = new WireFeedOutput();
+        try {
+            return output.outputString(channel);
+        } catch (FeedException e) {
+            LOGGER.error("Error generating RSS feed XML", e);
+            throw new RuntimeException("Failed to generate RSS feed", e);
+        }
     }
 
     @GetMapping("/exportbooks")

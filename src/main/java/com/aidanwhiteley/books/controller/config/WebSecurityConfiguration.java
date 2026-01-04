@@ -5,27 +5,25 @@ import com.aidanwhiteley.books.controller.jwt.JwtAuthenticationService;
 import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.service.UserService;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
-import org.springframework.boot.actuate.health.HealthEndpoint;
 import org.springframework.boot.actuate.info.InfoEndpoint;
+import org.springframework.boot.health.actuate.endpoint.HealthEndpoint;
+import org.springframework.boot.jackson.autoconfigure.JsonMapperBuilderCustomizer;
+import org.springframework.boot.security.autoconfigure.actuate.web.servlet.EndpointRequest;
 import org.springframework.boot.web.server.Cookie;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.jackson2.CoreJackson2Module;
+import org.springframework.security.jackson.CoreJacksonModule;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.client.jackson2.OAuth2ClientJackson2Module;
+import org.springframework.security.oauth2.client.jackson.OAuth2ClientJacksonModule;
 import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import org.springframework.security.web.SecurityFilterChain;
@@ -39,6 +37,9 @@ import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter
 import org.springframework.security.web.servlet.support.csrf.CsrfRequestDataValueProcessor;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.support.RequestDataValueProcessor;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.IOException;
 import java.util.function.Supplier;
@@ -137,7 +138,7 @@ public class WebSecurityConfiguration {
                         // Actuator endpoints are the only ones protected by request level security - everything else by method level security
                         .requestMatchers(EndpointRequest.toAnyEndpoint().excluding(HealthEndpoint.class).excluding(InfoEndpoint.class)).
                         hasRole(ROLE_ACTUATOR.getShortName())
-                        // We permitAll here - see the method level JavaDocs for why we do this
+                        // We permitAll here - see the method level Javadocs for why we do this
                         .anyRequest().permitAll()
                 )
                 .logout(logout -> logout.addLogoutHandler(jwtCookie).addLogoutHandler(clearSiteData)
@@ -155,15 +156,21 @@ public class WebSecurityConfiguration {
     }
 
     public static ObjectMapper getAuthRequestJsonMapper() {
-        var mapper = new Jackson2ObjectMapperBuilder().autoDetectFields(true)
-                .autoDetectGettersSetters(true)
-                .modules(new OAuth2ClientJackson2Module())
-                .visibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY)
+        return JsonMapper.builder()
+                .changeDefaultVisibility(vc -> vc
+                        .withFieldVisibility(JsonAutoDetect.Visibility.ANY)
+                        .withGetterVisibility(JsonAutoDetect.Visibility.ANY)
+                        .withSetterVisibility(JsonAutoDetect.Visibility.ANY)
+                        .withCreatorVisibility(JsonAutoDetect.Visibility.ANY))
+                .addModule(new OAuth2ClientJacksonModule())
+                .addModule(new CoreJacksonModule())
                 .build();
-        // See https://github.com/spring-projects/spring-security/issues/4370
-        mapper.registerModule(new CoreJackson2Module());
+    }
 
-        return mapper;
+    @Bean
+    public JsonMapperBuilderCustomizer customizer() {
+        return builder -> builder
+                .disable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES);
     }
 
     /**

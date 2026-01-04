@@ -6,6 +6,8 @@ import com.aidanwhiteley.books.service.GoodReadsExportService;
 import com.aidanwhiteley.books.util.JwtAuthenticationUtils;
 import com.aidanwhiteley.books.util.SiteRssFeed;
 import com.rometools.rome.feed.rss.Channel;
+import com.rometools.rome.io.FeedException;
+import com.rometools.rome.io.WireFeedOutput;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.hc.core5.http.HttpStatus;
 import org.slf4j.Logger;
@@ -40,8 +42,15 @@ public class FeedsController {
     }
 
     @GetMapping(value = "/rss", produces = MediaType.APPLICATION_XML_VALUE)
-    public Channel findRecentActivity() {
-        return siteRssFeed.createSiteRssFeed();
+    public String findRecentActivity() {
+        Channel channel = siteRssFeed.createSiteRssFeed();
+        WireFeedOutput output = new WireFeedOutput();
+        try {
+            return output.outputString(channel);
+        } catch (FeedException e) {
+            LOGGER.error("Error generating RSS feed XML", e);
+            throw new RuntimeException("Failed to generate RSS feed", e);
+        }
     }
 
     @GetMapping("/exportbooks")

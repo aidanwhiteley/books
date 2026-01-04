@@ -6,11 +6,11 @@
 
     <groupId>com.aidanwhiteley</groupId>
     <artifactId>books</artifactId>
-    <version>0.72.03-RELEASE</version>
+    <version>0.80.05-RELEASE</version>
     <packaging>jar</packaging>
 
     <name>Books Microservice</name>
-    <description>A simple project to remind myself what books Ive read recently! Also a technology sampler using the
+    <description>A simple project to remind myself what books I've read recently! Also a technology sampler using the
         latest Spring Boot, oauth based logons, JWTs, stateless in the HTTP layer, Spring Boot admin, Mongo, Docker and
         docker-compose. Now with added HTMX!
     </description>
@@ -32,7 +32,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.9</version>
+        <version>4.0.1</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -40,7 +40,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>21</java.version>
-        <spring-cloud.version>2025.0.0</spring-cloud.version>
+        <spring-cloud.version>2025.1.0</spring-cloud.version>
         <!-- SonarCloud -->
         <sonar.projectKey>com.aidanwhiteley:books</sonar.projectKey>
         <sonar.organization>aidanwhiteley-github</sonar.organization>
@@ -59,8 +59,8 @@
             <artifactId>spring-boot-starter-webflux</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-oauth2-client</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security-oauth2-client</artifactId>
         </dependency>
         <!-- Compiles OK without next (oath2-jose) dependency but Spring firewall
             problems occur when logging on via Google -->
@@ -79,7 +79,7 @@
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <artifactId>spring-boot-starter-webmvc</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -87,11 +87,15 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-aop</artifactId>
+            <artifactId>spring-boot-starter-aspectj</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-restclient</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -105,7 +109,7 @@
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt</artifactId>
-            <version>0.12.6</version>
+            <version>0.13.0</version>
         </dependency>
         <dependency>
             <groupId>com.rometools</groupId>
@@ -115,7 +119,7 @@
         <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
-            <version>1.21.1</version>
+            <version>1.22.1</version>
         </dependency>
 
         <!-- Cloud related dependencies -->
@@ -130,11 +134,11 @@
         </dependency>
 
         <!-- Runtime monitoring dependencies -->
-        <dependency>
-            <groupId>de.codecentric</groupId>
-            <artifactId>spring-boot-admin-starter-client</artifactId>
-            <version>3.5.0</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>de.codecentric</groupId>-->
+<!--            <artifactId>spring-boot-admin-starter-client</artifactId>-->
+<!--            <version>3.5.0</version>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -142,8 +146,13 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-test</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webmvc-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security-test</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -154,7 +163,7 @@
         <dependency>
             <groupId>com.icegreen</groupId>
             <artifactId>greenmail</artifactId>
-            <version>2.1.4</version>
+            <version>2.1.8</version>
             <scope>test</scope>
             <exclusions>
                 <exclusion>
@@ -166,12 +175,13 @@
         <dependency>
             <groupId>org.wiremock.integrations</groupId>
             <artifactId>wiremock-spring-boot</artifactId>
-            <version>3.10.0</version>
+            <version>4.0.8</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.gatling.highcharts</groupId>
             <artifactId>gatling-charts-highcharts</artifactId>
-            <version>3.14.3</version>
+            <version>3.14.9</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -180,9 +190,13 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-resttestclient</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>com.jayway.jsonpath</groupId>
             <artifactId>json-path</artifactId>
-            <version>2.9.0</version>
             <scope>test</scope>
         </dependency>
 
@@ -195,7 +209,7 @@
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <version>2.8.9</version>
+            <version>2.8.14</version>
         </dependency>
 
         <!-- Mainly for hot reload of Thymeleaf templates and assets in /resources/static -->
@@ -209,7 +223,7 @@
 
     <dependencyManagement>
         <dependencies>
-            <!-- For the Spring Eureka client dependencies -->
+            <!-- For the Eureka client dependencies -->
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
@@ -225,26 +239,14 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <executable>true</executable>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>build-info</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>io.github.git-commit-id</groupId>
                 <artifactId>git-commit-id-maven-plugin</artifactId>
-                <version>9.0.2</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.14.0</version>
                 <configuration>
                     <release>${java.version}</release>
                     <compilerArgs>
@@ -255,7 +257,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.13</version>
+                <version>0.8.14</version>
                 <executions>
                     <execution>
                         <id>default-prepare-agent</id>
@@ -282,7 +284,7 @@
             <plugin>
                 <groupId>io.gatling</groupId>
                 <artifactId>gatling-maven-plugin</artifactId>
-                <version>4.20.0</version>
+                <version>4.20.16</version>
             </plugin>
 
             <!-- To build to local Docker daemon use:
@@ -290,14 +292,14 @@
             <plugin>
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>jib-maven-plugin</artifactId>
-                <version>3.4.6</version>
+                <version>3.5.1</version>
                 <configuration>
                     <from>
-                        <image>openjdk:21-jdk</image>
+                        <image>eclipse-temurin:21-jre</image>
                         <!-- <image>amazoncorretto:21.0.0</image>-->
                     </from>
                     <to>
-                        <image>aidanwhiteley/books-api-java</image>
+                        <image>registry-development.camel-scala.ts.net/aidanwhiteley/books-api-java</image>
                         <tags>
                             <tag>${project.version}</tag>
                         </tags>
@@ -313,7 +315,6 @@
             <!-- See https://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/Mockito.html#0.3 -->
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
-                <version>3.8.1</version>
                 <executions>
                     <execution>
                         <id>getClasspathFilenames</id>
@@ -325,7 +326,6 @@
             </plugin>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.5.3</version>
                 <configuration>
                     <argLine>
                         @{argLine}
@@ -346,7 +346,7 @@
                     <plugin>
                         <groupId>org.pitest</groupId>
                         <artifactId>pitest-maven</artifactId>
-                        <version>1.20.0</version>
+                        <version>1.22.0</version>
                         <executions>
                             <execution>
                                 <id>pitest</id>

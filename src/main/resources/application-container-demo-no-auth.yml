@@ -1,8 +1,4 @@
 spring:
-  data:
-    mongodb:
-      # Username, password and MongoDB database name are expected to be passed in as environment variables
-      uri: mongodb://${MONGO_INITDB_APP_USERNAME}:${MONGO_INITDB_APP_PASSWORD}@data-tier-mongo:27017/${MONGO_INITDB_DATABASE}?safe=true&journal=true&w=majority&connectTimeoutMS=1001&timeoutMS=1000&serverSelectionTimeoutMS=10000
 
   security:
     oauth2:
@@ -27,6 +23,8 @@ spring:
     discovery:
       enabled: true
 
+  mongodb.uri: mongodb://${MONGO_INITDB_APP_USERNAME}:${MONGO_INITDB_APP_PASSWORD}@data-tier-mongo:27017/${MONGO_INITDB_DATABASE}?safe=true&journal=true&w=majority&connectTimeoutMS=1001&timeoutMS=1000&serverSelectionTimeoutMS=10000
+
 # If running in containers we usually want to set a random port by setting the port to 0.
 server:
   port: ${SPRING_SERVER_PORT}
@@ -44,7 +42,7 @@ eureka:
 
 management:
   endpoints:
-    enabled-by-default: true
+    access.default: read-only
     web:
       exposure:
         # Exposing only read only items and not large data amounts - so no heapdump, threaddump or shutdown. No project use of flyway, integrationgraph, liquibase, prometheus

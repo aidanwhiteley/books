@@ -29,6 +29,16 @@
             "Jo Nesbo"
           ],
           "description": "<p><b>He's the best cop they've got.  </b><br><br>When a drug bust turns into a bloodbath it's up to Inspector Macbeth and his team to clean up the mess. <br><b><br>He's also an ex-drug addict with a troubled past.  </b><br><br>He's rewarded for his success.  Power. Money. Respect. They're all within reach. <br><b><br>But a man like him won't get to the top.</b><br><br>Plagued by hallucinations and paranoia, Macbeth starts to unravel. He's convinced he won't get what is rightfully his. <br><b><br>Unless he kills for it. </b></p>",
+          "industryIdentifiers": [
+            {
+              "type": "ISBN_10",
+              "identifier": "1642659975"
+            },
+            {
+              "type": "ISBN_13",
+              "identifier": "9781642659979"
+            }
+          ],
           "imageLinks": {
             "smallThumbnail": "http://books.google.com/books/content?id=lqkkDwAAQBAJ&printsec=frontcover&img=1&zoom=5&imgtk=AFLRE70GKpDUxQxanAcXKa6GTRyPiBoIWTStLsTx6Fmnu0gFasCNFMbeo349B2NvHTp5COVCDuAg3IBf4lW_YXjxh8bQSI4ZSTGFybN-r611nefRbMy7wvqFAHuDkHqLI5oQKZnrQrNk&source=gbs_api",
             "thumbnail": "http://books.google.com/books/content?id=lqkkDwAAQBAJ&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE72ymLzLUIWjb29QLR6xMJLVMdupC-2A4LOQ-PPPWMrKTkTi-o8nb5Eu4eT2PxUSUf3tWOiOD2Xa9UiIuUorWZ72MEMA990mw6zzM0zoUvhtR6pT5Iq44ksdhjI-nrku3-vwCStS&source=gbs_api",
@@ -88,7 +98,16 @@
             "Mary Renault"
           ],
           "description": "<b><b>“Mary Renault is a shining light to both historical novelists and their readers. She does not pretend the past is like the present, or that the people of ancient Greece were just like us. She shows us their strangeness; discerning, sure-footed, challenging our values, piquing our curiosity, she leads us through an alien landscape that moves and delights us.” —Hilary Mantel</b></b><br>In myth, Theseus was the slayer of the child-devouring Minotaur in Crete. What the founder-hero might have been in real life is another question, brilliantly explored in <i>The King Must Die</i>. Drawing on modern scholarship and archaeological findings at Knossos, Mary Renault’s Theseus is an utterly lifelike figure—a king of immense charisma, whose boundless strivings flow from strength <i>and</i> weakness—but also one steered by implacable prophecy.<br><br>The story follows Theseus’s adventures from Troizen to Eleusis, where the death in the book’s title is to take place, and from Athens to Crete, where he learns to jump bulls and is named king of the victims. Richly imbued with the spirit of its time, this is a page-turner as well as a daring act of imagination.<br><br>Renault’s story of Theseus continues with the sequel <i>The Bull from the Sea.<br></i><br>This ebook features an illustrated biography of Mary Renault including rare images of the author.<i><br></i>",
-          "imageLinks": {
+          "industryIdentifiers": [
+            {
+              "type": "ISBN_10",
+              "identifier": "1642659976"
+            },
+            {
+              "type": "ISBN_13",
+              "identifier": "9781642659970"
+            }
+          ],"imageLinks": {
             "smallThumbnail": "http://books.google.com/books/content?id=Iy8J99bs2EUC&printsec=frontcover&img=1&zoom=5&imgtk=AFLRE71fUxVfuu9fIeOdqZRq293PClf-bCZEr-YM4gpOYUbNXnWVE17aGfQe0s7CcJnlskEGDdWlgxUfZ_ntZeXIJlt_5kxlW1EYCpNocYRtua5bsrzuXW-VKpAgUq8rWcpAaLPwUcdD&source=gbs_api",
             "thumbnail": "http://books.google.com/books/content?id=Iy8J99bs2EUC&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE71Q28tYxGdFpvQ5ebzDs7HHhte6TxkGjOJnbyCViTG_O8gcLQ3yzZIj1R79uYp5Or9BodD0N_6V9mSJO2WjgjxyxueEtwQK9rnY7zQcyyprEODKQIxBzp295cIZB7VQtdakvddv&source=gbs_api",
             "small": null,

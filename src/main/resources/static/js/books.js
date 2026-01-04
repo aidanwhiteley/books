@@ -9,63 +9,107 @@
     inline scripts, it is all kept in this single external file.
 */
 
+// Configuration constants
+const CONFIG = {
+    TOAST_DURATION: 5000,
+    DATATABLE_PER_PAGE: 10,
+    SWIPER_ROTATE: 20,
+    SWIPER_STRETCH: 10,
+    SWIPER_DEPTH: 30,
+    SWIPER_MODIFIER: 1,
+    TOAST_COLORS: {
+        WARN: "linear-gradient(to right, #9c4f43, #e03419)",
+        DEFAULT: "linear-gradient(to right, #00b09b, #96c93d)"
+    }
+};
+
+// Global instances for cleanup management
+const instances = {
+    swiper: null,
+    tomSelects: [],
+    dataTables: []
+};
+
 
 // Utility function to initialize a Swiper instance
-function initialiseSwiper(evt) {
-    const swiper = new Swiper('.mySwiper', {
-        effect: 'coverflow',
-        grabCursor: true,
-        centeredSlides: true,
-        slidesPerView: 'auto',
-        initialSlide: 0,
-        coverflowEffect: {
-            rotate: 20,
-            stretch: 10,
-            depth: 30,
-            modifier: 1,
-            slideShadows: false,
-        },
-        loop: true,
-        navigation: {
-            nextEl: '.swiper-button-next',
-            prevEl: '.swiper-button-prev',
+function initializeSwiper(evt) {
+    try {
+        const swiperElement = document.querySelector('.mySwiper');
+        if (!swiperElement) {
+            console.warn('Swiper element not found');
+            return null;
         }
-    });
+
+        // Clean up existing instance if it exists
+        if (instances.swiper) {
+            instances.swiper.destroy(true, true);
+        }
+
+        instances.swiper = new Swiper('.mySwiper', {
+            effect: 'coverflow',
+            grabCursor: true,
+            centeredSlides: true,
+            slidesPerView: 'auto',
+            initialSlide: 0,
+            coverflowEffect: {
+                rotate: CONFIG.SWIPER_ROTATE,
+                stretch: CONFIG.SWIPER_STRETCH,
+                depth: CONFIG.SWIPER_DEPTH,
+                modifier: CONFIG.SWIPER_MODIFIER,
+                slideShadows: false,
+            },
+            loop: true,
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            }
+        });
+
+        return instances.swiper;
+    } catch (error) {
+        console.error('Failed to initialize Swiper:', error);
+        return null;
+    }
 }
 
 // Initialize Swiper if the element exists
 if (document.getElementById("swiper-slides")) {
-    initialiseSwiper();
+    initializeSwiper();
 }
-document.addEventListener("initSwiper", initialiseSwiper);
+document.addEventListener("initSwiper", initializeSwiper);
 
-// Simplify Toastify initialization
-document.addEventListener("showFlashMessage", function(evt) {
-    const level = evt.detail.level?.toLowerCase() || "info";
-    const background = level === "warn" 
-        ? "linear-gradient(to right, #9c4f43, #e03419)" 
-        : "linear-gradient(to right, #00b09b, #96c93d)";
-    
-    Toastify({
-        text: evt.detail.message,
-        duration: 5000,
-        newWindow: true,
-        close: true,
-        gravity: "top",
-        position: "right",
-        stopOnFocus: true,
-        style: { background },
-    }).showToast();
-});
+// Handle flash message display with Toastify
+const handleFlashMessage = (evt) => {
+    try {
+        const level = evt.detail.level?.toLowerCase() || "info";
+        const background = level === "warn"
+            ? CONFIG.TOAST_COLORS.WARN
+            : CONFIG.TOAST_COLORS.DEFAULT;
+
+        Toastify({
+            text: evt.detail.message,
+            duration: CONFIG.TOAST_DURATION,
+            newWindow: true,
+            close: true,
+            gravity: "top",
+            position: "right",
+            stopOnFocus: true,
+            style: { background },
+        }).showToast();
+    } catch (error) {
+        console.error('Failed to show flash message:', error);
+    }
+};
+
+document.addEventListener("showFlashMessage", handleFlashMessage);
 
 // Encapsulate TomSelect logic
 (function() {
 
     // The following line wont play nicely with hx-boost.
     // See https://htmx.org/quirks/#some-people-don-t-like-hx-boost
-    const selectControls = [];
 
-    function initialiseTomSelect() {
+    function initializeTomSelect() {
         htmx.onLoad((elt) => {
             const selectors = [
                 { className: ".tom-select-control-readonly", options: { create: false, highlight: true, allowEmptyOption: false, maxItems: 1, items:[] } },
@@ -76,8 +120,11 @@ document.addEventListener("showFlashMessage", function(evt) {
                 htmx.findAll(elt, className).forEach((el) => {
                     if (!el.tomselect) {
                         try {
-                            selectControls.push(new TomSelect(el, { ...options, sortField: [{ field: '$order' }, { field: '$score' }] }));
-                            console.debug(`Created a Tom Select for ${className}`);
+                            const tomSelectInstance = new TomSelect(el, {
+                                ...options,
+                                sortField: [{ field: '$order' }, { field: '$score' }]
+                            });
+                            instances.tomSelects.push(tomSelectInstance);
                         } catch (err) {
                             console.error(`Error initializing Tom Select for ${className}:`, err);
                         }
@@ -88,22 +135,25 @@ document.addEventListener("showFlashMessage", function(evt) {
     }
 
     function clearSelects(targetId) {
-        selectControls.forEach((control) => {
-            if (control.inputId !== targetId) {
-                control.clear(true);
-                console.debug(`Cleared select control with ID: ${control.inputId}`);
+        instances.tomSelects.forEach((control) => {
+            try {
+                if (control.inputId !== targetId) {
+                    control.clear(true);
+                }
+            } catch (error) {
+                console.error('Error clearing TomSelect:', error);
             }
         });
     }
 
     // Expose functions
-    window.initialiseTomSelect = initialiseTomSelect;
+    window.initializeTomSelect = initializeTomSelect;
     window.clearSelects = clearSelects;
 })();
 
 // Initialize TomSelect if specific elements exist
 ["createreviewform", "select-by-author"].forEach((id) => {
-    if (document.getElementById(id)) initialiseTomSelect();
+    if (document.getElementById(id)) initializeTomSelect();
 });
 
 // Event listeners for clearing selects
@@ -113,31 +163,59 @@ document.addEventListener("showFlashMessage", function(evt) {
 
 // Encapsulate DataTables logic
 (function() {
-    const userAdminTables = [];
 
-    function initialiseSimpleDataTables() {
-        const options = { searchable: true, perPage: 10 };
-        const table = new window.simpleDatatables.DataTable("#users-table", options);
-        userAdminTables.push(table);
-        console.debug("Initialized DataTable");
+    function initializeSimpleDataTables() {
+        try {
+            const tableElement = document.getElementById("users-table");
+            if (!tableElement) {
+                console.warn('DataTable element #users-table not found');
+                return null;
+            }
+
+            // Clean up existing instances to prevent duplicates
+            instances.dataTables.forEach((table) => {
+                try {
+                    table.destroy();
+                } catch (error) {
+                    console.error('Error destroying existing DataTable:', error);
+                }
+            });
+            instances.dataTables.length = 0;
+
+            const options = {
+                searchable: true,
+                perPage: CONFIG.DATATABLE_PER_PAGE
+            };
+            const table = new window.simpleDatatables.DataTable(tableElement, options);
+            instances.dataTables.push(table);
+
+            return table;
+        } catch (error) {
+            console.error('Failed to initialize DataTable:', error);
+            return null;
+        }
     }
 
     function refreshSimpleDataTables() {
-        userAdminTables.forEach((table) => {
-            table.destroy();
-            console.debug("Destroyed DataTable");
-        });
-        initialiseSimpleDataTables();
+        try {
+            instances.dataTables.forEach((table) => {
+                table.destroy();
+            });
+            instances.dataTables.length = 0;
+            initializeSimpleDataTables();
+        } catch (error) {
+            console.error('Failed to refresh DataTables:', error);
+        }
     }
 
     // Expose functions
-    window.initialiseSimpleDataTables = initialiseSimpleDataTables;
+    window.initializeSimpleDataTables = initializeSimpleDataTables;
     window.refreshSimpleDataTables = refreshSimpleDataTables;
 })();
 
 // Initialize DataTables if the element exists
 if (document.getElementById("users-table")) {
-    initialiseSimpleDataTables();
+    initializeSimpleDataTables();
 }
 document.addEventListener("refreshSimpleDataTables", refreshSimpleDataTables);
 
@@ -148,19 +226,96 @@ function getCookieValue(name) {
     return match ? decodeURIComponent(match.split("=")[1]) : "";
 }
 
+// Cleanup function for resource management
+function cleanup() {
+    try {
+        // Clean up Swiper instance
+        if (instances.swiper) {
+            instances.swiper.destroy(true, true);
+            instances.swiper = null;
+        }
+
+        // Clean up TomSelect instances
+        instances.tomSelects.forEach((control) => {
+            try {
+                control.destroy();
+            } catch (error) {
+                console.error('Error destroying TomSelect:', error);
+            }
+        });
+        instances.tomSelects.length = 0;
+
+        // Clean up DataTable instances
+        instances.dataTables.forEach((table) => {
+            try {
+                table.destroy();
+            } catch (error) {
+                console.error('Error destroying DataTable:', error);
+            }
+        });
+        instances.dataTables.length = 0;
+
+        console.log('Cleanup completed successfully');
+    } catch (error) {
+        console.error('Error during cleanup:', error);
+    }
+}
+
+// Expose cleanup function globally for potential use
+window.booksJsCleanup = cleanup;
+
+// Encapsulate Google Books title and author validation logic that prevents unnecessary API calls
+// unless both the title and author are supplied.
+(function() {
+    const validateGoogleBooksRequest = (evt) => {
+        try {
+            // Only apply to requests targeting the googlebooks endpoint from the author input
+            if (evt.detail.requestConfig.path.startsWith("/googlebooks") &&
+                evt.detail.elt && evt.detail.elt.id === "author") {
+
+                const titleInput = document.getElementById("title");
+                const authorInput = document.getElementById("author");
+
+                const titleValue = titleInput ? titleInput.value.trim() : "";
+                const authorValue = authorInput ? authorInput.value.trim() : "";
+
+                // Cancel the request if either title or author is empty
+                // This matches the comment above about "unless both are supplied"
+                if (!titleValue || !authorValue) {
+                    console.debug("Both book title and author required for Google Books API call");
+                    evt.preventDefault();
+                    return false;
+                }
+            }
+            return true;
+        } catch (error) {
+            console.error('Error in Google Books validation:', error);
+            return true; // Allow request to proceed if validation fails
+        }
+    };
+
+    // Listen for htmx beforeRequest events
+    document.body.addEventListener("htmx:beforeRequest", validateGoogleBooksRequest);
+})();
+
 // Add XSRF token to HTMX requests.
 // This is the "naive double submit cookie pattern" that OWASP try to discourage but
 // which I'm happy is strong enough CSRF protection for this site's limited functionality.
 // See more at https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html#naive-double-submit-cookie-pattern-discouraged
-document.body.addEventListener("htmx:configRequest", function(evt) {
-    const xsrfToken = getCookieValue("XSRF-TOKEN");
-    const isSafeVerb = ["get", "head", "options"].includes(evt.detail.verb.toLowerCase());
+const handleXsrfToken = (evt) => {
+    try {
+        const xsrfToken = getCookieValue("XSRF-TOKEN");
+        const isSafeVerb = ["get", "head", "options"].includes(evt.detail.verb.toLowerCase());
 
-    if (!isSafeVerb && xsrfToken && !Object.keys(evt.detail.headers).some((key) => key.toLowerCase() === "x-xsrf-token")) {
-        evt.detail.headers["X-XSRF-TOKEN"] = xsrfToken;
-        console.debug("Added X-XSRF-TOKEN header:", xsrfToken);
+        if (!isSafeVerb && xsrfToken && !Object.keys(evt.detail.headers).some((key) => key.toLowerCase() === "x-xsrf-token")) {
+            evt.detail.headers["X-XSRF-TOKEN"] = xsrfToken;
+        }
+    } catch (error) {
+        console.error('Error handling XSRF token:', error);
     }
-});
+};
+
+document.body.addEventListener("htmx:configRequest", handleXsrfToken);
 
 
 

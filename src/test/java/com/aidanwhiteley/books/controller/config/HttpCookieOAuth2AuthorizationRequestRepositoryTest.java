@@ -3,14 +3,14 @@ package com.aidanwhiteley.books.controller.config;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 import com.aidanwhiteley.books.controller.exceptions.JwtAuthAuzException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
+import tools.jackson.core.JacksonException;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -75,10 +75,10 @@ class HttpCookieOAuth2AuthorizationRequestRepositoryTest {
                         authorizationUri(DUMMY_TEXT_NOT_TESTED).build();
 
         ObjectMapper om = mock(ObjectMapper.class);
-        when(om.writeValueAsString(any())).thenThrow(new JsonProcessingException("This is an expected exception for this test") {
+        when(om.writeValueAsString(any())).thenThrow(new JacksonException("This is an expected exception for this test") {
         });
         when(om.readValue(anyString(), eq(OAuth2AuthorizationRequest.class))).
-                thenThrow(new JsonProcessingException("This is another expected exception for this test") {
+                thenThrow(new JacksonException("This is another expected exception for this test") {
                 });
 
         HttpCookieOAuth2AuthorizationRequestRepository repo = new HttpCookieOAuth2AuthorizationRequestRepository(om);

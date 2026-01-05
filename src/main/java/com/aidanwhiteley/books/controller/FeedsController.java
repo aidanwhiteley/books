@@ -47,9 +47,9 @@ public class FeedsController {
         WireFeedOutput output = new WireFeedOutput();
         try {
             return output.outputString(channel);
-        } catch (FeedException e) {
-            LOGGER.error("Error generating RSS feed XML", e);
-            throw new RuntimeException("Failed to generate RSS feed", e);
+        } catch (FeedException fe) {
+            // Leave logging to global exception handler
+            throw new IllegalStateException("Failed to generate RSS feed", fe);
         }
     }
 

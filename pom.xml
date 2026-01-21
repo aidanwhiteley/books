@@ -6,7 +6,7 @@
 
     <groupId>com.aidanwhiteley</groupId>
     <artifactId>books</artifactId>
-    <version>0.80.05-RELEASE</version>
+    <version>0.80.06-RELEASE</version>
     <packaging>jar</packaging>
 
     <name>Books Microservice</name>
@@ -175,7 +175,7 @@
         <dependency>
             <groupId>org.wiremock.integrations</groupId>
             <artifactId>wiremock-spring-boot</artifactId>
-            <version>4.0.8</version>
+            <version>4.0.9</version>
             <scope>test</scope>
         </dependency>
         <dependency>

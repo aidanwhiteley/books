@@ -104,7 +104,7 @@ public class WebSecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         // We want a new XSRF cookie to be sent on every request/response. See "Opt-out of Deferred CSRF Tokens" at
-        // https://docs.spring.io/spring-security/reference/servlet/exploits/csrf.html
+        // https://docs.spring.io/spring-security/reference/servlet/exploits/csrf.html#deferred-csrf-token
         XorCsrfTokenRequestAttributeHandler requestHandler = new XorCsrfTokenRequestAttributeHandler();
         // Set the name of the attribute the CsrfToken will be populated on to cause the CsrfToken to be loaded on every request.
         requestHandler.setCsrfRequestAttributeName(null);

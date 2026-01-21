@@ -79,12 +79,12 @@ public class FeedsController {
                         }
                     }
                 } catch (IOException ioe) {
-                    LOGGER.error("There was an unexpected error creating a Goodreads format export", ioe);
+                    LOGGER.error("There was an unexpected error creating a Goodreads format export", ioe.getMessage());
                     try {
                         response.sendError(HttpStatus.SC_INTERNAL_SERVER_ERROR);
                     } catch (IOException ioe2) {
                         // Give up trying to tell the user about it!
-                        LOGGER.error("Cannot send an error status code while creating a Goodreads format export", ioe2);
+                        LOGGER.error("Cannot send an error status code while creating a Goodreads format export", ioe2.getMessage());
                     }
                 }
 

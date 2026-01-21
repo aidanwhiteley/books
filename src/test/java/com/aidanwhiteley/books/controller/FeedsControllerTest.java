@@ -1,33 +1,29 @@
 package com.aidanwhiteley.books.controller;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.LoggerContext;
 import com.aidanwhiteley.books.controller.jwt.JwtAuthenticationService;
 import com.aidanwhiteley.books.controller.jwt.JwtUtils;
 import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.service.GoodReadsExportService;
-import com.aidanwhiteley.books.util.BookTestUtils;
-import com.aidanwhiteley.books.util.GoodReadsBookExport;
-import com.aidanwhiteley.books.util.IntegrationTest;
-import com.aidanwhiteley.books.util.JwtAuthenticationUtils;
-import com.aidanwhiteley.books.util.SiteRssFeed;
+import com.aidanwhiteley.books.util.*;
 import com.rometools.rome.feed.rss.Channel;
 import com.rometools.rome.feed.synd.SyndEntry;
 import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.rome.io.FeedException;
 import com.rometools.rome.io.SyndFeedInput;
+import com.rometools.rome.io.WireFeedOutput;
 import com.rometools.rome.io.XmlReader;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.hc.core5.http.HttpStatus;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.resttestclient.TestRestTemplate;
 import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 
 import java.io.IOException;
 import java.security.Principal;
@@ -48,6 +44,20 @@ class FeedsControllerTest extends IntegrationTest {
 
     @Value("${books.feeds.title}")
     private String booksFeedsTitles;
+
+    @BeforeEach
+    void setup() {
+        // We don't want expected exception logs cluttering up test logs
+        LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+        context.getLogger(FeedsController.class).setLevel(Level.valueOf("OFF"));
+    }
+
+    @AfterEach
+    void teardown() {
+        // Restore logging
+        LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+        context.getLogger(FeedsController.class).setLevel(Level.valueOf("WARN"));
+    }
 
     @Test
     void checkRssFeedsHasEntries() {
@@ -133,7 +143,7 @@ class FeedsControllerTest extends IntegrationTest {
             public String findRecentActivity() {
                 Channel channel = mockSiteRssFeed.createSiteRssFeed();
                 // Create a mock WireFeedOutput that throws FeedException
-                com.rometools.rome.io.WireFeedOutput output = mock(com.rometools.rome.io.WireFeedOutput.class);
+                WireFeedOutput output = mock(WireFeedOutput.class);
                 try {
                     when(output.outputString(any())).thenThrow(new FeedException("Test FeedException"));
                     return output.outputString(channel);
@@ -146,7 +156,7 @@ class FeedsControllerTest extends IntegrationTest {
         // When/Then - Verify that IllegalStateException is thrown with the correct message
         IllegalStateException exception = assertThrows(
             IllegalStateException.class,
-            () -> controller.findRecentActivity(),
+                controller::findRecentActivity,
             "Expected IllegalStateException to be thrown when RSS feed generation fails"
         );
 

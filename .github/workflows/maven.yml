@@ -43,9 +43,9 @@ jobs:
         restore-keys: ${{ runner.os }}-m2
 
     - name: Start MongoDB
-      uses: supercharge/mongodb-github-action@1.11.0
+      uses: supercharge/mongodb-github-action@1.12.1
       with:
-        mongodb-version: 5.0
+        mongodb-version: 8.0
 
     - if: ${{ github.actor != 'dependabot[bot]' }}
       name: Build with Maven and run Sonar reports

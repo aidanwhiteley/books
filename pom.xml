@@ -6,7 +6,7 @@
 
     <groupId>com.aidanwhiteley</groupId>
     <artifactId>books</artifactId>
-    <version>0.80.06-RELEASE</version>
+    <version>0.81.06-RELEASE</version>
     <packaging>jar</packaging>
 
     <name>Books Microservice</name>
@@ -32,7 +32,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>4.0.1</version>
+        <version>4.0.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -40,7 +40,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>21</java.version>
-        <spring-cloud.version>2025.1.0</spring-cloud.version>
+        <spring-cloud.version>2025.1.1</spring-cloud.version>
         <!-- SonarCloud -->
         <sonar.projectKey>com.aidanwhiteley:books</sonar.projectKey>
         <sonar.organization>aidanwhiteley-github</sonar.organization>
@@ -175,13 +175,13 @@
         <dependency>
             <groupId>org.wiremock.integrations</groupId>
             <artifactId>wiremock-spring-boot</artifactId>
-            <version>4.0.9</version>
+            <version>4.2.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.gatling.highcharts</groupId>
             <artifactId>gatling-charts-highcharts</artifactId>
-            <version>3.14.9</version>
+            <version>3.15.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -209,7 +209,7 @@
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <version>2.8.14</version>
+            <version>3.0.3</version>
         </dependency>
 
         <!-- Mainly for hot reload of Thymeleaf templates and assets in /resources/static -->
@@ -284,7 +284,7 @@
             <plugin>
                 <groupId>io.gatling</groupId>
                 <artifactId>gatling-maven-plugin</artifactId>
-                <version>4.20.16</version>
+                <version>4.21.5</version>
             </plugin>
 
             <!-- To build to local Docker daemon use:
@@ -346,7 +346,7 @@
                     <plugin>
                         <groupId>org.pitest</groupId>
                         <artifactId>pitest-maven</artifactId>
-                        <version>1.22.0</version>
+                        <version>1.23.0</version>
                         <executions>
                             <execution>
                                 <id>pitest</id>

@@ -90,7 +90,7 @@ public class BookController {
     public Page<Book> findBySearch(@RequestParam String search, @RequestParam int page,
                                    @RequestParam int size, Principal principal) {
 
-        if (null == search || search.isBlank()) {
+        if (search == null || search.isBlank()) {
             throw new IllegalArgumentException("Search query string cannot be empty");
         }
 

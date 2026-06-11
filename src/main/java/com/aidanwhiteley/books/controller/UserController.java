@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -78,7 +79,7 @@ public class UserController {
                 LOGGER.info("User {} on {} attempted to delete themselves. This isn't allowed",
                         user.get().getFullName(), user.get().getAuthProvider());
                 return ResponseEntity.status(HttpStatus.CONFLICT)
-                        .body("{\"msg\" : \"Cant delete your own logged on user\"}");
+                        .body(Map.of("msg", "Cant delete your own logged on user"));
             }
 
             userRepository.deleteById(id);
@@ -99,7 +100,7 @@ public class UserController {
                 LOGGER.warn("User {} on {} attempted to change their own roles. This isn't allowed",
                         user.get().getFullName(), user.get().getAuthProvider());
                 return ResponseEntity.status(HttpStatus.CONFLICT)
-                        .body("{\"msg\" : \"" + CANT_CHANGE_PERMISSIONS_FOR_YOUR_OWN_LOGGED_ON_USER + "\"}");
+                        .body(Map.of("msg", CANT_CHANGE_PERMISSIONS_FOR_YOUR_OWN_LOGGED_ON_USER));
             }
 
             LOGGER.debug("Received patch of: {}", clientRoles);

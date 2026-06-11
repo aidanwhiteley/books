@@ -17,7 +17,7 @@ import reactor.core.publisher.Mono;
 import java.time.Duration;
 
 @Repository
-public class GoogleBooksDaoAsync extends GoogleBooksApiConfig {
+public class GoogleBooksDaoAsync {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GoogleBooksDaoAsync.class);
 

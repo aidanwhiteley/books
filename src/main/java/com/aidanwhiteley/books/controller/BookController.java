@@ -47,6 +47,10 @@ public class BookController {
     public Page<Book> findAllByCreatedDateTimeDesc(@RequestParam int page,
                                                    @RequestParam int size, Principal principal) {
 
+        if (size > maxPageSize) {
+            throw new IllegalArgumentException(PAGE_REQUEST_TOO_BIG_MESSAGE.formatted(maxPageSize));
+        }
+
         PageRequest pageObj = PageRequest.of(page, size);
         return bookRepository.findAllByOrderByCreatedDateTimeDesc(pageObj);
     }
@@ -61,11 +65,11 @@ public class BookController {
         return findByAuthor(author, 0, defaultPageSize, principal);
     }
 
-    @GetMapping(value = {"/books", "books/"}, params = {"author", "page", "size"})
+    @GetMapping(value = {"/books", "/books/"}, params = {"author", "page", "size"})
     public Page<Book> findByAuthor(@RequestParam String author, @RequestParam int page,
                                    @RequestParam int size, Principal principal) {
 
-        if (null == author || author.trim().isEmpty()) {
+        if (author == null || author.isBlank()) {
             throw new IllegalArgumentException("Author parameter cannot be empty");
         }
 
@@ -86,7 +90,7 @@ public class BookController {
     public Page<Book> findBySearch(@RequestParam String search, @RequestParam int page,
                                    @RequestParam int size, Principal principal) {
 
-        if (null == search || search.trim().isEmpty()) {
+        if (search == null || search.isBlank()) {
             throw new IllegalArgumentException("Search query string cannot be empty");
         }
 
@@ -107,7 +111,7 @@ public class BookController {
     public Page<Book> findByGenre(@RequestParam String genre, @RequestParam int page,
                                   @RequestParam int size, Principal principal) {
 
-        if (null == genre || genre.trim().isEmpty()) {
+        if (null == genre || genre.isBlank()) {
             throw new IllegalArgumentException("Genre parameter cannot be empty");
         }
 
@@ -143,12 +147,12 @@ public class BookController {
     public Page<Book> findByRating(@RequestParam String rating, @RequestParam int page,
                                    @RequestParam int size, Principal principal) {
 
-        if (null == rating || rating.trim().isEmpty()) {
+        if (null == rating || rating.isBlank()) {
             throw new IllegalArgumentException("Rating parameter cannot be empty");
         }
 
         Book.Rating aRating = Book.Rating.getRatingByString(rating);
-        if (null == aRating) {
+        if (aRating == null) {
             throw new IllegalArgumentException("Supplied rating parameter not recognised");
         }
 

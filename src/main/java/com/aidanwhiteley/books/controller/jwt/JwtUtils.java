@@ -24,11 +24,11 @@ public class JwtUtils {
     private static final String AUTH_PROVIDER = "provider";
     private static final String FULL_NAME = "name";
     private static final String ROLES = "roles";
-    private static final String ROLES_DELIMETER = ",";
+    private static final String ROLES_DELIMITER = ",";
 
     @Setter
     @Value("${books.jwt.expiryInMilliSeconds}")
-    private int expiryInMilliSeconds;
+    private long expiryInMilliSeconds;
 
     @Value("${books.jwt.actuatorExpiryInMilliSeconds}")
     private long expiryInMilliSecondsActuator;
@@ -73,7 +73,7 @@ public class JwtUtils {
                 fullName(fullName).
                 build();
 
-        String[] rolesArray = roles.split(ROLES_DELIMETER);
+        String[] rolesArray = roles.split(ROLES_DELIMITER);
         for (String s : rolesArray) {
             user.addRole(User.Role.getRole(Integer.parseInt(s)));
         }
@@ -97,7 +97,7 @@ public class JwtUtils {
                 .issuer(issuer)
                 .claim(AUTH_PROVIDER, user.getAuthProvider())
                 .claim(FULL_NAME, user.getFullName())
-                .claim(ROLES, String.join(ROLES_DELIMETER, roles))
+                .claim(ROLES, String.join(ROLES_DELIMITER, roles))
                 .issuedAt(new Date())
                 .expiration(new Date(new Date().getTime() + tokenExpiry))
                 .signWith(secretKeyCrypto)

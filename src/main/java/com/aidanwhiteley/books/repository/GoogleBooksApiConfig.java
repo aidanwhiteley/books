@@ -26,4 +26,6 @@ public class GoogleBooksApiConfig {
     private int connectTimeout;
 
     private int readTimeout;
+
+    private String apiKey;
 }

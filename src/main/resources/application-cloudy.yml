@@ -78,6 +78,7 @@ books:
     books:
       api:
         countryCode: ${CLOUDY_LANG_CODE:langRestrict=en}
+        apiKey: ${CLOUDY_GOOGLE_BOOKS_API_KEY}
 
   users:
     default:

@@ -16,6 +16,7 @@ import java.nio.charset.StandardCharsets;
 import static com.aidanwhiteley.books.util.ClientInputSanitiserUtils.isValidTitleOrAuthor;
 import static com.aidanwhiteley.books.util.ClientInputSanitiserUtils.sanitiseGoogleBookId;
 import static com.aidanwhiteley.books.util.LogDetaint.logMessageDetaint;
+import static org.springframework.util.StringUtils.hasText;
 
 @Repository
 public class GoogleBooksDaoSync {
@@ -51,7 +52,8 @@ public class GoogleBooksDaoSync {
 
         final String searchString = googleBooksApiConfig.getSearchUrl() + "+intitle:" + encodedTitle +
                 "+inauthor:" + encodedAuthor + "&" + googleBooksApiConfig.getCountryCode() +
-                "&" + googleBooksApiConfig.getMaxResults();
+                "&" + googleBooksApiConfig.getMaxResults() +
+                (hasText(googleBooksApiConfig.getApiKey()) ? "&key=" + googleBooksApiConfig.getApiKey() : "");
 
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("Google Books API called with API called: {}", searchString);
@@ -70,9 +72,11 @@ public class GoogleBooksDaoSync {
 
         googleBooksRestTemplate.getMessageConverters().addFirst(new StringHttpMessageConverter(StandardCharsets.UTF_8));
         try {
-            return googleBooksRestTemplate.getForObject(googleBooksApiConfig.getGetByIdUrl() +
+            String url = googleBooksApiConfig.getGetByIdUrl() +
                     sanitiseGoogleBookId(id) + "/?" +
-                    googleBooksApiConfig.getCountryCode(), Item.class);
+                    googleBooksApiConfig.getCountryCode() +
+                    (hasText(googleBooksApiConfig.getApiKey()) ? "&key=" + googleBooksApiConfig.getApiKey() : "");
+            return googleBooksRestTemplate.getForObject(url, Item.class);
         } catch (HttpStatusCodeException e) {
             String errorpayload = e.getResponseBodyAsString();
             LOGGER.error("Error calling Google Books API: {}", errorpayload, e);

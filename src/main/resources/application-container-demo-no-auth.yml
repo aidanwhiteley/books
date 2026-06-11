@@ -58,6 +58,7 @@ management:
 
 books:
   autoAuthUser: ${JAVA_BOOKS_AUTO_AUTH_USER}
+  apiKey: ${JAVA_BOOKS_API_KEY}
 
   reload:
     development:

@@ -122,6 +122,7 @@ books:
         maxResults: maxResults=30
         connecTimeout: 2000
         readTimeout: 3000
+        apiKey: # You can set this using GOOGLE_BOOKS_API_KEY environment variable or in application-dev-mongo-java-server.yml for development. You need to set up your own API key in Google and replace NotInSCM3 value
       cacheTimeoutMinutes: 10
 
   reload:

@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Service;
@@ -41,7 +40,6 @@ public class UserService {
     @Value("${books.users.allow.actuator.user.creation}")
     private boolean allowActuatorUserCreation;
 
-    @Autowired
     public UserService(UserRepository userRepository, Oauth2AuthenticationUtils oauth2AuthenticationUtils) {
         this.userRepository = userRepository;
         this.authUtils = oauth2AuthenticationUtils;
@@ -87,27 +85,17 @@ public class UserService {
 
     private User createUser(Map<String, Object> userDetails, User.AuthenticationProvider provider) {
 
-        User user;
         LocalDateTime now = LocalDateTime.now();
 
-        switch (provider) {
-            case GOOGLE: {
-                user = createGoogleUser(userDetails, now);
-                break;
-            }
-            case FACEBOOK: {
-                user = createFacebookUser(userDetails);
-                break;
-            }
-            case LOCAL: {
-                user = createLocalActuatorUser(userDetails, now);
-                break;
-            }
-            default: {
+        User user = switch (provider) {
+            case GOOGLE -> createGoogleUser(userDetails, now);
+            case FACEBOOK -> createFacebookUser(userDetails);
+            case LOCAL -> createLocalActuatorUser(userDetails, now);
+            default -> {
                 LOGGER.error("Unexpected oauth user type {} in createUser", provider);
                 throw new IllegalArgumentException("Unexpected oauth type: " + provider);
             }
-        }
+        };
 
         userRepository.insert(user);
         LOGGER.info("User created in repository: {}", user);
@@ -173,19 +161,10 @@ public class UserService {
     private User updateUser(UpdateUserDetails updateUserDetails) {
 
         switch (updateUserDetails.getProvider()) {
-            case GOOGLE: {
-                updateGoogleUser(updateUserDetails.getUserDetails(), updateUserDetails.getUser());
-                break;
-            }
-            case FACEBOOK: {
-                updateFacebookUser(updateUserDetails.getUserDetails(), updateUserDetails.getUser());
-                break;
-            }
-            case LOCAL: {
-                updateLocalActuatorUser(updateUserDetails.getUser());
-                break;
-            }
-            default: {
+            case GOOGLE -> updateGoogleUser(updateUserDetails.getUserDetails(), updateUserDetails.getUser());
+            case FACEBOOK -> updateFacebookUser(updateUserDetails.getUserDetails(), updateUserDetails.getUser());
+            case LOCAL -> updateLocalActuatorUser(updateUserDetails.getUser());
+            default -> {
                 LOGGER.error("Unexpected oauth user type {}", updateUserDetails.getProvider());
                 throw new IllegalArgumentException("Unexpected oauth type: %s".formatted(updateUserDetails.getProvider()));
             }
@@ -232,12 +211,8 @@ public class UserService {
     }
 
     private String extractFaceBookPictureUrl(Map<String, Object> userDetails) {
-        if (userDetails.get(PICTURE) instanceof LinkedHashMap) {
-            @SuppressWarnings("unchecked")
-            LinkedHashMap<String, Object> picture = (LinkedHashMap<String, Object>) userDetails.get(PICTURE);
-            if (picture.get("data") instanceof LinkedHashMap) {
-                @SuppressWarnings("unchecked")
-                LinkedHashMap<String, Object> data = (LinkedHashMap<String, Object>) picture.get("data");
+        if (userDetails.get(PICTURE) instanceof Map<?, ?> picture) {
+            if (picture.get("data") instanceof Map<?, ?> data) {
                 return (String) data.get("url");
             }
         }

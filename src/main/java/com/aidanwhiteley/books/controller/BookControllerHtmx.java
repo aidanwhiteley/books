@@ -163,12 +163,12 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
                                HttpServletResponse response,
                                @RequestHeader(value = HX_REQUEST, required = false) boolean hxRequest) {
 
-        if (null == rating || rating.trim().isEmpty()) {
+        if (rating == null || rating.isBlank()) {
             throw new IllegalArgumentException("Rating parameter cannot be empty");
         }
 
         Book.Rating aRating = Book.Rating.getRatingByString(rating);
-        if (null == aRating) {
+        if (aRating == null) {
             throw new IllegalArgumentException("Supplied rating parameter not recognised");
         }
 
@@ -200,7 +200,7 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
                                HttpServletResponse response,
                                @RequestHeader(value = HX_REQUEST, required = false) boolean hxRequest) {
 
-        if (author == null || author.trim().isEmpty()) {
+        if (author == null || author.isBlank()) {
             throw new IllegalArgumentException("Author parameter cannot be empty");
         }
 
@@ -229,7 +229,7 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
                               HttpServletResponse response,
                               @RequestHeader(value = HX_REQUEST, required = false) boolean hxRequest) {
 
-        if (genre == null || genre.trim().isEmpty()) {
+        if (genre == null || genre.isBlank()) {
             throw new IllegalArgumentException("Genre parameter cannot be empty");
         }
 
@@ -265,7 +265,7 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
     public String findBySearch(Model model, Principal principal, @RequestParam String term, @RequestParam int pagenum,
                                @RequestHeader(value = HX_REQUEST, required = false) boolean hxRequest) {
 
-        if (null == term || term.trim().isEmpty()) {
+        if (term == null || term.isBlank()) {
             throw new IllegalArgumentException("Search query string cannot be empty");
         }
 
@@ -365,6 +365,8 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
         return page.getContent().stream().filter(b ->
                 (b.getGoogleBookId() != null &&
                         !b.getGoogleBookId().isBlank() &&
+                        b.getGoogleBookDetails() != null &&
+                        b.getGoogleBookDetails().getVolumeInfo() != null &&
                         (b.getGoogleBookDetails().getVolumeInfo().getImageLinks() != null) &&
                         (b.getGoogleBookDetails().getVolumeInfo().getImageLinks().getThumbnail() != null) &&
                         !b.getGoogleBookDetails().getVolumeInfo().getImageLinks().getThumbnail().isBlank()

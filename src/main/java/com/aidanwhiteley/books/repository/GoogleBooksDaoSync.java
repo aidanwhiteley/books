@@ -27,6 +27,8 @@ public class GoogleBooksDaoSync {
     public GoogleBooksDaoSync(GoogleBooksApiConfig googleBooksApiConfig) {
         this.googleBooksApiConfig = googleBooksApiConfig;
         this.googleBooksRestTemplate = new RestTemplate();
+        this.googleBooksRestTemplate.getMessageConverters().addFirst(
+                new StringHttpMessageConverter(StandardCharsets.UTF_8));
     }
 
     // Commenting out the previous init() method to ease the migration to spring Boot 4 after which we'll convert
@@ -45,9 +47,6 @@ public class GoogleBooksDaoSync {
 
         String encodedTitle = URLEncoder.encode(title, StandardCharsets.UTF_8);
         String encodedAuthor = URLEncoder.encode(author, StandardCharsets.UTF_8);
-
-        googleBooksRestTemplate.getMessageConverters().addFirst(
-                new StringHttpMessageConverter(StandardCharsets.UTF_8));
 
         final String searchString = googleBooksApiConfig.getSearchUrl() + "+intitle:" + encodedTitle +
                 "+inauthor:" + encodedAuthor + "&" + googleBooksApiConfig.getCountryCode() +
@@ -68,7 +67,6 @@ public class GoogleBooksDaoSync {
 
     public Item searchGoogleBooksByGoogleBookId(String id) {
 
-        googleBooksRestTemplate.getMessageConverters().addFirst(new StringHttpMessageConverter(StandardCharsets.UTF_8));
         try {
             return googleBooksRestTemplate.getForObject(googleBooksApiConfig.getGetByIdUrl() +
                     sanitiseGoogleBookId(id) + "/?" +

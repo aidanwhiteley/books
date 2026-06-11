@@ -29,9 +29,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.HtmlUtils;
 
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.security.Principal;
 import java.util.Enumeration;
 import java.util.List;
@@ -72,7 +70,6 @@ public class BookSecureController {
         currentBookState.setSummary(book.getSummary());
         currentBookState.setGenre(book.getGenre());
         currentBookState.setTitle(book.getTitle());
-        currentBookState.setSummary(book.getSummary());
         currentBookState.setGoogleBookId(book.getGoogleBookId());
         currentBookState.setRating(book.getRating());
         currentBookState.setAuthor(book.getAuthor());
@@ -81,7 +78,7 @@ public class BookSecureController {
     }
 
     @PostMapping(value = "/books")
-    public ResponseEntity<Book> createBook(@Valid @RequestBody Book book, Principal principal) throws MalformedURLException, URISyntaxException {
+    public ResponseEntity<Book> createBook(@Valid @RequestBody Book book, Principal principal) {
 
         LOGGER.debug("createBook in BookSecureController called");
 
@@ -96,11 +93,11 @@ public class BookSecureController {
                 googleBooksDaoAsync.updateBookWithGoogleBookDetails(insertedBook, book.getGoogleBookId());
             }
 
-            URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+            // Build the public (non-secure) URI for the created book
+            URI location = ServletUriComponentsBuilder.fromCurrentContextPath()
+                    .path("/api/books/{id}")
                     .buildAndExpand(insertedBook.getId()).toUri();
 
-            // Basic GET of book details are not on a secure API
-            location = new URI(location.toURL().toString().replace("/secure", ""));
             LOGGER.debug("createBook existed. New Book created in store - accessible at {}", location);
             return ResponseEntity.created(location).build();
         } else {
@@ -175,7 +172,7 @@ public class BookSecureController {
             Comment comment = new Comment(commentRec.commentText(), new Owner(user.get()));
             return bookRepository.addCommentToBook(id, comment);
         } else {
-            return null;
+            throw new NotAuthorisedException("No user found to add comment");
         }
     }
 
@@ -200,7 +197,7 @@ public class BookSecureController {
                 throw new NotAuthorisedException("Not owner of comment or admin");
             }
         } else {
-            return null;
+            throw new NotAuthorisedException("No user found to remove comment");
         }
     }
 
@@ -213,12 +210,12 @@ public class BookSecureController {
     public Page<Book> findByReader(@RequestParam String reader, @RequestParam(defaultValue = "0") int page,
                                    @RequestParam(defaultValue = "5") int size, Principal principal) {
 
-        if (null == reader || reader.trim().isEmpty()) {
+        if (reader == null || reader.isBlank()) {
             throw new IllegalArgumentException("Reader parameter cannot be empty");
         }
 
         if (size > maxPageSize) {
-            throw new IllegalArgumentException("Cannot request a page of data containing more that %s elements".formatted(maxPageSize));
+            throw new IllegalArgumentException(BookController.PAGE_REQUEST_TOO_BIG_MESSAGE.formatted(maxPageSize));
         }
 
         PageRequest pageObj = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdDateTime"));

@@ -15,10 +15,17 @@ import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRe
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.resttestclient.TestRestTemplate;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.context.request.ServletWebRequest;
+
+import java.nio.charset.StandardCharsets;
 
 import static com.aidanwhiteley.books.controller.RestApiExceptionHandler.MESSAGE_ILLEGAL_ARGUMENT;
 import static com.aidanwhiteley.books.controller.RestApiExceptionHandler.MESSAGE_NOT_FOUND;
@@ -81,6 +88,24 @@ class RestApiExceptionHandlerTest extends IntegrationTest {
         // We don't want to accidentally expose any internal implementation details so
         // we don't want the text of the unexpected exception sent to the client.
         assertFalse(aed.getMessage().contains(errMsg));
+    }
+
+    @Test
+    void testHandleGoogleBooksRateLimitException() {
+        RestApiExceptionHandler raeh = new RestApiExceptionHandler();
+        HttpClientErrorException rateLimitException = HttpClientErrorException.create(HttpStatus.TOO_MANY_REQUESTS,
+                "Too many requests", HttpHeaders.EMPTY, new byte[0], StandardCharsets.UTF_8);
+        MockHttpServletRequest servletRequest = new MockHttpServletRequest("GET", "/secure/api/googlebooks");
+        servletRequest.setServletPath("/secure/api/googlebooks");
+        ServletWebRequest request = new ServletWebRequest(servletRequest);
+
+        ApiExceptionData aed = raeh.handleGoogleBooksRateLimitException(rateLimitException, request);
+
+        org.junit.jupiter.api.Assertions.assertEquals(HttpStatus.TOO_MANY_REQUESTS.value(), aed.getCode());
+        org.junit.jupiter.api.Assertions.assertEquals(HttpStatus.TOO_MANY_REQUESTS.getReasonPhrase(), aed.getError());
+        org.junit.jupiter.api.Assertions.assertEquals("/secure/api/googlebooks", aed.getPath());
+        org.junit.jupiter.api.Assertions.assertTrue(aed.getMessage().contains("Google Books is currently rate limiting requests"));
+        org.junit.jupiter.api.Assertions.assertTrue(aed.getMessage().contains("API key"));
     }
 
     private RequestBuilder getGetRequestBuilder(String url) {

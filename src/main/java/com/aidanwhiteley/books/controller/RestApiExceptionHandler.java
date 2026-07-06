@@ -14,6 +14,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -34,6 +35,8 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
     public static final String MESSAGE_ILLEGAL_ARGUMENT = "Sorry - you supplied an invalid input parameter value. Please check and try again";
     private static final String MESSAGE_FORBIDDEN = "Sorry - you do not have access to the URL you requested";
     private static final String MESSAGE_DENIED = "Sorry - you must be logged on";
+    private static final String MESSAGE_GOOGLE_BOOKS_RATE_LIMIT = "Google Books is currently rate limiting requests (HTTP 429). " +
+            "A common reason is that a Google Books API key has not been configured";
     private static final String MESSAGE_UNEXPECTED_EXCEPTION = "Sorry - an unexpected problem happened - please try later";
 
     private static final Logger API_LOGGER = LoggerFactory.getLogger(RestApiExceptionHandler.class);
@@ -75,6 +78,13 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         return new ApiExceptionData(INTERNAL_SERVER_ERROR.value(), INTERNAL_SERVER_ERROR.getReasonPhrase(),
                 MESSAGE_UNEXPECTED_EXCEPTION + " : " + ex.getLocalizedMessage(), getPath(request));
+    }
+
+    @ExceptionHandler({HttpClientErrorException.TooManyRequests.class})
+    @ResponseStatus(TOO_MANY_REQUESTS)
+    public ApiExceptionData handleGoogleBooksRateLimitException(Exception ex, WebRequest request) {
+        return new ApiExceptionData(TOO_MANY_REQUESTS.value(), TOO_MANY_REQUESTS.getReasonPhrase(),
+                MESSAGE_GOOGLE_BOOKS_RATE_LIMIT + " : " + ex.getLocalizedMessage(), getPath(request));
     }
 
     @Override

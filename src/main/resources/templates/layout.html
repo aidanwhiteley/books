@@ -23,12 +23,12 @@
     <script src="../static/js/tom-select.base.min.js" th:src="@{/js/tom-select.base.min.js}" defer></script>
     <script src="../static/js/buttons.min.js" th:src="@{/js/buttons.min.js}" async defer></script>
     <script src="../static/js/books.js" th:src="@{/js/books.js}" defer></script>
-    <script th:if="${!#strings.isEmpty(@environment.getProperty('books.analytics.umami.websiteId'))}"
+    <script th:if="${layoutAnalyticsConfig != null and layoutAnalyticsConfig.umamiEnabled}"
             src="../static/js/stats.js" th:src="@{/js/stats.js}"
-            th:data-website-id="${@environment.getProperty('books.analytics.umami.websiteId')}"
-            th:data-do-not-track="${@environment.getProperty('books.analytics.umami.doNotTrack')}"
-            th:data-domains="${@environment.getProperty('books.analytics.umami.domains')}"
-            th:data-host-url="${@environment.getProperty('books.analytics.umami.host-url')}" defer></script>
+            th:data-website-id="${layoutAnalyticsConfig != null ? layoutAnalyticsConfig.umamiWebsiteId : ''}"
+            th:data-do-not-track="${layoutAnalyticsConfig != null ? layoutAnalyticsConfig.umamiDoNotTrack : ''}"
+            th:data-domains="${layoutAnalyticsConfig != null ? layoutAnalyticsConfig.umamiDomains : ''}"
+            th:data-host-url="${layoutAnalyticsConfig != null ? layoutAnalyticsConfig.umamiHostUrl : ''}" defer></script>
 </head>
 <body hx-boost="false" hx-ext="response-targets" hx-history="false">
     <div id="root">

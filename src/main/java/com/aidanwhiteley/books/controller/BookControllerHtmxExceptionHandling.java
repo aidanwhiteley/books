@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
@@ -93,6 +94,16 @@ public interface BookControllerHtmxExceptionHandling {
         }
         String description = "Sorry - you are not permitted to access this functionality";
         return addAttributesToErrorPage(description, "e-403", model, principal, request);
+    }
+
+    @ResponseStatus(HttpStatus.TOO_MANY_REQUESTS)
+    @ExceptionHandler(HttpClientErrorException.TooManyRequests.class)
+    default String handleGoogleBooksRateLimitException(HttpClientErrorException.TooManyRequests ex, Model model,
+                                                        Principal principal, WebRequest request) {
+        LOGGER.error("Google Books API request was rate limited (HTTP 429): {}", ex.getMessage(), ex);
+        String description = "Sorry - Google Books is currently rate limiting requests (HTTP 429). " +
+                "A common reason is that a Google Books API key has not been configured.";
+        return addAttributesToErrorPage(description, "e-google-books-429", model, principal, request);
     }
 
     // Exception handler of last resort!

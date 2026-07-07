@@ -4,11 +4,11 @@ import com.aidanwhiteley.books.domain.googlebooks.BookSearchResult;
 import com.aidanwhiteley.books.domain.googlebooks.Item;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -23,17 +23,13 @@ public class GoogleBooksDaoSync {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GoogleBooksDaoSync.class);
     private final GoogleBooksApiConfig googleBooksApiConfig;
-    private final RestTemplate googleBooksRestTemplate;
+    private final RestClient googleBooksRestClient;
 
-    public GoogleBooksDaoSync(GoogleBooksApiConfig googleBooksApiConfig) {
+    public GoogleBooksDaoSync(GoogleBooksApiConfig googleBooksApiConfig,
+                              @Qualifier("googleBooksRestClient") RestClient googleBooksRestClient) {
         this.googleBooksApiConfig = googleBooksApiConfig;
-        this.googleBooksRestTemplate = new RestTemplate();
-        this.googleBooksRestTemplate.getMessageConverters().addFirst(
-                new StringHttpMessageConverter(StandardCharsets.UTF_8));
+        this.googleBooksRestClient = googleBooksRestClient;
     }
-
-    // Commenting out the previous init() method to ease the migration to spring Boot 4 after which we'll convert
-    // to using RestClient anyway
 
     public BookSearchResult searchGoogleBooksByTitleAndAuthor(String title, String author) {
 
@@ -58,7 +54,10 @@ public class GoogleBooksDaoSync {
             LOGGER.info("Google Books API called with API called: {}", searchString);
         }
 
-        BookSearchResult result = googleBooksRestTemplate.getForObject(searchString, BookSearchResult.class);
+        BookSearchResult result = googleBooksRestClient.get()
+                .uri(searchString)
+                .retrieve()
+                .body(BookSearchResult.class);
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Result of Google Books API call: {}", result);
@@ -74,7 +73,10 @@ public class GoogleBooksDaoSync {
                     sanitiseGoogleBookId(id) + "/?" +
                     googleBooksApiConfig.getCountryCode() +
                     (hasText(googleBooksApiConfig.getApiKey()) ? "&key=" + googleBooksApiConfig.getApiKey() : "");
-            return googleBooksRestTemplate.getForObject(url, Item.class);
+            return googleBooksRestClient.get()
+                    .uri(url)
+                    .retrieve()
+                    .body(Item.class);
         } catch (HttpStatusCodeException e) {
             String errorpayload = e.getResponseBodyAsString();
             LOGGER.error("Error calling Google Books API: {}", errorpayload, e);

@@ -8,10 +8,13 @@ import com.aidanwhiteley.books.domain.Owner;
 import com.aidanwhiteley.books.domain.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.http.client.HttpCookieHandling;
 import org.springframework.boot.resttestclient.TestRestTemplate;
 import org.springframework.http.*;
 
+import java.net.HttpCookie;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -129,14 +132,18 @@ public class BookTestUtils {
     }
 
     public static String getXsrfToken(TestRestTemplate testRestTemplate) {
-        // First we call a GET endpoint to get a required XSRF-TOKEN cookie value
-        ResponseEntity<Book> nonExistentBook = testRestTemplate.getForEntity("/api/book/12345678", Book.class);
-        HttpHeaders headers = nonExistentBook.getHeaders();
-        String cookies = headers.getFirst(HttpHeaders.SET_COOKIE);
-        assertNotNull(cookies);
-        String[] tokenCookies = cookies.split("XSRF-TOKEN=");
-        String tokenCookie = tokenCookies[1];
-        return tokenCookie.split(";")[0];
+        // Use a stateless client to avoid dependence on cookie reuse between test requests
+        TestRestTemplate statelessClient = testRestTemplate.withCookieHandling(HttpCookieHandling.DISABLE);
+        ResponseEntity<Void> nonExistentBook = statelessClient.getForEntity("/api/book/12345678", Void.class);
+        List<String> setCookieHeaders = nonExistentBook.getHeaders().get(HttpHeaders.SET_COOKIE);
+        assertNotNull(setCookieHeaders);
+
+        return setCookieHeaders.stream()
+                .flatMap(header -> HttpCookie.parse(header).stream())
+                .filter(cookie -> JwtAuthenticationService.XSRF_COOKIE_NAME.equals(cookie.getName()))
+                .map(HttpCookie::getValue)
+                .findFirst()
+                .orElseThrow(() -> new AssertionError("Expected XSRF-TOKEN cookie in response"));
     }
 
     public static Book createTestBook() {

@@ -18,11 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @Profile({"dev-mongo-java-server", "dev-mongo-java-server-no-auth", "dev-mongodb-no-auth", "dev-mongodb", "ci"})
-@EnableWireMock({
-        @ConfigureWireMock(
-                httpsPort = 0,
-                port = 0)
-})
+@EnableWireMock(@ConfigureWireMock(httpsPort = 0, port = 0))
 @ActiveProfiles("dev-mongo-java-server")
 class GoogleBookSearchRepositoryTest extends IntegrationTest {
 

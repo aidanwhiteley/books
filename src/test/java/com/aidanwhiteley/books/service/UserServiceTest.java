@@ -27,6 +27,7 @@ import java.util.*;
 import static com.aidanwhiteley.books.domain.User.AuthenticationProvider.LOCAL;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -144,7 +145,7 @@ class UserServiceTest extends IntegrationTest {
         when(oauthToken.getAuthorizedClientRegistrationId()).thenReturn(DUMMY);
         when(oauthToken.getPrincipal()).thenReturn(oauth2User);
 
-        OAuth2AuthorizedClient client = Mockito.mock(OAuth2AuthorizedClient.class);
+        OAuth2AuthorizedClient client = mock(OAuth2AuthorizedClient.class);
 
         ClientRegistration.Builder builder = ClientRegistration.withRegistrationId(DUMMY);
         builder.clientId(clientId).authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE).

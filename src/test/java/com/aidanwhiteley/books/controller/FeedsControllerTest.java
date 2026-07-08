@@ -69,12 +69,8 @@ class FeedsControllerTest extends IntegrationTest {
 
         SyndFeed syndFeed = testRestTemplate.execute(url, HttpMethod.GET, null, response -> {
             SyndFeedInput input = new SyndFeedInput();
-            try {
-                return input.build(new XmlReader(response.getBody()));
-            } catch (FeedException e) {
-                fail("Could not parse response", e);
-            }
-            return null;
+            return assertDoesNotThrow(() -> input.build(new XmlReader(response.getBody())),
+                    "Could not parse response");
         });
 
         assertEquals(booksFeedsTitles, syndFeed.getTitle());

@@ -30,11 +30,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@EnableWireMock({
+@EnableWireMock(
         @ConfigureWireMock(
                 httpsPort = 0,
                 port = 0)
-})
+)
 @ActiveProfiles("dev-mongo-java-server")
 public class BookSecureControllerHtmxTest {
 

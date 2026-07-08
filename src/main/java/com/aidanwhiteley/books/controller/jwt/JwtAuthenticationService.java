@@ -80,7 +80,7 @@ public class JwtAuthenticationService {
                 switch (cookie.getName()) {
                     case JWT_COOKIE_NAME:
                         String token = cookie.getValue();
-                        if (token == null || token.trim().isEmpty()) {
+                        if (token == null || token.isBlank()) {
                             LOGGER.warn("JWT cookie found but was empty - we will look to remove this later");
                         } else {
                             try {

@@ -4,8 +4,6 @@ import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.repository.UserRepository;
 import com.aidanwhiteley.books.util.Oauth2AuthenticationUtils;
 import com.aidanwhiteley.books.util.BooksTime;
-import lombok.Builder;
-import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,11 +51,7 @@ public class UserService {
         Optional<User> user = authUtils.getUserIfExists(authentication);
 
         return user.map(user1 -> updateUser(
-                UpdateUserDetails.builder().
-                        userDetails(userDetails).
-                        user(user1).
-                        provider(provider).
-                        build())
+                new UpdateUserDetails(userDetails, user1, provider))
         ).orElseGet(() -> createUser(userDetails, provider));
     }
 
@@ -76,8 +70,7 @@ public class UserService {
                 return Optional.of(createUser(userDetails, provider));
             } else {
                 return Optional.of(updateUser(
-                        UpdateUserDetails.builder().userDetails(userDetails).
-                                user(users.getFirst()).provider(provider).build()));
+                        new UpdateUserDetails(userDetails, users.getFirst(), provider)));
             }
         } else {
             return Optional.empty();
@@ -161,19 +154,19 @@ public class UserService {
 
     private User updateUser(UpdateUserDetails updateUserDetails) {
 
-        switch (updateUserDetails.getProvider()) {
-            case GOOGLE -> updateGoogleUser(updateUserDetails.getUserDetails(), updateUserDetails.getUser());
-            case FACEBOOK -> updateFacebookUser(updateUserDetails.getUserDetails(), updateUserDetails.getUser());
-            case LOCAL -> updateLocalActuatorUser(updateUserDetails.getUser());
+        switch (updateUserDetails.provider()) {
+            case GOOGLE -> updateGoogleUser(updateUserDetails.userDetails(), updateUserDetails.user());
+            case FACEBOOK -> updateFacebookUser(updateUserDetails.userDetails(), updateUserDetails.user());
+            case LOCAL -> updateLocalActuatorUser(updateUserDetails.user());
             default -> {
-                LOGGER.error("Unexpected oauth user type {}", updateUserDetails.getProvider());
-                throw new IllegalArgumentException("Unexpected oauth type: %s".formatted(updateUserDetails.getProvider()));
+                LOGGER.error("Unexpected oauth user type {}", updateUserDetails.provider());
+                throw new IllegalArgumentException("Unexpected oauth type: %s".formatted(updateUserDetails.provider()));
             }
         }
 
-        userRepository.save(updateUserDetails.getUser());
-        LOGGER.info("User updated in repository: {}", updateUserDetails.getUser());
-        return updateUserDetails.getUser();
+        userRepository.save(updateUserDetails.user());
+        LOGGER.info("User updated in repository: {}", updateUserDetails.user());
+        return updateUserDetails.user();
     }
 
     private void updateFacebookUser(Map<String, Object> userDetails, User user) {
@@ -212,19 +205,17 @@ public class UserService {
     }
 
     private String extractFaceBookPictureUrl(Map<String, Object> userDetails) {
-        if (userDetails.get(PICTURE) instanceof Map<?, ?> picture) {
-            if (picture.get("data") instanceof Map<?, ?> data) {
-                return (String) data.get("url");
-            }
+        if (userDetails.get(PICTURE) instanceof Map<?, ?> picture
+                && picture.get("data") instanceof Map<?, ?> data) {
+            return (String) data.get("url");
         }
         return null;
     }
 
-    @Builder
-    @Getter
-    private static class UpdateUserDetails {
-        private final Map<String, Object> userDetails;
-        private final User user;
-        private final User.AuthenticationProvider provider;
+    private record UpdateUserDetails(
+        Map<String, Object> userDetails,
+        User user,
+        User.AuthenticationProvider provider
+    ) {
     }
 }

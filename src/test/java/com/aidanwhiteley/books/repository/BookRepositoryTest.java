@@ -64,8 +64,8 @@ class BookRepositoryTest extends IntegrationTest {
     void countBooksByGenre() {
         List<BooksByGenre> list = bookRepository.countBooksByGenre();
         assertFalse(list.isEmpty());
-        assertFalse(list.getFirst().getGenre().isEmpty());
-        assertTrue(list.getFirst().getCountOfBooks() > 0);
+        assertFalse(list.getFirst().genre().isEmpty());
+        assertTrue(list.getFirst().countOfBooks() > 0);
     }
 
     @Test
@@ -79,14 +79,14 @@ class BookRepositoryTest extends IntegrationTest {
     void countBooksByAuthor() {
         List<BooksByAuthor> list = bookRepository.countBooksByAuthor();
         assertFalse(list.isEmpty());
-        assertTrue(list.getFirst().getCountOfBooks() > 0);
+        assertTrue(list.getFirst().countOfBooks() > 0);
     }
 
     @Test
     void countBooksByReader() {
         List<BooksByReader> list = bookRepository.countBooksByReader();
         assertFalse(list.isEmpty());
-        assertTrue(list.getFirst().getCountOfBooks() > 0);
+        assertTrue(list.getFirst().countOfBooks() > 0);
     }
 
     @Test

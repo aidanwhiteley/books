@@ -20,7 +20,7 @@ class SummaryStatsTest extends IntegrationTest {
 
         SummaryStats stats = statsService.getSummaryStats();
         List<BooksByGenre> books = stats.getBookByGenre();
-        long count = books.stream().mapToLong(BooksByGenre::getCountOfBooks).sum();
+        long count = books.stream().mapToLong(BooksByGenre::countOfBooks).sum();
 
         assertEquals(stats.getCount(), count);
     }

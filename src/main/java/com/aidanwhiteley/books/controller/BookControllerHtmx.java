@@ -62,7 +62,7 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
     }
 
     protected static List<Book.Rating> getRatings(String prefix) {
-        List<Book.Rating> ratings = Arrays.stream(Book.Rating.values()).toList();
+        var ratings = Arrays.stream(Book.Rating.values()).toList();
         if (!prefix.isEmpty()) {
             ratings = ratings.stream().filter(s -> s.name().startsWith(prefix)).toList();
         }
@@ -73,9 +73,9 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
     public String index(Model model, Principal principal, HttpServletResponse response,
                         @RequestHeader(value = HX_REQUEST, required = false) boolean hxRequest) {
         PageRequest pageObj = PageRequest.of(0, 30);
-        Page<Book> page = bookRepository.findByRatingOrderByCreatedDateTimeDesc(pageObj, GREAT);
+        var page = bookRepository.findByRatingOrderByCreatedDateTimeDesc(pageObj, GREAT);
 
-        List<Book> books = getBooksWithRequiredImages(page);
+        var books = getBooksWithRequiredImages(page);
         model.addAttribute("books", books.stream().toList());
         model.addAttribute("rating", "great");
         addUserToModel(principal, model);
@@ -347,7 +347,7 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
             model.addAttribute( IS_OWNER, false);
         } else {
             Optional<User> user = authUtils.extractUserFromPrincipal(principal, true);
-            boolean isOwner = user.isPresent() && aBook.isOwner(user.get());
+            boolean isOwner = user.map(aBook::isOwner).orElse(false);
             model.addAttribute(IS_OWNER, isOwner);
         }
     }
@@ -375,7 +375,7 @@ public class BookControllerHtmx implements BookControllerHtmxExceptionHandling {
 
     private List<BooksByReader> getReviewers(Principal principal) {
         Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
-        if (user.isPresent() && user.get().getHighestRole().getRoleNumber() >= User.Role.ROLE_EDITOR.getRoleNumber()) {
+        if (user.filter(u -> u.getHighestRole().getRoleNumber() >= User.Role.ROLE_EDITOR.getRoleNumber()).isPresent()) {
             return bookRepository.countBooksByReader();
         } else {
             return new ArrayList<>();

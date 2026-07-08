@@ -159,7 +159,7 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
 
             // If there were Google Book details specified, go and get the full details from Google (or the local cache)
             // and then update the Mongo document for the book
-            if (bookForm.getGoogleBookId() != null && !bookForm.getGoogleBookId().isEmpty()) {
+            if (bookForm.getGoogleBookId() != null && !bookForm.getGoogleBookId().isBlank()) {
                 googleBookSearchService.updateBookWithGoogleBookDetails(aBook, bookForm.getTitle(), bookForm.getAuthor(), bookForm.getIndex());
             }
 
@@ -228,7 +228,7 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
 
             // If there were Google Book details specified, go and get the full details from Google (or the local cache)
             // and then update the Mongo document for the book
-            if (bookForm.getGoogleBookId() != null && !bookForm.getGoogleBookId().isEmpty()) {
+            if (bookForm.getGoogleBookId() != null && !bookForm.getGoogleBookId().isBlank()) {
                 googleBookSearchService.updateBookWithGoogleBookDetails(aBook, bookForm.getTitle(), bookForm.getAuthor(), bookForm.getIndex());
             }
 
@@ -396,7 +396,7 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
                                  HttpServletResponse response,
                                  @RequestHeader(value = "HX-Request", required = false) boolean hxRequest) {
 
-        if (reviewer == null || reviewer.trim().isEmpty()) {
+        if (reviewer == null || reviewer.isBlank()) {
             throw new IllegalArgumentException("Reviewer parameter cannot be empty");
         }
 
@@ -518,7 +518,7 @@ public class BookSecureControllerHtmx implements BookControllerHtmxExceptionHand
 
     private List<BooksByReader> getReviewers(Principal principal) {
         Optional<User> user = authUtils.extractUserFromPrincipal(principal, false);
-        if (user.isPresent() && user.get().getHighestRole().getRoleNumber() >= User.Role.ROLE_EDITOR.getRoleNumber()) {
+        if (user.filter(u -> u.getHighestRole().getRoleNumber() >= User.Role.ROLE_EDITOR.getRoleNumber()).isPresent()) {
             return bookRepository.countBooksByReader();
         } else {
             LOGGER.warn("A Principal (user) should be present for this method to have been called");

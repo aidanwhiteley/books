@@ -99,16 +99,14 @@ public class JwtAuthenticationUtils {
         }
 
         List<User> users = userRepository.findAllByAuthenticationServiceIdAndAuthProvider(authenticationServiceId, authenticationProviderId);
-        User user = null;
-        switch (users.size()) {
-            case 0:
-                break;
-            case 1:
-                user = users.getFirst();
-                break;
-            default:
+        User user = switch (users.size()) {
+            case 0 -> null;
+            case 1 -> users.getFirst();
+            default -> {
                 handleUnexpectedAuth(auth);
-        }
+                yield null;
+            }
+        };
 
         return Optional.ofNullable(user);
     }

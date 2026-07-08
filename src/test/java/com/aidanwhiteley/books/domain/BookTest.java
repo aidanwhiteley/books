@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 
+import com.aidanwhiteley.books.util.BooksTime;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -17,7 +19,7 @@ class BookTest {
     private static final String SOMEONE_DUNNIT = "Someone dunnit";
     private static final String WHO_DID_IT = "Who did it?";
     private static final Book.Rating GREAT = Book.Rating.GREAT;
-    private static final LocalDateTime NOW = LocalDateTime.now();
+    private static final LocalDateTime NOW = BooksTime.now();
 
     @Test
     void testCreateBook() {

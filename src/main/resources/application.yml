@@ -103,6 +103,9 @@ info:
     version: "@project.version@"
 
 books:
+  time:
+    zone-id: Europe/London
+
   autoAuthUser: false       # Must be false in production!
 
   client:

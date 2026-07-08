@@ -92,8 +92,8 @@ public class GoodReadsBookExport {
                     day;
         } else {
             // A very basic fallback implementation
-            return LocalDateTime.now().getYear() + "/" + LocalDateTime.now().getMonthValue() +
-                    "/" + LocalDateTime.now().getDayOfMonth();
+            LocalDateTime now = BooksTime.now();
+            return now.getYear() + "/" + now.getMonthValue() + "/" + now.getDayOfMonth();
         }
     }
 

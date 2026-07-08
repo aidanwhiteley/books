@@ -17,6 +17,8 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import com.aidanwhiteley.books.util.BooksTime;
+
 import static com.aidanwhiteley.books.domain.User.Role.*;
 
 @Data
@@ -39,7 +41,7 @@ public class Comment implements Serializable {
     private String commentText;
 
     @NotNull
-    private LocalDateTime entered = LocalDateTime.now();
+    private LocalDateTime entered = BooksTime.now();
 
     private boolean deleted = false;
 

@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 
+import com.aidanwhiteley.books.util.BooksTime;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class CommentTest {
@@ -13,7 +15,7 @@ class CommentTest {
     void testBoilerPlates() {
         Owner anOwner = new Owner("authid1", "firstname", "lastName", "fullName",
                 "example@example.com", "a link", "a picture", AuthenticationProvider.FACEBOOK);
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = BooksTime.now();
 
         Comment comment1 = new Comment("testCommentText1", anOwner, now);
         comment1.setId("dummyUsuallyGenerated");

@@ -17,7 +17,7 @@
     <div class="row">
 
         <div class="col-sm mb-4">
-            <h3 class="finder-header">Find Reviews By Rating</h3>
+            <label class="form-label fw-semibold" for="select-by-rating">Find Reviews By Rating</label>
             <select autocomplete="off" class="form-control tom-select-control-readonly" data-placeholder="Select a review rating"
                     hx-get="/find?pagenum=1" hx-push-url="true"
                     hx-target="#cloudy-find-by-results"
@@ -31,7 +31,7 @@
         </div>
 
         <div class="col-sm mb-4">
-            <h3 class="finder-header">Find Reviews By Author</h3>
+            <label class="form-label fw-semibold" for="select-by-author">Find Reviews By Author</label>
             <select autocomplete="off" class="form-control tom-select-control-readonly" data-placeholder="Start typing an author's name..."
                     hx-get="/find?pagenum=1" hx-push-url="true"
                     hx-target="#cloudy-find-by-results"
@@ -46,7 +46,7 @@
         </div>
 
         <div class="col-sm mb-4">
-            <h3 class="finder-header">Find Reviews By Genre</h3>
+            <label class="form-label fw-semibold" for="select-by-genre">Find Reviews By Genre</label>
             <select autocomplete="off" class="form-control tom-select-control-readonly" data-placeholder="Start typing a genre..."
                     hx-get="/find?pagenum=1" hx-push-url="true"
                     hx-target="#cloudy-find-by-results"
@@ -61,7 +61,7 @@
 
         <div class="col-sm mb-4"
              th:if="${(user != null) and ((highestRole == 'EDITOR' or highestRole == 'ADMIN'))}">
-            <h3 class="finder-header">Find Reviews By Reviewer</h3>
+            <label class="form-label fw-semibold" for="select-by-reviewer">Find Reviews By Reviewer</label>
             <select autocomplete="off" class="form-control tom-select-control-readonly" data-placeholder="Start typing a reviewer..."
                     hx-get="/find?pagenum=1" hx-push-url="true"
                     hx-target="#cloudy-find-by-results"

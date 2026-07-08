@@ -6,6 +6,7 @@ import com.aidanwhiteley.books.domain.Book;
 import com.aidanwhiteley.books.domain.Comment;
 import com.aidanwhiteley.books.domain.Owner;
 import com.aidanwhiteley.books.domain.User;
+import com.aidanwhiteley.books.util.BooksTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.http.client.HttpCookieHandling;
@@ -41,10 +42,11 @@ public class BookTestUtils {
 
     public static User getTestUser() {
         User user = new User();
+        LocalDateTime now = BooksTime.now();
         user.setFullName(USER_WITH_ALL_ROLES_FULL_NAME);
         user.setAuthProvider(PROVIDER_ALL_ROLES_USER);
-        user.setFirstLogon(LocalDateTime.now());
-        user.setLastLogon(LocalDateTime.now());
+        user.setFirstLogon(now);
+        user.setLastLogon(now);
         user.setEmail(DUMMY_EMAIL);
 
         user.setAuthenticationServiceId(USER_WITH_ALL_ROLES);

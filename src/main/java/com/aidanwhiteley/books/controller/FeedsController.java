@@ -3,6 +3,7 @@ package com.aidanwhiteley.books.controller;
 import com.aidanwhiteley.books.controller.exceptions.NotFoundException;
 import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.service.GoodReadsExportService;
+import com.aidanwhiteley.books.util.BooksTime;
 import com.aidanwhiteley.books.util.JwtAuthenticationUtils;
 import com.aidanwhiteley.books.util.SiteRssFeed;
 import com.rometools.rome.feed.rss.Channel;
@@ -19,10 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.security.Principal;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Optional;
+import java.time.format.DateTimeFormatter;
 
 @RestController
 @RequestMapping("/feeds")
@@ -61,8 +60,7 @@ public class FeedsController {
         if (user.isPresent()) {
                 try {
                     response.setContentType("text/csv");
-                    DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
-                    String currentDateTime = dateFormatter.format(new Date());
+                    String currentDateTime = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss").format(BooksTime.now());
 
                     String headerKey = "Content-Disposition";
                     String headerValue = "attachment; filename=cloudy_book_club_export_" + currentDateTime + ".csv";

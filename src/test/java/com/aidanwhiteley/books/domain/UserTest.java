@@ -5,13 +5,15 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 
+import com.aidanwhiteley.books.util.BooksTime;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class UserTest {
 
     @Test
     void testBoilerPlateGeneratedMethodsJustForCodeCoverage() {
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = BooksTime.now();
         User user1 = buildUser(now);
         User user2 = buildUser(now);
 

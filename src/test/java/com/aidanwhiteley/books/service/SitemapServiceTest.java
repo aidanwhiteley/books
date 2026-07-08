@@ -5,6 +5,7 @@ import com.aidanwhiteley.books.repository.dtos.SitemapBook;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -17,8 +18,8 @@ class SitemapServiceTest {
     void createSitemapXmlIncludesStaticAndBookUrls() {
         SitemapDao sitemapDao = mock(SitemapDao.class);
         when(sitemapDao.findBooksForSitemap()).thenReturn(List.of(
-                new SitemapBook("book-123", LocalDateTime.of(2026, 4, 14, 9, 30)),
-                new SitemapBook("book & 456", LocalDateTime.of(2026, 4, 13, 11, 45))));
+                new SitemapBook("book-123", LocalDateTime.of(2026, Month.APRIL, 14, 9, 30)),
+                new SitemapBook("book & 456", LocalDateTime.of(2026, Month.APRIL, 13, 11, 45))));
 
         SitemapService sitemapService = new SitemapService(sitemapDao, "https://cloudybookclub.com/");
 

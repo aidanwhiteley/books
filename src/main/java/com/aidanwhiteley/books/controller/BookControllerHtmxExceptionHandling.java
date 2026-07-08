@@ -17,8 +17,9 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.security.Principal;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+
+import com.aidanwhiteley.books.util.BooksTime;
 
 public interface BookControllerHtmxExceptionHandling {
 
@@ -118,7 +119,7 @@ public interface BookControllerHtmxExceptionHandling {
     private String addAttributesToErrorPage(String description, String code, Model model, Principal principal, WebRequest request) {
         model.addAttribute("description", description);
         model.addAttribute("code", code);
-        model.addAttribute("dateTime", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        model.addAttribute("dateTime", BooksTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         addUserToModel(principal, model);
 
         if (request != null && request.getHeader("hx-request") != null &&

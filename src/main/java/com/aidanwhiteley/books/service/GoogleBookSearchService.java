@@ -9,6 +9,7 @@ import com.aidanwhiteley.books.repository.GoogleBookSearchRepository;
 import com.aidanwhiteley.books.repository.GoogleBooksDaoSync;
 import com.aidanwhiteley.books.repository.dtos.GoogleBookSearch;
 import com.aidanwhiteley.books.service.dtos.GoogleBookSearchResult;
+import com.aidanwhiteley.books.util.BooksTime;
 import com.aidanwhiteley.books.util.HtmlSanitiserUtils;
 import com.aidanwhiteley.books.util.LogDetaint;
 import org.slf4j.Logger;
@@ -109,7 +110,7 @@ public class GoogleBookSearchService {
                         LogDetaint.logMessageDetaint(index));
             }
             googleBookSearchRepository.insert(
-                    new GoogleBookSearch(title, author, result, LocalDateTime.now().plusMinutes(cacheTimeoutMinutes)));
+                    new GoogleBookSearch(title, author, result, BooksTime.now().plusMinutes(cacheTimeoutMinutes)));
 
             Item anItem = index < result.getItems().size() ? result.getItems().get(index) :
                     result.getItems().getLast();

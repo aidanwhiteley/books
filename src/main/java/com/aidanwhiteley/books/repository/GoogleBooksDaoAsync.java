@@ -6,8 +6,7 @@ import com.aidanwhiteley.books.domain.googlebooks.VolumeInfo;
 import com.aidanwhiteley.books.util.HtmlSanitiserUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
@@ -21,16 +20,13 @@ public class GoogleBooksDaoAsync {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GoogleBooksDaoAsync.class);
 
-    private static final String BOOKS_WEB_CLIENT = "Books WebClient";
-
     private final WebClient webClient;
     private final BookRepository bookRepository;
     private final GoogleBooksApiConfig googleBooksApiConfig;
 
-    public GoogleBooksDaoAsync(BookRepository bookRepository, GoogleBooksApiConfig googleBooksApiConfig) {
-        this.webClient = WebClient.builder()
-                .defaultHeader(HttpHeaders.USER_AGENT, BOOKS_WEB_CLIENT)
-                .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+    public GoogleBooksDaoAsync(BookRepository bookRepository, GoogleBooksApiConfig googleBooksApiConfig,
+                               @Qualifier("googleBooksWebClient") WebClient googleBooksWebClient) {
+        this.webClient = googleBooksWebClient.mutate()
                 .filter(logRequest())
                 .filter(logResponseStatus())
                 .build();
@@ -55,7 +51,7 @@ public class GoogleBooksDaoAsync {
      * @param book         Details of the book to update
      * @param googleBookId The Google Books API book id to retrieve.
      */
-    @Async("threadPoolExecutor")
+    @Async
     public void updateBookWithGoogleBookDetails(Book book, String googleBookId) {
 
         LOGGER.debug("Entered updateBookWithGoogleBookDetails");
@@ -68,7 +64,7 @@ public class GoogleBooksDaoAsync {
                     bodyToMono(Item.class);
             LOGGER.debug("Mono created");
 
-            Item item = monoItem.block(Duration.ofSeconds(googleBooksApiConfig.getReadTimeout()));
+            Item item = monoItem.block(Duration.ofMillis(googleBooksApiConfig.getReadTimeout()));
             LOGGER.debug("Block completed");
 
             // Google Books API data _should_ be safe from CSRF attacks but lets make sure before storing the

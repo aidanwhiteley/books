@@ -25,7 +25,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class BookRepositoryTest extends IntegrationTest {
+class BookRepositoryTest extends IntegrationTest {
 
     public static final String REVIEWER = "Quasimodo";
 

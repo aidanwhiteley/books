@@ -50,13 +50,11 @@ class JwtUtilsTest {
         tampered.setCharAt(strlength - 1, (char) (aChar - 1));
         String tamperedString = tampered.toString();
 
-        try {
-            jwt.getUserFromToken(tamperedString);
-            fail("Expected a SecurityException to be thrown " +
-                    "- actually the deprecated SignatureException sub class if before V1.0 jsonwebtoken");
-        } catch (JwtException je) {
-            assertInstanceOf(SecurityException.class, je);
-        }
+        JwtException je = assertThrows(JwtException.class, 
+                () -> jwt.getUserFromToken(tamperedString),
+                "Expected a SecurityException to be thrown " +
+                        "- actually the deprecated SignatureException sub class if before V1.0 jsonwebtoken");
+        assertInstanceOf(SecurityException.class, je);
 
     }
 

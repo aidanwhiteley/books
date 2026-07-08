@@ -11,7 +11,7 @@ import java.util.concurrent.Executor;
 @Profile({"ci"})
 public class ThreadingConfig {
 
-    @Bean(name = "threadPoolExecutor")
+    @Bean(name = {"applicationTaskExecutor", "taskExecutor"})
     public Executor asyncExecutor() {
         return new SyncTaskExecutor();
     }

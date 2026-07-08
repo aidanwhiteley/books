@@ -12,15 +12,13 @@ import org.wiremock.spring.EnableWireMock;
 
 import java.time.LocalDateTime;
 
+import com.aidanwhiteley.books.util.BooksTime;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @Profile({"dev-mongo-java-server", "dev-mongo-java-server-no-auth", "dev-mongodb-no-auth", "dev-mongodb", "ci"})
-@EnableWireMock({
-        @ConfigureWireMock(
-                httpsPort = 0,
-                port = 0)
-})
+@EnableWireMock(@ConfigureWireMock(httpsPort = 0, port = 0))
 @ActiveProfiles("dev-mongo-java-server")
 class GoogleBookSearchRepositoryTest extends IntegrationTest {
 
@@ -37,7 +35,7 @@ class GoogleBookSearchRepositoryTest extends IntegrationTest {
 
         // Now using fake title, author when inserting into cache to avoid conflict with other tests (no rollback after test!).
         GoogleBookSearch gbSearch =
-                new GoogleBookSearch("Dummy title", "Dummy author", result, LocalDateTime.now().plusMinutes(1));
+                new GoogleBookSearch("Dummy title", "Dummy author", result, BooksTime.now().plusMinutes(1));
         searchRepository.insert(gbSearch);
         assertEquals(1, searchRepository.findAllByTitleAndAuthor("Dummy title", "Dummy author").size());
     }

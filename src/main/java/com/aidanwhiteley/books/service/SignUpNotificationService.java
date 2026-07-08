@@ -2,6 +2,7 @@ package com.aidanwhiteley.books.service;
 
 import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.repository.UserRepository;
+import com.aidanwhiteley.books.util.BooksTime;
 import com.aidanwhiteley.books.util.MailClient;
 import lombok.Setter;
 import org.slf4j.Logger;
@@ -39,9 +40,10 @@ public class SignUpNotificationService {
         if (registrationAdminEmailEnabled) {
 
             List<User> newUsers = findNewUsers();
+            var now = BooksTime.now();
 
             if (newUsers.isEmpty()) {
-                LOGGER.debug("No new user registration found so no emails to the admin at {}", LocalDateTime.now());
+                LOGGER.debug("No new user registration found so no emails to the admin at {}", now);
             } else {
                 boolean emailsSent = mailClient.sendEmailsToAdminsForNewUsers(newUsers);
 
@@ -49,10 +51,10 @@ public class SignUpNotificationService {
                     newUsers.forEach(userRepository::updateUserAdminNotified);
                 }
                 LOGGER.debug("Command issued to send new user registration emails to the admin for users: {} at {}",
-                        newUsers, LocalDateTime.now());
+                        newUsers, now);
             }
         } else {
-            LOGGER.debug("Did not send any new user registration emails to the admin at {}", LocalDateTime.now());
+            LOGGER.debug("Did not send any new user registration emails to the admin at {}", BooksTime.now());
         }
     }
 

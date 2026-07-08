@@ -23,6 +23,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.aidanwhiteley.books.util.BooksTime;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -176,8 +178,8 @@ class WebSecurityConfigurationTest {
                 .email(email)
                 .authProvider(provider)
                 .roles(Collections.singletonList(User.Role.ROLE_USER))
-                .firstLogon(LocalDateTime.now())
-                .lastLogon(LocalDateTime.now());
+                .firstLogon(BooksTime.now())
+                .lastLogon(BooksTime.now());
 
         if (fullName != null) {
             builder.fullName(fullName);

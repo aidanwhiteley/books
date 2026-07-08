@@ -32,7 +32,7 @@ public class GoodReadsBookExportTest {
     @Test
     void testReadDate() {
         var export = getTestBookAsGoodReadsExport();
-        assertTrue(export.contains(LocalDateTime.now().getYear()+ "/" ));
+        assertTrue(export.contains(BooksTime.now().getYear()+ "/" ));
     }
 
     @Test
@@ -69,7 +69,7 @@ public class GoodReadsBookExportTest {
         book.setGoogleBookDetails(item);
 
         book.setRating(Book.Rating.GREAT);
-        book.setCreatedDateTime(LocalDateTime.now());
+        book.setCreatedDateTime(BooksTime.now());
         return book;
     }
 }

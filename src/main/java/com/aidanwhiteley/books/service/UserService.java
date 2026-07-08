@@ -3,6 +3,7 @@ package com.aidanwhiteley.books.service;
 import com.aidanwhiteley.books.domain.User;
 import com.aidanwhiteley.books.repository.UserRepository;
 import com.aidanwhiteley.books.util.Oauth2AuthenticationUtils;
+import com.aidanwhiteley.books.util.BooksTime;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -85,11 +86,11 @@ public class UserService {
 
     private User createUser(Map<String, Object> userDetails, User.AuthenticationProvider provider) {
 
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = BooksTime.now();
 
         User user = switch (provider) {
             case GOOGLE -> createGoogleUser(userDetails, now);
-            case FACEBOOK -> createFacebookUser(userDetails);
+            case FACEBOOK -> createFacebookUser(userDetails, now);
             case LOCAL -> createLocalActuatorUser(userDetails, now);
             default -> {
                 LOGGER.error("Unexpected oauth user type {} in createUser", provider);
@@ -102,7 +103,7 @@ public class UserService {
         return user;
     }
 
-    private User createFacebookUser(Map<String, Object> userDetails) {
+    private User createFacebookUser(Map<String, Object> userDetails, LocalDateTime now) {
         User user;
         user = User.builder().authenticationServiceId((String) userDetails.get("id")).
                 firstName((String) userDetails.get(FIRST_NAME_PROPERTY)).
@@ -110,8 +111,8 @@ public class UserService {
                 fullName((String) userDetails.get(NAME_PROPERTY)).
                 link((String) userDetails.get("link")).
                 email((String) userDetails.get(EMAIL)).
-                lastLogon(LocalDateTime.now()).
-                firstLogon(LocalDateTime.now()).
+                lastLogon(now).
+                firstLogon(now).
                 authProvider(FACEBOOK).
                 build();
         setDefaultAdminUser(user);
@@ -185,7 +186,7 @@ public class UserService {
             user.setPicture(url);
         }
         user.setEmail((String) userDetails.get(EMAIL));
-        user.setLastLogon(LocalDateTime.now());
+        user.setLastLogon(BooksTime.now());
     }
 
     private void updateGoogleUser(Map<String, Object> userDetails, User user) {
@@ -195,11 +196,11 @@ public class UserService {
         user.setLink((String) userDetails.get("link"));
         user.setPicture((String) userDetails.get(PICTURE));
         user.setEmail((String) userDetails.get(EMAIL));
-        user.setLastLogon(LocalDateTime.now());
+        user.setLastLogon(BooksTime.now());
     }
 
     private void updateLocalActuatorUser(User user) {
-        user.setLastLogon(LocalDateTime.now());
+        user.setLastLogon(BooksTime.now());
     }
 
     private void setDefaultAdminUser(User user) {

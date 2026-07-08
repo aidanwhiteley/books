@@ -15,10 +15,7 @@ import org.wiremock.spring.EnableWireMock;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 @Profile({"dev-mongo-java-server", "dev-mongo-java-server-no-auth", "dev-mongodb-no-auth", "dev-mongodb", "ci"})
-@EnableWireMock({
-        @ConfigureWireMock(
-                port = 0)
-})
+@EnableWireMock(@ConfigureWireMock(port = 0))
 class GoogleBookDaoAsyncTest extends IntegrationTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GoogleBookDaoAsyncTest.class);

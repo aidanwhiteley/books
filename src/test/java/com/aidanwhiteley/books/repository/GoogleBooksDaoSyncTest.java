@@ -5,7 +5,6 @@ import ch.qos.logback.classic.LoggerContext;
 import com.aidanwhiteley.books.domain.googlebooks.BookSearchResult;
 import com.aidanwhiteley.books.domain.googlebooks.Item;
 import com.aidanwhiteley.books.util.IntegrationTest;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,19 +64,16 @@ class GoogleBooksDaoSyncTest extends IntegrationTest {
     }
 
     @Test
-    @Disabled("Disabled as RestTemplateBuilder based timeouts removed to aid SB4 boot upgrade")
     void confirmFindbyBookTimesOut() {
 
         // Turn off unwanted logging for read timeout. Prevents JUnit output having unnecessary stack traces etc.
         LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
         context.getLogger(GoogleBooksDaoSync.class).setLevel(Level.valueOf("OFF"));
 
-        try {
-            theDao.searchGoogleBooksByGoogleBookId(SLOW_BOOK_ID);
-            fail("There should have been a timeout on accessing stubbed http service");
-        } catch (ResourceAccessException rae) {
-            LOGGER.debug("Expected exception caught");
-        }
+        assertThrows(ResourceAccessException.class,
+                () -> theDao.searchGoogleBooksByGoogleBookId(SLOW_BOOK_ID),
+                "There should have been a timeout on accessing stubbed http service");
+        LOGGER.debug("Expected exception caught");
 
         context.getLogger(GoogleBooksDaoSync.class).setLevel(Level.valueOf("WARN"));
     }
@@ -89,12 +85,10 @@ class GoogleBooksDaoSyncTest extends IntegrationTest {
         LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
         context.getLogger(GoogleBooksDaoSync.class).setLevel(Level.valueOf("OFF"));
 
-        try {
-            theDao.searchGoogleBooksByGoogleBookId(SERVICE_UNAVAILABLE_BOOK_ID);
-            fail("There should have been a 503 on accessing stubbed http service");
-        } catch (HttpServerErrorException hsee) {
-            LOGGER.debug("Expected HttpServerErrorException exception caught: {}", hsee.toString());
-        }
+        HttpServerErrorException hsee = assertThrows(HttpServerErrorException.class,
+                () -> theDao.searchGoogleBooksByGoogleBookId(SERVICE_UNAVAILABLE_BOOK_ID),
+                "There should have been a 503 on accessing stubbed http service");
+        LOGGER.debug("Expected HttpServerErrorException exception caught: {}", hsee.toString());
 
         context.getLogger(GoogleBooksDaoSync.class).setLevel(Level.valueOf("WARN"));
     }

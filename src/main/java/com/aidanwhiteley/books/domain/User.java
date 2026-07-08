@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.aidanwhiteley.books.util.BooksTime;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -63,7 +65,7 @@ public class User {
     private boolean adminEmailedAboutSignup = false;
 
     public boolean isFirstVisit() {
-        return (firstLogon.truncatedTo(ChronoUnit.MINUTES).equals(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES)));
+        return (firstLogon.truncatedTo(ChronoUnit.MINUTES).equals(BooksTime.now().truncatedTo(ChronoUnit.MINUTES)));
     }
 
     public Role getHighestRole() {

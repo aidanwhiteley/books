@@ -11,8 +11,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.Date;
 
 @Component
@@ -41,7 +39,7 @@ public class SiteRssFeed {
         channel.setTitle(booksFeedsTitles);
         channel.setLink(booksFeedsDomain);
         channel.setDescription(booksFeedsDescription);
-        channel.setPubDate(new Date());
+        channel.setPubDate(Date.from(BooksTime.now().atZone(BooksTime.zoneId()).toInstant()));
 
         channel.setItems(recentBooks.stream().map(b -> {
             Item item = new Item();
@@ -53,8 +51,7 @@ public class SiteRssFeed {
             guid.setValue(b.getId());
             item.setGuid(guid);
 
-            ZonedDateTime zdt = b.getCreatedDateTime().atZone(ZoneId.systemDefault());
-            item.setPubDate(Date.from(zdt.toInstant()));
+            item.setPubDate(Date.from(b.getCreatedDateTime().atZone(BooksTime.zoneId()).toInstant()));
 
             Content content = new Content();
             content.setType("text/html");

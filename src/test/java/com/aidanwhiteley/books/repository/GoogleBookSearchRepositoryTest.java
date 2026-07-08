@@ -2,6 +2,7 @@ package com.aidanwhiteley.books.repository;
 
 import com.aidanwhiteley.books.domain.googlebooks.BookSearchResult;
 import com.aidanwhiteley.books.repository.dtos.GoogleBookSearch;
+import com.aidanwhiteley.books.util.BooksTime;
 import com.aidanwhiteley.books.util.IntegrationTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,10 +10,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.test.context.ActiveProfiles;
 import org.wiremock.spring.ConfigureWireMock;
 import org.wiremock.spring.EnableWireMock;
-
-import java.time.LocalDateTime;
-
-import com.aidanwhiteley.books.util.BooksTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

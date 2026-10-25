@@ -46,6 +46,7 @@ jobs:
       uses: supercharge/mongodb-github-action@1.12.1
       with:
         mongodb-version: 8.0
+        mongodb-extra-env: GLIBC_TUNABLES=glibc.pthread.rseq=1
 
     - if: ${{ github.actor != 'dependabot[bot]' }}
       name: Build with Maven and run Sonar reports
